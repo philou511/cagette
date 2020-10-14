@@ -552,6 +552,21 @@ class App {
            placeId: placeId
         });
     }
+
+
+    public function tab(el){
+        return new bootstrap.Tab(el);
+    }
+
+    // public function showTab(el){
+    //     tab(el).show();
+    // }
+
+    // public  function modal(el){
+    //     var m = new Modal(el);
+    //     m.show();
+
+    // }
 }
 
 

@@ -310,5 +310,73 @@ class Install extends controller.Controller
 		}*/
 
 	}
+
+	@admin
+	public function doAddSubscriptionsForCSAVariableOrders() {
+
+		var activeCSAVariableCatalogs : List< db.Catalog > = db.Catalog.manager.unsafeObjects(
+			'SELECT Catalog.* 
+			FROM Catalog INNER JOIN `Group`
+			ON Catalog.groupId = `Group`.id
+			WHERE (`Group`.flags & 2=0)
+			AND Catalog.type = 1
+			AND Catalog.endDate >= NOW();', false );
+
+		for ( catalog in activeCSAVariableCatalogs ) {
+			
+			var ordersByUser = new Map< db.User, Array<db.UserOrder> >();
+			var productIds = catalog.getProducts(false).map( function(x) return x.id );
+			var orders = db.UserOrder.manager.search( $productId in productIds, false );
+
+			for ( order in orders ) {
+
+				if ( ordersByUser[order.user] == null ) {
+
+					ordersByUser[order.user] = [];
+				}
+				
+				if ( order.subscription == null ) {
+
+					if ( order.quantity != null && order.quantity > 0 ) {
+
+						ordersByUser[order.user].push( order );
+					}
+				}
+			}
+
+			for ( user in ordersByUser.keys() ) {
+
+				if ( ordersByUser[user].length != 0 ) {
+
+					trace( "****USER***** " + user );
+					trace( ordersByUser[user] );
+					trace( "****GROUP***** " + catalog.group );
+					trace( "****CATALOG***** " + catalog );
+
+					var subscription = new db.Subscription();
+					subscription.user = user;
+					subscription.catalog = catalog;
+					subscription.startDate 	= new Date( catalog.startDate.getFullYear(), catalog.startDate.getMonth(), catalog.startDate.getDate(), 0, 0, 0 );
+					subscription.endDate 	= new Date( catalog.endDate.getFullYear(), catalog.endDate.getMonth(), catalog.endDate.getDate(), 23, 59, 59 );
+					subscription.isValidated = true;
+					subscription.isPaid = true;
+					subscription.insert();
+		
+		
+					for ( order in ordersByUser[user] ) {
+
+						trace( order );
+						order.lock();
+						order.subscription = subscription;
+						order.update();
+					}
+
+				}
+
+			}
+		
+		}
+
+	}
 	
 }

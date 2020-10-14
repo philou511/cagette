@@ -286,7 +286,7 @@ class Member extends Controller
 
 		//const orders subscriptions
 		view.subscriptionService = service.SubscriptionService;
-		view.subscriptionsByCatalog = SubscriptionService.getUserActiveSubscriptionsByCatalog(member,app.user.getGroup());
+		view.subscriptionsByCatalog = SubscriptionService.getActiveSubscriptionsByCatalog( member, app.user.getGroup() );
 
 		checkToken(); //to insert a token in tpl
 	}	

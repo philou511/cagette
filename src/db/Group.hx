@@ -84,6 +84,7 @@ class Group extends Object
 	
 	//payments
 	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
+	@hideInForms public var allowedPaymentsType2:SNull<SText>;
 	@hideInForms public var checkOrder:SNull<SString<64>>;
 	@hideInForms public var IBAN:SNull<SString<40>>;
 	@hideInForms public var allowMoneyPotWithNegativeBalance:SNull<SBool>;
@@ -486,14 +487,23 @@ class Group extends Object
 			"txtIntro" 		=> t._("Short description"),
 			"txtHome" 		=> t._("Homepage text"),
 			"txtDistrib" 	=> t._("Text for distribution lists"),
-			"extUrl" 		=> t._("Group website URL"),
+			"extUrl" 		=> "URL de votre site web",
 			"membershipRenewalDate" => t._("Membership renewal date"),
 			"flags" 		=> t._("Options"),
 			"betaFlags" 	=> t._("Nouvelles fonctionnalités"),
-			"groupType" 	=> t._("Group type"),
+			"groupType" 	=> "Type de groupe (déclaratif)",
 			"regOption" 	=> t._("Registration setting"),
 			"contact" 		=> t._("Main contact"),
 			"legalRepresentative" => t._("Legal representative")			
 		];
+	}
+
+	override function update() {
+		sync();
+		super.update();
+	}
+
+	public function sync() {
+		this.allowedPaymentsType2 = this.allowedPaymentsType != null ? haxe.Json.stringify(this.allowedPaymentsType) : null;
 	}
 }

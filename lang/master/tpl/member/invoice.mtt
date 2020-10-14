@@ -14,7 +14,7 @@
 
             <p>
                 ::md.getGroup().name::<br/>
-                Distribution du ::hDate(md.getDate())::<br/>                
+                Distribution du ::dDate(md.getDate())::<br/>                
                 Lieu : ::md.getPlace().name::, ::md.getPlace().getAddress()::
             </p>
 

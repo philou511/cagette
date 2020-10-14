@@ -335,13 +335,13 @@
 										::contract._vendor.name::
 									</td>
 									<td class="text-left">
-										::if(d.orderStartDate!=null && d.orderStartDate.getTime() != dist.orderStartDate.getTime())::
+										::if(d.orderStartDate!=null && dist.orderStartDate!=null && d.orderStartDate.getTime() != dist.orderStartDate.getTime())::
 										<div class="alert alert-warning">
 											<i class="icon icon-info"></i> ::_("Order start date is different from general distribution"):: : <b>::hDate(dist.orderStartDate)::</b>
 										</div>
 										::end::
 
-										::if(d.orderEndDate!=null && d.orderEndDate.getTime() != dist.orderEndDate.getTime())::
+										::if(d.orderEndDate!=null && dist.orderEndDate!=null && d.orderEndDate.getTime() != dist.orderEndDate.getTime())::
 										<div class="alert alert-warning">
 												<i class="icon icon-info"></i> ::_("Order end date is different from general distribution"):: : <b>::hDate(dist.orderEndDate)::</b>
 										</div>

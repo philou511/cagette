@@ -39,13 +39,22 @@
 				<hr/>
 			::end::
 
-			::if canOrdersBeEdited ::
-				<div class="form-group" style="font-weight: bold;">
+			::if (catalog.type == TYPE_CONSTORDERS && canOrdersBeEdited) || catalog.requiresOrdering ::
 
+				::if catalog.requiresOrdering ::
+					<h4 style="font-style: normal; text-align: center; margin-bottom: 20px;">
+						Commande par défaut
+					</h4>
+				::end::
+
+				<div class="form-group" style="font-weight: bold;">
+					
 					<div class="col-sm-3"></div>
 					<div class="col-sm-2">Quantité</div>
-					<div class="col-sm-5">Alterner avec</div>
-					<div class="col-sm-2">Inverser alternance</div>
+					::if catalog.type == TYPE_CONSTORDERS::
+						<div class="col-sm-5">Alterner avec</div>
+						<div class="col-sm-2">Inverser alternance</div>
+					::end::
 
 				</div>
 				
@@ -54,14 +63,23 @@
 					::set quantity = 0::
 					::set user2Id = null::
 					::set invert = false::
-					::if getProductOrder ::
-						::set productOrder = getProductOrder(product.id)::
-						::if productOrder != null::
-							::set quantity = productOrder.quantity::
-							::set user2Id = productOrder.userId2::
-							::set invert = productOrder.hasInvertSharedOrder()::
+
+					::if edit ::
+						::if catalog.type == TYPE_CONSTORDERS::
+							::set productOrder = getProductOrder(product.id)::
+							::if productOrder != null::
+								::set quantity = productOrder.quantity::
+								::set user2Id = productOrder.userId2::
+								::set invert = productOrder.hasInvertSharedOrder()::
+							::end::
+						::else::
+							::set defaultProductOrder = subscription.getDefaultOrders(product.id)::
+							::if defaultProductOrder.length != 0 && defaultProductOrder[0] != null::
+								::set quantity = defaultProductOrder[0].quantity::
+							::end::
 						::end::
 					::end::
+
 
 					<div class="form-group">
 
@@ -71,18 +89,20 @@
 						<div class="col-sm-2">
 							<input class="form-control" type="text" name="quantity::product.id::" id="quantity::product.id::" value="::quantity::" />
 						</div>
-						<div class="col-sm-6">
-							<select name="user2::product.id::" id="user2::product.id::" class="form-control">
-								<option value="0">-</option>
-								::foreach member members::
-									<option value="::member.value::" ::attr selected if( member.value == user2Id ) '1' ::>::member.label::</option>
-								::end::
-							</select>
+						::if catalog.type == TYPE_CONSTORDERS::
+							<div class="col-sm-6">
+								<select name="user2::product.id::" id="user2::product.id::" class="form-control">
+									<option value="0">-</option>
+									::foreach member members::
+										<option value="::member.value::" ::attr selected if( member.value == user2Id ) '1' ::>::member.label::</option>
+									::end::
+								</select>
 
-						</div>
-						<div class="col-sm-1">
-							<input data-toggle="tooltip" title="::_("Reverse the alternation")::" type="checkbox" name="invert::product.id::" id="invert::product.id::" value="true" ::attr checked if( invert ) '1' :: />
-						</div>
+							</div>
+							<div class="col-sm-1">
+								<input data-toggle="tooltip" title="::_("Reverse the alternation")::" type="checkbox" name="invert::product.id::" id="invert::product.id::" value="true" ::attr checked if( invert ) '1' :: />
+							</div>
+						::end::
 
 					</div>
 				::end::
@@ -97,14 +117,6 @@
 				</label>
 				<div class="col-sm-5">
 					::raw startDate.render()::
-					<!--<div class="input-group date" id="startdatepicker">       
-						<span class="input-group-addon">
-							<span class="glyphicon glyphicon-calendar"></span>
-						</span>
-						<input type="text" class="form-control" required="required"/>
-					</div>
-					<input type="hidden" name="startdate" id="startdate" value="::startdate::" />
-				-->
 				</div>
 
 			</div>
@@ -116,18 +128,117 @@
 				</label>
 				<div class="col-sm-5">
 					::raw endDate.render()::
-					<!--
-						<div class="input-group date" name="enddatepicker" id="enddatepicker">       
-						<span class="input-group-addon">
-							<span class="glyphicon glyphicon-calendar"></span>
-						</span>
-						<input type="text" class="form-control"  required="required"/>
-					</div>
-					<input type="hidden" name="enddate" id="enddate" value="::enddate::" />
-					-->
 				</div>
 
 			</div>
+
+			::if (!edit && catalog.absentDistribsMaxNb != null && catalog.absentDistribsMaxNb != 0) ||
+				(edit && subscriptionService.getAbsentDistribsMaxNb( catalog, subscription ) != null && subscriptionService.getAbsentDistribsMaxNb( catalog, subscription ) != 0)
+			::
+	
+				<hr/>
+
+				::if edit && subscription.isValidated::
+
+					::set absencesNb = subscription.getAbsencesNb()::
+
+					<div class="form-group">
+
+						<label class="col-sm-3 control-label" for="absences" id="absencesLabel">
+							::set start = catalog.absencesStartDate ::
+							::set end = catalog.absencesEndDate::
+							::if subscription != null::
+								:: if start.getTime() < subscription.startDate.getTime()::
+									::set start = subscription.startDate::
+								::end::
+								:: if end.getTime() > subscription.endDate.getTime()::
+									::set end = subscription.endDate::
+								::end::
+							::end::
+							Nombre d'absences du ::sDate(start):: au ::sDate(end)::
+						</label>
+						<div class="col-sm-2" style="padding-top: 7px;">
+							::absencesNb::
+						</div>
+
+					</div>
+
+					<div class="form-group" ::cond absencesNb != 0::>
+
+						<label class="col-sm-3 control-label" for="datesabs" id="datesabsLabel">
+							Dates des absences
+						</label>
+						<div class="col-sm-9">
+
+							::set absentDistribIds = subscription.getAbsentDistribIds()::
+							::if canAbsencesBeEdited::
+								::foreach i loopList(0, absencesNb)::
+									<select name="absence::i::" id="absence::i::" class="form-control" style="width: 300px;display: inherit;">
+									::foreach distribIdDate absencesDistribs::
+										<option value="::distribIdDate.value::" ::attr selected if( absentDistribIds != null && distribIdDate.value == absentDistribIds[i] ) '1' :: >::distribIdDate.label::</option>
+									::end::
+									</select>
+								::end::
+							::else::
+								::foreach distrib absentDistribs::
+									::dDate(distrib.date)::<br/>
+								::end::
+							::end::
+
+						</div>
+
+					</div>
+				::else::
+
+					<div class="form-group">
+
+						<label class="col-sm-3 control-label" for="absences" id="absencesLabel">
+							::set start = catalog.absencesStartDate ::
+							::set end = catalog.absencesEndDate::
+							::if subscription != null::
+								:: if start.getTime() < subscription.startDate.getTime()::
+									::set start = subscription.startDate::
+								::end::
+								:: if end.getTime() > subscription.endDate.getTime()::
+									::set end = subscription.endDate::
+								::end::
+							::end::
+							Nombre d'absences du ::sDate(start):: au ::sDate(end)::
+						</label>
+						<div class="col-sm-2">
+
+							<select name="absencesNb" id="absencesNb" class="form-control" style="width: 200px;">
+								::set label = ""::
+								::foreach i loopList(0, subscriptionService.getAbsentDistribsMaxNb( catalog, subscription ) + 1 )::
+									::if i > 1::
+										::set label = "distributions"::
+									::else::
+										::set label = "distribution"::
+									::end::
+									<option value="::i::" ::attr selected if( subscription != null && i == subscription.getAbsencesNb() ) '1':: >::i:: ::label::</option>
+								::end::
+							</select>
+
+						</div>
+
+					</div>
+
+					<h5>Dates des distributions que vous pouvez manquer :</h5>
+
+					<div style="text-align: center;">
+
+						::foreach date absencesDistribDates::
+							<div style="width: 25%; float:left;">
+								::date::
+							</div>
+						::end::
+
+					</div>
+					<br/><br/><br/><br/><br/>
+				
+				::end::
+
+			::end::
 
 			<div class="form-group">
 
@@ -138,40 +249,20 @@
 				</div>
 
 			</div>
-<!--
-			<script type="text/javascript">
 
-				$(function () {
-
-					$('#startdatepicker').datetimepicker(
-						{
-							locale:'fr',
-							format:'LL',
-							defaultDate:moment("::startdate::", "YYYY-MM-DD")
-						}
-					);
-					$('#enddatepicker').datetimepicker(
-						{
-							locale:'fr',
-							format:'LL',
-							defaultDate:moment("::enddate::", "YYYY-MM-DD")
-						}
-					);
-					//stores the date in mysql format in a hidden input element	
-					$('#startdatepicker').on( 'dp.change', function(e) {
-
-						$('#startdate').val( $('#startdatepicker').data('DateTimePicker').date().format('YYYY-MM-DD') );
-					});
-					$('#enddatepicker').on('dp.change', function(e) {
-
-						$('#enddate').val( $('#enddatepicker').data('DateTimePicker').date().format('YYYY-MM-DD') );				
-					});
-
-				});
-						
-			</script>-->
-		
 		</form>
+
+		<!-- help for VARORDERS -->
+		::if (!catalog.isCSACatalog())::
+		<div class="alert alert-warning">
+            <p>
+				<i class="icon icon-info"></i> 
+				Pour modifier les commandes de cette souscription, il faut se rendre sur <a href="/contractAdmin/selectDistrib/::catalog.id::">la page commandes de ce contrat</a>.
+			</p>
+		</div>
+		::end::
+
+
 		
 	</div>
 
