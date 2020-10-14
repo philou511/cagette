@@ -57,7 +57,7 @@ class Main extends Controller {
 
 		//contract not ended with UserCanOrder flag
 		if(!group.hasShopMode()){
-			view.openContracts = group.getActiveContracts().filter( (c)-> return c.flags.has(UsersCanOrder)   );
+			view.openContracts = group.getActiveContracts().filter( (c)-> c.hasOpenOrders() );
 		}
 		
 		//freshly created group

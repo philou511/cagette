@@ -85,7 +85,7 @@ class Catalog extends Object
 		
 	}
 
-	public function isCSACatalog(){
+	public function isConstantOrders(){
 		return type == TYPE_CONSTORDERS;
 	}
 	
@@ -107,14 +107,16 @@ class Catalog extends Object
 	/**
 	 * is currently open to orders
 	 */
-	public function hasRunningOrders(){
+	public function hasOpenOrders(){
 		var now = Date.now();
-		var n = now.getTime();
-		
-		var contractOpen = flags.has(UsersCanOrder) && n < this.endDate.getTime() && n > this.startDate.getTime();
-		var d = db.Distribution.manager.count( $orderStartDate <= now && $orderEndDate > now && $catalogId==this.id);
-		
-		return contractOpen && d > 0;
+		var contractOpen = flags.has(UsersCanOrder) && now.getTime() < this.endDate.getTime() && now.getTime() > this.startDate.getTime();
+
+		if(this.isConstantOrders()){
+			return contractOpen;
+		}else{			
+			var d = db.Distribution.manager.count( $orderStartDate <= now && $orderEndDate > now && $catalogId==this.id);
+			return contractOpen && d > 0;
+		}		
 	}
 	
 	
