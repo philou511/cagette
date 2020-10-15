@@ -230,6 +230,12 @@ class VendorService{
 				if(vendor.legalStatus==null){
 					vendor.legalStatus = res.etablissement.unite_legale.categorie_juridique;
 				}
+
+				//unban if banned
+				if(vendor.disabled==db.Vendor.DisabledReason.IncompleteLegalInfos){
+					vendor.disabled = null;
+					App.current.session.addMessage("Merci d'avoir saisi vos informations légales. Votre compte a été débloqué.",false);
+				}
 			}
 
 		}

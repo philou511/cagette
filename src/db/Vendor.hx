@@ -156,7 +156,10 @@ class Vendor extends Object
 			linkText:vendor.linkText,
 			linkUrl:vendor.linkUrl,
 			desc:vendor.desc,
-			longDesc:vendor.longDesc
+			longDesc:vendor.longDesc,
+			vendorPage: vendor.getLink(),
+			companyNumber: vendor.companyNumber,
+			legalStatus: vendor.getLegalStatus(true)
 		};
 
 		if(this.profession!=null){
@@ -259,7 +262,7 @@ class Vendor extends Object
 	public function getDisabledReason():Null<String>{
 		return switch(this.disabled){
 			case null : null;
-			case DisabledReason.IncompleteLegalInfos : "Informations légales incomplètes";
+			case DisabledReason.IncompleteLegalInfos : "Informations légales incomplètes. Complétez vos informations légales pour débloquer le compte. (SIRET,capital social,numéro de TVA)";
 			case DisabledReason.NotCompliantWithPolicy : "Producteur incompatible avec la charte producteur de Cagette.net";
 		};
 	}

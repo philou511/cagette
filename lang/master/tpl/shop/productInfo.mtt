@@ -76,7 +76,7 @@
 		
 		<div class="col-md-5">
 			
-			<h4>::vendor.name::</h4>
+			<h4><a href="::vendor.getLink()::" target="_blank">::vendor.name::</a></h4>
 			
 			<b>::vendor.city::</b> (::vendor.zipCode::)
 			
@@ -84,7 +84,7 @@
 				::raw nl2br(vendor.desc)::
 			</p>
 			
-			::if vendor.linkUrl!=null::
+			<!--::if vendor.linkUrl!=null::
 			<p>
 				::if vendor.linkText!=null::
 				<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::vendor.linkText::</a>
@@ -92,7 +92,11 @@
 				<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::_("Read more")::</a>
 				::end::
 			</p>
-			::end::
+			::end::-->
+			<p>
+				<a href="::vendor.getLink()::" target="_blank" class="btn btn-default btn-sm">En savoir plus sur ce producteur</a>
+			</p>
+			
 			
 		</div>
 	

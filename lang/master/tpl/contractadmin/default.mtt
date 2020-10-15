@@ -2,6 +2,12 @@
 
 <div class="col-md-12">
 	
+	::foreach v vendors::		
+		::if(v.disabled!=null)::
+			<div class="alert alert-danger"><i class="icon icon-alert"></i> Le producteur <b>::v.name::</b> est désactivé : ::v.getDisabledReason()::</div>
+		::end::
+	::end::
+
 	
 	<div class="article" id="contracts">
 		<h2>
@@ -100,7 +106,7 @@
 						::v.zipCode:: ::v.city::
 
 						::if(v.disabled!=null)::
-						<div class="disabled"><i class="icon icon-alert"></i> Producteur désactivé : ::v.getDisabledReason()::</div>
+						<div class="alert alert-danger"><i class="icon icon-alert"></i> Producteur désactivé : ::v.getDisabledReason()::</div>
 						::end::
 
 

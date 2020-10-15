@@ -75,6 +75,9 @@ typedef VendorInfos = {
 	city : String,
 	linkText:String,
 	linkUrl:String,
+	vendorPage:String,
+	companyNumber:String,
+	legalStatus:String,
 }
 
 #if plugins 
