@@ -70,6 +70,8 @@ class CatalogService{
 				absencesIndex = 9;
 			}
 			
+			var html = "<h4>Gestion des absences</h4><div class='alert alert-warning'>";
+
 			//if catalog is new
 			if ( catalog.id == null ) {
 
@@ -83,16 +85,21 @@ class CatalogService{
 				form.removeElement(form.getElement("absentDistribsMaxNb"));
 				form.removeElement(form.getElement("absencesStartDate"));
 				form.removeElement(form.getElement("absencesEndDate"));
+
+				html += "<p><i class='icon icon-info'></i> 
+					Vous pourrez définir une période pendant laquelle les membres pourront choisir d'être absent après avoir enregistré ce nouveau contrat et avoir ajouté des distributions.<br/>
+					<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
+				</p></div>";
 			}
 			else {
 
-				var html = "<h4>Gestion des absences</h4><div class='alert alert-warning'>
-				<p><i class='icon icon-info'></i> 
+				html += "<p><i class='icon icon-info'></i> 
 					Vous pouvez définir une période pendant laquelle les membres pourront choisir d'être absent.<br/>
 					<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
 				</p></div>";
-				form.addElement( new sugoi.form.elements.Html( 'absences', html, '' ), absencesIndex );
 			}
+
+			form.addElement( new sugoi.form.elements.Html( 'absences', html, '' ), absencesIndex );
 		}
 		
 		//For all types and modes

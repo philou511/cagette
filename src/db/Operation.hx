@@ -155,7 +155,8 @@ class Operation extends sys.db.Object
 		return App.current.user.getGroup().getMembersFormElementData();
 	}
 
-	function check(){
+	function check() {
+
 		if(type==Payment && getPaymentType()==null){
 			throw new tink.core.Error("Payment operation should have a type");
 		} else if (type==VOrder && this.basket==null){
@@ -163,6 +164,8 @@ class Operation extends sys.db.Object
 		} else if (type==COrder && this.subscription==null){
 			throw new tink.core.Error("CSA Order operation should have a subscription");
 		}
+
+		amount = Formatting.roundTo( amount, 2 );
 	}
 
 	override function update(){

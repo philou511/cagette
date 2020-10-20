@@ -27,7 +27,21 @@ class Transaction extends controller.Controller
 
 		var group = app.user.getGroup();
 		var hasShopMode = group.hasShopMode();
-		// var subscription :db.Subscription = null;
+		var returnUrl = '/member/payments/' + user.id;
+		
+		if ( !hasShopMode ) {
+
+			if ( subscription != null ) {
+
+				returnUrl = '/contractAdmin/subscriptions/payments/' + subscription.id;
+			}
+			else {
+
+				returnUrl = '/amap/payments/' + user.id;
+			}
+			
+			// '/contractAdmin/subscriptions/payments/' + operation.subscription.id
+		}
 		
 		var op = new db.Operation();
 		op.user = user;
@@ -37,7 +51,16 @@ class Transaction extends controller.Controller
 
 		if ( !hasShopMode ) {
 
-			form.addElement( new sugoi.form.elements.Html( "subscription", '<div class="control-label" style="text-align:left;"> ${ subscription.catalog.name } - ${ subscription.catalog.vendor.name } </div>', 'Souscription' ) );
+			if ( subscription != null ) {
+
+				form.addElement( new sugoi.form.elements.Html( "subscription", '<div class="control-label" style="text-align:left;"> ${ subscription.catalog.name } - ${ subscription.catalog.vendor.name } </div>', 'Souscription' ) );
+			}
+			else {
+
+				var activeSubscriptions = service.SubscriptionService.getActiveSubscriptions( user, group );
+				var subscriptions = Lambda.map( activeSubscriptions, function( sub ) return { label : sub.catalog.name + ' - ' + sub.catalog.vendor.name, value : sub.id } ).array();
+				form.addElement( new sugoi.form.elements.IntSelect( 'subscriptionId', 'Souscription', subscriptions, null, true ) );
+			}
 
 
 			// if ( args != null && args.s != null ) {
@@ -98,6 +121,11 @@ class Transaction extends controller.Controller
 			}
 			else {
 
+				if( subscription == null ) {
+
+					subscription = db.Subscription.manager.get( form.getValueOf( 'subscriptionId' ) );
+				}
+
 				op.subscription = subscription;
 			}
 			
@@ -105,15 +133,8 @@ class Transaction extends controller.Controller
 			
 			service.PaymentService.updateUserBalance(user, group);
 
-			if( hasShopMode ) {
-			
-				throw Ok( '/member/payments/' + user.id, t._("Payment recorded") );
-			}
-			else {
+			throw Ok( returnUrl, t._("Payment recorded") );
 
-				throw Ok( '/contractAdmin/subscriptions/payments/' + subscription.id, t._("Payment recorded") );
-			}
-			
 		}
 		
 		view.title = t._("Record a payment for ::user::",{user:user.getCoupleName()}) ;
@@ -122,12 +143,34 @@ class Transaction extends controller.Controller
 	
 	
 	@tpl('form.mtt')
-	public function doEdit( operation : db.Operation ) {
+	public function doEdit( operation : db.Operation, ?args: { subscription : String } ) {
 
 		var hasShopMode = operation.group.hasShopMode();
+		var returnUrl = '/member/payments/' + operation.user.id;
+
+		if ( !hasShopMode ) {
+
+			if ( args != null ) {
+
+				if( args.subscription == 'single' ) {
+
+					App.current.session.data.returnUrl = '/contractAdmin/subscriptions/payments/' + operation.subscription.id;
+				}
+				else {
+
+					App.current.session.data.returnUrl = '/amap/payments/' + operation.user.id;
+				}
+				
+			}
+
+			returnUrl = App.current.session.data.returnUrl;
+			
+			// '/contractAdmin/subscriptions/payments/' + operation.subscription.id
+		}
 		
-		if (!app.user.canAccessMembership() || operation.group.id != app.user.getGroup().id ) {
-			throw Error("/member/payments/" + operation.user.id, t._("Action forbidden"));		
+		if ( !app.user.canAccessMembership() || operation.group.id != app.user.getGroup().id ) {
+
+			throw Error( returnUrl, t._("Action forbidden") );
 		}
 
 		if( !hasShopMode && operation.subscription == null ) {
@@ -175,14 +218,7 @@ class Transaction extends controller.Controller
 
 			operation.update();
 
-			if( hasShopMode ) {
-			
-				throw Ok( '/member/payments/' + operation.user.id, t._("Operation updated"));
-			}
-			else {
-
-				throw Ok( '/contractAdmin/subscriptions/payments/' + operation.subscription.id, t._("Operation updated") );
-			}
+			throw Ok( returnUrl, t._("Operation updated"));
 			
 		}
 		
@@ -192,9 +228,30 @@ class Transaction extends controller.Controller
 	/**
 	 * Delete an operation
 	 */
-	public function doDelete( operation : db.Operation ) {
+	public function doDelete( operation : db.Operation, ?args: { subscription: String } ) {
 
 		var hasShopMode = operation.group.hasShopMode();
+
+		var returnUrl = '/member/payments/' + operation.user.id;
+
+		if ( !hasShopMode ) {
+
+			if ( args != null ) {
+
+				if( args.subscription == 'single' ) {
+
+					App.current.session.data.returnUrl = '/contractAdmin/subscriptions/payments/' + operation.subscription.id;
+				}
+				else {
+
+					App.current.session.data.returnUrl = '/amap/payments/' + operation.user.id;
+				}
+				
+			}
+
+			returnUrl = App.current.session.data.returnUrl;
+
+		}
 
 		if( !hasShopMode && operation.subscription == null ) {
 
@@ -208,23 +265,15 @@ class Transaction extends controller.Controller
 		//only an admin can delete an order op
 		if( ( operation.type == db.Operation.OperationType.VOrder || operation.type == db.Operation.OperationType.COrder ) && !app.user.isAdmin() ) {
 
-			throw Error("/member/payments/" + operation.user.id, t._("Action forbidden"));
+			throw Error( returnUrl, t._("Action forbidden"));
 		}
 
 		if ( checkToken() ) {
 
 			operation.delete();
 
-
-			if( hasShopMode ) {
+			throw Ok( returnUrl, t._("Operation deleted") );
 			
-				throw Ok( '/member/payments/' + operation.user.id, t._("Operation deleted") );
-			}
-			else {
-
-				throw Ok( '/contractAdmin/subscriptions/payments/' + operation.subscription.id, t._("Operation deleted") );
-			}
-
 		}
 	}
 	
