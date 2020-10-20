@@ -360,7 +360,7 @@ class PaymentService
 				}
 
 			
-			//For when a coordinator does a manual refund or adds manually a payment
+			//when a coordinator does a manual refund or adds manually a payment
 			case PCManualEntry:
 				//Exclude the MoneyPot payment
 				var paymentTypesInAdmin = getPaymentTypes(PCGroupAdmin);
