@@ -116,7 +116,9 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 			key: Std.string(distrib.id),
 			latitude: distrib.place.latitude,
 			longitude: distrib.place.longitude,
-			content: '<div><a href=${"/group/" + distrib.groupId} target="_blank">${distrib.groupName}</a></div>'
+            // content: '<div><a href=${"/group/" + distrib.groupId} target="_blank">${distrib.groupName}</a></div>'
+            groupId: distrib.groupId,
+            groupName:  distrib.groupName
 		} ));
 
 		return jsx('<>

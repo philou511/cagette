@@ -19057,19 +19057,18 @@ function withConfirmDialog (Component, dialogProps) {
     return Wrapper;
 }
 
-const arr = [];
-const each = arr.forEach;
-const slice = arr.slice;
-
-function defaults (obj) {
-  each.call(slice.call(arguments, 1), (source) => {
+var arr = [];
+var each = arr.forEach;
+var slice = arr.slice;
+function defaults(obj) {
+  each.call(slice.call(arguments, 1), function (source) {
     if (source) {
       for (var prop in source) {
         if (obj[prop] === undefined) obj[prop] = source[prop];
       }
     }
   });
-  return obj
+  return obj;
 }
 
 var fetchApi;
@@ -19092,7 +19091,9 @@ var fetchNode = /*#__PURE__*/Object.freeze({
     __proto__: null
 });
 
-let fetchApi$1;
+function _typeof$2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$2 = function _typeof(obj) { return typeof obj; }; } else { _typeof$2 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$2(obj); }
+var fetchApi$1;
+
 if (typeof fetch === 'function') {
   if (typeof global !== 'undefined' && global.fetch) {
     fetchApi$1 = global.fetch;
@@ -19100,7 +19101,9 @@ if (typeof fetch === 'function') {
     fetchApi$1 = window.fetch;
   }
 }
-let XmlHttpRequestApi;
+
+var XmlHttpRequestApi;
+
 if (typeof XMLHttpRequest === 'function') {
   if (typeof global !== 'undefined' && global.XMLHttpRequest) {
     XmlHttpRequestApi = global.XMLHttpRequest;
@@ -19108,7 +19111,9 @@ if (typeof XMLHttpRequest === 'function') {
     XmlHttpRequestApi = window.XMLHttpRequest;
   }
 }
-let ActiveXObjectApi;
+
+var ActiveXObjectApi;
+
 if (typeof ActiveXObject === 'function') {
   if (typeof global !== 'undefined' && global.ActiveXObject) {
     ActiveXObjectApi = global.ActiveXObject;
@@ -19116,46 +19121,51 @@ if (typeof ActiveXObject === 'function') {
     ActiveXObjectApi = window.ActiveXObject;
   }
 }
-if (!fetchApi$1 && fetchNode && !XmlHttpRequestApi && !ActiveXObjectApi) fetchApi$1 = undefined || fetchNode; // because of strange export
+
+if (!fetchApi$1 && fetchNode && !XmlHttpRequestApi && !ActiveXObjectApi) fetchApi$1 = undefined || fetchNode;
 if (typeof fetchApi$1 !== 'function') fetchApi$1 = undefined;
 
-const addQueryString = (url, params) => {
-  if (params && typeof params === 'object') {
-    let queryString = '';
-    // Must encode data
-    for (const paramName in params) {
+var addQueryString = function addQueryString(url, params) {
+  if (params && _typeof$2(params) === 'object') {
+    var queryString = '';
+
+    for (var paramName in params) {
       queryString += '&' + encodeURIComponent(paramName) + '=' + encodeURIComponent(params[paramName]);
     }
-    if (!queryString) return url
+
+    if (!queryString) return url;
     url = url + (url.indexOf('?') !== -1 ? '&' : '?') + queryString.slice(1);
   }
-  return url
+
+  return url;
 };
 
-// fetch api stuff
-const requestWithFetch = (options, url, payload, callback) => {
+var requestWithFetch = function requestWithFetch(options, url, payload, callback) {
   if (options.queryStringParams) {
     url = addQueryString(url, options.queryStringParams);
   }
-  const headers = defaults({}, options.customHeaders);
+
+  var headers = defaults({}, typeof options.customHeaders === 'function' ? options.customHeaders() : options.customHeaders);
   if (payload) headers['Content-Type'] = 'application/json';
   fetchApi$1(url, defaults({
     method: payload ? 'POST' : 'GET',
     body: payload ? options.stringify(payload) : undefined,
-    headers
-  }, typeof options.requestOptions === 'function' ? options.requestOptions(payload) : options.requestOptions)).then((response) => {
-    if (!response.ok) return callback(response.statusText || 'Error', { status: response.status })
-    response.text().then((data) => {
-      callback(null, { status: response.status, data });
+    headers: headers
+  }, typeof options.requestOptions === 'function' ? options.requestOptions(payload) : options.requestOptions)).then(function (response) {
+    if (!response.ok) return callback(response.statusText || 'Error', {
+      status: response.status
+    });
+    response.text().then(function (data) {
+      callback(null, {
+        status: response.status,
+        data: data
+      });
     }).catch(callback);
   }).catch(callback);
 };
 
-// xml http request stuff
-const requestWithXmlHttpRequest = (options, url, payload, callback) => {
-  if (payload && typeof payload === 'object') {
-    // if (!cache) payload._t = Date.now()
-    // URL encoded form payload must be in querystring format
+var requestWithXmlHttpRequest = function requestWithXmlHttpRequest(options, url, payload, callback) {
+  if (payload && _typeof$2(payload) === 'object') {
     payload = addQueryString('', payload).slice(1);
   }
 
@@ -19164,82 +19174,111 @@ const requestWithXmlHttpRequest = (options, url, payload, callback) => {
   }
 
   try {
-    let x;
+    var x;
+
     if (XmlHttpRequestApi) {
       x = new XmlHttpRequestApi();
     } else {
       x = new ActiveXObjectApi('MSXML2.XMLHTTP.3.0');
     }
+
     x.open(payload ? 'POST' : 'GET', url, 1);
+
     if (!options.crossDomain) {
       x.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     }
+
     x.withCredentials = !!options.withCredentials;
+
     if (payload) {
       x.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     }
+
     if (x.overrideMimeType) {
       x.overrideMimeType('application/json');
     }
-    let h = options.customHeaders;
+
+    var h = options.customHeaders;
     h = typeof h === 'function' ? h() : h;
+
     if (h) {
       for (var i in h) {
         x.setRequestHeader(i, h[i]);
       }
     }
-    x.onreadystatechange = () => {
-      x.readyState > 3 && callback(x.status >= 400 ? x.statusText : null, { status: x.status, data: x.responseText });
+
+    x.onreadystatechange = function () {
+      x.readyState > 3 && callback(x.status >= 400 ? x.statusText : null, {
+        status: x.status,
+        data: x.responseText
+      });
     };
+
     x.send(payload);
   } catch (e) {
     console && console.log(e);
   }
 };
 
-const request$1 = (options, url, payload, callback) => {
+var request$1 = function request(options, url, payload, callback) {
   if (typeof payload === 'function') {
     callback = payload;
     payload = undefined;
   }
-  callback = callback || (() => {});
+
+  callback = callback || function () {};
 
   if (fetchApi$1) {
-    // use fetch api
-    return requestWithFetch(options, url, payload, callback)
+    return requestWithFetch(options, url, payload, callback);
   }
 
   if (typeof XMLHttpRequest === 'function' || typeof ActiveXObject === 'function') {
-    // use xml http request
-    return requestWithXmlHttpRequest(options, url, payload, callback)
+    return requestWithXmlHttpRequest(options, url, payload, callback);
   }
 };
 
-const getDefaults$1 = () => {
+function _classCallCheck$1(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties$1(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass$1(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$1(Constructor.prototype, protoProps); if (staticProps) _defineProperties$1(Constructor, staticProps); return Constructor; }
+
+function _defineProperty$1(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var getDefaults$1 = function getDefaults() {
   return {
     loadPath: '/locales/{{lng}}/{{ns}}.json',
     addPath: '/locales/add/{{lng}}/{{ns}}',
     allowMultiLoading: false,
-    parse: data => JSON.parse(data),
+    parse: function parse(data) {
+      return JSON.parse(data);
+    },
     stringify: JSON.stringify,
-    parsePayload: (namespace, key, fallbackValue) => ({ [key]: fallbackValue || '' }),
+    parsePayload: function parsePayload(namespace, key, fallbackValue) {
+      return _defineProperty$1({}, key, fallbackValue || '');
+    },
     request: request$1,
-    reloadInterval: false,
+    reloadInterval: typeof window !== 'undefined' ? false : 60 * 60 * 1000,
     customHeaders: {},
     queryStringParams: {},
-    crossDomain: false, // used for XmlHttpRequest
-    withCredentials: false, // used for XmlHttpRequest
-    overrideMimeType: false, // used for XmlHttpRequest
-    requestOptions: { // used for fetch
+    crossDomain: false,
+    withCredentials: false,
+    overrideMimeType: false,
+    requestOptions: {
       mode: 'cors',
       credentials: 'same-origin',
       cache: 'default'
     }
-  }
+  };
 };
 
-class Backend {
-  constructor (services, options = {}, allOptions = {}) {
+var Backend = function () {
+  function Backend(services) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var allOptions = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+    _classCallCheck$1(this, Backend);
+
     this.services = services;
     this.options = options;
     this.allOptions = allOptions;
@@ -19247,92 +19286,134 @@ class Backend {
     this.init(services, options, allOptions);
   }
 
-  init (services, options = {}, allOptions = {}) {
-    this.services = services;
-    this.options = defaults(options, this.options || {}, getDefaults$1());
-    this.allOptions = allOptions;
-    if (this.options.reloadInterval) {
-      setInterval(() => this.reload(), this.options.reloadInterval);
-    }
-  }
+  _createClass$1(Backend, [{
+    key: "init",
+    value: function init(services) {
+      var _this = this;
 
-  readMulti (languages, namespaces, callback) {
-    var loadPath = this.options.loadPath;
-    if (typeof this.options.loadPath === 'function') {
-      loadPath = this.options.loadPath(languages, namespaces);
-    }
-    const url = this.services.interpolator.interpolate(loadPath, { lng: languages.join('+'), ns: namespaces.join('+') });
-    this.loadUrl(url, callback, languages, namespaces);
-  }
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var allOptions = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+      this.services = services;
+      this.options = defaults(options, this.options || {}, getDefaults$1());
+      this.allOptions = allOptions;
 
-  read (language, namespace, callback) {
-    var loadPath = this.options.loadPath;
-    if (typeof this.options.loadPath === 'function') {
-      loadPath = this.options.loadPath([language], [namespace]);
-    }
-    const url = this.services.interpolator.interpolate(loadPath, { lng: language, ns: namespace });
-    this.loadUrl(url, callback, language, namespace);
-  }
-
-  loadUrl (url, callback, languages, namespaces) {
-    this.options.request(this.options, url, undefined, (err, res) => {
-      if (res && res.status >= 500 && res.status < 600) return callback('failed loading ' + url, true /* retry */)
-      if (res && res.status >= 400 && res.status < 500) return callback('failed loading ' + url, false /* no retry */)
-      if (err) return callback(err, false)
-
-      let ret, parseErr;
-      try {
-        ret = this.options.parse(res.data, languages, namespaces);
-      } catch (e) {
-        parseErr = 'failed parsing ' + url + ' to json';
+      if (this.options.reloadInterval) {
+        setInterval(function () {
+          return _this.reload();
+        }, this.options.reloadInterval);
       }
-      if (parseErr) return callback(parseErr, false)
-      callback(null, ret);
-    });
-  }
+    }
+  }, {
+    key: "readMulti",
+    value: function readMulti(languages, namespaces, callback) {
+      var loadPath = this.options.loadPath;
 
-  create (languages, namespace, key, fallbackValue) {
-    // If there is a falsey addPath, then abort -- this has been disabled.
-    if (!this.options.addPath) return
-    if (typeof languages === 'string') languages = [languages];
-    const payload = this.options.parsePayload(namespace, key, fallbackValue);
-    languages.forEach(lng => {
-      const url = this.services.interpolator.interpolate(this.options.addPath, { lng: lng, ns: namespace });
-      this.options.request(this.options, url, payload, (data, res) => {
-        // TODO: if res.status === 4xx do log
+      if (typeof this.options.loadPath === 'function') {
+        loadPath = this.options.loadPath(languages, namespaces);
+      }
+
+      var url = this.services.interpolator.interpolate(loadPath, {
+        lng: languages.join('+'),
+        ns: namespaces.join('+')
       });
-    });
-  }
+      this.loadUrl(url, callback, languages, namespaces);
+    }
+  }, {
+    key: "read",
+    value: function read(language, namespace, callback) {
+      var loadPath = this.options.loadPath;
 
-  reload () {
-    const { backendConnector, languageUtils, logger } = this.services;
-    const currentLanguage = backendConnector.language;
-    if (currentLanguage && currentLanguage.toLowerCase() === 'cimode') return // avoid loading resources for cimode
+      if (typeof this.options.loadPath === 'function') {
+        loadPath = this.options.loadPath([language], [namespace]);
+      }
 
-    const toLoad = [];
-    const append = (lng) => {
-      const lngs = languageUtils.toResolveHierarchy(lng);
-      lngs.forEach(l => {
-        if (toLoad.indexOf(l) < 0) toLoad.push(l);
+      var url = this.services.interpolator.interpolate(loadPath, {
+        lng: language,
+        ns: namespace
       });
-    };
+      this.loadUrl(url, callback, language, namespace);
+    }
+  }, {
+    key: "loadUrl",
+    value: function loadUrl(url, callback, languages, namespaces) {
+      var _this2 = this;
 
-    append(currentLanguage);
+      this.options.request(this.options, url, undefined, function (err, res) {
+        if (res && (res.status >= 500 && res.status < 600 || !res.status)) return callback('failed loading ' + url, true);
+        if (res && res.status >= 400 && res.status < 500) return callback('failed loading ' + url, false);
+        if (!res && err && err.message && err.message.indexOf('Failed to fetch') > -1) return callback('failed loading ' + url, true);
+        if (err) return callback(err, false);
+        var ret, parseErr;
 
-    if (this.allOptions.preload) this.allOptions.preload.forEach((l) => append(l));
+        try {
+          if (typeof res.data === 'string') {
+            ret = _this2.options.parse(res.data, languages, namespaces);
+          } else {
+            ret = res.data;
+          }
+        } catch (e) {
+          parseErr = 'failed parsing ' + url + ' to json';
+        }
 
-    toLoad.forEach(lng => {
-      this.allOptions.ns.forEach(ns => {
-        backendConnector.read(lng, ns, 'read', null, null, (err, data) => {
-          if (err) logger.warn(`loading namespace ${ns} for language ${lng} failed`, err);
-          if (!err && data) logger.log(`loaded namespace ${ns} for language ${lng}`, data);
+        if (parseErr) return callback(parseErr, false);
+        callback(null, ret);
+      });
+    }
+  }, {
+    key: "create",
+    value: function create(languages, namespace, key, fallbackValue) {
+      var _this3 = this;
 
-          backendConnector.loaded(`${lng}|${ns}`, err, data);
+      if (!this.options.addPath) return;
+      if (typeof languages === 'string') languages = [languages];
+      var payload = this.options.parsePayload(namespace, key, fallbackValue);
+      languages.forEach(function (lng) {
+        var url = _this3.services.interpolator.interpolate(_this3.options.addPath, {
+          lng: lng,
+          ns: namespace
+        });
+
+        _this3.options.request(_this3.options, url, payload, function (data, res) {});
+      });
+    }
+  }, {
+    key: "reload",
+    value: function reload() {
+      var _this4 = this;
+
+      var _this$services = this.services,
+          backendConnector = _this$services.backendConnector,
+          languageUtils = _this$services.languageUtils,
+          logger = _this$services.logger;
+      var currentLanguage = backendConnector.language;
+      if (currentLanguage && currentLanguage.toLowerCase() === 'cimode') return;
+      var toLoad = [];
+
+      var append = function append(lng) {
+        var lngs = languageUtils.toResolveHierarchy(lng);
+        lngs.forEach(function (l) {
+          if (toLoad.indexOf(l) < 0) toLoad.push(l);
+        });
+      };
+
+      append(currentLanguage);
+      if (this.allOptions.preload) this.allOptions.preload.forEach(function (l) {
+        return append(l);
+      });
+      toLoad.forEach(function (lng) {
+        _this4.allOptions.ns.forEach(function (ns) {
+          backendConnector.read(lng, ns, 'read', null, null, function (err, data) {
+            if (err) logger.warn("loading namespace ".concat(ns, " for language ").concat(lng, " failed"), err);
+            if (!err && data) logger.log("loaded namespace ".concat(ns, " for language ").concat(lng), data);
+            backendConnector.loaded("".concat(lng, "|").concat(ns), err, data);
+          });
         });
       });
-    });
-  }
-}
+    }
+  }]);
+
+  return Backend;
+}();
 
 Backend.type = 'backend';
 
@@ -27071,6 +27152,11 @@ var MangopayBusineddKYCDocumentTypes = [
     'ARTICLES_OF_ASSOCIATION',
 ];
 
+(function (CagetteExceptionType) {
+    CagetteExceptionType["Group"] = "Group";
+    CagetteExceptionType["Mangopay"] = "Mangopay";
+})(exports.CagetteExceptionType || (exports.CagetteExceptionType = {}));
+
 var getMangopayRequiredKYCDocumentTypes = function (legalPersonType) {
     switch (legalPersonType) {
         case 'SOLETRADER':
@@ -27878,18 +27964,19 @@ exports.userSchema = userSchema;
 });
 
 unwrapExports(dist);
-var dist_1 = dist.MangopayBusineddKYCDocumentTypes;
-var dist_2 = dist.MangopayOrganizationKYCDocumentTypes;
-var dist_3 = dist.MangopaySoletraderKYCDocumentTypes;
-var dist_4 = dist.customYup;
-var dist_5 = dist.getMangopayRequiredKYCDocumentTypes;
-var dist_6 = dist.loginSchema;
-var dist_7 = dist.mangopayAddressSchema;
-var dist_8 = dist.mangopayBankAccountSchema;
-var dist_9 = dist.mangopayLegalPersonTypeRequiredUbo;
-var dist_10 = dist.mangopayLegalUserSchema;
-var dist_11 = dist.mangopayUboSchema;
-var dist_12 = dist.userSchema;
+var dist_1 = dist.CagetteExceptionType;
+var dist_2 = dist.MangopayBusineddKYCDocumentTypes;
+var dist_3 = dist.MangopayOrganizationKYCDocumentTypes;
+var dist_4 = dist.MangopaySoletraderKYCDocumentTypes;
+var dist_5 = dist.customYup;
+var dist_6 = dist.getMangopayRequiredKYCDocumentTypes;
+var dist_7 = dist.loginSchema;
+var dist_8 = dist.mangopayAddressSchema;
+var dist_9 = dist.mangopayBankAccountSchema;
+var dist_10 = dist.mangopayLegalPersonTypeRequiredUbo;
+var dist_11 = dist.mangopayLegalUserSchema;
+var dist_12 = dist.mangopayUboSchema;
+var dist_13 = dist.userSchema;
 
 var yupHelperTextTranslator = (function (t, helperText) {
     if (helperText) {
@@ -28053,7 +28140,7 @@ var UserForm = function (_a) {
         },
     ];
     var initialValues = __assign(__assign(__assign({}, generateInitialValues(fields)), generateInitialValues(contactFields)), generateInitialValues(spouseInformations));
-    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_12, onSubmit: onSubmit }, function (formikProps) { return (React__default.createElement(formik.Form, null,
+    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_13, onSubmit: onSubmit }, function (formikProps) { return (React__default.createElement(formik.Form, null,
         formikProps.status && (React__default.createElement(core$1.Box, { my: 2 },
             React__default.createElement(lab.Alert, { severity: "error" }, formikProps.status))),
         React__default.createElement(core$1.Box, null,
@@ -29603,7 +29690,7 @@ var MangopayLegalUserCard = function (_a) {
             React__default.createElement(core$1.CardContent, null,
                 isRegular && (React__default.createElement(core$1.Box, { mb: 2 },
                     React__default.createElement(lab.Alert, { severity: "info" }, t('editAlert')))),
-                React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_10, onSubmit: _onSubmit }, function (formikProps) {
+                React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_11, onSubmit: _onSubmit }, function (formikProps) {
                     var _a, _b, _c, _d, _e, _f, _g, _h;
                     return (React__default.createElement(formik.Form, null,
                         React__default.createElement(FormTitle, { label: tForm('structure'), mt: 0 }),
@@ -29855,7 +29942,7 @@ var allMangopayKycDocumentStatusesArePending = function (_a) {
         return false;
     if (!KycDocuments)
         return false;
-    var currentDocs = dist_5(LegalPersonType).map(function (type) {
+    var currentDocs = dist_6(LegalPersonType).map(function (type) {
         return getCurrentKycDocumentOfType(KycDocuments, type);
     });
     if (currentDocs.indexOf(undefined) !== -1)
@@ -30100,7 +30187,7 @@ var MangopayKycDocumentsCard = function (_a) {
                 error && (React__default.createElement(core$1.Box, { my: 2 },
                     React__default.createElement(GqlErrorAlert, { error: error }))),
                 allMangopayKycDocumentStatusesArePending(legalUser) ? (React__default.createElement(lab.Alert, { severity: "info" }, t('allPending'))) : (React__default.createElement(React__default.Fragment, null,
-                    dist_5(legalUser.LegalPersonType).map(function (documentType) {
+                    dist_6(legalUser.LegalPersonType).map(function (documentType) {
                         var last = getCurrentKycDocumentOfType(legalUser.KycDocuments || [], documentType);
                         return (React__default.createElement(core$1.Box, { key: documentType },
                             React__default.createElement(FormTitle, { label: tForm(documentType) }),
@@ -30202,7 +30289,7 @@ var MangopayUboForm = function (_a) {
     };
     console.log(ubo);
     /** */
-    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_11, onSubmit: onSubmit }, function (formikProps) {
+    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_12, onSubmit: onSubmit }, function (formikProps) {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
         return (React__default.createElement(formik.Form, null,
             formikProps.status && (React__default.createElement(core$1.Box, null,
@@ -30761,7 +30848,7 @@ var MangopayConfig = function (_a) {
                         else
                             closePanels();
                     } })),
-            dist_9(legalUser.LegalPersonType) && (React__default.createElement(core$1.Box, { my: 4 },
+            dist_10(legalUser.LegalPersonType) && (React__default.createElement(core$1.Box, { my: 4 },
                 React__default.createElement(MangopayUbosCard, { group: group, disabledActions: submitting, open: openedPanel === 'ubos', onTogglePanel: function (v) {
                         if (v)
                             setOpenedPanel('ubos');
