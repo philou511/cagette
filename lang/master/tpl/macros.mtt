@@ -451,18 +451,17 @@
 							</li>
 							<li>
 								<a href="http://www.cagette.pro" target="_blank">Formations pour producteurs</a> 
-							</li>
-							<li>
-								::if (user!=null && user.isAmapManager()):: <a href="https://cagette.uservoice.com" target="_blank">::_("Propose features")::</a>  ::end::
-							</li>						
+							</li>												
 							<li>
 								<a href="/cgu" target="_blank">Conditions générales d'utilisation</a> 
 							</li>
 							<li>
+								<a href="/cgv" target="_blank">Conditions générales de vente</a> 
+							</li>	
+							<li>
 								<a href="/mgp" target="_blank">C.G.U Mangopay</a> 
 							</li>
-						</ul>
-						
+						</ul>						
 					</div>
 					<div class="col-md-3" >
 						SOUTENEZ-NOUS
@@ -500,8 +499,6 @@
 						Cagette.net est réalisé <br/>
 						par la <a href='https://www.alilo.fr' target='_blank'>SCOP Alilo</a>
 					</div>
-					
-				
 				
 			</div>
 			

@@ -7,7 +7,9 @@ typedef VendorDto = {
 	name:String,
 	email:String,
 	linkUrl:String,
-	companyNumber:String
+	companyNumber:String,
+	country:String,
+	?legalStatus:Int,//0 société,1 entr. individuelle, 2 asso
 
 }
 
@@ -164,9 +166,11 @@ class VendorService{
 			//form.addElement(new sugoi.form.elements.IntSelect('legalStatus',"Statut juridique",sugoi.form.ListData.fromSpod(service.VendorService.getLegalStatuses()),vendor.legalStatus,true));
 			if(vendor.legalStatus!=null){
 				form.addElement(new sugoi.form.elements.Html("html",vendor.getLegalStatus(false),"Statut juridique"));
+			}else{
+				form.addElement(new sugoi.form.elements.IntSelect('legalStatus',"Forme juridique",[{label:"Société",value:0},{label:"Entreprise individuelle",value:1},{label:"Association",value:2}],null,true));
 			}
 
-			form.addElement(new sugoi.form.elements.StringInput("companyNumber","Numéro SIRET (14 chiffres)",vendor.companyNumber,true));
+			form.addElement(new sugoi.form.elements.StringInput("companyNumber","Numéro SIRET (14 chiffres) ou numéro RNA pour les associations.",vendor.companyNumber,true));
 			form.addElement(new sugoi.form.elements.StringInput("vatNumber","Numéro de TVA (si assujeti)",vendor.vatNumber,false));
 			form.addElement(new sugoi.form.elements.IntInput("companyCapital","Capital social en € (sauf pour associations et entreprises individuelles)",vendor.companyCapital,false));
 		}
@@ -194,8 +198,21 @@ class VendorService{
 		if( vendor.email==null ) throw new Error("Vous devez définir un email pour ce producteur.");
 		if( !EmailValidator.check(vendor.email) ) throw new Error("Email invalide.");
 
-		//check SIRET
-		if(legalInfos){
+		//asssociation
+		if(legalInfos && data.legalStatus==2){
+
+			var rna = ~/[^\d]/g.replace(data.companyNumber,"");//remove non numbers
+			if(rna=="" || rna==null) throw new Error("Le numéro RNA est requis.");
+			var sameNumber = db.Vendor.manager.search($companyNumber==rna).array();
+			if( !App.config.DEBUG && sameNumber.length>0 && sameNumber[0].id!=vendor.id){
+				throw new Error("Il y a déjà une association enregistrée avec ce numéro RNA");			
+			}
+			vendor.companyNumber = rna;
+			vendor.legalStatus = 9220;//association déclarée
+		}
+
+		//check SIRET if french and not association
+		if(legalInfos && data.country=="FR" && data.legalStatus!=2){
 			//https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/82902831500010
 			var c = new sugoi.apis.linux.Curl();
 			var siret = ~/[^\d]/g.replace(data.companyNumber,"");//remove non numbers
@@ -208,13 +225,13 @@ class VendorService{
 			var raw = c.call("GET","https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/"+siret);
 			var res = haxe.Json.parse(raw);
 			if(res.message!=null){
-				throw new Error("Erreur avec le numéro SIRET : "+res.message+". Si votre numéro SIRET est correct mais non reconnu, contactez nous sur support@cagette.net");
+				throw new Error("Erreur avec le numéro SIRET ("+res.message+"). Si votre numéro SIRET est correct mais non reconnu, contactez nous sur support@cagette.net");
 			}else{
 				vendor.companyNumber = siret;
 				vendor.siretInfos = res.etablissement;
 				//take adress from siretInfos
 				var addr = vendor.getAddressFromSiretInfos();
-				if(addr!=null){
+				if(addr!=null && addr.city!=null){
 					vendor.address1 = addr.address1;
 					vendor.zipCode = addr.zipCode;
 					vendor.city = addr.city;
@@ -224,12 +241,12 @@ class VendorService{
 					}
 				}
 				
-				if(vendor.activityCode==null){
+				// if(vendor.activityCode==null){
 					vendor.activityCode = res.etablissement.activite_principale;
-				}
-				if(vendor.legalStatus==null){
+				// }
+				// if(vendor.legalStatus==null){
 					vendor.legalStatus = res.etablissement.unite_legale.categorie_juridique;
-				}
+				// }
 
 				//unban if banned
 				if(vendor.disabled==db.Vendor.DisabledReason.IncompleteLegalInfos){
