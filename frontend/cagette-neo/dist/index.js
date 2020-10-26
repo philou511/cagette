@@ -175,6 +175,10 @@ var theme = core$1.createMuiTheme({
         button: {
             textTransform: 'none',
         },
+        h3: {
+            fontSize: '2rem',
+            fontStyle: 'normal',
+        },
     },
 }, locale$3.frFR);
 
@@ -27988,6 +27992,7 @@ var mangopayUboSchema = es.object().shape({
     UserListsType["noOrders"] = "noOrders";
     UserListsType["membershipToBeRenewed"] = "membershipToBeRenewed";
     UserListsType["contractSubscribers"] = "contractSubscribers";
+    UserListsType["freeList"] = "freeList";
 })(exports.UserListsType || (exports.UserListsType = {}));
 var UserLists = /** @class */ (function () {
     function UserLists(type) {
@@ -28002,8 +28007,31 @@ var UserLists = /** @class */ (function () {
             UserLists.CONTRACT_SUBSCRIBERS,
         ];
     };
+    UserLists.getListByType = function (type) {
+        switch (type) {
+            case exports.UserListsType.all:
+                return UserLists.ALL;
+            case exports.UserListsType.admins:
+                return UserLists.ADMINS;
+            case exports.UserListsType.test:
+                return UserLists.TEST;
+            case exports.UserListsType.noOrders:
+                return UserLists.NO_ORDERS;
+            case exports.UserListsType.membershipToBeRenewed:
+                return UserLists.MEMBERSHIP_TO_BE_RENEWED;
+            case exports.UserListsType.contractSubscribers:
+                return UserLists.CONTRACT_SUBSCRIBERS;
+            case exports.UserListsType.freeList:
+                return UserLists.FREE_LIST;
+            default:
+                return undefined;
+        }
+    };
     UserLists.prototype.setData = function (data) {
         this.data = data;
+    };
+    UserLists.prototype.getData = function () {
+        return this.data;
     };
     UserLists.ALL = new UserLists(exports.UserListsType.all);
     UserLists.TEST = new UserLists(exports.UserListsType.test);
@@ -28011,6 +28039,7 @@ var UserLists = /** @class */ (function () {
     UserLists.NO_ORDERS = new UserLists(exports.UserListsType.noOrders);
     UserLists.MEMBERSHIP_TO_BE_RENEWED = new UserLists(exports.UserListsType.membershipToBeRenewed);
     UserLists.CONTRACT_SUBSCRIBERS = new UserLists(exports.UserListsType.contractSubscribers);
+    UserLists.FREE_LIST = new UserLists(exports.UserListsType.freeList);
     return UserLists;
 }());
 
@@ -38344,6 +38373,10 @@ var AttachFile = createSvgIcon(React__default.createElement("path", {
   d: "M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"
 }), 'AttachFile');
 
+var Edit$1 = createSvgIcon(React__default.createElement("path", {
+  d: "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+}), 'Edit');
+
 var FormatAlignCenter = createSvgIcon(React__default.createElement("path", {
   d: "M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z"
 }), 'FormatAlignCenter');
@@ -40701,13 +40734,22 @@ var MessagesContext = React__default.createContext({
     groupId: -1,
     whichUser: true,
     attachments: [],
+    error: undefined,
+    setError: function () { },
     addAttachment: function () { },
     removeAttachment: function () { },
     resetAttachments: function () { },
+    recipients: [],
+    setRecipients: function () { },
+    selectedUserList: undefined,
+    setSelectedUserList: function () { },
 });
 var MessagesContextProvider = function (_a) {
     var children = _a.children, groupId = _a.groupId, whichUser = _a.whichUser;
     var _b = __read(React__default.useState([]), 2), attachments = _b[0], setAttachments = _b[1];
+    var _c = __read(React__default.useState(), 2), error = _c[0], setError = _c[1];
+    var _d = __read(React__default.useState([]), 2), recipients = _d[0], setRecipients = _d[1];
+    var _e = __read(React__default.useState(), 2), selectedUserList = _e[0], setSelectedUserList = _e[1];
     var addAttachment = function (attachment) {
         if (attachments.findIndex(function (a) { return a.name === attachment.name; }) !== -1)
             return;
@@ -40731,9 +40773,15 @@ var MessagesContextProvider = function (_a) {
             groupId: groupId,
             whichUser: whichUser,
             attachments: attachments,
+            error: error,
+            setError: setError,
             addAttachment: addAttachment,
             removeAttachment: removeAttachment,
             resetAttachments: resetAttachments,
+            recipients: recipients,
+            setRecipients: setRecipients,
+            selectedUserList: selectedUserList,
+            setSelectedUserList: setSelectedUserList,
         } }, children));
 };
 
@@ -40968,7 +41016,7 @@ var InsertImageButton = function () {
             }, transformOrigin: {
                 vertical: 'top',
                 horizontal: 'center',
-            }, getContentAnchorEl: null, keepMounted: true, open: Boolean(anchorEl), onClose: closeMenu },
+            }, getContentAnchorEl: null, keepMounted: true, open: Boolean(anchorEl), onClose: closeMenu, disableScrollLock: true },
             React__default.createElement(core$1.MenuItem, { onClick: openUploadImageInput, className: cs.deviceMenuItem }, t('form.fromDevice')),
             (activeContractsData === null || activeContractsData === void 0 ? void 0 : activeContractsData.getActiveContracts) !== undefined && (React__default.createElement(core$1.ListItem, null,
                 React__default.createElement(lab.Autocomplete, { options: activeContractsData.getActiveContracts, getOptionLabel: function (option) { return (option ? option.vendor.name : ''); }, renderInput: function (params) { return React__default.createElement(core$1.TextField, __assign({}, params, { label: t('form.fromCatalog'), variant: "outlined" })); }, disableClearable: true, autoSelect: true, autoHighlight: true, fullWidth: true, style: { width: 300 }, clearOnEscape: true, clearOnBlur: true, value: catalogValue, onChange: onCatalogSelected, inputValue: catalogInputValue, onInputChange: function (_event, newInputValue) {
@@ -41427,7 +41475,13 @@ function generateFields(fields, formikProps) {
     return fields.map(function (field) {
         if (field.type === FieldTypes.Default || field.type === FieldTypes.Select || field.type === FieldTypes.Editor) {
             var component = field.type !== FieldTypes.Editor && (field.component || CustomTextField);
-            return (React__default.createElement(formik.Field, { key: field.name, component: component, fullWidth: true, margin: "normal", label: field.label, name: field.name, disabled: field.disabled, required: field.required || false, select: field.type === FieldTypes.Select, as: field.type === FieldTypes.Editor && MessageEditor }, field.type === FieldTypes.Select &&
+            var as = void 0;
+            if (field.type === FieldTypes.Editor)
+                as = MessageEditor;
+            if (field.type === FieldTypes.Select && field.component)
+                as = field.component;
+            return (React__default.createElement(formik.Field, { key: field.name, component: component, fullWidth: true, margin: "normal", label: field.label, name: field.name, disabled: field.disabled, required: field.required || false, select: field.type === FieldTypes.Select && !field.component, as: as }, field.type === FieldTypes.Select &&
+                !field.component &&
                 field.selectOptions.map(function (o) { return (React__default.createElement(MenuItem, { key: o.value + "_" + o.label, value: o.value, onClick: function () { return field.onSelectOption && field.onSelectOption(o.value); } }, o.label)); })));
         }
         return field.render(field.name, formikProps);
@@ -43801,8 +43855,215 @@ var MangopayConfig = function (_a) {
                     } }))))));
 };
 
+// eslint-disable-next-line no-useless-escape
+var EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+var isEmail = function (text) {
+    return EMAIL_REGEX.test(text);
+};
+
+var useStyles$a = core$1.makeStyles(function (theme) { return ({
+    chipError: {
+        borderColor: theme.palette.error.main + "80",
+        backgroundColor: theme.palette.error.light + "3D",
+        '&.MuiChip-outlined:hover': {
+            backgroundColor: theme.palette.error.light + "3D",
+        },
+        '&.MuiChip-outlined:focus': {
+            backgroundColor: theme.palette.error.light + "3D",
+        },
+    },
+    chipContainer: {
+        margin: 3,
+    },
+}); });
+var FREE_VALUES_EMPTY_OPTIONS = [];
+var CustomTextField$2 = withHelperTextTranslation(core$1.TextField, formikMaterialUi.fieldToTextField);
+var MessageRecipientsSelect = function (_a) {
+    var recipientsOptions = _a.recipientsOptions, label = _a.label, field = _a.field, meta = _a.meta, form = _a.form;
+    var context = React__default.useContext(MessagesContext);
+    var t = useTranslation(['messages/default']).t;
+    var cs = useStyles$a();
+    var groupId = context.groupId, setError = context.setError, setRecipients = context.setRecipients, selectedUserList = context.selectedUserList, setSelectedUserList = context.setSelectedUserList, recipients = context.recipients;
+    var _b = __read(React__default.useState([]), 2), freeValue = _b[0], setFreeValue = _b[1];
+    var _c = __read(React__default.useState([]), 2), listValue = _c[0], setListValue = _c[1];
+    var _d = __read(useGetUserListInGroupByListTypeLazyQuery(), 2), getUserListInGroupByListType = _d[0], _e = _d[1], userListInGroupByListTypeData = _e.data, userListInGroupByListTypeError = _e.error;
+    var meData = useMeQuery().data;
+    var me = meData && meData.me;
+    var previousSelectedListType = React__default.useRef();
+    var wrongEmails = React__default.useRef([]);
+    var showFreeList = !!freeValue.length;
+    React__default.useEffect(function () {
+        setError(userListInGroupByListTypeError);
+    }, [userListInGroupByListTypeError]);
+    React__default.useEffect(function () {
+        if ((field.value === '' && !showFreeList) || (field.value === undefined && showFreeList)) {
+            // Form has been reset
+            setListValue([]);
+            setFreeValue([]);
+        }
+    }, [field.value]);
+    React__default.useEffect(function () {
+        if (!selectedUserList || selectedUserList.type === dist_1.freeList || showFreeList)
+            return;
+        var selectedUserListType = selectedUserList === null || selectedUserList === void 0 ? void 0 : selectedUserList.type;
+        if (selectedUserListType === dist_1.test) {
+            setRecipients([me]);
+        }
+        else if (previousSelectedListType.current === selectedUserList.type && userListInGroupByListTypeData) {
+            setRecipients(userListInGroupByListTypeData.getUserListInGroupByListType);
+        }
+        else {
+            getUserListInGroupByListType({
+                variables: { listType: selectedUserListType, groupId: groupId, data: selectedUserList.getData() },
+            });
+        }
+        previousSelectedListType.current = selectedUserList.type;
+    }, [selectedUserList]);
+    React__default.useEffect(function () {
+        if (!userListInGroupByListTypeData)
+            return;
+        if (selectedUserList && selectedUserList.type === dist_1.test)
+            return;
+        setRecipients(userListInGroupByListTypeData.getUserListInGroupByListType);
+    }, [userListInGroupByListTypeData]);
+    React__default.useEffect(function () {
+        if (showFreeList)
+            return;
+        if (!listValue)
+            return;
+        var newSelectedList;
+        if (listValue.length > 0) {
+            var userListType = listValue[0].value;
+            if (userListType.startsWith(dist_1.contractSubscribers)) {
+                userListType = dist_1.contractSubscribers;
+            }
+            newSelectedList = dist_5.getListByType(userListType);
+            if (userListType.startsWith(dist_1.contractSubscribers)) {
+                var contractId = listValue[0].value.substring(dist_1.contractSubscribers.length);
+                var data = contractId;
+                newSelectedList = new dist_5(dist_1.contractSubscribers);
+                newSelectedList.setData(data);
+            }
+        }
+        if (newSelectedList === selectedUserList)
+            return;
+        setSelectedUserList(newSelectedList);
+    }, [listValue]);
+    var onFreeValueChange = function (_event, newValue) {
+        var lastValue = newValue[newValue.length - 1];
+        if (typeof lastValue === 'string') {
+            var newRecipients = __spread(freeValue, [{ email: lastValue }]);
+            setFreeValue(newRecipients);
+            if (lastValue && !isEmail(lastValue)) {
+                wrongEmails.current.push(lastValue);
+            }
+            else {
+                setRecipients(newRecipients.filter(function (r) { return r.email && !wrongEmails.current.includes(r.email); }));
+            }
+        }
+        else {
+            setFreeValue(newValue);
+            var correctEmails = newValue.filter(function (recipient) {
+                if (!recipient.email)
+                    return false;
+                if (wrongEmails.current.includes(recipient.email)) {
+                    return false;
+                }
+                if (!isEmail(recipient.email)) {
+                    wrongEmails.current.push(recipient.email);
+                    return false;
+                }
+                return true;
+            });
+            setRecipients(correctEmails);
+            field.onChange(field.name)(JSON.stringify(correctEmails));
+            var userList = dist_5.getListByType(dist_1.freeList);
+            userList === null || userList === void 0 ? void 0 : userList.setData(correctEmails);
+        }
+        if (!selectedUserList || selectedUserList.type !== dist_1.freeList)
+            setSelectedUserList(dist_5.getListByType(dist_1.freeList));
+    };
+    var onListValueChange = function (_event, value) {
+        var lastValue = value[value.length - 1];
+        if (typeof lastValue === 'string') {
+            onFreeValueChange(
+            // eslint-disable-next-line no-restricted-globals
+            event, value.map(function (email) { return ({ email: email }); }));
+            return;
+        }
+        var lastOption = value.pop();
+        setListValue(lastOption ? [lastOption] : []);
+        field.onChange(field.name)(lastOption ? lastOption.value : '');
+    };
+    var onClose = function (event) {
+        field.onBlur(field.name)(event);
+    };
+    var handleEditList = function () {
+        var recipientEmails = [];
+        recipients.forEach(function (r) {
+            if (r.email)
+                recipientEmails.push({ email: r.email, firstName: r.firstName, lastName: r.lastName });
+            if (r.email2 && r.firstName2 && r.lastName2)
+                recipientEmails.push({ email: r.email2, firstName: r.firstName2, lastName: r.lastName2 });
+        });
+        setFreeValue(recipientEmails);
+        setRecipients(recipientEmails);
+        field.onChange(field.name)(JSON.stringify(recipientEmails));
+        setSelectedUserList(dist_5.getListByType(dist_1.freeList));
+        setListValue([]);
+    };
+    var onKeyDown = function (event, isListValue) {
+        if (event.key !== ' ')
+            return;
+        var currentValue = field.value;
+        if (!currentValue || !currentValue.trim())
+            return;
+        if (isListValue) {
+            if (currentValue === '[]' && listValue.length === 0)
+                return;
+            var isRecipientMatch = recipientsOptions.findIndex(function (r) { return r.value.includes(currentValue); }) !== -1;
+            if (isRecipientMatch)
+                return;
+        }
+        else if (freeValue[freeValue.length - 1].email === currentValue) {
+            return;
+        }
+        event.preventDefault();
+        onFreeValueChange(null, [currentValue]);
+    };
+    var onKeyDownFreeValue = function (event) {
+        onKeyDown(event, false);
+    };
+    var onKeyDownListValue = function (event) {
+        if (listValue.length > 0) {
+            event.preventDefault();
+            return;
+        }
+        onKeyDown(event, true);
+    };
+    if (showFreeList)
+        return (React__default.createElement(lab.Autocomplete, { multiple: true, value: freeValue, onChange: onFreeValueChange, onClose: onClose, options: FREE_VALUES_EMPTY_OPTIONS, fullWidth: true, renderInput: function (params) {
+                return React__default.createElement(CustomTextField$2, __assign({}, params, { field: field, meta: meta, form: form, label: label }));
+            }, renderTags: function (tagValue, getTagProps) {
+                return tagValue.map(function (option, index) {
+                    var isError = option.email && wrongEmails.current.includes(option.email);
+                    var title = '';
+                    if (isError)
+                        title = "" + t('form.emailError');
+                    if (option.firstName && option.lastName)
+                        title = formatUserName(option);
+                    return (React__default.createElement(core$1.Tooltip, { key: option.email, title: title, disableHoverListener: title === '', className: cs.chipContainer, arrow: true },
+                        React__default.createElement(core$1.Chip, __assign({ label: option.email }, getTagProps({ index: index }), { size: "small", className: isError ? cs.chipError : '' }))));
+                });
+            }, disableClearable: true, freeSolo: true, onKeyDown: onKeyDownFreeValue }));
+    return (React__default.createElement(lab.Autocomplete, { multiple: true, value: listValue, onChange: onListValueChange, onClose: onClose, options: recipientsOptions, fullWidth: true, getOptionLabel: function (option) { return option.label; }, renderTags: function (value, getTagProps) { return (React__default.createElement(core$1.Chip, __assign({ variant: "outlined", label: value[0].label }, getTagProps({ index: 0 }), { deleteIcon: React__default.createElement(Edit$1, null), onDelete: handleEditList }))); }, renderInput: function (params) {
+            return React__default.createElement(CustomTextField$2, __assign({}, params, { field: field, meta: meta, form: form, label: label }));
+        }, disableClearable: true, freeSolo: true, onKeyDown: onKeyDownListValue }));
+};
+var MessageRecipientsSelect$1 = React__default.memo(MessageRecipientsSelect);
+
 var MessagesForm = function (_a) {
-    var user = _a.user, isPartnerConnected = _a.isPartnerConnected, userLists = _a.userLists, onSubmit = _a.onSubmit, onSelectOption = _a.onSelectOption, isSuccessful = _a.isSuccessful;
+    var user = _a.user, isPartnerConnected = _a.isPartnerConnected, userLists = _a.userLists, onSubmit = _a.onSubmit, isSuccessful = _a.isSuccessful;
     var t = useTranslation(['messages/default']).t;
     var recipientsOptions = userLists.map(function (ul) {
         var label = "" + t("lists." + ul.type);
@@ -43853,11 +44114,13 @@ var MessagesForm = function (_a) {
         {
             type: FieldTypes.Select,
             name: 'recipientsList',
-            initialValues: recipientsOptions[0].value,
+            initialValues: undefined,
             label: t('form.recipients'),
             required: true,
             selectOptions: recipientsOptions,
-            onSelectOption: onSelectOption,
+            component: function (props) {
+                return React__default.createElement(MessageRecipientsSelect$1, __assign({ recipientsOptions: recipientsOptions }, props));
+            },
         },
         {
             type: FieldTypes.Default,
@@ -43887,6 +44150,10 @@ var MessagesForm = function (_a) {
         React__default.createElement(core$1.Box, { mb: 3, display: "flex", justifyContent: "center" },
             React__default.createElement(ProgressButton, { loading: formikProps.isSubmitting, variant: "contained", color: "primary", type: "submit", disabled: formikProps.isSubmitting }, t('form.send'))))); }));
 };
+var arePropsEqual = function (prevProps, nextProps) {
+    return prevProps.userLists.length === nextProps.userLists.length;
+};
+var MessagesForm$1 = React__default.memo(MessagesForm, arePropsEqual);
 
 /* eslint-disable import/prefer-default-export */
 var encodeFileToBase64String = function (file) { return __awaiter(void 0, void 0, void 0, function () {
@@ -43908,39 +44175,33 @@ var ATTACHMENTS_MAX_SIZE = 16777215; // mysql mediumtext maxium size
 var MessagingService = function (_a) {
     var onMessageSent = _a.onMessageSent;
     var context = React__default.useContext(MessagesContext);
-    var groupId = context.groupId, whichUser = context.whichUser, attachments = context.attachments, resetAttachments = context.resetAttachments;
+    var groupId = context.groupId, whichUser = context.whichUser, attachments = context.attachments, resetAttachments = context.resetAttachments, contextError = context.error, recipients = context.recipients, selectedUserList = context.selectedUserList, setSelectedUserList = context.setSelectedUserList;
     var t = useTranslation(['messages/default', 'translation']).t;
     var _b = useMeQuery(), meData = _b.data, meloading = _b.loading, meError = _b.error;
-    var _c = useMessagesGroupQuery({ variables: { id: groupId } }), groupData = _c.data, groupError = _c.error;
-    var _d = useUserListsQuery({ variables: { groupId: groupId } }), userListsData = _d.data, userListsError = _d.error;
-    var _e = __read(React__default.useState(dist_1.all), 2), selectedListType = _e[0], setSelectedListType = _e[1];
-    var _f = __read(useGetUserListInGroupByListTypeLazyQuery(), 2), getUserListInGroupByListType = _f[0], _g = _f[1], userListInGroupByListTypeData = _g.data, userListInGroupByListTypeError = _g.error;
-    var _h = __read(React__default.useState(), 2), recipients = _h[0], setRecipients = _h[1];
-    var _j = __read(useCreateMessageMutation(), 1), createMail = _j[0];
-    var _k = __read(React__default.useState(false), 2), isSuccessful = _k[0], setIsSuccessful = _k[1];
+    var _c = useMessagesGroupQuery({
+        variables: { id: groupId },
+    }), groupData = _c.data, groupLoading = _c.loading, groupError = _c.error;
+    var _d = useUserListsQuery({
+        variables: { groupId: groupId },
+    }), userListsData = _d.data, userListsLoading = _d.loading, userListsError = _d.error;
+    var recipientsRef = React__default.useRef();
+    var selectedUserListRef = React__default.useRef();
+    var attachmentsRef = React__default.useRef();
+    var _e = __read(useCreateMessageMutation(), 1), createMail = _e[0];
+    var _f = __read(React__default.useState(false), 2), isSuccessful = _f[0], setIsSuccessful = _f[1];
     var me = meData && meData.me;
-    var error = meError || groupError || userListsError || userListInGroupByListTypeError;
+    var error = meError || groupError || userListsError || contextError;
+    var loading = meloading || groupLoading || userListsLoading;
     var userLists = userListsData ? userListsData.getUserLists : [];
     React__default.useEffect(function () {
-        if (selectedListType === dist_1.test) {
-            setRecipients([me]);
-        }
-        else {
-            var listType = selectedListType;
-            var data = void 0;
-            if (selectedListType.startsWith(dist_1.contractSubscribers)) {
-                var contractId = selectedListType.substring(dist_1.contractSubscribers.length);
-                data = contractId;
-                listType = dist_1.contractSubscribers;
-            }
-            getUserListInGroupByListType({
-                variables: { listType: listType, groupId: groupId, data: data },
-            });
-        }
-    }, [selectedListType]);
-    var onSelectOption = function (value) {
-        setSelectedListType(value);
-    };
+        recipientsRef.current = recipients;
+    }, [recipients]);
+    React__default.useEffect(function () {
+        selectedUserListRef.current = selectedUserList;
+    }, [selectedUserList]);
+    React__default.useEffect(function () {
+        attachmentsRef.current = attachments;
+    }, [attachments]);
     var setFormError = function (bag, errorMessage) {
         bag.setStatus(errorMessage);
         bag.setSubmitting(false);
@@ -43950,20 +44211,13 @@ var MessagingService = function (_a) {
     var byteCount = function (s) {
         return encodeURI(s).split(/%..|./).length - 1;
     };
-    React__default.useEffect(function () {
-        if (!userListInGroupByListTypeData)
-            return;
-        if (selectedListType === dist_1.test)
-            return;
-        setRecipients(userListInGroupByListTypeData.getUserListInGroupByListType);
-    }, [userListInGroupByListTypeData]);
     var onFormSubmit = function (values, bag) { return __awaiter(void 0, void 0, void 0, function () {
-        var messageSize, base64EncodedAttachmentsSize, encodedAttachments, stringifiedEncodedAttachments, recipientsList_1, group, messageInput, e_1;
+        var messageSize, base64EncodedAttachmentsSize, encodedAttachments, stringifiedEncodedAttachments, recipientsList_1, group, list, messageInput, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     bag.setStatus(undefined);
-                    if (!recipients) {
+                    if (!recipientsRef.current || !selectedUserListRef.current) {
                         setFormError(bag, t('form.errorNoRecipient'));
                         return [2 /*return*/];
                     }
@@ -43973,8 +44227,8 @@ var MessagingService = function (_a) {
                     }
                     messageSize = byteCount(values.message);
                     base64EncodedAttachmentsSize = 0;
-                    if (!attachments) return [3 /*break*/, 2];
-                    return [4 /*yield*/, Promise.all(attachments.map(function (a) { return __awaiter(void 0, void 0, void 0, function () {
+                    if (!attachmentsRef.current) return [3 /*break*/, 2];
+                    return [4 /*yield*/, Promise.all(attachmentsRef.current.map(function (a) { return __awaiter(void 0, void 0, void 0, function () {
                             var encodedContent;
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
@@ -44000,15 +44254,31 @@ var MessagingService = function (_a) {
                 case 3:
                     _a.trys.push([3, 5, , 6]);
                     recipientsList_1 = [];
-                    recipients.forEach(function (r) {
-                        if (r.email)
-                            recipientsList_1.push({ name: r.firstName + " " + r.lastName, email: r.email, userId: r.id });
-                        if (r.email2)
-                            recipientsList_1.push({ name: r.firstName2 + " " + r.lastName2, email: r.email2, userId: r.id });
+                    recipientsRef.current.forEach(function (r) {
+                        if (r.email) {
+                            var recipient = { email: r.email };
+                            if (r.firstName && r.lastName)
+                                recipient.name = r.firstName + " " + r.lastName;
+                            if (r.id)
+                                recipient.userId = r.id;
+                            recipientsList_1.push(recipient);
+                        }
+                        if (r.email2) {
+                            var recipient = { email: r.email2 };
+                            if (r.firstName2 && r.lastName2)
+                                recipient.name = r.firstName2 + " " + r.lastName2;
+                            if (r.id)
+                                recipient.userId = r.id;
+                            recipientsList_1.push(recipient);
+                        }
                     });
                     group = { id: groupId, name: '' };
                     if (groupData) {
                         group.name = groupData.group.name;
+                    }
+                    list = { type: selectedUserListRef.current.type };
+                    if (selectedUserListRef.current.type !== dist_1.freeList) {
+                        list.name = t("lists." + selectedUserListRef.current.type);
                     }
                     messageInput = {
                         title: values.object,
@@ -44017,7 +44287,7 @@ var MessagingService = function (_a) {
                         recipients: recipientsList_1,
                         replyToHeader: values.senderEmail,
                         group: group,
-                        list: { id: selectedListType, name: t("lists." + selectedListType) },
+                        list: list,
                         attachments: encodedAttachments,
                     };
                     return [4 /*yield*/, createMail({
@@ -44029,7 +44299,7 @@ var MessagingService = function (_a) {
                     _a.sent();
                     bag.resetForm();
                     resetAttachments();
-                    setSelectedListType(dist_1.all);
+                    setSelectedUserList(undefined);
                     setIsSuccessful(true);
                     onMessageSent();
                     window.scrollTo(0, 0);
@@ -44045,12 +44315,14 @@ var MessagingService = function (_a) {
     /** */
     if (error)
         return React__default.createElement(GqlErrorAlert, { error: error });
-    if (meloading)
-        return React__default.createElement(core$1.CircularProgress, null);
-    return (React__default.createElement(core$1.Box, null, me && (React__default.createElement(MessagesForm, { user: me, isPartnerConnected: whichUser, userLists: userLists, onSubmit: onFormSubmit, onSelectOption: onSelectOption, isSuccessful: isSuccessful }))));
+    if (loading) {
+        return (React__default.createElement(core$1.Box, { display: "flex", justifyContent: "center" },
+            React__default.createElement(core$1.CircularProgress, null)));
+    }
+    return (React__default.createElement(core$1.Box, null, me && (React__default.createElement(MessagesForm$1, { user: me, isPartnerConnected: whichUser, userLists: userLists, onSubmit: onFormSubmit, isSuccessful: isSuccessful }))));
 };
 
-var useStyles$a = core$1.makeStyles(function (theme) {
+var useStyles$b = core$1.makeStyles(function (theme) {
     return core$1.createStyles({
         listItemText: {
             '& p:first-letter': {
@@ -44060,6 +44332,7 @@ var useStyles$a = core$1.makeStyles(function (theme) {
         container: {
             maxHeight: '800px',
             overflowY: 'auto',
+            display: 'flex',
         },
         pagination: {
             '& ul': {
@@ -44074,14 +44347,15 @@ var NUMBER_OF_MESSAGE_PER_PAGE = 11;
 var SentMessageList = function (_a) {
     var isGroupAdmin = _a.isGroupAdmin, selectedMessageId = _a.selectedMessageId, onSelectMessage = _a.onSelectMessage, toggleRefetch = _a.toggleRefetch;
     var context = React__default.useContext(MessagesContext);
+    var t = useTranslation(['messages/default']).t;
     var groupId = context.groupId;
     var _b = __read(useGetMessagesForGroupLazyQuery({
         variables: { groupId: groupId },
-    }), 2), getAllMessages = _b[0], _c = _b[1], allMessages = _c.data, refetchAllMessages = _c.refetch;
+    }), 2), getAllMessages = _b[0], _c = _b[1], allMessages = _c.data, loadingMessages = _c.loading, refetchAllMessages = _c.refetch;
     var _d = __read(useGetUserMessagesForGroupLazyQuery({
         variables: { groupId: groupId },
     }), 2), getUserMessages = _d[0], _e = _d[1], userMessages = _e.data, refetchUserMessages = _e.refetch;
-    var cs = useStyles$a();
+    var cs = useStyles$b();
     var _f = __read(React__default.useState(1), 2), currentPage = _f[0], setCurrentPage = _f[1];
     React__default.useEffect(function () {
         if (isGroupAdmin === undefined)
@@ -44118,13 +44392,13 @@ var SentMessageList = function (_a) {
             messages = userMessages.getUserMessagesForGroup;
         }
         maxPage = Math.ceil(messages.length / NUMBER_OF_MESSAGE_PER_PAGE);
-        startIndex = (currentPage - 1) * NUMBER_OF_MESSAGE_PER_PAGE;
-        endIndex = Math.min(startIndex + NUMBER_OF_MESSAGE_PER_PAGE - 1, messages.length - 1);
+        startIndex = (currentPage - 1) * (NUMBER_OF_MESSAGE_PER_PAGE - 1);
+        endIndex = Math.min(startIndex + NUMBER_OF_MESSAGE_PER_PAGE - 1, messages.length);
     }
     return (React__default.createElement(core$1.Box, null,
-        React__default.createElement(core$1.Box, { className: cs.container },
-            React__default.createElement(core$1.List, null, messages.slice(startIndex, endIndex).map(function (m) { return (React__default.createElement(core$1.ListItem, { button: true, divider: true, key: m.id, selected: selectedMessageId === m.id, onClick: function () { return onSelectMessage(m.id); } },
-                React__default.createElement(core$1.ListItemText, { className: cs.listItemText, primary: m.title, secondary: formatDate(new Date(m.date), true) }))); }))),
+        React__default.createElement(core$1.Box, { className: cs.container, justifyContent: "center" }, loadingMessages ? (React__default.createElement(core$1.Box, { p: 1 },
+            React__default.createElement(core$1.CircularProgress, null))) : (React__default.createElement(React__default.Fragment, null, messages.length > 0 ? (React__default.createElement(core$1.List, null, messages.slice(startIndex, endIndex).map(function (m) { return (React__default.createElement(core$1.ListItem, { button: true, divider: true, key: m.id, selected: selectedMessageId === m.id, onClick: function () { return onSelectMessage(m.id); } },
+            React__default.createElement(core$1.ListItemText, { className: cs.listItemText, primary: m.title, secondary: formatDate(new Date(m.date), true) }))); }))) : (React__default.createElement(core$1.Typography, { variant: "caption", align: "center" }, t('noMessage')))))),
         React__default.createElement(lab.Pagination, { count: maxPage, page: currentPage, onChange: handlePageChange, className: cs.pagination })));
 };
 
@@ -44164,7 +44438,7 @@ function getListName(listId) {
     });
     return legacyList && legacyList.label;
 }
-var useStyles$b = core$1.makeStyles(function () { return ({
+var useStyles$c = core$1.makeStyles(function () { return ({
     table: {
         tableLayout: 'fixed',
     },
@@ -44179,7 +44453,7 @@ var useStyles$b = core$1.makeStyles(function () { return ({
 var MessageTable = function (_a) {
     var messageId = _a.messageId;
     var t = useTranslation(['messages/default']).t;
-    var cs = useStyles$b();
+    var cs = useStyles$c();
     var _b = __read(useGetMessageByIdLazyQuery(), 2), getMessageById = _b[0], _c = _b[1], messageData = _c.data, messageLoading = _c.loading, messageError = _c.error;
     React__default.useEffect(function () {
         getMessageById({
@@ -44252,7 +44526,7 @@ var Messages = function (_a) {
                 React__default.createElement(core$1.Grid, { item: true, xs: 3 },
                     React__default.createElement(core$1.Paper, null,
                         React__default.createElement(core$1.Box, { p: 2 },
-                            React__default.createElement("b", null, isGroupAdmin ? t('allSentMessages') : t('lastSentMessages')),
+                            React__default.createElement(core$1.Typography, { variant: "h6" }, isGroupAdmin ? t('allSentMessages') : t('lastSentMessages')),
                             React__default.createElement(SentMessageList, { isGroupAdmin: isGroupAdmin, selectedMessageId: selectedMessageId, onSelectMessage: onSelectMessage, toggleRefetch: toggleRefetch })))),
                 React__default.createElement(core$1.Grid, { item: true, xs: 9 },
                     React__default.createElement(core$1.Paper, null,

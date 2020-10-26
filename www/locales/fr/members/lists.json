@@ -1,0 +1,8 @@
+{
+  "all": "Tous les membres du groupe",
+  "test": "TEST : moi + conjoint·e",
+  "admins": "Les administrateurs",
+  "noOrders": "Membres sans commande",
+  "membershipToBeRenewed": "Adhésions à renouveler",
+  "contractSubscribers": "{{name}} du {{startDate}} au {{endDate}}"
+}

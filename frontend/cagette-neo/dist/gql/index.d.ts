@@ -143,8 +143,8 @@ export declare type MailGroupInput = {
     name: Scalars['String'];
 };
 export declare type MailListInput = {
-    id: Scalars['String'];
-    name: Scalars['String'];
+    type: Scalars['String'];
+    name?: Maybe<Scalars['String']>;
 };
 export declare type MailUserInput = {
     email?: Maybe<Scalars['String']>;
@@ -275,11 +275,11 @@ export declare type MangopayLegalUser = {
     LegalPersonType: MangopayLegalPersonType;
     LegalRepresentativeFirstName: Scalars['String'];
     LegalRepresentativeLastName: Scalars['String'];
-    LegalRepresentativeEmail: Scalars['String'];
+    LegalRepresentativeEmail?: Maybe<Scalars['String']>;
     LegalRepresentativeBirthday: Scalars['Date'];
     LegalRepresentativeNationality: Scalars['String'];
     LegalRepresentativeCountryOfResidence: Scalars['String'];
-    CompanyNumber: Scalars['String'];
+    CompanyNumber?: Maybe<Scalars['String']>;
     Email: Scalars['String'];
     KYCLevel: MangopayKycLevel;
     HeadquartersAddress?: Maybe<MangopayAddress>;
