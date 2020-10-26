@@ -79,7 +79,6 @@ class Messages extends Controller
 			lm.sender = app.user;
 			lm.insert();
 
-			
 			throw Ok("/messages", t._("The message has been sent"));
 		}
 		

@@ -311,8 +311,13 @@ class Install extends controller.Controller
 
 	}
 
-	@admin
-	public function doAddSubscriptionsForCSAVariableOrders() {
+	/**
+		add suscriptions for CSA variable orders
+	**/
+	public function doAddSubscriptionsForCSAVariableOrders(key:String) {
+
+		if(key!=App.config.KEY) throw "admins only";
+		var print = function(str:String) Sys.println(str);
 
 		var activeCSAVariableCatalogs : List< db.Catalog > = db.Catalog.manager.unsafeObjects(
 			'SELECT Catalog.* 
@@ -320,9 +325,12 @@ class Install extends controller.Controller
 			ON Catalog.groupId = `Group`.id
 			WHERE (`Group`.flags & 2=0)
 			AND Catalog.type = 1
-			AND Catalog.endDate >= NOW();', false );
+			AND Catalog.endDate >= NOW()', true );
 
 		for ( catalog in activeCSAVariableCatalogs ) {
+
+			catalog.orderEndHoursBeforeDistrib=24;
+			catalog.update();
 			
 			var ordersByUser = new Map< db.User, Array<db.UserOrder> >();
 			var productIds = catalog.getProducts(false).map( function(x) return x.id );
@@ -331,14 +339,11 @@ class Install extends controller.Controller
 			for ( order in orders ) {
 
 				if ( ordersByUser[order.user] == null ) {
-
 					ordersByUser[order.user] = [];
 				}
 				
 				if ( order.subscription == null ) {
-
 					if ( order.quantity != null && order.quantity > 0 ) {
-
 						ordersByUser[order.user].push( order );
 					}
 				}
@@ -348,24 +353,23 @@ class Install extends controller.Controller
 
 				if ( ordersByUser[user].length != 0 ) {
 
-					trace( "****USER***** " + user );
-					trace( ordersByUser[user] );
-					trace( "****GROUP***** " + catalog.group );
-					trace( "****CATALOG***** " + catalog );
+					print( "****USER "+user.id+"***** " + user );
+					print( Std.string(ordersByUser[user]) );
+					print( "****GROUP "+catalog.group.id+" ***** " + catalog.group );
+					print( "****CATALOG "+catalog.id+"***** " + catalog );
 
 					var subscription = new db.Subscription();
 					subscription.user = user;
 					subscription.catalog = catalog;
 					subscription.startDate 	= new Date( catalog.startDate.getFullYear(), catalog.startDate.getMonth(), catalog.startDate.getDate(), 0, 0, 0 );
 					subscription.endDate 	= new Date( catalog.endDate.getFullYear(), catalog.endDate.getMonth(), catalog.endDate.getDate(), 23, 59, 59 );
-					subscription.isValidated = true;
-					subscription.isPaid = true;
+					subscription.isValidated = false;
+					subscription.isPaid = false;
 					subscription.insert();
-		
-		
+				
 					for ( order in ordersByUser[user] ) {
 
-						trace( order );
+						print( order.toString() );
 						order.lock();
 						order.subscription = subscription;
 						order.update();

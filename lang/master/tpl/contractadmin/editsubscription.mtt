@@ -253,7 +253,7 @@
 		</form>
 
 		<!-- help for VARORDERS -->
-		::if (!catalog.isCSACatalog())::
+		::if (!catalog.isConstantOrders())::
 		<div class="alert alert-warning">
             <p>
 				<i class="icon icon-info"></i> 

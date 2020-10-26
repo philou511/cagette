@@ -28,7 +28,14 @@ class Admin extends Controller {
 	}
 	
 	@tpl("admin/emails.mtt")
-	function doEmails() {
+	function doEmails(?args:{?reset:BufferedJsonMail}) {
+
+		if(args!=null && args.reset!=null){
+			args.reset.lock();
+			args.reset.tries = 0;
+			args.reset.update();
+		}
+
 		var browse = function(index:Int, limit:Int) {
 			return BufferedJsonMail.manager.search($sdate==null,{limit:[index,limit],orderBy:-cdate},false);
 		}

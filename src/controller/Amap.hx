@@ -48,9 +48,12 @@ class Amap extends Controller
 				throw Error("/amap/edit",'Erreur, vous êtes en train de modifier "${editedGroup.name}" alors que vous êtes connecté à "${app.user.getGroup().name}"');
 			}
 			
+			var shopMode = group.hasShopMode();
+
 			form.toSpod(group);
 
-			if(form.getValueOf("mode")=="shop") group.flags.set(db.Group.GroupFlags.ShopMode) else group.flags.unset(db.Group.GroupFlags.ShopMode);
+			//keep shop mode
+			if(shopMode) group.flags.set(db.Group.GroupFlags.ShopMode);
 
 			if(group.betaFlags.has(db.Group.BetaFlags.ShopV2) && group.flags.has(db.Group.GroupFlags.CustomizedCategories)){
 				App.current.session.addMessage("Vous ne pouvez pas activer les catégories personnalisées et la nouvelle boutique. La nouvelle boutique ne fonctionne pas avec les catégories personnalisées.",true);

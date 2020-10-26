@@ -177,7 +177,7 @@
 												<a href="/distribution/validate/::d.id::">Distribution validée</a>
 										</div>
 										
-										::if isAdmin::
+										::if user.isAdmin()::
 										<br/>
 										<a href="/distribution/unvalidate/::d.id::" class="btn btn-danger btn-sm">
 											<i class="icon icon-check"></i> Dévalider

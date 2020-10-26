@@ -43,7 +43,7 @@ class OrderService
 			
 			var o = null;
 			for ( i in 0...Math.round(quantity)){
-				o = make(user, 1, product, distribId, paid, user2, invert);
+				o = make(user, 1, product, distribId, paid, /*subscription,*/ user2,  invert);
 			}			
 			return o;
 		}
