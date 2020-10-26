@@ -29,6 +29,8 @@ class OrderService
 		if( distribId == null ) throw new Error( "You have to provide a distribId" );
 		if( quantity == null ) throw new Error( "Quantity is null" );
 		if( quantity < 0 ) throw new Error( "Quantity is negative" );
+		var vendor = product.catalog.vendor;
+		if( vendor.isDisabled()) throw new Error(vendor.name+" est désactivé. Raison : "+vendor.getDisabledReason());
 
 		//quantity
 		if ( !canHaveFloatQt(product) ){

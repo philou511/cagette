@@ -186,16 +186,30 @@ class ProductModal extends ReactComponentOfProps<Props> {
                                 <i className="icon icon-map-marker"/> ${vendor.city} (${vendor.zipCode})
                             </Typography>
 
-                            <Typography component="p">
-                                <i className="icon icon-link"/> <a href=${vendor.linkUrl} target="_blank">${vendor.linkText}</a>
-                            </Typography>
+                            ${getLink(vendor)}
 
                             <div dangerouslySetInnerHTML=${{__html: ${vendor.desc}}}></div>
+
+                            <Typography component="p">
+                                <a href="${vendor.vendorPage}" target="_blank">En savoir plus sur ce producteur</a>
+                            </Typography>
                         </Grid>
                     </Grid>
                 </div>
             </Dialog>
         ');
+    }
+
+    function getLink(vendor){
+        if(vendor.linkUrl==null){
+            return null;
+        }else{
+            return jsx('<Typography component="p">
+            <i className="icon icon-link"/> <a href=${vendor.linkUrl} target="_blank">${vendor.linkText}</a>
+        </Typography>');
+        }
+        
+        
     }
 
     function close(e){
