@@ -11,6 +11,7 @@
   "attachment": "Pièce jointe",
   "attachment_plural": "Pièces jointes",
   "attachmentsNotStoredOnServer": "Les pièces jointes ne sont pas conservées sur le serveur.",
+  "noMessage": "Aucun message",
   "form": {
     "name": "Nom expéditeur·rice",
     "email": "Courriel expéditeur·rice",
@@ -25,14 +26,15 @@
     "placeholder": "Votre message...",
     "fromDevice": "Depuis mon appareil",
     "fromCatalog": "Depuis un catalogue",
-    "chooseCatalog": "Catalogues"
+    "chooseCatalog": "Catalogues",
+    "emailError": "Cette addresse email n'est pas correcte"
   },
   "lists": {
     "all": "Tous les membres du groupe",
     "test": "TEST : moi + conjoint·e",
     "admins": "Les administrateurs",
-    "noOrders": "Membres sans commande",
-    "membershipToBeRenewed": "Adhésions à renouveler",
+    "hasNoOrders": "Membres sans commande",
+    "noMembership": "Adhésions à renouveler",
     "contractSubscribers": "{{name}} du {{startDate}} au {{endDate}}"
   }
 }
