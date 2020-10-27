@@ -1,4 +1,5 @@
 package controller;
+import haxe.crypto.Md5;
 import service.VendorService;
 import sugoi.form.Form;
 import sugoi.tools.Utils;
@@ -64,6 +65,9 @@ class Vendor extends Controller
 
 		view.form = form;
 	}
+
+	
+
 	
 	@tpl('vendor/addimage.mtt')
 	function doAddImage(vendor:db.Vendor) {

@@ -211,6 +211,34 @@ Called from controller/Main.hx line 117
 		addBc("contractAdmin","Producteur","/contractAdmin");
 		d.dispatch(new controller.Vendor());
 	}
+
+	/**
+		update without auth
+	**/
+	@tpl('form.mtt')
+	function doVendorNoAuthEdit(vendor:db.Vendor,key:String) {
+		
+	
+		if(key!=haxe.crypto.Md5.encode(App.config.KEY+"_updateWithoutAuth_"+vendor.id)){
+			throw Error("/","URL invalide");
+		}
+		
+
+		var form = service.VendorService.getForm(vendor);
+		
+		if (form.isValid()){
+			vendor.lock();
+			try{
+				vendor = service.VendorService.update(vendor,form.getDatasAsObject());
+			}catch(e:tink.core.Error){
+				throw Error(sugoi.Web.getURI(),e.message);
+			}			
+			vendor.update();		
+			throw Ok(sugoi.Web.getURI(), "Merci, votre compte producteur a été mis à jour.");
+		}
+		view.title = "Mettre à jour \""+vendor.name+"\"";
+		view.form = form;
+	}
 	
 	@logged
 	function doPlace(d:Dispatch) {
