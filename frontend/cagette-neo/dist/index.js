@@ -27989,9 +27989,13 @@ var mangopayUboSchema = es.object().shape({
     UserListsType["all"] = "all";
     UserListsType["test"] = "test";
     UserListsType["admins"] = "admins";
-    UserListsType["noOrders"] = "noOrders";
-    UserListsType["membershipToBeRenewed"] = "membershipToBeRenewed";
+    UserListsType["noOrders"] = "hasNoOrders";
+    UserListsType["orders"] = "hasOrders";
+    UserListsType["membershipToBeRenewed"] = "noMembership";
+    UserListsType["validMembership"] = "membership";
     UserListsType["contractSubscribers"] = "contractSubscribers";
+    UserListsType["newUsers"] = "newUsers";
+    UserListsType["waitingList"] = "waitingList";
     UserListsType["freeList"] = "freeList";
 })(exports.UserListsType || (exports.UserListsType = {}));
 var UserLists = /** @class */ (function () {
@@ -28003,7 +28007,11 @@ var UserLists = /** @class */ (function () {
             UserLists.ALL,
             UserLists.ADMINS,
             UserLists.NO_ORDERS,
+            UserLists.WITH_ORDERS,
+            UserLists.NEW_USERS,
             UserLists.MEMBERSHIP_TO_BE_RENEWED,
+            UserLists.VALID_MEMBERSHIP,
+            UserLists.WAITING_LIST,
             UserLists.CONTRACT_SUBSCRIBERS,
         ];
     };
@@ -28017,8 +28025,14 @@ var UserLists = /** @class */ (function () {
                 return UserLists.TEST;
             case exports.UserListsType.noOrders:
                 return UserLists.NO_ORDERS;
+            case exports.UserListsType.orders:
+                return UserLists.WITH_ORDERS;
             case exports.UserListsType.membershipToBeRenewed:
                 return UserLists.MEMBERSHIP_TO_BE_RENEWED;
+            case exports.UserListsType.validMembership:
+                return UserLists.VALID_MEMBERSHIP;
+            case exports.UserListsType.waitingList:
+                return UserLists.WAITING_LIST;
             case exports.UserListsType.contractSubscribers:
                 return UserLists.CONTRACT_SUBSCRIBERS;
             case exports.UserListsType.freeList:
@@ -28037,8 +28051,12 @@ var UserLists = /** @class */ (function () {
     UserLists.TEST = new UserLists(exports.UserListsType.test);
     UserLists.ADMINS = new UserLists(exports.UserListsType.admins);
     UserLists.NO_ORDERS = new UserLists(exports.UserListsType.noOrders);
+    UserLists.WITH_ORDERS = new UserLists(exports.UserListsType.orders);
     UserLists.MEMBERSHIP_TO_BE_RENEWED = new UserLists(exports.UserListsType.membershipToBeRenewed);
+    UserLists.VALID_MEMBERSHIP = new UserLists(exports.UserListsType.validMembership);
     UserLists.CONTRACT_SUBSCRIBERS = new UserLists(exports.UserListsType.contractSubscribers);
+    UserLists.NEW_USERS = new UserLists(exports.UserListsType.newUsers);
+    UserLists.WAITING_LIST = new UserLists(exports.UserListsType.waitingList);
     UserLists.FREE_LIST = new UserLists(exports.UserListsType.freeList);
     return UserLists;
 }());
@@ -44334,6 +44352,9 @@ var useStyles$b = core$1.makeStyles(function (theme) {
             overflowY: 'auto',
             display: 'flex',
         },
+        list: {
+            flex: 1,
+        },
         pagination: {
             '& ul': {
                 justifyContent: 'center',
@@ -44397,7 +44418,7 @@ var SentMessageList = function (_a) {
     }
     return (React__default.createElement(core$1.Box, null,
         React__default.createElement(core$1.Box, { className: cs.container, justifyContent: "center" }, loadingMessages ? (React__default.createElement(core$1.Box, { p: 1 },
-            React__default.createElement(core$1.CircularProgress, null))) : (React__default.createElement(React__default.Fragment, null, messages.length > 0 ? (React__default.createElement(core$1.List, null, messages.slice(startIndex, endIndex).map(function (m) { return (React__default.createElement(core$1.ListItem, { button: true, divider: true, key: m.id, selected: selectedMessageId === m.id, onClick: function () { return onSelectMessage(m.id); } },
+            React__default.createElement(core$1.CircularProgress, null))) : (React__default.createElement(React__default.Fragment, null, messages.length > 0 ? (React__default.createElement(core$1.List, { className: cs.list }, messages.slice(startIndex, endIndex).map(function (m) { return (React__default.createElement(core$1.ListItem, { button: true, divider: true, key: m.id, selected: selectedMessageId === m.id, onClick: function () { return onSelectMessage(m.id); } },
             React__default.createElement(core$1.ListItemText, { className: cs.listItemText, primary: m.title, secondary: formatDate(new Date(m.date), true) }))); }))) : (React__default.createElement(core$1.Typography, { variant: "caption", align: "center" }, t('noMessage')))))),
         React__default.createElement(lab.Pagination, { count: maxPage, page: currentPage, onChange: handlePageChange, className: cs.pagination })));
 };
