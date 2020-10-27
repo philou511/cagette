@@ -21,6 +21,7 @@ enum GroupFlags {
 
 enum BetaFlags{
 	ShopV2; 		//BETA shop V2
+	MessagesV2;	    //BETA messages V2
 }
 
 //user registration options
