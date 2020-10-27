@@ -1,4 +1,4 @@
-::use 'design.mtt'::
+<!-- ::use 'design.mtt'::
 <div class="col-md-9">
 <div class="article">
 	::if list!=null::
@@ -46,9 +46,9 @@
 					}
 				}
 				
-				</script>
+			</script>
 
-				<div class="btn-group" role="group">
+ 				<div class="btn-group" role="group">
 					$$back()					
 				</div>
 				<div class="btn-group" role="group" style="margin-left: 12px;">
@@ -204,6 +204,53 @@
 		<a ::cond user.getGroup().hasPayments():: href="/member/balance" class="btn btn-default btn-sm">::_("Members balance")::</a>
 	</div>
 	
-</div>
+</div> -->
+
+<!-- <script>			
+	var batchAction = function(action){
+		var ids = _.getCheckboxesId('form.members');
+		if(action==undefined){
+			alert("Action inconnue");
+		}
+		if(action=="membership"){
+			if(!window.confirm("Cette action va saisir une cotisation par chèque pour l'année en cours pour tous les membres sélectionnés. Confirmez vous cette action ?")){
+				return;
+			}
+		}else if(action=="exclude"){
+			if(!window.confirm("Voulez vous vraiment retirer "+ids.length+" membres de votre groupe ?")){
+				return;
+			}
+		}
+		if(ids.length==0){
+			alert("Vous devez sélectionner un ou plusieurs membres de ce groupe");
+		}else{
+			var l = document.location;
+			l.href = l.protocol +"//"+ l.host + "/member/batch?"+action+"="+ ids.join("|");
+		}
+		
+	};
+	
+	//check all
+	var check = function(){
+		var inputs = document.querySelectorAll('form.members input');
+		var value = inputs[0].checked==true;
+		for ( i of inputs ) {
+			i.checked = !value;
+		}
+	}
+	
+</script> -->
+
+<div id="members-neo-container" style="margin-right: 15px; margin-left: 15px;"></div>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function(event) {
+		setTimeout(function() {
+			_NeolithicViewsGenerator.membersModule("members-neo-container", {
+				groupId: parseInt("::user.getGroup().id::", 10)
+			});
+		}, 50);
+	})
+</script>
 
 ::end::
