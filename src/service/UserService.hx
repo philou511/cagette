@@ -64,7 +64,7 @@ class UserService
 	/**
 		Full registration by a user himself
 	**/
-	public static function register(firstName:String, lastName:String, email:String, phone:String, pass:String,?address:String,?zipCode:String,?city:String){
+	public static function register(firstName:String, lastName:String, email:String, phone:String, pass:String,?address:String,?zipCode:String,?city:String, tos : Bool){
 		
 		var t  = sugoi.i18n.Locale.texts;
 		
@@ -76,6 +76,12 @@ class UserService
 			throw new Error(409,t._("We already have an account with this email address"));
 		}
 
+		if(!tos){
+			throw new Error("Vous devez accepter les conditions générales d'utilisation");
+		}
+
+		var tosVersion = sugoi.db.Variable.getInt("tosVersion");
+
 		var user = new db.User();
 		user.email = email;
 		user.firstName = firstName;
@@ -84,6 +90,7 @@ class UserService
 		user.address1 = address;
 		user.zipCode = zipCode;
 		user.city = city;
+		user.tosVersion = tosVersion;
 		user.setPass(pass);
 		user.insert();				
 				

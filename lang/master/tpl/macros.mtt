@@ -437,8 +437,11 @@
 					</div>
 					<div class="col-md-3" >
 						<ul>
+							<li>								
+								<a href="https://www.cagette.net/comment-ca-marche/" target="_blank">Comment ça marche ?</a> 
+							</li>
 							<li> 
-								<a href="https://www.cagette.net/charte-producteurs/" target="_blank">Charte producteurs</a> 
+								<a href="/charte/" target="_blank">Charte producteurs</a> 
 							</li>
 							<li> 
 								<a href="http://www.cagette.net/wiki" target="_blank">::_("Documentation")::</a> 
@@ -448,21 +451,17 @@
 							</li>
 							<li>
 								<a href="http://www.cagette.pro" target="_blank">Formations pour producteurs</a> 
+							</li>												
+							<li>
+								<a href="/cgu" target="_blank">Conditions générales d'utilisation</a> 
 							</li>
 							<li>
-								::if (user!=null && user.isAmapManager()):: <a href="https://cagette.uservoice.com" target="_blank">::_("Propose features")::</a>  ::end::
-							</li>
+								<a href="/cgv" target="_blank">Conditions générales de vente</a> 
+							</li>	
 							<li>
-								<a href="https://www.cagette.net/mentions-legales" target="_blank">Mentions légales</a> 
+								<a href="/mgp" target="_blank">C.G.U Mangopay</a> 
 							</li>
-							<li>
-								<a href="https://www.cagette.net/conditions-generales-dutilisation" target="_blank">Conditions générales d'utilisation</a> 
-							</li>
-							<li>
-								<a href="https://www.cagette.net/wp-content/uploads/2019/03/psp_mangopay_fr.pdf" target="_blank">C.G.U Mangopay</a> 
-							</li>
-						</ul>
-						
+						</ul>						
 					</div>
 					<div class="col-md-3" >
 						SOUTENEZ-NOUS
@@ -500,8 +499,6 @@
 						Cagette.net est réalisé <br/>
 						par la <a href='https://www.alilo.fr' target='_blank'>SCOP Alilo</a>
 					</div>
-					
-				
 				
 			</div>
 			
