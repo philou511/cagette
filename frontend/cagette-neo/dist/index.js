@@ -19180,18 +19180,19 @@ function withConfirmDialog (Component, dialogProps) {
     return Wrapper;
 }
 
-var arr = [];
-var each = arr.forEach;
-var slice = arr.slice;
-function defaults(obj) {
-  each.call(slice.call(arguments, 1), function (source) {
+const arr = [];
+const each = arr.forEach;
+const slice = arr.slice;
+
+function defaults (obj) {
+  each.call(slice.call(arguments, 1), (source) => {
     if (source) {
       for (var prop in source) {
         if (obj[prop] === undefined) obj[prop] = source[prop];
       }
     }
   });
-  return obj;
+  return obj
 }
 
 var fetchApi;
@@ -19214,9 +19215,7 @@ var fetchNode = /*#__PURE__*/Object.freeze({
     __proto__: null
 });
 
-function _typeof$2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$2 = function _typeof(obj) { return typeof obj; }; } else { _typeof$2 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$2(obj); }
-var fetchApi$1;
-
+let fetchApi$1;
 if (typeof fetch === 'function') {
   if (typeof global !== 'undefined' && global.fetch) {
     fetchApi$1 = global.fetch;
@@ -19224,9 +19223,7 @@ if (typeof fetch === 'function') {
     fetchApi$1 = window.fetch;
   }
 }
-
-var XmlHttpRequestApi;
-
+let XmlHttpRequestApi;
 if (typeof XMLHttpRequest === 'function') {
   if (typeof global !== 'undefined' && global.XMLHttpRequest) {
     XmlHttpRequestApi = global.XMLHttpRequest;
@@ -19234,9 +19231,7 @@ if (typeof XMLHttpRequest === 'function') {
     XmlHttpRequestApi = window.XMLHttpRequest;
   }
 }
-
-var ActiveXObjectApi;
-
+let ActiveXObjectApi;
 if (typeof ActiveXObject === 'function') {
   if (typeof global !== 'undefined' && global.ActiveXObject) {
     ActiveXObjectApi = global.ActiveXObject;
@@ -19244,51 +19239,46 @@ if (typeof ActiveXObject === 'function') {
     ActiveXObjectApi = window.ActiveXObject;
   }
 }
-
-if (!fetchApi$1 && fetchNode && !XmlHttpRequestApi && !ActiveXObjectApi) fetchApi$1 = undefined || fetchNode;
+if (!fetchApi$1 && fetchNode && !XmlHttpRequestApi && !ActiveXObjectApi) fetchApi$1 = undefined || fetchNode; // because of strange export
 if (typeof fetchApi$1 !== 'function') fetchApi$1 = undefined;
 
-var addQueryString = function addQueryString(url, params) {
-  if (params && _typeof$2(params) === 'object') {
-    var queryString = '';
-
-    for (var paramName in params) {
+const addQueryString = (url, params) => {
+  if (params && typeof params === 'object') {
+    let queryString = '';
+    // Must encode data
+    for (const paramName in params) {
       queryString += '&' + encodeURIComponent(paramName) + '=' + encodeURIComponent(params[paramName]);
     }
-
-    if (!queryString) return url;
+    if (!queryString) return url
     url = url + (url.indexOf('?') !== -1 ? '&' : '?') + queryString.slice(1);
   }
-
-  return url;
+  return url
 };
 
-var requestWithFetch = function requestWithFetch(options, url, payload, callback) {
+// fetch api stuff
+const requestWithFetch = (options, url, payload, callback) => {
   if (options.queryStringParams) {
     url = addQueryString(url, options.queryStringParams);
   }
-
-  var headers = defaults({}, typeof options.customHeaders === 'function' ? options.customHeaders() : options.customHeaders);
+  const headers = defaults({}, options.customHeaders);
   if (payload) headers['Content-Type'] = 'application/json';
   fetchApi$1(url, defaults({
     method: payload ? 'POST' : 'GET',
     body: payload ? options.stringify(payload) : undefined,
-    headers: headers
-  }, typeof options.requestOptions === 'function' ? options.requestOptions(payload) : options.requestOptions)).then(function (response) {
-    if (!response.ok) return callback(response.statusText || 'Error', {
-      status: response.status
-    });
-    response.text().then(function (data) {
-      callback(null, {
-        status: response.status,
-        data: data
-      });
+    headers
+  }, typeof options.requestOptions === 'function' ? options.requestOptions(payload) : options.requestOptions)).then((response) => {
+    if (!response.ok) return callback(response.statusText || 'Error', { status: response.status })
+    response.text().then((data) => {
+      callback(null, { status: response.status, data });
     }).catch(callback);
   }).catch(callback);
 };
 
-var requestWithXmlHttpRequest = function requestWithXmlHttpRequest(options, url, payload, callback) {
-  if (payload && _typeof$2(payload) === 'object') {
+// xml http request stuff
+const requestWithXmlHttpRequest = (options, url, payload, callback) => {
+  if (payload && typeof payload === 'object') {
+    // if (!cache) payload._t = Date.now()
+    // URL encoded form payload must be in querystring format
     payload = addQueryString('', payload).slice(1);
   }
 
@@ -19297,111 +19287,82 @@ var requestWithXmlHttpRequest = function requestWithXmlHttpRequest(options, url,
   }
 
   try {
-    var x;
-
+    let x;
     if (XmlHttpRequestApi) {
       x = new XmlHttpRequestApi();
     } else {
       x = new ActiveXObjectApi('MSXML2.XMLHTTP.3.0');
     }
-
     x.open(payload ? 'POST' : 'GET', url, 1);
-
     if (!options.crossDomain) {
       x.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     }
-
     x.withCredentials = !!options.withCredentials;
-
     if (payload) {
       x.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     }
-
     if (x.overrideMimeType) {
       x.overrideMimeType('application/json');
     }
-
-    var h = options.customHeaders;
+    let h = options.customHeaders;
     h = typeof h === 'function' ? h() : h;
-
     if (h) {
       for (var i in h) {
         x.setRequestHeader(i, h[i]);
       }
     }
-
-    x.onreadystatechange = function () {
-      x.readyState > 3 && callback(x.status >= 400 ? x.statusText : null, {
-        status: x.status,
-        data: x.responseText
-      });
+    x.onreadystatechange = () => {
+      x.readyState > 3 && callback(x.status >= 400 ? x.statusText : null, { status: x.status, data: x.responseText });
     };
-
     x.send(payload);
   } catch (e) {
     console && console.log(e);
   }
 };
 
-var request$1 = function request(options, url, payload, callback) {
+const request$1 = (options, url, payload, callback) => {
   if (typeof payload === 'function') {
     callback = payload;
     payload = undefined;
   }
-
-  callback = callback || function () {};
+  callback = callback || (() => {});
 
   if (fetchApi$1) {
-    return requestWithFetch(options, url, payload, callback);
+    // use fetch api
+    return requestWithFetch(options, url, payload, callback)
   }
 
   if (typeof XMLHttpRequest === 'function' || typeof ActiveXObject === 'function') {
-    return requestWithXmlHttpRequest(options, url, payload, callback);
+    // use xml http request
+    return requestWithXmlHttpRequest(options, url, payload, callback)
   }
 };
 
-function _classCallCheck$1(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$1(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$1(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$1(Constructor.prototype, protoProps); if (staticProps) _defineProperties$1(Constructor, staticProps); return Constructor; }
-
-function _defineProperty$1(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var getDefaults$1 = function getDefaults() {
+const getDefaults$1 = () => {
   return {
     loadPath: '/locales/{{lng}}/{{ns}}.json',
     addPath: '/locales/add/{{lng}}/{{ns}}',
     allowMultiLoading: false,
-    parse: function parse(data) {
-      return JSON.parse(data);
-    },
+    parse: data => JSON.parse(data),
     stringify: JSON.stringify,
-    parsePayload: function parsePayload(namespace, key, fallbackValue) {
-      return _defineProperty$1({}, key, fallbackValue || '');
-    },
+    parsePayload: (namespace, key, fallbackValue) => ({ [key]: fallbackValue || '' }),
     request: request$1,
-    reloadInterval: typeof window !== 'undefined' ? false : 60 * 60 * 1000,
+    reloadInterval: false,
     customHeaders: {},
     queryStringParams: {},
-    crossDomain: false,
-    withCredentials: false,
-    overrideMimeType: false,
-    requestOptions: {
+    crossDomain: false, // used for XmlHttpRequest
+    withCredentials: false, // used for XmlHttpRequest
+    overrideMimeType: false, // used for XmlHttpRequest
+    requestOptions: { // used for fetch
       mode: 'cors',
       credentials: 'same-origin',
       cache: 'default'
     }
-  };
+  }
 };
 
-var Backend = function () {
-  function Backend(services) {
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    var allOptions = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-
-    _classCallCheck$1(this, Backend);
-
+class Backend {
+  constructor (services, options = {}, allOptions = {}) {
     this.services = services;
     this.options = options;
     this.allOptions = allOptions;
@@ -19409,134 +19370,92 @@ var Backend = function () {
     this.init(services, options, allOptions);
   }
 
-  _createClass$1(Backend, [{
-    key: "init",
-    value: function init(services) {
-      var _this = this;
+  init (services, options = {}, allOptions = {}) {
+    this.services = services;
+    this.options = defaults(options, this.options || {}, getDefaults$1());
+    this.allOptions = allOptions;
+    if (this.options.reloadInterval) {
+      setInterval(() => this.reload(), this.options.reloadInterval);
+    }
+  }
 
-      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var allOptions = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      this.services = services;
-      this.options = defaults(options, this.options || {}, getDefaults$1());
-      this.allOptions = allOptions;
+  readMulti (languages, namespaces, callback) {
+    var loadPath = this.options.loadPath;
+    if (typeof this.options.loadPath === 'function') {
+      loadPath = this.options.loadPath(languages, namespaces);
+    }
+    const url = this.services.interpolator.interpolate(loadPath, { lng: languages.join('+'), ns: namespaces.join('+') });
+    this.loadUrl(url, callback, languages, namespaces);
+  }
 
-      if (this.options.reloadInterval) {
-        setInterval(function () {
-          return _this.reload();
-        }, this.options.reloadInterval);
+  read (language, namespace, callback) {
+    var loadPath = this.options.loadPath;
+    if (typeof this.options.loadPath === 'function') {
+      loadPath = this.options.loadPath([language], [namespace]);
+    }
+    const url = this.services.interpolator.interpolate(loadPath, { lng: language, ns: namespace });
+    this.loadUrl(url, callback, language, namespace);
+  }
+
+  loadUrl (url, callback, languages, namespaces) {
+    this.options.request(this.options, url, undefined, (err, res) => {
+      if (res && res.status >= 500 && res.status < 600) return callback('failed loading ' + url, true /* retry */)
+      if (res && res.status >= 400 && res.status < 500) return callback('failed loading ' + url, false /* no retry */)
+      if (err) return callback(err, false)
+
+      let ret, parseErr;
+      try {
+        ret = this.options.parse(res.data, languages, namespaces);
+      } catch (e) {
+        parseErr = 'failed parsing ' + url + ' to json';
       }
-    }
-  }, {
-    key: "readMulti",
-    value: function readMulti(languages, namespaces, callback) {
-      var loadPath = this.options.loadPath;
+      if (parseErr) return callback(parseErr, false)
+      callback(null, ret);
+    });
+  }
 
-      if (typeof this.options.loadPath === 'function') {
-        loadPath = this.options.loadPath(languages, namespaces);
-      }
-
-      var url = this.services.interpolator.interpolate(loadPath, {
-        lng: languages.join('+'),
-        ns: namespaces.join('+')
+  create (languages, namespace, key, fallbackValue) {
+    // If there is a falsey addPath, then abort -- this has been disabled.
+    if (!this.options.addPath) return
+    if (typeof languages === 'string') languages = [languages];
+    const payload = this.options.parsePayload(namespace, key, fallbackValue);
+    languages.forEach(lng => {
+      const url = this.services.interpolator.interpolate(this.options.addPath, { lng: lng, ns: namespace });
+      this.options.request(this.options, url, payload, (data, res) => {
+        // TODO: if res.status === 4xx do log
       });
-      this.loadUrl(url, callback, languages, namespaces);
-    }
-  }, {
-    key: "read",
-    value: function read(language, namespace, callback) {
-      var loadPath = this.options.loadPath;
+    });
+  }
 
-      if (typeof this.options.loadPath === 'function') {
-        loadPath = this.options.loadPath([language], [namespace]);
-      }
+  reload () {
+    const { backendConnector, languageUtils, logger } = this.services;
+    const currentLanguage = backendConnector.language;
+    if (currentLanguage && currentLanguage.toLowerCase() === 'cimode') return // avoid loading resources for cimode
 
-      var url = this.services.interpolator.interpolate(loadPath, {
-        lng: language,
-        ns: namespace
+    const toLoad = [];
+    const append = (lng) => {
+      const lngs = languageUtils.toResolveHierarchy(lng);
+      lngs.forEach(l => {
+        if (toLoad.indexOf(l) < 0) toLoad.push(l);
       });
-      this.loadUrl(url, callback, language, namespace);
-    }
-  }, {
-    key: "loadUrl",
-    value: function loadUrl(url, callback, languages, namespaces) {
-      var _this2 = this;
+    };
 
-      this.options.request(this.options, url, undefined, function (err, res) {
-        if (res && (res.status >= 500 && res.status < 600 || !res.status)) return callback('failed loading ' + url, true);
-        if (res && res.status >= 400 && res.status < 500) return callback('failed loading ' + url, false);
-        if (!res && err && err.message && err.message.indexOf('Failed to fetch') > -1) return callback('failed loading ' + url, true);
-        if (err) return callback(err, false);
-        var ret, parseErr;
+    append(currentLanguage);
 
-        try {
-          if (typeof res.data === 'string') {
-            ret = _this2.options.parse(res.data, languages, namespaces);
-          } else {
-            ret = res.data;
-          }
-        } catch (e) {
-          parseErr = 'failed parsing ' + url + ' to json';
-        }
+    if (this.allOptions.preload) this.allOptions.preload.forEach((l) => append(l));
 
-        if (parseErr) return callback(parseErr, false);
-        callback(null, ret);
-      });
-    }
-  }, {
-    key: "create",
-    value: function create(languages, namespace, key, fallbackValue) {
-      var _this3 = this;
+    toLoad.forEach(lng => {
+      this.allOptions.ns.forEach(ns => {
+        backendConnector.read(lng, ns, 'read', null, null, (err, data) => {
+          if (err) logger.warn(`loading namespace ${ns} for language ${lng} failed`, err);
+          if (!err && data) logger.log(`loaded namespace ${ns} for language ${lng}`, data);
 
-      if (!this.options.addPath) return;
-      if (typeof languages === 'string') languages = [languages];
-      var payload = this.options.parsePayload(namespace, key, fallbackValue);
-      languages.forEach(function (lng) {
-        var url = _this3.services.interpolator.interpolate(_this3.options.addPath, {
-          lng: lng,
-          ns: namespace
-        });
-
-        _this3.options.request(_this3.options, url, payload, function (data, res) {});
-      });
-    }
-  }, {
-    key: "reload",
-    value: function reload() {
-      var _this4 = this;
-
-      var _this$services = this.services,
-          backendConnector = _this$services.backendConnector,
-          languageUtils = _this$services.languageUtils,
-          logger = _this$services.logger;
-      var currentLanguage = backendConnector.language;
-      if (currentLanguage && currentLanguage.toLowerCase() === 'cimode') return;
-      var toLoad = [];
-
-      var append = function append(lng) {
-        var lngs = languageUtils.toResolveHierarchy(lng);
-        lngs.forEach(function (l) {
-          if (toLoad.indexOf(l) < 0) toLoad.push(l);
-        });
-      };
-
-      append(currentLanguage);
-      if (this.allOptions.preload) this.allOptions.preload.forEach(function (l) {
-        return append(l);
-      });
-      toLoad.forEach(function (lng) {
-        _this4.allOptions.ns.forEach(function (ns) {
-          backendConnector.read(lng, ns, 'read', null, null, function (err, data) {
-            if (err) logger.warn("loading namespace ".concat(ns, " for language ").concat(lng, " failed"), err);
-            if (!err && data) logger.log("loaded namespace ".concat(ns, " for language ").concat(lng), data);
-            backendConnector.loaded("".concat(lng, "|").concat(ns), err, data);
-          });
+          backendConnector.loaded(`${lng}|${ns}`, err, data);
         });
       });
-    }
-  }]);
-
-  return Backend;
-}();
+    });
+  }
+}
 
 Backend.type = 'backend';
 
@@ -27275,7 +27194,6 @@ var MangopayBusineddKYCDocumentTypes = [
     'ARTICLES_OF_ASSOCIATION',
 ];
 
-<<<<<<< HEAD
 var getMangopayRequiredKYCDocumentTypes = function (legalPersonType) {
     switch (legalPersonType) {
         case 'SOLETRADER':
@@ -27315,52 +27233,6 @@ es.setLocale({
             return ({ key: 'date.max', values: { max: max } });
         },
     },
-=======
-(function (CagetteExceptionType) {
-    CagetteExceptionType["Group"] = "Group";
-    CagetteExceptionType["Mangopay"] = "Mangopay";
-})(exports.CagetteExceptionType || (exports.CagetteExceptionType = {}));
-
-var getMangopayRequiredKYCDocumentTypes = function (legalPersonType) {
-    switch (legalPersonType) {
-        case 'SOLETRADER':
-            return MangopaySoletraderKYCDocumentTypes;
-        case 'ORGANIZATION':
-            return MangopayOrganizationKYCDocumentTypes;
-        case 'BUSINESS':
-            return MangopayBusineddKYCDocumentTypes;
-        default:
-            throw new Error("Invalid LegalPersonType: " + legalPersonType);
-    }
-};
-var mangopayLegalPersonTypeRequiredUbo = function (legalPersonType) {
-    return legalPersonType === 'BUSINESS';
-};
-
-es.setLocale({
-    mixed: {
-        required: 'mixed.required',
-        notType: 'mixed.notType',
-        oneOf: 'mixed.oneOf',
-    },
-    string: {
-        min: function (_a) {
-            var min = _a.min;
-            return ({ key: 'string.min', values: { min: min } });
-        },
-        length: function (_a) {
-            var length = _a.length;
-            return ({ key: 'string.length', values: { length: length } });
-        },
-        email: 'string.email',
-    },
-    date: {
-        max: function (_a) {
-            var max = _a.max;
-            return ({ key: 'date.max', values: { max: max } });
-        },
-    },
->>>>>>> master
 });
 
 var loginSchema = es.object().shape({
@@ -28118,12 +27990,12 @@ var mangopayUboSchema = es.object().shape({
     UserListsType["test"] = "test";
     UserListsType["admins"] = "admins";
     UserListsType["noOrders"] = "hasNoOrders";
-    UserListsType["orders"] = "hasOrders";
+    // orders = 'hasOrders',
     UserListsType["membershipToBeRenewed"] = "noMembership";
-    UserListsType["validMembership"] = "membership";
+    // validMembership = 'membership',
     UserListsType["contractSubscribers"] = "contractSubscribers";
-    UserListsType["newUsers"] = "newUsers";
-    UserListsType["waitingList"] = "waitingList";
+    // newUsers = 'newUsers',
+    // waitingList = 'waitingList',
     UserListsType["freeList"] = "freeList";
 })(exports.UserListsType || (exports.UserListsType = {}));
 var UserLists = /** @class */ (function () {
@@ -28135,11 +28007,11 @@ var UserLists = /** @class */ (function () {
             UserLists.ALL,
             UserLists.ADMINS,
             UserLists.NO_ORDERS,
-            UserLists.WITH_ORDERS,
-            UserLists.NEW_USERS,
+            // UserLists.WITH_ORDERS,
+            // UserLists.NEW_USERS,
             UserLists.MEMBERSHIP_TO_BE_RENEWED,
-            UserLists.VALID_MEMBERSHIP,
-            UserLists.WAITING_LIST,
+            // UserLists.VALID_MEMBERSHIP,
+            // UserLists.WAITING_LIST,
             UserLists.CONTRACT_SUBSCRIBERS,
         ];
     };
@@ -28153,14 +28025,8 @@ var UserLists = /** @class */ (function () {
                 return UserLists.TEST;
             case exports.UserListsType.noOrders:
                 return UserLists.NO_ORDERS;
-            case exports.UserListsType.orders:
-                return UserLists.WITH_ORDERS;
             case exports.UserListsType.membershipToBeRenewed:
                 return UserLists.MEMBERSHIP_TO_BE_RENEWED;
-            case exports.UserListsType.validMembership:
-                return UserLists.VALID_MEMBERSHIP;
-            case exports.UserListsType.waitingList:
-                return UserLists.WAITING_LIST;
             case exports.UserListsType.contractSubscribers:
                 return UserLists.CONTRACT_SUBSCRIBERS;
             case exports.UserListsType.freeList:
@@ -28179,12 +28045,12 @@ var UserLists = /** @class */ (function () {
     UserLists.TEST = new UserLists(exports.UserListsType.test);
     UserLists.ADMINS = new UserLists(exports.UserListsType.admins);
     UserLists.NO_ORDERS = new UserLists(exports.UserListsType.noOrders);
-    UserLists.WITH_ORDERS = new UserLists(exports.UserListsType.orders);
+    // static readonly WITH_ORDERS = new UserLists(UserListsType.orders);
     UserLists.MEMBERSHIP_TO_BE_RENEWED = new UserLists(exports.UserListsType.membershipToBeRenewed);
-    UserLists.VALID_MEMBERSHIP = new UserLists(exports.UserListsType.validMembership);
+    // static readonly VALID_MEMBERSHIP = new UserLists(UserListsType.validMembership);
     UserLists.CONTRACT_SUBSCRIBERS = new UserLists(exports.UserListsType.contractSubscribers);
-    UserLists.NEW_USERS = new UserLists(exports.UserListsType.newUsers);
-    UserLists.WAITING_LIST = new UserLists(exports.UserListsType.waitingList);
+    // static readonly NEW_USERS = new UserLists(UserListsType.newUsers);
+    // static readonly WAITING_LIST = new UserLists(UserListsType.waitingList);
     UserLists.FREE_LIST = new UserLists(exports.UserListsType.freeList);
     return UserLists;
 }());
@@ -28206,7 +28072,6 @@ exports.userSchema = userSchema;
 });
 
 unwrapExports(dist);
-<<<<<<< HEAD
 var dist_1 = dist.UserListsType;
 var dist_2 = dist.MangopayBusineddKYCDocumentTypes;
 var dist_3 = dist.MangopayOrganizationKYCDocumentTypes;
@@ -28247,565 +28112,6 @@ function withHelperTextTranslation(Wrapped, tranformPropsFunc) {
     };
     return Wrapper;
 }
-=======
-var dist_1 = dist.CagetteExceptionType;
-var dist_2 = dist.MangopayBusineddKYCDocumentTypes;
-var dist_3 = dist.MangopayOrganizationKYCDocumentTypes;
-var dist_4 = dist.MangopaySoletraderKYCDocumentTypes;
-var dist_5 = dist.customYup;
-var dist_6 = dist.getMangopayRequiredKYCDocumentTypes;
-var dist_7 = dist.loginSchema;
-var dist_8 = dist.mangopayAddressSchema;
-var dist_9 = dist.mangopayBankAccountSchema;
-var dist_10 = dist.mangopayLegalPersonTypeRequiredUbo;
-var dist_11 = dist.mangopayLegalUserSchema;
-var dist_12 = dist.mangopayUboSchema;
-var dist_13 = dist.userSchema;
-
-var yupHelperTextTranslator = (function (t, helperText) {
-    if (helperText) {
-        var key = void 0;
-        var values = {};
-        if (typeof helperText === 'object') {
-            key = helperText.key;
-            values = helperText.values;
-        }
-        else {
-            key = helperText;
-        }
-        return t(key, values);
-    }
-    return undefined;
-});
-
-function withHelperTextTranslation(Wrapped, tranformPropsFunc) {
-    var Wrapper = function (props) {
-        var t = useTranslation(['yup'], { useSuspense: false }).t;
-        var p = tranformPropsFunc ? tranformPropsFunc(props) : props;
-        p.helperText = yupHelperTextTranslator(t, p.helperText);
-        return React__default.createElement(Wrapped, __assign({}, p));
-    };
-    return Wrapper;
-}
-
-var CustomTextField = withHelperTextTranslation(core$1.TextField, formikMaterialUi.fieldToTextField);
-function generateFields(fields, formikProps) {
-    return fields.map(function (field) {
-        if (field.type === 'default') {
-            return (React__default.createElement(formik.Field, { key: field.name, component: field.component || CustomTextField, fullWidth: true, margin: "normal", label: field.label, name: field.name, disabled: field.disabled, required: field.required || false }));
-        }
-        return field.render(field.name, formikProps);
-    });
-}
-function generateInitialValues(fields) {
-    return fields.reduce(function (acc, field) {
-        acc[field.name] = field.initialValues;
-        return acc;
-    }, {});
-}
-
-var ExpansionPanel = core$1.withStyles({
-    root: {
-        // border: '1px solid rgba(0, 0, 0, .125)',
-        boxShadow: 'none',
-        '&:not(:last-child)': {
-            borderBottom: 0,
-        },
-        '&:before': {
-            display: 'none',
-        },
-        '&$expanded': {
-            margin: 'auto',
-        },
-    },
-    expanded: {},
-})(core$1.ExpansionPanel);
-
-var ExpansionPanelSummary = core$1.withStyles({
-    root: {
-        backgroundColor: 'rgba(0, 0, 0, .03)',
-        borderBottom: '1px solid rgba(0, 0, 0, .125)',
-        // marginBottom: -1,
-        minHeight: 56,
-        '&$expanded': {
-            minHeight: 56,
-        },
-    },
-    content: {
-        '&$expanded': {
-            margin: '12px 0',
-        },
-    },
-    expanded: {},
-})(core$1.ExpansionPanelSummary);
-
-var UserForm = function (_a) {
-    var user = _a.user, onSubmit = _a.onSubmit;
-    var t = useTranslation(['translation', 'users/form']).t;
-    var fields = [
-        {
-            type: 'default',
-            name: 'firstName',
-            initialValues: (user === null || user === void 0 ? void 0 : user.firstName) || '',
-            label: t('firstName'),
-            required: true,
-        },
-        {
-            type: 'default',
-            name: 'lastName',
-            initialValues: (user === null || user === void 0 ? void 0 : user.lastName) || '',
-            label: t('lastName'),
-            required: true,
-        },
-        {
-            type: 'default',
-            name: 'email',
-            initialValues: (user === null || user === void 0 ? void 0 : user.email) || '',
-            label: t('email'),
-            disabled: true,
-        },
-    ];
-    var contactFields = [
-        {
-            type: 'default',
-            name: 'phone',
-            initialValues: (user === null || user === void 0 ? void 0 : user.phone) || '',
-            label: t('phone'),
-        },
-        {
-            type: 'default',
-            name: 'address1',
-            initialValues: (user === null || user === void 0 ? void 0 : user.address1) || '',
-            label: t('address1'),
-        },
-        {
-            type: 'default',
-            name: 'address2',
-            initialValues: (user === null || user === void 0 ? void 0 : user.address2) || '',
-            label: t('address2'),
-        },
-        {
-            type: 'default',
-            name: 'zipCode',
-            initialValues: (user === null || user === void 0 ? void 0 : user.zipCode) || '',
-            label: t('zipCode'),
-        },
-        {
-            type: 'default',
-            name: 'city',
-            initialValues: (user === null || user === void 0 ? void 0 : user.city) || '',
-            label: t('city'),
-        },
-    ];
-    var spouseInformations = [
-        {
-            type: 'default',
-            name: 'firstName2',
-            initialValues: (user === null || user === void 0 ? void 0 : user.firstName2) || '',
-            label: t('users/form:firstName2'),
-        },
-        {
-            type: 'default',
-            name: 'lastName2',
-            initialValues: (user === null || user === void 0 ? void 0 : user.lastName2) || '',
-            label: t('users/form:lastName2'),
-        },
-        {
-            type: 'default',
-            name: 'email2',
-            initialValues: (user === null || user === void 0 ? void 0 : user.email2) || '',
-            label: t('users/form:email2'),
-        },
-        {
-            type: 'default',
-            name: 'phone2',
-            initialValues: (user === null || user === void 0 ? void 0 : user.phone2) || '',
-            label: t('users/form:phone2'),
-        },
-    ];
-    var initialValues = __assign(__assign(__assign({}, generateInitialValues(fields)), generateInitialValues(contactFields)), generateInitialValues(spouseInformations));
-    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_13, onSubmit: onSubmit }, function (formikProps) { return (React__default.createElement(formik.Form, null,
-        formikProps.status && (React__default.createElement(core$1.Box, { my: 2 },
-            React__default.createElement(lab.Alert, { severity: "error" }, formikProps.status))),
-        React__default.createElement(core$1.Box, null,
-            React__default.createElement(ExpansionPanel, { expanded: true },
-                React__default.createElement(core$1.ExpansionPanelDetails, null,
-                    React__default.createElement(core$1.Box, { width: "100%" }, generateFields(fields, formikProps)))),
-            React__default.createElement(ExpansionPanel, { defaultExpanded: true },
-                React__default.createElement(ExpansionPanelSummary, { expandIcon: React__default.createElement(ExpandMoreIcon, null) },
-                    React__default.createElement(core$1.Typography, null, t('users/form:contactInfos'))),
-                React__default.createElement(core$1.ExpansionPanelDetails, null,
-                    React__default.createElement(core$1.Box, { width: "100%" }, generateFields(contactFields, formikProps)))),
-            React__default.createElement(ExpansionPanel, { defaultExpanded: true },
-                React__default.createElement(ExpansionPanelSummary, { expandIcon: React__default.createElement(ExpandMoreIcon, null) },
-                    React__default.createElement(core$1.Typography, null, t('users/form:spose'))),
-                React__default.createElement(core$1.ExpansionPanelDetails, null,
-                    React__default.createElement(core$1.Box, { width: "100%" }, generateFields(spouseInformations, formikProps))))),
-        React__default.createElement(core$1.Box, { pt: 4, pb: 2, display: "flex", justifyContent: "center" },
-            React__default.createElement(core$1.Button, { variant: "contained", color: "primary", type: "submit", disabled: formikProps.isSubmitting }, "Valider")))); }));
-};
-
-var tFile$2 = 'neo/distrib-slots';
-var shortTKey$2 = tFile$2 + ":userInNeed";
-var parseUserOptions = function (user, prevOptions) {
-    var options = [];
-    var getChecked = function (name, value) {
-        if (!value)
-            return false;
-        if (prevOptions) {
-            var founded = prevOptions.find(function (o) { return o.name === name; });
-            return founded ? founded.checked : false;
-        }
-        return true;
-    };
-    options.push({
-        name: 'email',
-        label: 'email',
-        value: user.email,
-        checked: getChecked('email', user.email),
-        disabled: false,
-        canEdit: false,
-    });
-    var address = formatUserAddress(user);
-    options.push({
-        name: 'address',
-        label: 'address',
-        value: address,
-        checked: getChecked('address', address),
-        disabled: !address,
-        canEdit: true,
-    });
-    options.push({
-        name: 'phone',
-        label: 'phone',
-        value: user.phone,
-        checked: getChecked('phone', user.phone),
-        disabled: !user.phone,
-        canEdit: true,
-    });
-    return options;
-};
-var PermissionsStep = function (_a) {
-    var onConfirm = _a.onConfirm, onCancel = _a.onCancel;
-    var t = useTranslation(['translation', tFile$2]).t;
-    var _b = React__default.useState(), me = _b[0], setMe = _b[1];
-    var _c = React__default.useState(), error = _c[0], setError = _c[1];
-    var _d = React__default.useState([]), options = _d[0], setOptions = _d[1];
-    var _e = React__default.useState(false), dialogOpened = _e[0], toggleDialogOpened = _e[1];
-    var _f = React__default.useState(false), submitting = _f[0], toggleSubmitting = _f[1];
-    var valid = options && !!options.find(function (option) { return option.checked; });
-    /** */
-    var openDialog = function () {
-        toggleDialogOpened(true);
-    };
-    var closeDialog = function () {
-        if (submitting)
-            return;
-        toggleDialogOpened(false);
-    };
-    /** */
-    var onCheckoxChange = function (e) {
-        setOptions(options.map(function (slot) {
-            if (slot.name === e.target.name) {
-                return __assign(__assign({}, slot), { checked: e.target.checked });
-            }
-            return slot;
-        }));
-    };
-    var onConfirmClick = function () {
-        onConfirm(options.filter(function (option) { return option.checked; }).map(function (option) { return option.name; }));
-    };
-    var onFormSubmit = function (values, bag) { return __awaiter(void 0, void 0, void 0, function () {
-        var formData_1, user, err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    toggleSubmitting(true);
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    formData_1 = new FormData();
-                    Object.keys(values).forEach(function (key) {
-                        formData_1.append(key, values[key]);
-                    });
-                    return [4 /*yield*/, api$1.updateMe(formData_1, 'data')];
-                case 2:
-                    user = _a.sent();
-                    if (!user)
-                        throw new Error('');
-                    setMe(user);
-                    setOptions(parseUserOptions(user, options));
-                    toggleSubmitting(false);
-                    bag.setErrors(t('error'));
-                    bag.setSubmitting(false);
-                    setTimeout(function () {
-                        closeDialog();
-                    });
-                    return [3 /*break*/, 4];
-                case 3:
-                    err_1 = _a.sent();
-                    toggleSubmitting(false);
-                    bag.setStatus(t('error', { error: err_1 }));
-                    bag.setSubmitting(false);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
-            }
-        });
-    }); };
-    /** */
-    React__default.useEffect(function () {
-        var active = true;
-        var fetchMe = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var user, err_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, api$1.me()];
-                    case 1:
-                        user = _a.sent();
-                        if (active && user) {
-                            setMe(user);
-                            setOptions(parseUserOptions(user));
-                        }
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_2 = _a.sent();
-                        setError(t('error'));
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        }); };
-        fetchMe();
-        return function () {
-            active = false;
-        };
-    }, []);
-    /** */
-    return (React__default.createElement(React__default.Fragment, null,
-        React__default.createElement(core$1.Box, null,
-            React__default.createElement(core$1.Typography, { color: "primary" }, t(shortTKey$2 + ".consentement")),
-            error && React__default.createElement(lab.Alert, { severity: "error" }, error),
-            !me ? (React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
-                React__default.createElement(core$1.CircularProgress, null))) : (React__default.createElement(React__default.Fragment, null,
-                React__default.createElement(core$1.List, null, options.map(function (option) { return (React__default.createElement(core$1.ListItem, { key: option.name },
-                    React__default.createElement(core$1.ListItemText, { primary: t(option.label), secondary: option.value || t(shortTKey$2 + ".no" + option.label) }),
-                    React__default.createElement(core$1.ListItemSecondaryAction, null,
-                        option.canEdit && (React__default.createElement(core$1.ListItemIcon, null,
-                            React__default.createElement(core$1.IconButton, { onClick: openDialog },
-                                React__default.createElement(EditIcon, null)))),
-                        React__default.createElement(core$1.ListItemIcon, null,
-                            React__default.createElement(core$1.Checkbox, { checked: option.checked, disabled: option.disabled, name: option.name, tabIndex: -1, disableRipple: true, onChange: onCheckoxChange }))))); })),
-                React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
-                    React__default.createElement(core$1.Button, { onClick: onCancel }, t('cancel')),
-                    React__default.createElement(core$1.Box, { mx: 1 }),
-                    React__default.createElement(core$1.Button, { variant: "contained", color: "primary", disabled: !valid, onClick: onConfirmClick }, t('validate')))))),
-        React__default.createElement(core$1.Dialog, { open: dialogOpened, onClose: closeDialog },
-            React__default.createElement(React__default.Fragment, null, me && (React__default.createElement(React__default.Fragment, null,
-                React__default.createElement(core$1.Box, { pt: 2, px: 2 },
-                    React__default.createElement(core$1.Typography, { variant: "h6" }, t(shortTKey$2 + ".userFormTitle"))),
-                React__default.createElement(core$1.Box, { px: 2 },
-                    React__default.createElement(UserForm, { user: me, onSubmit: onFormSubmit }))))))));
-};
-
-var tFile$3 = 'neo/distrib-slots';
-var shortTKey$3 = tFile$3 + ":userSlotsSelector.selector";
-var GreenLinearProgress = core$1.withStyles({
-    colorPrimary: {
-        opacity: 0.5,
-        backgroundColor: '#e8f5e9',
-    },
-    barColorPrimary: {
-        backgroundColor: '#4caf50',
-    },
-})(core$1.LinearProgress);
-var OrangeLinearProgress = core$1.withStyles({
-    colorPrimary: {
-        opacity: 0.5,
-        backgroundColor: '#fff3e0',
-    },
-    barColorPrimary: {
-        backgroundColor: '#e65100',
-    },
-})(core$1.LinearProgress);
-var SlotsStep = function (_a) {
-    var slots = _a.slots, isLastStep = _a.isLastStep, onSelect = _a.onSelect, onCancel = _a.onCancel;
-    var t = useTranslation(['translation', tFile$3]).t;
-    var maxUserRegistered = slots.reduce(function (acc, slot) {
-        if (acc < slot.registeredUserIds.length)
-            return slot.registeredUserIds.length;
-        return acc;
-    }, 0);
-    var _b = React__default.useState(slots.map(function (slot) {
-        var prc = maxUserRegistered > 0 ? slot.registeredUserIds.length / maxUserRegistered : 0;
-        return __assign(__assign({}, slot), { name: "slot-" + slot.id, checked: prc <= 0.75, nbUsers: slot.registeredUserIds.length, prc: prc });
-    })), selection = _b[0], setSelection = _b[1];
-    var valid = !!selection.find(function (slot) { return slot.checked; });
-    /** */
-    var onCheckoxChange = function (e) {
-        setSelection(selection.map(function (slot) {
-            if (slot.name === e.target.name) {
-                return __assign(__assign({}, slot), { checked: e.target.checked });
-            }
-            return slot;
-        }));
-    };
-    var onNextClick = function () {
-        if (!valid)
-            return;
-        onSelect(selection.reduce(function (acc, slot) {
-            if (slot.checked) {
-                acc.push(slot.id);
-            }
-            return acc;
-        }, []));
-    };
-    /** */
-    return (React__default.createElement(React__default.Fragment, null,
-        React__default.createElement(core$1.Box, { mb: 2 },
-            React__default.createElement(core$1.Typography, { color: "primary", variant: "h6", align: "center" }, t(shortTKey$3 + ".chooseSlot")),
-            React__default.createElement(core$1.Box, { mt: 1 },
-                React__default.createElement(core$1.Typography, { variant: "body2", align: "center" }, t(shortTKey$3 + ".chooseSlotSub")))),
-        React__default.createElement(core$1.List, null, selection.map(function (slot) { return (React__default.createElement(React__default.Fragment, { key: slot.name },
-            React__default.createElement(core$1.ListItem, null,
-                React__default.createElement(core$1.ListItemText, { primary: "De " + format$1(slot.start, "HH'h'mm") + " \u00E0 " + format$1(slot.end, "HH'h'mm"), secondary: t(shortTKey$3 + "." + (slot.prc === 0 ? 'noneUsersInSlot' : 'usersInSlot'), {
-                        count: slot.nbUsers,
-                    }) }),
-                React__default.createElement(core$1.ListItemSecondaryAction, null,
-                    React__default.createElement(core$1.ListItemIcon, null,
-                        React__default.createElement(core$1.Checkbox, { checked: slot.checked, name: slot.name, tabIndex: -1, disableRipple: true, onChange: onCheckoxChange })))),
-            React__default.createElement(core$1.Box, { px: 2, pr: 4, mb: 2 }, slot.prc > 0.75 ? (React__default.createElement(OrangeLinearProgress, { variant: "determinate", value: slot.prc * 90 })) : (React__default.createElement(GreenLinearProgress, { variant: "determinate", value: slot.prc * 100 }))))); })),
-        React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
-            onCancel && (React__default.createElement(core$1.Box, { mr: 2 },
-                React__default.createElement(core$1.Button, { onClick: onCancel }, t('cancel')))),
-            React__default.createElement(core$1.Button, { variant: isLastStep ? 'contained' : 'outlined', color: "primary", disabled: !valid, onClick: onNextClick }, t(isLastStep ? 'validate' : 'continue')))));
-};
-
-var InNeedUserListItem = function (_a) {
-    var user = _a.user, userInfos = _a.userInfos, children = _a.children;
-    return (React__default.createElement(core$1.ListItem, { alignItems: "center" },
-        React__default.createElement(core$1.ListItemText
-        // primary={`${user.firstName} ${user.lastName}`}
-        , { 
-            // primary={`${user.firstName} ${user.lastName}`}
-            primary: React__default.createElement(core$1.Box, { component: "span", display: "flex", justifyContent: "center" },
-                React__default.createElement(core$1.Typography, { component: "span" }, user.firstName + " " + user.lastName)), secondary: React__default.createElement(core$1.Box, { component: "span", display: "flex", flexDirection: "column", alignItems: "center" },
-                userInfos && userInfos.includes('address') && (React__default.createElement(core$1.Typography, { variant: "body2", color: "textSecondary", component: "span" }, formatUserAddress(user))),
-                userInfos && userInfos.includes('phone') && (React__default.createElement(core$1.Typography, { variant: "body2", color: "textSecondary", component: "span" }, user.phone)),
-                userInfos && userInfos.includes('email') && (React__default.createElement(core$1.Typography, { variant: "body2", color: "textSecondary", component: "span" }, user.email))) }),
-        children && React__default.createElement(core$1.ListItemSecondaryAction, null, children)));
-};
-
-var tFile$4 = 'neo/distrib-slots';
-var shortTKey$4 = tFile$4 + ":userInNeedSelected";
-var VoluntaryStep = function (_a) {
-    var inNeedUsers = _a.inNeedUsers, onConfirm = _a.onConfirm, onCancel = _a.onCancel;
-    var t = useTranslation(['translation', tFile$4]).t;
-    var _b = React__default.useState(inNeedUsers.map(function (user) { return (__assign(__assign({}, user), { fieldName: "user-" + user.id, checked: false })); })), users = _b[0], setUsers = _b[1];
-    /** */
-    var onCheckoxChange = function (e) {
-        setUsers(users.map(function (user) {
-            if (user.fieldName === e.target.name) {
-                return __assign(__assign({}, user), { checked: e.target.checked });
-            }
-            return user;
-        }));
-    };
-    var onConfirmClick = function () {
-        onConfirm(users.filter(function (user) { return user.checked; }).map(function (user) { return user.id; }));
-    };
-    /** */
-    return (React__default.createElement(core$1.Box, null,
-        React__default.createElement(core$1.Typography, { color: "primary" }, t(shortTKey$4 + ".choose")),
-        React__default.createElement(core$1.List, null, users.map(function (user) { return (React__default.createElement(InNeedUserListItem, { key: user.id, user: user, userInfos: ['address'] },
-            React__default.createElement(core$1.ListItemIcon, null,
-                React__default.createElement(core$1.Checkbox, { checked: user.checked, name: user.fieldName, tabIndex: -1, disableRipple: true, onChange: onCheckoxChange })))); })),
-        React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
-            React__default.createElement(core$1.Button, { onClick: onCancel }, t('cancel')),
-            React__default.createElement(core$1.Box, { mx: 2 }),
-            React__default.createElement(core$1.Button, { variant: "contained", color: "primary", onClick: onConfirmClick }, t('validate')))));
-};
-
-var tFile$5 = 'neo/distrib-slots';
-var shortTKey$5 = tFile$5 + ":userSlotsSelector";
-var SummaryStep = function (_a) {
-    var mode = _a.mode, slots = _a.slots, registeredSlotIds = _a.registeredSlotIds, voluntaryFor = _a.voluntaryFor, inNeedUsers = _a.inNeedUsers, onSalesProcess = _a.onSalesProcess, changeSlots = _a.changeSlots, addInNeeds = _a.addInNeeds, close = _a.close;
-    var t = useTranslation(['translation', tFile$5]).t;
-    var confirmMessage = '';
-    if (mode === 'inNeed') {
-        confirmMessage = t(shortTKey$5 + ".end.inNeed");
-    }
-    else if (mode === 'voluntary') {
-        confirmMessage = t(shortTKey$5 + ".end.voluntary");
-    }
-    else {
-        confirmMessage = t(shortTKey$5 + ".end.solo");
-    }
-    return (React__default.createElement(core$1.Box, { py: 2 },
-        React__default.createElement(core$1.Typography, { align: "center" }, confirmMessage),
-        registeredSlotIds && registeredSlotIds.length > 0 && (React__default.createElement(core$1.Box, { mt: 2 },
-            React__default.createElement(core$1.Box, { display: "flex", flexDirection: "column", alignItems: "center" },
-                React__default.createElement(core$1.Typography, { variant: "h6", color: "primary" }, t(shortTKey$5 + ".selectedSlots")),
-                React__default.createElement(core$1.List, null, slots
-                    .filter(function (s) { return (registeredSlotIds === null || registeredSlotIds === void 0 ? void 0 : registeredSlotIds.includes(s.id)) || false; })
-                    .map(function (slot) { return (React__default.createElement(core$1.ListItem, { key: slot.id, alignItems: "center" },
-                    React__default.createElement(core$1.ListItemText, { primary: "De " + format$1(slot.start, "HH'h'mm") + " \u00E0 " + format$1(slot.end, "HH'h'mm") }))); })),
-                React__default.createElement(core$1.Box, { p: 1 },
-                    React__default.createElement(core$1.Button, { variant: !onSalesProcess ? 'contained' : 'outlined', color: "primary", onClick: changeSlots }, t('change')))))),
-        React__default.createElement(core$1.Box, { my: 2 },
-            React__default.createElement(core$1.Divider, null)),
-        voluntaryFor && voluntaryFor.length > 0 && (React__default.createElement(core$1.Box, null,
-            React__default.createElement(core$1.Typography, { align: "center" }, t(shortTKey$5 + ".end.voluntaryDetails")),
-            React__default.createElement(core$1.List, null, voluntaryFor.map(function (user) { return (React__default.createElement(InNeedUserListItem, { key: user.id, user: user, userInfos: ['adress', 'email', 'phone'] })); })))),
-        mode === 'voluntary' && inNeedUsers && inNeedUsers.length > 0 && (React__default.createElement(core$1.Box, { p: 1, display: "flex", justifyContent: "center" },
-            React__default.createElement(core$1.Button, { variant: !onSalesProcess ? 'contained' : 'outlined', color: "primary", onClick: addInNeeds }, t('add')))),
-        React__default.createElement(core$1.Box, { my: 2 },
-            React__default.createElement(core$1.Divider, null)),
-        React__default.createElement(core$1.Box, { display: "flex", justifyContent: "center" },
-            React__default.createElement(core$1.Button, { variant: onSalesProcess ? 'contained' : 'outlined', color: onSalesProcess ? 'primary' : 'default', onClick: close }, t(onSalesProcess ? 'continue' : 'close')))));
-};
-
-var UserDistribSlotsSelectorView = function (_a) {
-    var _b = _a.onSalesProcess, onSalesProcess = _b === void 0 ? false : _b;
-    var _c = useViewCtx(), currentStep = _c.currentStep, open = _c.open, loading = _c.loading, error = _c.error, distribMode = _c.distribMode, mode = _c.mode, slots = _c.slots, inNeedUsers = _c.inNeedUsers, registeredSlotIds = _c.registeredSlotIds, voluntaryFor = _c.voluntaryFor, closeDialog = _c.closeDialog, back = _c.back, selectMode = _c.selectMode, selectPermissions = _c.selectPermissions, selectSlots = _c.selectSlots, selectInNeedUsers = _c.selectInNeedUsers, changeSlots = _c.changeSlots, addInNeeds = _c.addInNeeds;
-    /** */
-    var renderStep = function () {
-        if (currentStep === 'loading' || loading)
-            return (React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
-                React__default.createElement(core$1.CircularProgress, null)));
-        switch (currentStep) {
-            case 'select-mode':
-                return React__default.createElement(ModeStep, { onSelect: selectMode });
-            case 'select-permissions':
-                return React__default.createElement(PermissionsStep, { onConfirm: selectPermissions, onCancel: back });
-            case 'select-slots':
-                return (React__default.createElement(SlotsStep, { slots: slots, isLastStep: mode === 'solo', onSelect: selectSlots, onCancel: distribMode === 'default' ? back : undefined }));
-            case 'select-inNeed':
-                return React__default.createElement(VoluntaryStep, { inNeedUsers: inNeedUsers, onConfirm: selectInNeedUsers, onCancel: back });
-            case 'summary':
-                return (React__default.createElement(SummaryStep, { mode: mode, slots: slots, registeredSlotIds: registeredSlotIds, voluntaryFor: voluntaryFor, inNeedUsers: inNeedUsers, onSalesProcess: onSalesProcess, changeSlots: changeSlots, addInNeeds: addInNeeds, close: closeDialog }));
-            case 'resolved':
-                return React__default.createElement("div", null, "resolved");
-            default:
-                return React__default.createElement(React__default.Fragment, null);
-        }
-    };
-    /** */
-    return (React__default.createElement(MasterDialog, { open: open, canClose: loading, onClose: closeDialog },
-        error && (React__default.createElement(core$1.Box, { p: 2 },
-            React__default.createElement(lab.Alert, { severity: "error" }, error))),
-        renderStep()));
-};
-var UserDistribSlotsSelectorView$1 = withNeolithicProvider(withi18n(function (_a) {
-    var distribId = _a.distribId, onRegister = _a.onRegister, onCancel = _a.onCancel, onSalesProcess = _a.onSalesProcess;
-    return (React__default.createElement(ViewCtxProvider, { distribId: distribId, onRegister: onRegister, onCancel: onCancel },
-        React__default.createElement(UserDistribSlotsSelectorView, { onSalesProcess: onSalesProcess })));
-}));
-
-var Print = createCommonjsModule(function (module, exports) {
-
->>>>>>> master
 
 var lib = createCommonjsModule(function (module, exports) {
 
@@ -43443,7 +42749,6 @@ var MangopayLegalUserCard = function (_a) {
                 })))));
 };
 
-<<<<<<< HEAD
 var tFile$a = 'pro/mangopay';
 var tKey$1 = 'config.infoCard';
 var MangopayInfoCard = function (_a) {
@@ -43466,339 +42771,6 @@ var MangopayInfoCard = function (_a) {
                         React__default.createElement("span", null, t('alert.s2'))))),
             isRegular && (React__default.createElement(core$1.Box, { mt: 2 },
                 React__default.createElement(lab.Alert, { severity: "success" }, t('regular')))))));
-=======
-var TwoColumnsGrid = function (_a) {
-    var left = _a.left, right = _a.right;
-    var theme = core$1.useTheme();
-    var matches = core$1.useMediaQuery(theme.breakpoints.up('sm'));
-    /** */
-    return (React__default.createElement(core$1.Grid, { container: true, spacing: matches ? 2 : 0 },
-        React__default.createElement(core$1.Grid, { item: true, sm: 6, xs: 12 }, left),
-        React__default.createElement(core$1.Grid, { item: true, sm: 6, xs: 12 }, right)));
-};
-
-var CustomTextField$1 = withHelperTextTranslation(core$1.TextField, formikMaterialUi.fieldToTextField);
-var SimpleField = function (_a) {
-    var name = _a.name, label = _a.label, _b = _a.required, required = _b === void 0 ? true : _b, other = __rest(_a, ["name", "label", "required"]);
-    return (React__default.createElement(formik.Field, __assign({ fullWidth: true, margin: "normal", variant: "outlined", name: name, label: label, required: required, component: CustomTextField$1 }, other)));
-};
-
-var URL = '/data/<LOCALE>/iso-3166-1.json';
-var ISO31661Selector = function (_a) {
-    var defaultValue = _a.defaultValue, _b = _a.format, format = _b === void 0 ? 'full-iso' : _b, autocompleteProps = _a.autocompleteProps, textFieldProps = _a.textFieldProps, onChange = _a.onChange;
-    var t = useTranslation().t;
-    var _c = React__default.useState(false), loading = _c[0], toggleLoading = _c[1];
-    var _d = React__default.useState(), error = _d[0], setError = _d[1];
-    var _f = React__default.useState(undefined), data = _f[0], setData = _f[1];
-    /** */
-    var onAutocompleteChange = function (_e, value) {
-        if (!value) {
-            onChange(null);
-            return;
-        }
-        if (format === 'full-iso') {
-            onChange(value);
-            return;
-        }
-        // @ts-ignore
-        onChange(value[format]);
-    };
-    /** */
-    React__default.useEffect(function () {
-        var active = true;
-        var load = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var url, d, err_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        toggleLoading(true);
-                        setError(undefined);
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, 4, 5]);
-                        url = URL.replace('<LOCALE>', 'fr');
-                        url = url.startsWith('http') ? url : "" + window.location.origin + url;
-                        return [4 /*yield*/, fetch(url).then(function (res) {
-                                if (!res.ok)
-                                    throw new Error(res.statusText);
-                                return res.json();
-                            })];
-                    case 2:
-                        d = _a.sent();
-                        if (!active)
-                            return [2 /*return*/];
-                        setData(d);
-                        return [3 /*break*/, 5];
-                    case 3:
-                        err_1 = _a.sent();
-                        if (!active)
-                            return [2 /*return*/];
-                        setError(t('error', { message: err_1.message }));
-                        return [3 /*break*/, 5];
-                    case 4:
-                        if (active) {
-                            toggleLoading(false);
-                        }
-                        return [7 /*endfinally*/];
-                    case 5: return [2 /*return*/];
-                }
-            });
-        }); };
-        load();
-        return function () {
-            active = false;
-        };
-    }, []);
-    /** */
-    var getDefaultValue = function () {
-        if (!defaultValue)
-            return undefined;
-        if (typeof defaultValue === 'number') {
-            return data === null || data === void 0 ? void 0 : data.find(function (d) { return d.id === defaultValue; });
-        }
-        if (typeof defaultValue === 'string') {
-            return data === null || data === void 0 ? void 0 : data.find(function (d) { return d.name === defaultValue || d.alpha2 === defaultValue || d.alpha3 === defaultValue; });
-        }
-        return defaultValue;
-    };
-    var getOptionLabel = function (option) {
-        return option.name;
-    };
-    var getOptionSelected = function (option, value) {
-        if (!value)
-            return false;
-        return option.id === value.id;
-    };
-    var renderInput = function (params) {
-        return (React__default.createElement(TextField, __assign({ variant: "outlined" }, textFieldProps, params, { inputProps: __assign(__assign({}, textFieldProps === null || textFieldProps === void 0 ? void 0 : textFieldProps.inputProps), params.inputProps) })));
-    };
-    /** */
-    if (error) {
-        return (React__default.createElement(core$1.Box, null,
-            React__default.createElement(lab.Alert, { severity: "error" }, error)));
-    }
-    if (loading || !data)
-        return (React__default.createElement(core$1.Box, null,
-            React__default.createElement(core$1.CircularProgress, null)));
-    return (React__default.createElement(React__default.Fragment, null,
-        React__default.createElement(Autocomplete, __assign({}, autocompleteProps, { defaultValue: getDefaultValue(), options: data, getOptionLabel: getOptionLabel, getOptionSelected: getOptionSelected, renderInput: renderInput, onChange: onAutocompleteChange }))));
-};
-
-var MangopayConfigCardHeader = function (_a) {
-    var icon = _a.icon, title = _a.title, actions = _a.actions;
-    return (React__default.createElement(core$1.CardHeader, { title: React__default.createElement(core$1.Box, { display: "flex", justifyContent: "space-between", alignItems: "center" },
-            React__default.createElement(core$1.Box, { display: "flex", alignItems: "center" },
-                icon && (React__default.createElement(core$1.Box, { mr: 1, display: "flex", alignItems: "center" }, icon)),
-                title && React__default.createElement(core$1.Typography, { variant: "h5" }, title)),
-            actions) }));
-};
-
-var FormTitle = function (_a) {
-    var label = _a.label, _b = _a.mt, mt = _b === void 0 ? 2 : _b;
-    return (React__default.createElement(core$1.Box, { mb: 2, mt: mt },
-        React__default.createElement(core$1.Typography, { variant: "h6" }, label)));
-};
-
-var tFile$9 = 'pro/mangopay';
-var tKey = 'config.legalUserCard';
-var MangopayLegalUserCard = function (_a) {
-    var group = _a.group, defaultLegalRepr = _a.defaultLegalRepr, open = _a.open, disabledActions = _a.disabledActions, onTogglePanel = _a.onTogglePanel, onSubmit = _a.onSubmit, onSubmitComplete = _a.onSubmitComplete, onSubmitFail = _a.onSubmitFail;
-    var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
-    var createMangopayLegalUser = useCreateMangopayLegalUserMutation()[0];
-    var updateMangopayLegalUser = useUpdateMangopayLegalUserMutation()[0];
-    /** TRANS */
-    var _t = useTranslation(['translation', 'yup', tFile$9]).t;
-    var t = function (key, options) { return _t(tFile$9 + ":" + tKey + "." + key, options); };
-    var tForm = function (key, options) { return _t(tFile$9 + ":" + tKey + ".form." + key, options); };
-    var tYup = function (key, values) { return _t("yup:" + key, values); };
-    /** COMPUTED */
-    var legalUser = (_b = group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
-    var isRegular = (legalUser === null || legalUser === void 0 ? void 0 : legalUser.KYCLevel) === MangopayKycLevel.REGULAR;
-    /** */
-    var initialValues = {
-        Name: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.Name) || '',
-        LegalPersonType: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalPersonType) || MangopayLegalPersonType.ORGANIZATION,
-        Email: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.Email) || '',
-        CompanyNumber: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.CompanyNumber) || '',
-        LegalRepresentativeFirstName: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeFirstName) || defaultLegalRepr.firstName || '',
-        LegalRepresentativeLastName: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeLastName) || defaultLegalRepr.lastName || '',
-        LegalRepresentativeEmail: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeEmail) || defaultLegalRepr.email || '',
-        LegalRepresentativeBirthday: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeBirthday) || defaultLegalRepr.birthDate || new Date(),
-        LegalRepresentativeNationality: ((_c = legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeNationality) === null || _c === void 0 ? void 0 : _c.toLocaleLowerCase()) || ((_d = defaultLegalRepr.nationality) === null || _d === void 0 ? void 0 : _d.toLocaleLowerCase()) ||
-            '',
-        LegalRepresentativeCountryOfResidence: ((_e = legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeCountryOfResidence) === null || _e === void 0 ? void 0 : _e.toLocaleLowerCase()) || ((_f = defaultLegalRepr.countryOfResidence) === null || _f === void 0 ? void 0 : _f.toLocaleLowerCase()) ||
-            '',
-        LegalRepresentativeAddress: {
-            AddressLine1: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.AddressLine1) || defaultLegalRepr.address1 || '',
-            AddressLine2: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.AddressLine2) || defaultLegalRepr.address2 || '',
-            City: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.City) || defaultLegalRepr.city || '',
-            PostalCode: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.PostalCode) || defaultLegalRepr.zipCode || '',
-            Country: ((_g = legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.Country) === null || _g === void 0 ? void 0 : _g.toLocaleLowerCase()) || ((_h = defaultLegalRepr.countryOfResidence) === null || _h === void 0 ? void 0 : _h.toLocaleLowerCase()) ||
-                '',
-        },
-        HeadquartersAddress: {
-            AddressLine1: ((_j = legalUser === null || legalUser === void 0 ? void 0 : legalUser.HeadquartersAddress) === null || _j === void 0 ? void 0 : _j.AddressLine1) || '',
-            AddressLine2: ((_k = legalUser === null || legalUser === void 0 ? void 0 : legalUser.HeadquartersAddress) === null || _k === void 0 ? void 0 : _k.AddressLine2) || '',
-            City: ((_l = legalUser === null || legalUser === void 0 ? void 0 : legalUser.HeadquartersAddress) === null || _l === void 0 ? void 0 : _l.City) || '',
-            PostalCode: ((_m = legalUser === null || legalUser === void 0 ? void 0 : legalUser.HeadquartersAddress) === null || _m === void 0 ? void 0 : _m.PostalCode) || '',
-            Country: ((_p = (_o = legalUser === null || legalUser === void 0 ? void 0 : legalUser.HeadquartersAddress) === null || _o === void 0 ? void 0 : _o.Country) === null || _p === void 0 ? void 0 : _p.toLocaleLowerCase()) || '',
-        },
-    };
-    /** */
-    // eslint-disable-next-line no-underscore-dangle
-    var _onSubmit = function (values, bag) { return __awaiter(void 0, void 0, void 0, function () {
-        var err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    onSubmit();
-                    bag.setStatus(undefined);
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 6, , 7]);
-                    if (!legalUser) return [3 /*break*/, 3];
-                    return [4 /*yield*/, updateMangopayLegalUser({
-                            variables: { input: __assign(__assign({}, values), { groupId: group.id }) },
-                            refetchQueries: ['MangopayGroupConfig'],
-                        })];
-                case 2:
-                    _a.sent();
-                    return [3 /*break*/, 5];
-                case 3: return [4 /*yield*/, createMangopayLegalUser({
-                        variables: { input: __assign({ groupId: group.id, legalReprId: defaultLegalRepr.id }, values) },
-                        refetchQueries: ['MangopayGroupConfig'],
-                    })];
-                case 4:
-                    _a.sent();
-                    _a.label = 5;
-                case 5:
-                    onSubmitComplete();
-                    return [3 /*break*/, 7];
-                case 6:
-                    err_1 = _a.sent();
-                    bag.setSubmitting(false);
-                    bag.setStatus(err_1);
-                    onSubmitFail();
-                    return [3 /*break*/, 7];
-                case 7: return [2 /*return*/];
-            }
-        });
-    }); };
-    /** */
-    return (React__default.createElement(core$1.Card, null,
-        React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(BusinessIcon, null), title: t('title'), actions: legalUser && (React__default.createElement(core$1.Box, null,
-                React__default.createElement(core$1.IconButton, { size: "small", disabled: disabledActions, onClick: function () {
-                        onTogglePanel(!open);
-                    } }, open ? React__default.createElement(ExpandLessIcon, null) : React__default.createElement(ExpandMoreIcon, null)))) }),
-        React__default.createElement(core$1.Collapse, { in: open },
-            React__default.createElement(core$1.CardContent, null,
-                isRegular && (React__default.createElement(core$1.Box, { mb: 2 },
-                    React__default.createElement(lab.Alert, { severity: "info" }, t('editAlert')))),
-                React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_11, onSubmit: _onSubmit }, function (formikProps) {
-                    var _a, _b, _c, _d, _e, _f, _g, _h;
-                    return (React__default.createElement(formik.Form, null,
-                        React__default.createElement(FormTitle, { label: tForm('structure'), mt: 0 }),
-                        formikProps.status && (React__default.createElement(core$1.Box, { p: 2 },
-                            React__default.createElement(GqlErrorAlert, { error: formikProps.status }))),
-                        React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "Name", label: tForm('structureName'), disabled: formikProps.isSubmitting || isRegular }), right: React__default.createElement(SimpleField, { name: "Email", label: tForm('structureEmail'), disabled: formikProps.isSubmitting || isRegular }) }),
-                        React__default.createElement(SimpleField, { name: "LegalPersonType", label: tForm('structureType'), select: true, required: true, disabled: formikProps.isSubmitting || isRegular },
-                            React__default.createElement(core$1.MenuItem, { value: MangopayLegalPersonType.ORGANIZATION }, tForm('ORGANIZATION')),
-                            React__default.createElement(core$1.MenuItem, { value: MangopayLegalPersonType.SOLETRADER }, tForm('SOLETRADER')),
-                            React__default.createElement(core$1.MenuItem, { value: MangopayLegalPersonType.BUSINESS }, tForm('BUSINESS'))),
-                        formikProps.values.LegalPersonType !== MangopayLegalPersonType.ORGANIZATION && (React__default.createElement(SimpleField, { name: "CompanyNumber", label: tForm('companyNumber'), disabled: formikProps.isSubmitting || isRegular })),
-                        React__default.createElement(FormTitle, { label: tForm('legalRepr') }),
-                        React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "LegalRepresentativeFirstName", label: _t('firstName'), disabled: formikProps.isSubmitting || isRegular }), right: React__default.createElement(SimpleField, { name: "LegalRepresentativeLastName", label: _t('lastName'), disabled: formikProps.isSubmitting || isRegular }) }),
-                        React__default.createElement(SimpleField, { name: "LegalRepresentativeEmail", label: _t('email'), disabled: formikProps.isSubmitting || isRegular }),
-                        React__default.createElement(pickers.DatePicker, { fullWidth: true, name: "LegalRepresentativeBirthday", margin: "normal", inputVariant: "outlined", disabled: formikProps.isSubmitting || isRegular, label: _t('birthDate'), format: "d MMM yyyy", openTo: "year", cancelLabel: _t('cancel'), error: Boolean(formikProps.touched.LegalRepresentativeBirthday && formikProps.errors.LegalRepresentativeBirthday), helperText: formikProps.touched.LegalRepresentativeBirthday &&
-                                yupHelperTextTranslator(tYup, formikProps.errors.LegalRepresentativeBirthday), required: true, value: formikProps.values.LegalRepresentativeBirthday, onChange: function (v) { return formikProps.setFieldValue('LegalRepresentativeBirthday', v); }, onClose: function () { return formikProps.setFieldTouched('LegalRepresentativeBirthday'); } }),
-                        React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || isRegular }, textFieldProps: {
-                                    margin: 'normal',
-                                    name: 'LegalRepresentativeNationality',
-                                    required: true,
-                                    label: _t('nationality'),
-                                    error: Boolean(formikProps.touched.LegalRepresentativeNationality &&
-                                        formikProps.errors.LegalRepresentativeNationality),
-                                    helperText: formikProps.touched.LegalRepresentativeNationality &&
-                                        yupHelperTextTranslator(tYup, formikProps.errors.LegalRepresentativeNationality),
-                                    onBlur: function () { return formikProps.setFieldTouched('LegalRepresentativeNationality'); },
-                                }, defaultValue: formikProps.values.LegalRepresentativeNationality || '', onChange: function (v) {
-                                    formikProps.setFieldTouched('LegalRepresentativeNationality');
-                                    formikProps.setFieldValue('LegalRepresentativeNationality', v || '');
-                                } }), right: React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || isRegular }, textFieldProps: {
-                                    margin: 'normal',
-                                    name: 'LegalRepresentativeCountryOfResidence',
-                                    required: true,
-                                    label: _t('countryOfResidence'),
-                                    error: Boolean(formikProps.touched.LegalRepresentativeCountryOfResidence &&
-                                        formikProps.errors.LegalRepresentativeCountryOfResidence),
-                                    helperText: formikProps.touched.LegalRepresentativeCountryOfResidence &&
-                                        yupHelperTextTranslator(tYup, formikProps.errors.LegalRepresentativeCountryOfResidence),
-                                    onBlur: function () { return formikProps.setFieldTouched('LegalRepresentativeCountryOfResidence'); },
-                                }, defaultValue: formikProps.values.LegalRepresentativeCountryOfResidence || '', onChange: function (v) {
-                                    formikProps.setFieldTouched('LegalRepresentativeCountryOfResidence');
-                                    formikProps.setFieldValue('LegalRepresentativeCountryOfResidence', v || '');
-                                } }) }),
-                        React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.AddressLine1", label: _t('address1'), disabled: formikProps.isSubmitting || isRegular }),
-                        React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.AddressLine2", label: _t('address2'), required: false, disabled: formikProps.isSubmitting || isRegular }),
-                        React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.City", label: _t('city'), disabled: formikProps.isSubmitting || isRegular }), right: React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.PostalCode", label: _t('zipCode'), disabled: formikProps.isSubmitting || isRegular }) }),
-                        React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || isRegular }, textFieldProps: {
-                                margin: 'normal',
-                                name: 'LegalRepresentativeAddress.Country',
-                                required: true,
-                                label: _t('country'),
-                                error: Boolean(((_a = formikProps.touched.LegalRepresentativeAddress) === null || _a === void 0 ? void 0 : _a.Country) && ((_b = formikProps.errors.LegalRepresentativeAddress) === null || _b === void 0 ? void 0 : _b.Country)),
-                                helperText: ((_c = formikProps.touched.LegalRepresentativeAddress) === null || _c === void 0 ? void 0 : _c.Country) &&
-                                    yupHelperTextTranslator(tYup, (_d = formikProps.errors.LegalRepresentativeAddress) === null || _d === void 0 ? void 0 : _d.Country),
-                                onBlur: function () { return formikProps.setFieldTouched('LegalRepresentativeAddress.Country'); },
-                            }, defaultValue: formikProps.values.LegalRepresentativeAddress.Country || '', onChange: function (v) {
-                                formikProps.setFieldTouched('LegalRepresentativeAddress.Country');
-                                formikProps.setFieldValue('LegalRepresentativeAddress.Country', v || '');
-                            } }),
-                        React__default.createElement(FormTitle, { label: tForm('headquarters') }),
-                        React__default.createElement(SimpleField, { name: "HeadquartersAddress.AddressLine1", label: tForm('headquartersAddress.address1'), disabled: formikProps.isSubmitting || isRegular }),
-                        React__default.createElement(SimpleField, { name: "HeadquartersAddress.AddressLine2", label: tForm('headquartersAddress.address2'), required: false, disabled: formikProps.isSubmitting || isRegular }),
-                        React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "HeadquartersAddress.City", label: tForm('headquartersAddress.city'), disabled: formikProps.isSubmitting || isRegular }), right: React__default.createElement(SimpleField, { name: "HeadquartersAddress.PostalCode", label: tForm('headquartersAddress.postalCode'), disabled: formikProps.isSubmitting || isRegular }) }),
-                        React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || isRegular }, textFieldProps: {
-                                margin: 'normal',
-                                name: 'HeadquartersAddress.Country',
-                                required: true,
-                                label: tForm('headquartersAddress.country'),
-                                error: Boolean(((_e = formikProps.touched.HeadquartersAddress) === null || _e === void 0 ? void 0 : _e.Country) && ((_f = formikProps.errors.HeadquartersAddress) === null || _f === void 0 ? void 0 : _f.Country)),
-                                helperText: ((_g = formikProps.touched.HeadquartersAddress) === null || _g === void 0 ? void 0 : _g.Country) &&
-                                    yupHelperTextTranslator(tYup, (_h = formikProps.errors.HeadquartersAddress) === null || _h === void 0 ? void 0 : _h.Country),
-                                onBlur: function () { return formikProps.setFieldTouched('HeadquartersAddress.Country'); },
-                            }, defaultValue: initialValues.HeadquartersAddress.Country || '', onChange: function (v) {
-                                formikProps.setFieldTouched('HeadquartersAddress.Country');
-                                formikProps.setFieldValue('HeadquartersAddress.Country', v || '');
-                            } }),
-                        !isRegular && (React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
-                            React__default.createElement(core$1.Button, { variant: "contained", color: "primary", type: "submit", disabled: formikProps.isSubmitting }, _t('validateBtn'))))));
-                })))));
-};
-
-var tFile$a = 'pro/mangopay';
-var tKey$1 = 'config.infoCard';
-var MangopayInfoCard = function (_a) {
-    var isRegular = _a.isRegular;
-    /** TRANS */
-    var _t = useTranslation([tFile$a]).t;
-    var t = function (key, options) { return _t(tFile$a + ":" + tKey$1 + "." + key, options); };
-    /** */
-    return (React__default.createElement(core$1.Card, null,
-        React__default.createElement(core$1.CardContent, null,
-            React__default.createElement("img", { height: "48px", src: "https://www.mangopay.com/wp-content/themes/mangopay/assets/images/mangopay.svg", alt: "mangopay-logo" })),
-        React__default.createElement(core$1.CardContent, null,
-            !isRegular && (React__default.createElement(core$1.Box, { mb: 2 },
-                React__default.createElement(core$1.Typography, null, t('p1')))),
-            React__default.createElement(core$1.Box, null,
-                React__default.createElement(lab.Alert, { severity: "info" },
-                    React__default.createElement(core$1.Box, null,
-                        React__default.createElement("span", null, t('alert.s1')),
-                        React__default.createElement("a", { href: t('alert.guideLinkTarget'), target: "_blank", rel: "noopener noreferrer" }, t('alert.guildeLinkLabel')),
-                        React__default.createElement("span", null, t('alert.s2'))))),
-            isRegular && (React__default.createElement(core$1.Box, { mt: 2 },
-                React__default.createElement(lab.Alert, { severity: "success" }, t('regular')))))));
->>>>>>> master
 };
 
 var Face = createCommonjsModule(function (module, exports) {
@@ -43962,7 +42934,6 @@ exports.default = _default;
 
 var FolderIcon = unwrapExports(Folder);
 
-<<<<<<< HEAD
 var getCurrentKycDocumentOfType = function (kycDocuments, type) {
     var res = kycDocuments.filter(function (d) { return d.Type === type; }).sort(function (d1, d2) { return d2.Id - d1.Id; });
     return res.length > 0 ? res[0] : undefined;
@@ -43991,36 +42962,6 @@ var formatMangopayBankAccount = function (bankAccount) {
 };
 var formatMangopayAddress = function (address) {
     return address.AddressLine1 + " " + address.City + " " + address.Country;
-=======
-var getCurrentKycDocumentOfType = function (kycDocuments, type) {
-    var res = kycDocuments.filter(function (d) { return d.Type === type; }).sort(function (d1, d2) { return d2.Id - d1.Id; });
-    return res.length > 0 ? res[0] : undefined;
-};
-var allMangopayKycDocumentStatusesArePending = function (_a) {
-    var LegalPersonType = _a.LegalPersonType, KycDocuments = _a.KycDocuments;
-    if (!LegalPersonType)
-        return false;
-    if (!KycDocuments)
-        return false;
-    var currentDocs = dist_6(LegalPersonType).map(function (type) {
-        return getCurrentKycDocumentOfType(KycDocuments, type);
-    });
-    if (currentDocs.indexOf(undefined) !== -1)
-        return false;
-    if (currentDocs.find(function (d) { return (d === null || d === void 0 ? void 0 : d.Status) !== MangopayKycDocumentStatus.VALIDATION_ASKED; }))
-        return false;
-    return true;
-};
-var formatMangopayBankAccount = function (bankAccount) {
-    var res = bankAccount.OwnerName;
-    if (bankAccount.Type === MangopayBankAccountType.IBAN) {
-        res = res + " - " + bankAccount.IBAN;
-    }
-    return res;
-};
-var formatMangopayAddress = function (address) {
-    return address.AddressLine1 + " " + address.City + " " + address.Country;
->>>>>>> master
 };
 
 var Add = createCommonjsModule(function (module, exports) {
@@ -44111,7 +43052,6 @@ exports.default = _default;
 
 var PictureAsPdfIcon = unwrapExports(PictureAsPdf);
 
-<<<<<<< HEAD
 var uniqueId = 0;
 var getId = function () {
     uniqueId += 1;
@@ -44273,169 +43213,6 @@ var MangopayKycDocumentsCard = function (_a) {
                                     return acc;
                                 }, false), onClick: onSendNextDocuments }, _t('validate'))))))),
         loading && React__default.createElement(core$1.LinearProgress, null)));
-=======
-var uniqueId = 0;
-var getId = function () {
-    uniqueId += 1;
-    return "" + uniqueId;
-};
-var useStyles$4 = core$1.makeStyles(function () { return ({
-    input: {
-        display: 'none !important',
-    },
-}); });
-var FileIcon = function (_a) {
-    var file = _a.file, props = __rest(_a, ["file"]);
-    if (file.type && file.type.startsWith('image/'))
-        return React__default.createElement(ImageIcon, __assign({}, props));
-    if (file.type && file.type === 'application/pdf')
-        return React__default.createElement(PictureAsPdfIcon, __assign({}, props));
-    return React__default.createElement(HelpIcon, __assign({}, props));
-};
-var tFile$c = 'pro/mangopay';
-var tKey$3 = tFile$c + ":config.documentsCard.form";
-var MangopayKycFileField = function (_a) {
-    var label = _a.label, value = _a.value, disabled = _a.disabled, onChange = _a.onChange;
-    var inputRef = React__default.useRef(null);
-    /** TRANS */
-    var _t = useTranslation(['translation', tFile$c], { useSuspense: false }).t;
-    var t = function (s) { return _t(tKey$3 + "." + s); };
-    /** STATES */
-    var _b = React__default.useState(false), fileMaxSizeDialogOpen = _b[0], setFileMaxSizeDialogOpen = _b[1];
-    /** STYLES */
-    var cs = useStyles$4();
-    /** */
-    var id = getId();
-    /** */
-    var closeDialog = function () {
-        setFileMaxSizeDialogOpen(false);
-    };
-    /** */
-    var onInputChange = function (e) {
-        if (!e.target.files)
-            return;
-        var file = e.target.files[0];
-        if (file.size > 7 * 1000 * 1000) {
-            setFileMaxSizeDialogOpen(true);
-            return;
-        }
-        onChange(__spreadArrays(value, [file]));
-        if (inputRef.current) {
-            inputRef.current.value = '';
-        }
-    };
-    /** */
-    return (React__default.createElement(React__default.Fragment, null,
-        React__default.createElement(core$1.Box, { onClick: function () {
-                if (value.length === 0 && inputRef.current) {
-                    inputRef.current.click();
-                }
-            } },
-            React__default.createElement(core$1.FormControl, { fullWidth: true, margin: "normal", variant: "outlined" },
-                label && React__default.createElement(core$1.InputLabel, { htmlFor: "file-field-" + id }, label),
-                React__default.createElement(core$1.OutlinedInput, { id: "file-field-" + id, label: label, disabled: true, startAdornment: value.map(function (file) { return (React__default.createElement(core$1.Box, { key: file.name, mr: 1 },
-                        React__default.createElement(core$1.Chip, { label: file.name, icon: React__default.createElement(FileIcon, { file: file }), onDelete: disabled
-                                ? undefined
-                                : function () {
-                                    onChange(value.filter(function (f) { return file !== f; }));
-                                } }))); }), endAdornment: React__default.createElement(core$1.IconButton, { disabled: disabled, onClick: function (e) {
-                            e.preventDefault();
-                            if (inputRef.current) {
-                                inputRef.current.click();
-                            }
-                        } },
-                        React__default.createElement(AddIcon, null)) }))),
-        React__default.createElement("input", { ref: inputRef, className: cs.input, type: "file", accept: "image/*,application/pdf", onChange: onInputChange }),
-        React__default.createElement(core$1.Dialog, { open: fileMaxSizeDialogOpen, onClose: closeDialog },
-            React__default.createElement(core$1.DialogTitle, null, t('tooLargeFileAlert.title')),
-            React__default.createElement(core$1.DialogContent, null,
-                React__default.createElement(core$1.DialogContentText, null, t('tooLargeFileAlert.content'))),
-            React__default.createElement(core$1.DialogActions, null,
-                React__default.createElement(core$1.Button, { onClick: closeDialog, color: "primary", autoFocus: true }, t('tooLargeFileAlert.btn'))))));
-};
-
-var tFile$d = 'pro/mangopay';
-var tKey$4 = 'config.documentsCard';
-var getAlertSeverity = function (docStatus) {
-    if (docStatus === MangopayKycDocumentStatus.REFUSED)
-        return 'error';
-    if (docStatus === MangopayKycDocumentStatus.VALIDATED)
-        return 'success';
-    return 'info';
-};
-var MangopayKycDocumentsCard = function (_a) {
-    var group = _a.group, open = _a.open, disabledActions = _a.disabledActions, onTogglePanel = _a.onTogglePanel;
-    var _b;
-    var _c = useCreateMangopayKycDocumentsMutation(), createMangopayKycDocuments = _c[0], _d = _c[1], loading = _d.loading, error = _d.error;
-    /** TRANS */
-    var _t = useTranslation([tFile$d]).t;
-    var t = function (key, options) { return _t(tFile$d + ":" + tKey$4 + "." + key, options); };
-    var tForm = function (key, options) { return _t(tFile$d + ":" + tKey$4 + ".form." + key, options); };
-    /** STATES */
-    var _e = React__default.useState({}), documents = _e[0], setDocuments = _e[1];
-    /** COMPUTED */
-    var legalUser = (_b = group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
-    /** */
-    var onSendNextDocuments = function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, createMangopayKycDocuments({
-                        variables: {
-                            input: {
-                                groupId: group.id,
-                                documents: Object.keys(documents).map(function (key) { return ({
-                                    Type: key,
-                                    files: documents[key],
-                                }); }),
-                            },
-                        },
-                        refetchQueries: ['MangopayGroupConfig'],
-                    })];
-                case 1:
-                    _a.sent();
-                    setDocuments({});
-                    return [2 /*return*/];
-            }
-        });
-    }); };
-    /** */
-    if (!legalUser)
-        return React__default.createElement(React__default.Fragment, null);
-    return (React__default.createElement(core$1.Card, null,
-        React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(FolderIcon, null), title: t('kycTitle'), actions: legalUser && (React__default.createElement(core$1.Box, null,
-                React__default.createElement(core$1.IconButton, { size: "small", disabled: disabledActions, onClick: function () {
-                        onTogglePanel(!open);
-                    } }, open ? React__default.createElement(ExpandLessIcon, null) : React__default.createElement(ExpandMoreIcon, null)))) }),
-        React__default.createElement(core$1.Collapse, { in: open },
-            React__default.createElement(core$1.CardContent, null,
-                error && (React__default.createElement(core$1.Box, { my: 2 },
-                    React__default.createElement(GqlErrorAlert, { error: error }))),
-                allMangopayKycDocumentStatusesArePending(legalUser) ? (React__default.createElement(lab.Alert, { severity: "info" }, t('allPending'))) : (React__default.createElement(React__default.Fragment, null,
-                    dist_6(legalUser.LegalPersonType).map(function (documentType) {
-                        var last = getCurrentKycDocumentOfType(legalUser.KycDocuments || [], documentType);
-                        return (React__default.createElement(core$1.Box, { key: documentType },
-                            React__default.createElement(FormTitle, { label: tForm(documentType) }),
-                            last && (React__default.createElement(core$1.Box, { my: 2 },
-                                React__default.createElement(lab.Alert, { severity: getAlertSeverity(last.Status) },
-                                    React__default.createElement(core$1.Typography, null,
-                                        React__default.createElement("span", null, tForm(last.Status)),
-                                        last.RefusedReasonType && React__default.createElement("span", null, " : " + tForm(last.RefusedReasonType))),
-                                    last.Status === MangopayKycDocumentStatus.REFUSED && (React__default.createElement(core$1.Typography, null, last.RefusedReasonMessage))))),
-                            (!last || last.Status === MangopayKycDocumentStatus.REFUSED) && (React__default.createElement(MangopayKycFileField, { label: tForm('addFilesLabel'), value: documents ? documents[documentType] || [] : [], disabled: loading, onChange: function (files) {
-                                    var n = __assign({}, documents);
-                                    n[documentType] = files;
-                                    setDocuments(n);
-                                } }))));
-                    }),
-                    React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
-                        React__default.createElement(core$1.Button, { variant: "contained", color: "primary", disabled: loading ||
-                                !Object.keys(documents).reduce(function (acc, key) {
-                                    if (documents[key].length > 0)
-                                        return true;
-                                    return acc;
-                                }, false), onClick: onSendNextDocuments }, _t('validate'))))))),
-        loading && React__default.createElement(core$1.LinearProgress, null)));
->>>>>>> master
 };
 
 var People = createCommonjsModule(function (module, exports) {
@@ -44460,7 +43237,6 @@ exports.default = _default;
 
 var PeopleIcon = unwrapExports(People);
 
-<<<<<<< HEAD
 var ProgressButton = function (_a) {
     var _b = _a.loading, loading = _b === void 0 ? false : _b, variant = _a.variant, color = _a.color, disabled = _a.disabled, children = _a.children, circularProgressProps = _a.circularProgressProps, other = __rest(_a, ["loading", "variant", "color", "disabled", "children", "circularProgressProps"]);
     var theme = core$1.useTheme();
@@ -44724,271 +43500,6 @@ var MangopayUbosCard = function (_a) {
             React__default.createElement(DialogTitleClosable, { disableCloseBtn: loading, onClose: closeForm }, tForm('ubo')),
             React__default.createElement(core$1.DialogContent, null,
                 React__default.createElement(MangopayUboForm, { ubo: uboSelected, onSubmit: onUboFormSubmit })))));
-=======
-var ProgressButton = function (_a) {
-    var _b = _a.loading, loading = _b === void 0 ? false : _b, variant = _a.variant, color = _a.color, disabled = _a.disabled, children = _a.children, circularProgressProps = _a.circularProgressProps, other = __rest(_a, ["loading", "variant", "color", "disabled", "children", "circularProgressProps"]);
-    var theme = core$1.useTheme();
-    /** */
-    return (React__default.createElement(core$1.Button, __assign({}, other, { variant: variant, color: color, disabled: disabled || loading }),
-        React__default.createElement(core$1.Box, { position: "relative" },
-            React__default.createElement(core$1.Box, { visibility: loading ? 'hidden' : 'visible' }, children),
-            loading && (React__default.createElement(core$1.Box, { position: "absolute", top: 0, bottom: 0, left: 0, right: 0, display: "flex", justifyContent: "center", alignItems: "center" },
-                React__default.createElement(core$1.CircularProgress, __assign({ color: color === 'default' ? 'primary' : color, size: theme.typography.button.fontSize }, circularProgressProps)))))));
-};
-
-var DialogTitleActions = function (_a) {
-    var actions = _a.actions, disableTypography = _a.disableTypography, children = _a.children, otherProps = __rest(_a, ["actions", "disableTypography", "children"]);
-    return (React__default.createElement(core$1.DialogTitle, __assign({ disableTypography: true }, otherProps),
-        React__default.createElement(core$1.Box, { display: "flex", justifyContent: "space-between", alignItems: "center" },
-            disableTypography ? (children) : (React__default.createElement(core$1.Typography, { variant: "h6", component: "h2" }, children)),
-            actions)));
-};
-
-var DialogTitleClosable = function (_a) {
-    var children = _a.children, _b = _a.disableTypography, disableTypography = _b === void 0 ? false : _b, _c = _a.disableCloseBtn, disableCloseBtn = _c === void 0 ? false : _c, onClose = _a.onClose;
-    var renderActions = function () {
-        return (React__default.createElement(core$1.Box, { display: "flex", alignItems: "center" }, onClose && (React__default.createElement(core$1.IconButton, { disabled: disableCloseBtn, onClick: onClose },
-            React__default.createElement(CloseIcon, null)))));
-    };
-    return (React__default.createElement(DialogTitleActions, { disableTypography: disableTypography, actions: renderActions() }, children));
-};
-
-var MangopayUboForm = function (_a) {
-    var ubo = _a.ubo, onSubmit = _a.onSubmit;
-    var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
-    /** TRANS */
-    var _t = useTranslation(['translation', 'yup'], { useSuspense: false }).t;
-    var tYup = function (s, values) { return _t("yup:" + s, values); };
-    /** FORM VALUES */
-    var initialValues = {
-        FirstName: (ubo === null || ubo === void 0 ? void 0 : ubo.FirstName) || '',
-        LastName: (ubo === null || ubo === void 0 ? void 0 : ubo.LastName) || '',
-        Address: {
-            AddressLine1: ((_b = ubo === null || ubo === void 0 ? void 0 : ubo.Address) === null || _b === void 0 ? void 0 : _b.AddressLine1) || '',
-            AddressLine2: ((_c = ubo === null || ubo === void 0 ? void 0 : ubo.Address) === null || _c === void 0 ? void 0 : _c.AddressLine2) || '',
-            City: ((_d = ubo === null || ubo === void 0 ? void 0 : ubo.Address) === null || _d === void 0 ? void 0 : _d.City) || '',
-            Country: ((_f = (_e = ubo === null || ubo === void 0 ? void 0 : ubo.Address) === null || _e === void 0 ? void 0 : _e.Country) === null || _f === void 0 ? void 0 : _f.toLowerCase()) || '',
-            PostalCode: ((_g = ubo === null || ubo === void 0 ? void 0 : ubo.Address) === null || _g === void 0 ? void 0 : _g.PostalCode) || '',
-        },
-        Nationality: ((_h = ubo === null || ubo === void 0 ? void 0 : ubo.Nationality) === null || _h === void 0 ? void 0 : _h.toLowerCase()) || '',
-        Birthday: (ubo === null || ubo === void 0 ? void 0 : ubo.Birthday) ? new Date(ubo.Birthday) : new Date(),
-        Birthplace: {
-            City: ((_j = ubo === null || ubo === void 0 ? void 0 : ubo.Birthplace) === null || _j === void 0 ? void 0 : _j.City) || '',
-            Country: ((_l = (_k = ubo === null || ubo === void 0 ? void 0 : ubo.Birthplace) === null || _k === void 0 ? void 0 : _k.Country) === null || _l === void 0 ? void 0 : _l.toLowerCase()) || '',
-        },
-    };
-    console.log(ubo);
-    /** */
-    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_12, onSubmit: onSubmit }, function (formikProps) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
-        return (React__default.createElement(formik.Form, null,
-            formikProps.status && (React__default.createElement(core$1.Box, null,
-                React__default.createElement(lab.Alert, { severity: "error" }, formikProps.status))),
-            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "FirstName", label: _t('firstName') }), right: React__default.createElement(SimpleField, { name: "LastName", label: _t('LastName') }) }),
-            React__default.createElement(SimpleField, { name: "Address.AddressLine1", label: _t('address1') }),
-            React__default.createElement(SimpleField, { name: "Address.AddressLine2", label: _t('address2'), required: false }),
-            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "Address.City", label: _t('city') }), right: React__default.createElement(SimpleField, { name: "Address.PostalCode", label: _t('zipCode') }) }),
-            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting }, textFieldProps: {
-                        fullWidth: true,
-                        margin: 'normal',
-                        required: true,
-                        name: 'Address.Country',
-                        label: _t('country'),
-                        error: Boolean(((_a = formikProps.touched.Address) === null || _a === void 0 ? void 0 : _a.Country) && ((_b = formikProps.errors.Address) === null || _b === void 0 ? void 0 : _b.Country)),
-                        helperText: ((_c = formikProps.touched.Address) === null || _c === void 0 ? void 0 : _c.Country) &&
-                            yupHelperTextTranslator(tYup, (_d = formikProps.errors.Address) === null || _d === void 0 ? void 0 : _d.Country),
-                        onBlur: function () { return formikProps.setFieldTouched('Address.Country'); },
-                    }, defaultValue: ((_e = initialValues.Address) === null || _e === void 0 ? void 0 : _e.Country) || '', onChange: function (v) {
-                        formikProps.setFieldTouched('Address.Country');
-                        formikProps.setFieldValue('Address.Country', v || '');
-                    } }), right: React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting }, textFieldProps: {
-                        fullWidth: true,
-                        margin: 'normal',
-                        name: 'Nationality',
-                        required: true,
-                        label: _t('nationality'),
-                        error: Boolean(formikProps.touched.Nationality && formikProps.errors.Nationality),
-                        helperText: formikProps.touched.Nationality && yupHelperTextTranslator(tYup, formikProps.errors.Nationality),
-                        onBlur: function () { return formikProps.setFieldTouched('Nationality'); },
-                    }, defaultValue: initialValues.Nationality || '', onChange: function (v) {
-                        formikProps.setFieldTouched('Nationality');
-                        formikProps.setFieldValue('Nationality', v || '');
-                    } }) }),
-            React__default.createElement(pickers.DatePicker, { fullWidth: true, name: "birthDate", margin: "normal", inputVariant: "outlined", disabled: formikProps.isSubmitting, label: _t('birthDate'), format: "d MMM yyyy", openTo: "year", cancelLabel: _t('cancel'), error: Boolean(formikProps.touched.Birthday && formikProps.errors.Birthday), helperText: formikProps.touched.Birthday && yupHelperTextTranslator(tYup, formikProps.errors.Birthday), required: true, value: formikProps.values.Birthday, onChange: function (v) { return formikProps.setFieldValue('Birthday', v); }, onClose: function () { return formikProps.setFieldTouched('Birthday'); } }),
-            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "Birthplace.City", label: _t('city') }), right: React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting }, textFieldProps: {
-                        fullWidth: true,
-                        margin: 'normal',
-                        name: 'Birthplace.Country',
-                        required: true,
-                        label: _t('nationality'),
-                        error: Boolean(((_f = formikProps.touched.Birthplace) === null || _f === void 0 ? void 0 : _f.Country) && ((_g = formikProps.errors.Birthplace) === null || _g === void 0 ? void 0 : _g.Country)),
-                        helperText: ((_h = formikProps.touched.Birthplace) === null || _h === void 0 ? void 0 : _h.Country) &&
-                            yupHelperTextTranslator(tYup, (_j = formikProps.errors.Birthplace) === null || _j === void 0 ? void 0 : _j.Country),
-                        onBlur: function () { return formikProps.setFieldTouched('Birthplace.Country'); },
-                    }, defaultValue: ((_k = initialValues.Birthplace) === null || _k === void 0 ? void 0 : _k.Country) || '', onChange: function (v) {
-                        formikProps.setFieldTouched('NatiBirthplace.Countryonality');
-                        formikProps.setFieldValue('Birthplace.Country', v || '');
-                    } }) }),
-            React__default.createElement(core$1.Box, { mt: 2, p: 2, display: "flex", justifyContent: "center" },
-                React__default.createElement(core$1.Button, { type: "submit", variant: "contained", color: "primary", disabled: formikProps.isSubmitting }, _t('validate')))));
-    }));
-};
-
-var tFile$e = 'pro/mangopay';
-var tKey$5 = 'config.documentsCard';
-var MangopayUbosCard = function (_a) {
-    var group = _a.group, disabledActions = _a.disabledActions, open = _a.open, onTogglePanel = _a.onTogglePanel;
-    var _b;
-    var _c = useCreateMangopayUboDeclarationMutation(), createMangopayUboDeclaration = _c[0], _d = _c[1], createDeclarationLoaging = _d.loading, createDecalarationError = _d.error;
-    var _e = useCreateOrUpdateMangopayUboMutation(), createOrUpdateUbo = _e[0], _f = _e[1], createOrUpdateUboLoading = _f.loading, createOrUpdateUboError = _f.error;
-    var _g = useSubmitMangopayUboDeclarationMutation(), submitDeclaration = _g[0], _h = _g[1], submitDeclarationLoading = _h.loading, submitDeclarationError = _h.error;
-    /** TRANS */
-    var _t = useTranslation(['translation', tFile$e]).t;
-    var t = function (key, options) { return _t(tFile$e + ":" + tKey$5 + "." + key, options); };
-    var tForm = function (key, options) { return _t(tFile$e + ":" + tKey$5 + ".form." + key, options); };
-    /** STATES */
-    var _j = React__default.useState(false), formOpen = _j[0], setOpenForm = _j[1];
-    var _k = React__default.useState(), uboSelected = _k[0], setUboSelected = _k[1];
-    /** COMPUTED */
-    var loading = createDeclarationLoaging || createOrUpdateUboLoading || submitDeclarationLoading;
-    var error = createDecalarationError || createOrUpdateUboError || submitDeclarationError;
-    var legalUser = (_b = group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
-    var uboDeclarations = (legalUser === null || legalUser === void 0 ? void 0 : legalUser.UboDeclarations) || [];
-    var currentDeclaration = uboDeclarations.length > 0 ? uboDeclarations.slice().sort(function (d1, d2) { return d2.Id - d1.Id; })[0] : undefined;
-    /** */
-    var openForm = function (ubo) {
-        if (ubo)
-            setUboSelected(ubo);
-        setOpenForm(true);
-    };
-    var closeForm = function () {
-        setUboSelected(undefined);
-        setOpenForm(false);
-    };
-    var createDeclaration = function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, createMangopayUboDeclaration({
-                        variables: { input: { groupId: group.id } },
-                        refetchQueries: ['MangopayGroupConfig'],
-                    })];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); };
-    var onUboFormSubmit = function (values, bag) { return __awaiter(void 0, void 0, void 0, function () {
-        var err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (!currentDeclaration)
-                        return [2 /*return*/];
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, createOrUpdateUbo({
-                            variables: {
-                                input: __assign(__assign({}, values), { declarationId: currentDeclaration.Id, groupId: group.id, id: uboSelected === null || uboSelected === void 0 ? void 0 : uboSelected.Id }),
-                            },
-                            refetchQueries: ['MangopayGroupConfig'],
-                        })];
-                case 2:
-                    _a.sent();
-                    closeForm();
-                    return [3 /*break*/, 4];
-                case 3:
-                    err_1 = _a.sent();
-                    bag.setSubmitting(false);
-                    bag.setStatus(err_1.message);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
-            }
-        });
-    }); };
-    /** */
-    var onDeclarationSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (!currentDeclaration)
-                        return [2 /*return*/];
-                    return [4 /*yield*/, submitDeclaration({
-                            variables: { input: { groupId: group.id, declarationId: currentDeclaration.Id } },
-                            refetchQueries: ['MangopayGroupConfig'],
-                        })];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); };
-    /** */
-    var renderStatus = function (uboDeclaration) {
-        var Status = uboDeclaration.Status, Reason = uboDeclaration.Reason, Message = uboDeclaration.Message;
-        var formatStatus = function (s, refusedReasonType) {
-            var res = tForm(s);
-            // TODO: translate punctuation
-            if (refusedReasonType)
-                res = res + " : " + tForm(refusedReasonType);
-            return res;
-        };
-        var getSeverity = function (s) {
-            if (s === MangopayUboDeclarationStatus.REFUSED)
-                return 'error';
-            if (s === MangopayUboDeclarationStatus.INCOMPLETE)
-                return 'warning';
-            if (s === MangopayUboDeclarationStatus.VALIDATED)
-                return 'success';
-            return 'info';
-        };
-        /** */
-        if (Status === MangopayUboDeclarationStatus.CREATED)
-            return null;
-        return (React__default.createElement(core$1.Box, { p: 2 },
-            React__default.createElement(lab.Alert, { severity: getSeverity(Status) },
-                React__default.createElement(core$1.Typography, null, formatStatus(Status, Reason || undefined)),
-                Status === MangopayUboDeclarationStatus.REFUSED && React__default.createElement(core$1.Typography, null, Message))));
-    };
-    /** */
-    return (React__default.createElement(React__default.Fragment, null,
-        React__default.createElement(core$1.Card, null,
-            React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(PeopleIcon, null), title: t('uboTitle'), actions: legalUser && (React__default.createElement(core$1.Box, null,
-                    React__default.createElement(core$1.IconButton, { size: "small", disabled: disabledActions, onClick: function () {
-                            onTogglePanel(!open);
-                        } }, open ? React__default.createElement(ExpandLessIcon, null) : React__default.createElement(ExpandMoreIcon, null)))) }),
-            React__default.createElement(core$1.Collapse, { in: open },
-                React__default.createElement(React__default.Fragment, null,
-                    error && (React__default.createElement(core$1.Box, { p: 2 },
-                        React__default.createElement(GqlErrorAlert, { error: error }))),
-                    currentDeclaration && React__default.createElement(core$1.Box, { mt: 2 }, renderStatus(currentDeclaration)),
-                    (!currentDeclaration || currentDeclaration.Status === MangopayUboDeclarationStatus.REFUSED) && (React__default.createElement(core$1.CardContent, null,
-                        React__default.createElement(core$1.Box, { display: "flex", justifyContent: "center" },
-                            React__default.createElement(ProgressButton, { variant: "contained", color: "primary", loading: loading, onClick: createDeclaration }, t('createUboDeclaration'))))),
-                    currentDeclaration &&
-                        (currentDeclaration.Status === MangopayUboDeclarationStatus.CREATED ||
-                            currentDeclaration.Status === MangopayUboDeclarationStatus.INCOMPLETE) && (React__default.createElement(core$1.CardContent, null,
-                        currentDeclaration.Ubos && (React__default.createElement(core$1.List, null, currentDeclaration.Ubos.map(function (ubo) { return (React__default.createElement(core$1.ListItem, { key: ubo.Id },
-                            React__default.createElement(core$1.ListItemText, { primary: formatUboNames(ubo) }),
-                            React__default.createElement(core$1.ListItemSecondaryAction, null,
-                                React__default.createElement(core$1.IconButton, { onClick: function () {
-                                        openForm(ubo);
-                                    } },
-                                    React__default.createElement(EditIcon, null))))); }))),
-                        React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
-                            (!currentDeclaration.Ubos || currentDeclaration.Ubos.length < 4) && (React__default.createElement(core$1.Box, { mx: 1 },
-                                React__default.createElement(core$1.Button, { variant: "outlined", color: "primary", onClick: function () {
-                                        openForm();
-                                    } }, _t('add')))),
-                            currentDeclaration.Ubos && currentDeclaration.Ubos.length > 0 && (React__default.createElement(core$1.Box, { mx: 1 },
-                                React__default.createElement(ProgressButton, { variant: "contained", color: "primary", loading: loading, onClick: onDeclarationSubmit }, _t('validate'))))))))),
-            loading && React__default.createElement(core$1.LinearProgress, null)),
-        React__default.createElement(core$1.Dialog, { fullWidth: true, open: formOpen, onClose: closeForm },
-            React__default.createElement(DialogTitleClosable, { disableCloseBtn: loading, onClose: closeForm }, tForm('ubo')),
-            React__default.createElement(core$1.DialogContent, null,
-                React__default.createElement(MangopayUboForm, { ubo: uboSelected, onSubmit: onUboFormSubmit })))));
->>>>>>> master
 };
 
 var AccountBalance = createCommonjsModule(function (module, exports) {
@@ -45101,7 +43612,6 @@ exports.default = _default;
 
 var CheckBoxIcon = unwrapExports(CheckBox);
 
-<<<<<<< HEAD
 var tFile$f = 'pro/mangopay';
 var tKey$6 = 'config.bankAccountCard';
 var MangopayBankAccountForm = function (_a) {
@@ -45653,7 +44163,7 @@ var MessagesForm = function (_a) {
             React__default.createElement(ProgressButton, { loading: formikProps.isSubmitting, variant: "contained", color: "primary", type: "submit", disabled: formikProps.isSubmitting }, t('form.send'))))); }));
 };
 var arePropsEqual = function (prevProps, nextProps) {
-    return prevProps.userLists.length === nextProps.userLists.length;
+    return prevProps.userLists.length === nextProps.userLists.length && prevProps.isSuccessful === nextProps.isSuccessful;
 };
 var MessagesForm$1 = React__default.memo(MessagesForm, arePropsEqual);
 
@@ -46151,370 +44661,6 @@ var NeolithicViewsGenerator = /** @class */ (function () {
         createApp(elementId, React__default.createElement(MessagesModuleWrapped, { groupId: props.groupId, whichUser: Boolean(props.whichUser) }));
     };
     return NeolithicViewsGenerator;
-=======
-var tFile$f = 'pro/mangopay';
-var tKey$6 = 'config.bankAccountCard';
-var MangopayBankAccountForm = function (_a) {
-    var bankAccount = _a.bankAccount, _b = _a.disabled, disabled = _b === void 0 ? false : _b, onSubmit = _a.onSubmit;
-    var _c, _d, _e, _f, _g;
-    /** TRANS */
-    var _t = useTranslation(['translation', 'yup', tFile$f]).t;
-    var tYup = function (key, values) { return _t("yup:" + key, values); };
-    var tForm = function (key, options) { return _t(tFile$f + ":" + tKey$6 + ".form." + key, options); };
-    /** */
-    var initialValues = {
-        Type: (bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.Type) || MangopayBankAccountType.IBAN,
-        OwnerAddress: {
-            AddressLine1: ((_c = bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerAddress) === null || _c === void 0 ? void 0 : _c.AddressLine1) || '',
-            AddressLine2: ((_d = bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerAddress) === null || _d === void 0 ? void 0 : _d.AddressLine2) || '',
-            City: ((_e = bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerAddress) === null || _e === void 0 ? void 0 : _e.City) || '',
-            Country: ((_f = bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerAddress) === null || _f === void 0 ? void 0 : _f.Country) || '',
-            PostalCode: ((_g = bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerAddress) === null || _g === void 0 ? void 0 : _g.PostalCode) || '',
-        },
-        OwnerName: (bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerName) || '',
-        /** IBAN */
-        IBAN: bankAccount && (bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.Type) === MangopayBankAccountType.IBAN
-            ? bankAccount.IBAN || ''
-            : undefined,
-        BIC: bankAccount && (bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.Type) === MangopayBankAccountType.IBAN
-            ? bankAccount.IBAN || ''
-            : undefined,
-    };
-    /** */
-    return (React__default.createElement(formik.Formik, { initialValues: initialValues, onSubmit: onSubmit }, function (formikProps) {
-        var _a, _b, _c, _d;
-        return (React__default.createElement(formik.Form, null,
-            React__default.createElement(core$1.FormControl, { fullWidth: true, variant: "outlined", disabled: formikProps.isSubmitting || disabled },
-                React__default.createElement(core$1.InputLabel, { htmlFor: "bank-account-type-label" }, tForm('Type')),
-                React__default.createElement(formik.Field, { required: true, name: "Type", label: tForm('Type'), component: formikMaterialUi.Select, inputProps: {
-                        id: 'bank-account-type',
-                    } },
-                    React__default.createElement(core$1.MenuItem, { value: MangopayBankAccountType.IBAN }, tForm(MangopayBankAccountType.IBAN)))),
-            React__default.createElement(SimpleField, { label: tForm('OwnerName'), name: "OwnerName", disabled: formikProps.isSubmitting || disabled }),
-            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { label: _t('address1'), name: "OwnerAddress.AddressLine1", disabled: formikProps.isSubmitting || disabled }), right: React__default.createElement(SimpleField, { label: _t('address2'), name: "OwnerAddress.AddressLine2", required: false, disabled: formikProps.isSubmitting || disabled }) }),
-            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { label: _t('city'), name: "OwnerAddress.City", disabled: formikProps.isSubmitting || disabled }), right: React__default.createElement(SimpleField, { label: _t('zipCode'), name: "OwnerAddress.PostalCode", disabled: formikProps.isSubmitting || disabled }) }),
-            React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || disabled }, textFieldProps: {
-                    margin: 'normal',
-                    name: 'OwnerAddress.Country',
-                    required: true,
-                    label: _t('country'),
-                    error: Boolean(((_a = formikProps.touched.OwnerAddress) === null || _a === void 0 ? void 0 : _a.Country) && ((_b = formikProps.errors.OwnerAddress) === null || _b === void 0 ? void 0 : _b.Country)),
-                    helperText: ((_c = formikProps.touched.OwnerAddress) === null || _c === void 0 ? void 0 : _c.Country) &&
-                        yupHelperTextTranslator(tYup, (_d = formikProps.errors.OwnerAddress) === null || _d === void 0 ? void 0 : _d.Country),
-                    onBlur: function () { return formikProps.setFieldTouched('OwnerAddress.Country'); },
-                }, defaultValue: formikProps.values.OwnerAddress.Country || '', onChange: function (v) {
-                    formikProps.setFieldTouched('OwnerAddress.Country');
-                    formikProps.setFieldValue('OwnerAddress.Country', v || '');
-                } }),
-            formikProps.values.Type === MangopayBankAccountType.IBAN && (React__default.createElement(React__default.Fragment, null,
-                React__default.createElement(SimpleField, { label: tForm('IBAN'), name: "IBAN", disabled: formikProps.isSubmitting || disabled }),
-                React__default.createElement(SimpleField, { label: tForm('BIC'), name: "BIC", required: false, disabled: formikProps.isSubmitting || disabled }))),
-            !disabled && (React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
-                React__default.createElement(core$1.Button, { color: "primary", variant: "contained", type: "submit", disabled: formikProps.isSubmitting }, _t('validate'))))));
-    }));
-};
-
-var tFile$g = 'pro/mangopay';
-var tKey$7 = 'config.bankAccountCard';
-var MangopayBankAccountsCard = function (_a) {
-    var group = _a.group, open = _a.open, disabledActions = _a.disabledActions, onTogglePanel = _a.onTogglePanel;
-    var _b, _c;
-    var _d = useCreateMangopayIbanBankAccountMutation(), createMangopayIbanBankAccount = _d[0], _e = _d[1], loadingCreate = _e.loading, errorCreate = _e.error;
-    var _f = useDeactivateMangopayBankAccountMutation(), deactivateMangopayBankAccount = _f[0], _g = _f[1], loadingDeactivate = _g.loading, errorDeactivate = _g.error;
-    var selectMangopayBankAccountId = useSelectMangopayBankAccountIdMutation()[0];
-    /** TRANS */
-    var _t = useTranslation(['translation', 'yup', tFile$g]).t;
-    var t = function (key, options) { return _t(tFile$g + ":" + tKey$7 + "." + key, options); };
-    /** COMPUTED */
-    var legalUser = (_b = group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
-    var bankAccounts = (_c = legalUser === null || legalUser === void 0 ? void 0 : legalUser.BankAccounts) === null || _c === void 0 ? void 0 : _c.filter(function (b) { return b.Active; });
-    var loading = loadingCreate || loadingDeactivate;
-    var error = errorCreate || errorDeactivate;
-    /** STATES */
-    var _h = React__default.useState(false), dialogOpen = _h[0], setDialogOpen = _h[1];
-    var _j = React__default.useState(), selectedBankAccount = _j[0], setSelectedBanAccount = _j[1];
-    /** */
-    var IconButtonWithConfirmDialog = withConfirmDialog(core$1.IconButton, {
-        title: t('deleteDialog.title'),
-        cancelButtonLabel: _t('cancel'),
-        confirmButtonLabel: _t('confirm'),
-        message: t('deleteDialog.message'),
-    });
-    /** */
-    var openDialog = function (bankAccount) {
-        setSelectedBanAccount(bankAccount);
-        setDialogOpen(true);
-    };
-    var closeDialog = function () {
-        if (loading)
-            return;
-        setSelectedBanAccount(undefined);
-        setDialogOpen(false);
-    };
-    /** */
-    var onDeactivate = function (bankAccount) {
-        deactivateMangopayBankAccount({
-            variables: { input: { groupId: group.id, bankAccountId: bankAccount.Id } },
-            refetchQueries: ['MangopayGroupConfig'],
-        });
-    };
-    var onFormSubmit = function (values, bag) { return __awaiter(void 0, void 0, void 0, function () {
-        var err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, createMangopayIbanBankAccount({
-                            variables: {
-                                input: __assign(__assign({ groupId: group.id }, values), { IBAN: values.IBAN !== '' ? values.IBAN : undefined, BIC: values.BIC !== '' ? values.BIC : undefined }),
-                            },
-                            refetchQueries: ['MangopayGroupConfig'],
-                        })];
-                case 1:
-                    _a.sent();
-                    bag.setSubmitting(false);
-                    setSelectedBanAccount(undefined);
-                    setDialogOpen(false);
-                    return [3 /*break*/, 3];
-                case 2:
-                    err_1 = _a.sent();
-                    bag.setSubmitting(false);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
-            }
-        });
-    }); };
-    var onSelectBankAccount = function (bankAccount) {
-        if (!legalUser)
-            return;
-        var bId = parseInt(bankAccount.Id, 10);
-        var id = bId === legalUser.bankAccountId ? null : bId;
-        selectMangopayBankAccountId({
-            variables: { input: { groupId: group.id, bankAccountId: id } },
-            refetchQueries: ['MangopayGroupConfig'],
-        });
-    };
-    /** */
-    return (React__default.createElement(core$1.Card, null,
-        React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(AccountBalanceIcon, null), title: t('title'), actions: legalUser && (React__default.createElement(core$1.Box, null,
-                React__default.createElement(core$1.IconButton, { size: "small", disabled: disabledActions, onClick: function () {
-                        onTogglePanel(!open);
-                    } }, open ? React__default.createElement(ExpandLessIcon, null) : React__default.createElement(ExpandMoreIcon, null)))) }),
-        React__default.createElement(core$1.Collapse, { in: open && !loading },
-            React__default.createElement(React__default.Fragment, null,
-                error && (React__default.createElement(core$1.CardContent, null,
-                    React__default.createElement(GqlErrorAlert, { error: error }))),
-                bankAccounts && bankAccounts.length > 0 && (React__default.createElement(core$1.CardContent, null,
-                    React__default.createElement(core$1.List, null, bankAccounts.map(function (bankAccount) { return (React__default.createElement(core$1.ListItem, { key: bankAccount.Id },
-                        React__default.createElement(core$1.ListItemText, { primary: formatMangopayBankAccount(bankAccount), secondary: formatMangopayAddress(bankAccount.OwnerAddress) }),
-                        React__default.createElement(core$1.ListItemSecondaryAction, null,
-                            React__default.createElement(IconButtonWithConfirmDialog, { onClick: function () {
-                                    onDeactivate(bankAccount);
-                                } },
-                                React__default.createElement(DeleteIcon, null)),
-                            React__default.createElement(core$1.IconButton, { onClick: function () {
-                                    openDialog(bankAccount);
-                                } },
-                                React__default.createElement(VisibilityIcon, null)),
-                            React__default.createElement(core$1.IconButton, { onClick: function () {
-                                    onSelectBankAccount(bankAccount);
-                                } }, (legalUser === null || legalUser === void 0 ? void 0 : legalUser.bankAccountId) === parseInt(bankAccount.Id, 10) ? (React__default.createElement(CheckBoxIcon, { color: "primary" })) : (React__default.createElement(CheckBoxOutlineBlankIcon, null)))))); })))),
-                React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
-                    React__default.createElement(core$1.Button, { variant: "outlined", color: "primary", onClick: function () { return openDialog(); } }, _t('add'))))),
-        React__default.createElement(core$1.Dialog, { open: dialogOpen, fullWidth: true, maxWidth: "md", onClose: closeDialog },
-            React__default.createElement(DialogTitleClosable, { disableCloseBtn: loading, onClose: closeDialog }, t('bankAccount')),
-            React__default.createElement(core$1.DialogContent, null,
-                React__default.createElement(MangopayBankAccountForm, { disabled: !!selectedBankAccount, bankAccount: selectedBankAccount, onSubmit: onFormSubmit }))),
-        loading && React__default.createElement(core$1.LinearProgress, null)));
-};
-
-var MangopayConfig = function (_a) {
-    var groupId = _a.groupId;
-    var _b, _c;
-    var _d = useMangopayGroupConfigQuery({ variables: { id: groupId } }), data = _d.data, loading = _d.loading, error = _d.error;
-    /** EXTRACTED */
-    var group = data === null || data === void 0 ? void 0 : data.group;
-    var legalUser = (_b = group === null || group === void 0 ? void 0 : group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
-    var legalRepr = legalUser === null || legalUser === void 0 ? void 0 : legalUser.legalRepr;
-    var isRegular = (legalUser === null || legalUser === void 0 ? void 0 : legalUser.KYCLevel) === MangopayKycLevel.REGULAR;
-    /** STATES */
-    var _e = React__default.useState(legalRepr), selectedLegalRepr = _e[0], setSelectedLegalRepr = _e[1];
-    var _f = React__default.useState(false), submitting = _f[0], setSubmitting = _f[1];
-    var _g = React__default.useState(), openedPanel = _g[0], setOpenedPanel = _g[1];
-    /** */
-    var closePanels = function () {
-        setOpenedPanel(undefined);
-    };
-    /** */
-    React__default.useEffect(function () {
-        setSelectedLegalRepr(legalRepr);
-    }, [legalRepr]);
-    React__default.useEffect(function () {
-        var _a;
-        if (legalUser && selectedLegalRepr && ((_a = legalUser === null || legalUser === void 0 ? void 0 : legalUser.legalRepr) === null || _a === void 0 ? void 0 : _a.id) === (selectedLegalRepr === null || selectedLegalRepr === void 0 ? void 0 : selectedLegalRepr.id)) {
-            if (allMangopayKycDocumentStatusesArePending(legalUser))
-                setOpenedPanel('ubos');
-            else
-                setOpenedPanel('kyc');
-        }
-        else {
-            setOpenedPanel('legalUser');
-        }
-    }, [selectedLegalRepr, legalUser]);
-    /** */
-    return (React__default.createElement(React__default.Fragment, null,
-        error && React__default.createElement(GqlErrorAlert, { error: error }),
-        React__default.createElement(MangopayInfoCard, { isRegular: isRegular }),
-        loading && (React__default.createElement(core$1.Box, { p: 2, mt: 6, display: "flex", justifyContent: "center" },
-            React__default.createElement(core$1.CircularProgress, null))),
-        group && (React__default.createElement(core$1.Box, { mt: 4 },
-            React__default.createElement(MangopayLegalReprCard, { group: group, disabledActions: submitting, selectedLegalRepr: selectedLegalRepr, setSelectedLegalRepr: setSelectedLegalRepr }))),
-        group && selectedLegalRepr && (React__default.createElement(core$1.Box, { mt: 4 },
-            React__default.createElement(MangopayLegalUserCard, { group: group, defaultLegalRepr: selectedLegalRepr, open: openedPanel === 'legalUser', disabledActions: submitting, onTogglePanel: function (v) {
-                    if (v)
-                        setOpenedPanel('legalUser');
-                    else
-                        closePanels();
-                }, onSubmit: function () {
-                    setSubmitting(true);
-                }, onSubmitComplete: function () {
-                    setSubmitting(false);
-                }, onSubmitFail: function () {
-                    setSubmitting(false);
-                } }))),
-        group && !isRegular && legalUser && selectedLegalRepr && ((_c = legalUser === null || legalUser === void 0 ? void 0 : legalUser.legalRepr) === null || _c === void 0 ? void 0 : _c.id) === (selectedLegalRepr === null || selectedLegalRepr === void 0 ? void 0 : selectedLegalRepr.id) && (React__default.createElement(React__default.Fragment, null,
-            React__default.createElement(core$1.Box, { my: 4 },
-                React__default.createElement(MangopayKycDocumentsCard, { group: group, disabledActions: submitting, open: openedPanel === 'kyc', onTogglePanel: function (v) {
-                        if (v)
-                            setOpenedPanel('kyc');
-                        else
-                            closePanels();
-                    } })),
-            dist_10(legalUser.LegalPersonType) && (React__default.createElement(core$1.Box, { my: 4 },
-                React__default.createElement(MangopayUbosCard, { group: group, disabledActions: submitting, open: openedPanel === 'ubos', onTogglePanel: function (v) {
-                        if (v)
-                            setOpenedPanel('ubos');
-                        else
-                            closePanels();
-                    } }))))),
-        group && isRegular && (React__default.createElement(React__default.Fragment, null,
-            React__default.createElement(core$1.Box, { my: 4 },
-                React__default.createElement(MangopayBankAccountsCard, { group: group, disabledActions: submitting, open: openedPanel === 'bankAccount', onTogglePanel: function (v) {
-                        if (v)
-                            setOpenedPanel('bankAccount');
-                        else
-                            closePanels();
-                    } }))))));
-};
-
-var apolloClient = null;
-var graphUrl = 'null';
-var LocalizedUtils = /** @class */ (function (_super) {
-    __extends(LocalizedUtils, _super);
-    function LocalizedUtils() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    LocalizedUtils.prototype.getDatePickerHeaderText = function (date) {
-        return format(date, 'd MMM yyyy', { locale: this.locale });
-    };
-    return LocalizedUtils;
-}(DateFnsUtils));
-var getApolloClient = function (token) {
-    if (!apolloClient) {
-        var httpLink = createUploadLink({
-            uri: graphUrl,
-            credentials: 'same-origin',
-        });
-        var authLink = setContext(function (_, _a) {
-            var headers = _a.headers;
-            // const token = localStorage.getItem('token');
-            return {
-                headers: __assign(__assign({}, headers), { authorization: token ? "Bearer " + token : '' }),
-            };
-        });
-        apolloClient = new ApolloClient({
-            link: authLink.concat(httpLink),
-            cache: new InMemoryCache().restore({}),
-        });
-    }
-    return apolloClient;
-};
-var createApp = function (elementId, children) {
-    ReactDOM.render(React__default.createElement(React__default.Fragment, null, children), document.getElementById(elementId));
-};
-function withApolloProvider(Component) {
-    var _this = this;
-    var Wrapper = function (props) {
-        var _a = React__default.useState(localStorage.getItem('token')), token = _a[0], setToken = _a[1];
-        /** */
-        React__default.useEffect(function () {
-            var loadToken = function () { return __awaiter(_this, void 0, void 0, function () {
-                var t;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, api$1.getToken()];
-                        case 1:
-                            t = _a.sent();
-                            setToken(t);
-                            localStorage.setItem('token', t);
-                            return [2 /*return*/];
-                    }
-                });
-            }); };
-            if (!token) {
-                loadToken();
-            }
-        }, [token]);
-        /** */
-        if (!token)
-            return React__default.createElement(React__default.Fragment, null);
-        return (React__default.createElement(ApolloProvider, { client: getApolloClient(token) },
-            React__default.createElement(Component, __assign({}, props))));
-    };
-    Wrapper.displayName = 'WithApolloProviderWrapper';
-    return Wrapper;
-}
-var NeolithicViewsGenerator = /** @class */ (function () {
-    function NeolithicViewsGenerator() {
-    }
-    NeolithicViewsGenerator.setApiUrl = function (url) {
-        api$1.setUrl(url);
-    };
-    NeolithicViewsGenerator.setGraphUrl = function (url) {
-        graphUrl = url;
-    };
-    NeolithicViewsGenerator.activateDistribSlots = function (elementId, props) {
-        createApp(elementId, React__default.createElement(ActivateDistribSlotsView$1, __assign({}, props)));
-    };
-    NeolithicViewsGenerator.userDistribSlotsSelector = function (elementId, props) {
-        var el = document.getElementById(elementId);
-        if (el) {
-            ReactDOM.unmountComponentAtNode(el);
-        }
-        createApp(elementId, React__default.createElement(UserDistribSlotsSelectorView$1, __assign({}, props)));
-    };
-    NeolithicViewsGenerator.distribSlotsResolver = function (elementId, props) {
-        createApp(elementId, React__default.createElement(DistribSlotsResolver$1, __assign({}, props)));
-    };
-    NeolithicViewsGenerator.placeDialog = function (elementId, props) {
-        var onClose = function () {
-            var el = document.getElementById(elementId);
-            if (!el)
-                return;
-            ReactDOM.unmountComponentAtNode(el);
-        };
-        createApp(elementId, React__default.createElement(PlaceDialogView$1, __assign({}, props, { onClose: onClose })));
-    };
-    NeolithicViewsGenerator.place = function (elementId, props) {
-        createApp(elementId, React__default.createElement(PlaceView$1, __assign({}, props)));
-    };
-    NeolithicViewsGenerator.mangopayModule = function (elementId, props) {
-        var MangopayModuleWrapped = withApolloProvider(withNeolithicProvider(withi18n(MangopayConfig)));
-        createApp(elementId, React__default.createElement(pickers.MuiPickersUtilsProvider, { utils: LocalizedUtils, locale: locale },
-            React__default.createElement(MangopayModuleWrapped, __assign({}, props))));
-    };
-    return NeolithicViewsGenerator;
->>>>>>> master
 }());
 
 function GeoAutocomplete$1(p) {
