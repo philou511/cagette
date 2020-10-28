@@ -18,7 +18,8 @@ class BufferedJsonMail extends sys.db.Object
 	public var headers :  SNull<SText>;     //SData<Map<String,String>>;
 	public var sender : SNull<SText>;       //SData<{name:String,email:String,?userId:Int}>;
 	public var recipients : SNull<SText>;   //SData<Array<{name:String,email:String,?userId:Int}>>;
-	
+	public var attachments : SNull<SText>;  //SData<Array<{filename:String,contentType:String,content:String,encoding:String}>>;
+
 	//utility fields
 	public var mailerType : SString<32>;	//mailer used when sending for real
 	public var tries : SInt;				//number of times we tried to send the mail	

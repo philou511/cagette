@@ -23,6 +23,6 @@ class Message extends Object
 	public var body : SText;	
 	public var date : SDateTime;
 	
-	
+	public var attachments : SNull<SText>; // Array<String>
 	
 }

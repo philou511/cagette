@@ -1,0 +1,16 @@
+{
+  "title": "Membres",
+  "names": "Nom(s)",
+  "address": "Adresse",
+  "selectAll": "Tout sélectionner",
+  "removeFromGroup": "Retirer du groupe",
+  "resetInWaitingList": "Remettre en file d'attente",
+  "enterMembership": "Saisir cotisation",
+  "selected": "sélectionné",
+  "selected_plural": "sélectionnés",
+  "search": "Recherche...",
+  "newMember": "Nouveau membre",
+  "export": "Export Excel/CSV",
+  "importMembers": "Importer des membres",
+  "lists": "Listes"
+}
