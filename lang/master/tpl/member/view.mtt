@@ -196,12 +196,15 @@
 					::if ( i == 0 && catalog.type == TYPE_CONSTORDERS ) || ( i == 1 && catalog.type == TYPE_VARORDER )::
 
 						<br/>
-						<h5>::catalog.name::</h5>
+						<h5 style="margin-bottom:0px;">::catalog.name::</h5>
+						<a href="::catalog._vendor.getLink()::" target="_blank">
+							::catalog._vendor.name::
+						</a>
 
 						::set subscriptions = subscriptionsByCatalog.get(catalog)::
 						::foreach subscription subscriptions::
 
-							<table class="table table-condensed table-bordered">
+							<table class="table table-condensed table-bordered" style="margin-top:10px;">
 								<tr class="greyhead">
 									<th class="text-center col-md-3" ::cond i == 0 && subscription._user2 != null::>Membre</th>
 									<th class="text-center col-md-4">Engagement</th>
@@ -289,7 +292,13 @@
 	<div ::cond user.getGroup().hasPayments():: class="article">
 		
 		<span style="font-size:1.3em;">
-			::_("Balance"):: : 
+			
+			::if user.getGroup().hasShopMode()::
+				::_("Balance"):: :
+			::else::
+				Solde global :
+			::end::
+
 			::if userGroup.balance<0:: 
 				::set color = "C00"::
 			::else::

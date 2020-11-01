@@ -245,7 +245,7 @@ class OrderService
 	/**
 	 *  Delete an order
 	 */
-	public static function delete(order:db.UserOrder,?force=false) {
+	public static function delete( order : db.UserOrder, ?force = false ) {
 		var t = sugoi.i18n.Locale.texts;
 
 		if(order==null) throw new Error( t._( "This order has already been deleted." ) );
@@ -270,23 +270,15 @@ class OrderService
 			if ( contract.type == db.Catalog.TYPE_CONSTORDERS ) {
 
 				order.delete();
-
-				//delete related operation
-				/* JB if( contract.group.hasPayments() ){
-					var orders = contract.getUserOrders(user);
-					if( orders.length == 0 ){
-						var operation = service.PaymentService.findCOrderOperation(contract, user);
-						if(operation!=null) operation.delete();
-					}
-				} */
-
-			} else {
+			}
+			else {
 
 				//Get the basket for this user
 				var place = order.distribution.place;
 				var basket = db.Basket.get(user, order.distribution.multiDistrib);
 				
-				if( contract.group.hasPayments() ){
+				if( contract.group.hasShopMode() && contract.group.hasPayments() ) {
+
 					var orders = basket.getOrders();
 					//Check if it is the last order, if yes then delete the related operation
 					if( orders.length == 1 && orders[0].id==order.id ){
@@ -297,8 +289,15 @@ class OrderService
 
 				order.delete();
 			}
-			
-		} else {
+
+			if( !contract.group.hasShopMode() ) {
+
+				service.SubscriptionService.createOrUpdateTotalOperation( order.subscription );
+			}
+	
+		}
+		else {
+
 			throw new Error( t._( "Deletion not possible: quantity is not zero." ) );
 		}
 
@@ -724,7 +723,9 @@ class OrderService
 			}
 			existingOrders = catalog.getUserOrders( user, distrib );			
 		}
-				
+
+		var subscription : db.Subscription = null;
+		var group : db.Group  = null;
 		for ( order in ordersData ) {
 			
 			// Get product
@@ -749,7 +750,7 @@ class OrderService
 					distrib = multiDistrib.getDistributionFromProduct( product );
 				}
 
-				var group : db.Group  = catalog != null ? catalog.group : distrib.catalog.group;
+				group = catalog != null ? catalog.group : distrib.catalog.group;
 				var newOrder : db.UserOrder = null;
 				if ( group.hasShopMode() ) {
 
@@ -758,7 +759,7 @@ class OrderService
 				else {
 
 					//Let's find the subscription for that user, catalog and distrib
-					var subscription = db.Subscription.manager.select( $user == user && $catalog == distrib.catalog && $startDate <= distrib.date && distrib.date <= $endDate );
+					subscription = db.Subscription.manager.select( $user == user && $catalog == distrib.catalog && $startDate <= distrib.date && distrib.date <= $endDate );
 					if ( subscription == null ) { throw new Error('Il n\'y a pas de souscription pour cette personne. Vous devez d\'abord créer une souscription avant de commander.'); }
 
 					if ( subscription != null ) {
@@ -774,7 +775,14 @@ class OrderService
 		}
 
 		App.current.event( MakeOrder( orders ) );
-		service.PaymentService.onOrderConfirm( orders );
+		if ( group.hasShopMode() ) {
+
+			service.PaymentService.onOrderConfirm( orders );
+		}
+		else {
+
+			service.PaymentService.onOrderConfirm( null, subscription );
+		}
 
 		return orders;
 		

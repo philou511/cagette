@@ -13,36 +13,7 @@ using tools.DateTool;
  */
 class DistributionService
 {
-	/**
-	 *  It will update the name of the operation with the new number of distributions
-	 *  as well as the total amount
-	 *  @param contract - 
-	 */
-	public static function updateAmapContractOperations(contract:db.Catalog) {
-
-		//Update all operations for this amap contract when payments are enabled
-		if (contract.type == db.Catalog.TYPE_CONSTORDERS && contract.group.hasPayments()) {
-			//Get all the users who have orders for this contract
-			/* var users = contract.getUsers();
-			for ( user in users ){
-
-				//Get the one operation for this amap contract and user
-				var operation = service.PaymentService.findCOrderOperation(contract, user);
-
-				if (operation != null)
-				{
-					//Get all the orders for this contract and user
-					var orders = contract.getUserOrders(user);
-					//Update this operation with the new number of distributions, this will affect the name of the operation
-					//as well as the total amount to pay
-					service.PaymentService.updateOrderOperation(operation, orders);
-				}
-
-			}*/
-		}
-	}
-
-
+	
 	public static function checkMultiDistrib(d:db.MultiDistrib){
 
 		var t = sugoi.i18n.Locale.texts;
@@ -171,14 +142,21 @@ class DistributionService
 			App.current.event(e);
 		}
 		
-		if (d.date == null){
+		if ( d.date == null ) {
+
 			return d;
-		} else {
+		}
+		else {
+
+			// REFACTO TOTAL OPERATION
 			d.insert();
 
 			//In case this is a distrib for an amap contract with payments enabled, it will update all the operations
 			//names and amounts with the new number of distribs
-			updateAmapContractOperations(d.catalog);
+			if( !contract.group.hasShopMode() )  {
+
+				service.SubscriptionService.updateCatalogSubscriptionsOperation( d.catalog );
+			}
 
 			return d;
 		}
@@ -589,8 +567,10 @@ class DistributionService
 		d.delete();
 
 		//In case this is a distrib for an amap contract with payments enabled, it will update all the operations
-		//names and amounts with the new number of distribs
-		updateAmapContractOperations(contract);
+		if ( !contract.group.hasShopMode() ) {
+
+			service.SubscriptionService.updateCatalogSubscriptionsOperation( contract );
+		}
 
 		//delete multidistrib if needed
 		/*if(d.multiDistrib!=null){

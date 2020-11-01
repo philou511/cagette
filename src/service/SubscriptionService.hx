@@ -1,5 +1,6 @@
 package service;
 import db.Group.RegOption;
+import db.Operation.OperationType;
 import db.Subscription;
 import db.Catalog;
 import Common;
@@ -27,7 +28,7 @@ class SubscriptionService
 	/**
 		get subscriptions of a catalog
 	**/
-	public static function getSubscriptions( catalog : db.Catalog ) {
+	public static function getCatalogSubscriptions( catalog : db.Catalog ) {
 
 		return db.Subscription.manager.search( $catalogId == catalog.id, false ).array();
 	}
@@ -39,6 +40,24 @@ class SubscriptionService
 
 		var catalogIds = group.getActiveContracts().map( c -> return c.id );
 		return db.Subscription.manager.search( ( $user == user || $user2 == user ) && ( $catalogId in catalogIds ), false ).array();
+	}
+
+	/**
+		Get user not closed subscriptions for a given vendor
+	**/
+	public static function getUserVendorNotClosedSubscriptions( subscription : db.Subscription ) : Array<db.Subscription> {
+
+		var notClosedSubscriptions = db.Subscription.manager.search( $user == subscription.user && $endDate >= Date.now(), false ).array();
+		var vendorNotClosedSubscriptions = new Array<db.Subscription>();
+		for ( sub in notClosedSubscriptions ) {
+
+			if( sub.id != subscription.id && sub.catalog.vendor.id == subscription.catalog.vendor.id ) {
+
+				vendorNotClosedSubscriptions.push( sub );
+			}
+		}
+
+		return vendorNotClosedSubscriptions;
 	}
 
 	/**
@@ -338,7 +357,8 @@ class SubscriptionService
 				label += '<br /><b>NB : </b>Les seuils de commandes sur la durée du contrat sont calculés au prorata du nombre de vos distributions.';
 			}
 
-		} else {
+		}
+		else {
 
 			var subscriptionOrders = getCSARecurrentOrders( subscription, null );
 
@@ -473,10 +493,22 @@ class SubscriptionService
 			return null;
 		}
 
+		if ( catalog.group.hasPayments() && subscription != null ) {
+
+			var subscriptionPayments = subscription.getPaymentsTotal();
+			if ( subscriptionPayments != 0 ) {
+
+				return subscriptionPayments;
+			}
+		}
+
 		var subscriptionDistribsNb = 0;
 		if ( subscription != null ) {
+
 			subscriptionDistribsNb = getSubscriptionDistribsNb( subscription, null, true );
-		} else {
+		}
+		else {
+
 			subscriptionDistribsNb = db.Distribution.manager.count( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
 		}
 		
@@ -914,6 +946,15 @@ class SubscriptionService
 		for ( order in subscriptionOrders ) {
 			OrderService.delete(order,true);
 		}
+
+		//Delete the total operation if there's one
+		var totalOperation = subscription.getTotalOperation();
+		if ( totalOperation != null ) {
+
+			totalOperation.lock();
+			totalOperation.delete();
+		}
+
 		//Delete the subscription
 		subscription.lock();
 		subscription.delete();
@@ -1059,12 +1100,12 @@ class SubscriptionService
 		
 		App.current.event( MakeOrder( orders ) );
 
-		if(subscription.catalog.group.hasPayments()){
-			service.PaymentService.onOrderConfirm( orders );
+		if ( subscription.catalog.group.hasPayments() ) {
+
+			service.PaymentService.onOrderConfirm( null, subscription );
 		}
 
-		return orders;
-		
+		return orders;	
 	}
 
 
@@ -1205,6 +1246,75 @@ class SubscriptionService
 		subscription.lock();
 		subscription.setDefaultOrders( defaultOrders );
 		subscription.update();
+	}
+
+
+	public static function createOrUpdateTotalOperation( subscription : db.Subscription ) : db.Operation {
+
+		// REFACTO TOTAL OPERATION
+		var totalOperation : db.Operation = null;
+
+		if ( subscription.catalog.group.hasPayments() ) {
+
+			if( subscription == null )  throw new Error( 'Pas de souscription fournie.' );
+
+			totalOperation = db.Operation.manager.select ( $user == subscription.user && $subscription == subscription && $type == COrder, true );
+	
+			if( totalOperation == null ) {
+	
+				totalOperation = new db.Operation();
+				totalOperation.name = "Total Commmandes";
+				totalOperation.type = COrder;
+				totalOperation.user = subscription.user;
+				totalOperation.subscription = subscription;
+				totalOperation.group = subscription.catalog.group;
+				totalOperation.pending = false;
+			}
+	
+			totalOperation.date = Date.now();
+			totalOperation.amount = 0 - subscription.getTotalPrice();
+	
+			if ( totalOperation.id != null ) {
+	
+				totalOperation.update();
+			}
+			else {
+	
+				totalOperation.insert();
+			}
+	
+			service.PaymentService.updateUserBalance( totalOperation.user, totalOperation.group );
+
+		}
+
+		return totalOperation;
+	}
+
+	
+	public static function updateCatalogSubscriptionsOperation( catalog : db.Catalog ) {
+
+		// REFACTO TOTAL OPERATION
+		
+		var group = catalog.group;
+		if ( group.hasPayments()) {
+
+			var catalogSubsciptions = SubscriptionService.getCatalogSubscriptions(catalog);
+			for ( subscription in catalogSubsciptions ) {
+
+				createOrUpdateTotalOperation( subscription );
+			}
+			
+		}
+	}
+
+	public static function getDistribOrdersAverageTotal( subscription : db.Subscription ) : Float {
+
+		if( subscription == null || subscription.id == null )  throw new Error( 'Pas de souscription fournie.' );
+
+		var distribsOrderedNb = sys.db.Manager.cnx.request('SELECT COUNT(DISTINCT distributionId) FROM UserOrder WHERE subscriptionId=${subscription.id}').getIntResult(0);
+		if( distribsOrderedNb == 0 ) return null;
+
+		return subscription.getTotalPrice() / distribsOrderedNb;
 	}
 	
 }

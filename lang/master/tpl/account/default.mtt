@@ -105,12 +105,15 @@
 					::if ( i == 0 && catalog.type == TYPE_CONSTORDERS ) || ( i == 1 && catalog.type == TYPE_VARORDER )::
 
 						<br/>
-						<h5>::catalog.name::</h5>
+						<h5 style="margin-bottom:0px;">::catalog.name::</h5>
+						<a href="::catalog._vendor.getLink()::" target="_blank">
+							::catalog._vendor.name::
+						</a>
 
 						::set subscriptions = subscriptionsByCatalog.get(catalog)::
 						::foreach subscription subscriptions::
 
-							<table class="table table-condensed table-bordered">
+							<table class="table table-condensed table-bordered" style="margin-top:10px;">
 								<tr class="greyhead">
 									<th class="text-center col-md-3" ::cond i == 0 && subscription._user2 != null::>Membre</th>
 									<th class="text-center col-md-4">Engagement</th>
@@ -219,30 +222,22 @@
 	<h3>::_("Payments")::</h3>
 	<div  class="article">
 		<span style="font-size:1.3em;">
-			::_("Balance"):: :
-			::if user.getGroup().hasShopMode()::
-
-				::if userGroup.balance<0:: 
-					::set color = "C00"::
-				::else::
-					::set color = "0C0"::
-				::end::
-				<span style="color:#::color::;">
-					::userGroup.balance:: ::currency()::
-				</span>
 			
+			::if user.getGroup().hasShopMode()::
+				::_("Balance"):: :
 			::else::
-
-				::if globalBalance < 0:: 
-					::set style = "color:#C00;font-weight:bold;"::
-				::else::
-					::set style = "color:#0C0;"::
-				::end::
-				<span style="::style::">
-					::globalBalance:: ::currency()::
-				</span>
-
+				Solde global :
 			::end::
+
+			::if userGroup.balance < 0:: 
+				::set color = "C00"::
+			::else::
+				::set color = "0C0"::
+			::end::
+			<span style="color:#::color::;">
+				::userGroup.balance:: ::currency()::
+			</span>
+			
 		</span>
 		
 		<span style="margin-left:30px;">

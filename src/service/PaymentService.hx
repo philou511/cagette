@@ -200,44 +200,31 @@ class PaymentService
 	}
 	
 	/**
-	 * when updating a constant order, we need to update the existing operation.
-	 */
-	/* JB 
-		public static function findCOrderOperation(contract:db.Catalog, user:db.User):db.Operation{
-			
-			if (contract.type != db.Catalog.TYPE_CONSTORDERS) throw new Error("catalog type should be TYPE_CONSTORDERS");		
-			return db.Operation.manager.select($user == user && $contract == contract && $type==COrder, true);
-			
-		}
-	*/
-	
-	/**
 		Create/update the needed order operations and returns the related operations.
 		Can handle orders happening on different multidistribs.		
 	 	Orders are supposed to be from the same user.
 	 */
-	public static function onOrderConfirm(orders:Array<db.UserOrder>):Array<db.Operation>{
-		
-		//make sure we dont have null orders in the array
-		orders = orders.filter( o -> return o!=null );
-		if (orders.length == 0) return null;
-		
-		for( o in orders){
-			if(o.user==null){
-				throw new Error("order "+o.id+" has no user");
-			} 
-			
-			if(o.user.id!=orders[0].user.id){
-				throw new Error("Those orders are from different users");
-			}
-		}
+	public static function onOrderConfirm( orders : Array<db.UserOrder>, ?subscription : db.Subscription  ) : Array<db.Operation> { 
 
 		var out = [];
-		var user = orders[0].user;
-		var group = orders[0].product.catalog.group;
-		
-		//we consider that ALL orders are from the same contract type : varying or constant
-		if (orders[0].product.catalog.type == db.Catalog.TYPE_VARORDER ){
+		if( subscription == null ) {
+
+			//make sure we dont have null orders in the array
+			orders = orders.filter( o -> return o!=null );
+			if (orders.length == 0) return null;
+			
+			for( o in orders){
+				if(o.user==null){
+					throw new Error("order "+o.id+" has no user");
+				} 
+				
+				if(o.user.id!=orders[0].user.id){
+					throw new Error("Those orders are from different users");
+				}
+			}
+
+			var user = orders[0].user;
+			var group = orders[0].product.catalog.group;
 			
 			// varying contract :
 			//manage separatly orders which occur at different dates
@@ -249,7 +236,7 @@ class PaymentService
 				neko.Lib.rethrow(e);
 			}
 			
-			for ( orders in ordersGroup){
+			for ( orders in ordersGroup ) {
 				
 				//find basket
 				var basket = null;
@@ -284,20 +271,16 @@ class PaymentService
 					op.delete();
 				}*/
 			}
-			
-		}else{
-			// constant contract
-			// create/update a transaction computed like $distribNumber * $price.
-			/* JB var contract = orders[0].product.catalog;
-			
-			var existing = findCOrderOperation( contract , user);
-			if (existing != null){
-				out.push( updateOrderOperation(existing, contract.getUserOrders(user) ) );
-			}else{
-				out.push( makeOrderOperation( contract.getUserOrders(user) ) );
-			}*/
+
 		}
-		
+		else { //CSA Mode
+
+			// REFACTO TOTAL OPERATION
+
+			// create/update a single operation for the subscription total price
+			out.push( service.SubscriptionService.createOrUpdateTotalOperation( subscription ) );
+		}
+			
 		return out;
 	}
 

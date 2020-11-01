@@ -1,4 +1,5 @@
 package db;
+import db.Operation.OperationType;
 import sys.db.Object;
 import sys.db.Types;
 import Common;
@@ -35,18 +36,32 @@ class Subscription extends Object {
 		return Formatting.roundTo( totalPrice, 2 );
 	}
 
+	public function getTotalOperation() : db.Operation {
+
+		if( this.id == null ) return null;
+
+		return db.Operation.manager.select( $user == this.user && $subscription == this && $type == COrder, true );
+	}
+
 	public function getPaymentsTotal() : Float {
 
 		if( this.id == null ) return 0;
 
 		var paymentsTotal : Float = 0;
-		var operations = db.Operation.manager.search( $user == user && $subscription == this, null, false );
+		var operations = db.Operation.manager.search( $user == user && $subscription == this && $type == Payment, null, false );
 		for ( operation in operations ) {
 
 			paymentsTotal += Formatting.roundTo( operation.amount, 2 );
 		}
 
 		return Formatting.roundTo( paymentsTotal, 2 );
+	}
+
+	public function getBalance() : Float {
+
+		if( this.id == null ) return 0;
+
+		return Formatting.roundTo( getPaymentsTotal() + getTotalOperation().amount, 2 );
 	}
 
 	public function setDefaultOrders( defaultOrders : Array< { productId : Int, quantity : Float } > ) {

@@ -600,11 +600,11 @@ class Contract extends Controller
 							}
 						}
 
-						//Create order operation only
-						/* JB if ( app.user.getGroup().hasPayments() ) {
+						//Create or update a single order operation for the subscription total orders price
+						if ( catalog.group.hasPayments() ) {
 
-							service.PaymentService.onOrderConfirm( varOrders );
-						} */
+							service.PaymentService.onOrderConfirm( null, currentOrComingSubscription );
+						}
 
 					}
 
@@ -641,7 +641,7 @@ class Contract extends Controller
 						
 						SubscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, constOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
 					}
-					
+				
 				}
 				catch ( e : Error ) {
 
@@ -659,6 +659,12 @@ class Contract extends Controller
 		App.current.breadcrumb = [ { link : "/home", name : "Commandes", id : "home" }, { link : "/home", name : "Commandes", id : "home" } ]; 
 		view.subscriptionService = SubscriptionService;
 		view.catalog = catalog;
+		if ( catalog.type == db.Catalog.TYPE_VARORDER && catalog.group.hasPayments() ) {
+
+			var balance = currentOrComingSubscription.getBalance();
+			view.smallBalance = balance < ( 7 * SubscriptionService.getDistribOrdersAverageTotal( currentOrComingSubscription ) ) ? balance : null;
+		}
+
 		view.currentOrComingSubscription = currentOrComingSubscription;
 		view.hasComingOpenDistrib = hasComingOpenDistrib;
 		view.catalogDistribsNb = db.Distribution.manager.count( $catalog == catalog );

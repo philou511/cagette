@@ -19,62 +19,81 @@
 				</td>
 			</tr>
 
-		::foreach operation operations::
-			<tr>
+			::foreach operation operations::
+
 				::set x = operation.getTypeIndex()::
+				<tr ::cond x != 1::>
+
+					<td style="vertical-align: middle;">
+						::sDate(operation.date)::
+					</td>
+
+					<td style="vertical-align: middle;">
+						::if x==0::
+							<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::_("Order")::
+						::elseif x==1::
+							<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::raw _("CSA&nbsp;contract")::
+						::elseif x==2::
+							<i class="icon icon-euro" aria-hidden="true"></i> ::operation.getPaymentTypeName()::
+						::else::
+							<i class="fa fa-user" aria-hidden="true"></i> Souscription
+						::end::
+					</td>
+				
+					<td style="font-size:1em;vertical-align: middle;padding-top:15px;padding-bottom:15px;">
+						::operation.name::
+					</td>
+
+					<td style="vertical-align: middle;">
+						&nbsp;&nbsp;::operation.amount::&nbsp;::currency()::
+					</td>
+
+					<td class="text-right" style="vertical-align: middle;">
+						::if operation.type==2::
+						<div class="btn-group" role="group">
+							$$edit(::_("Edit")::,/transaction/edit/::operation.id::?subscription=single)
+							$$delete(::_("Del.")::,/transaction/delete/::operation.id::?token=::token::&subscription=single)
+						</div>
+						::elseif isAdmin::
+							<a href="/transaction/delete/::operation.id::?token=::token::" $$confirm(::_("Delete ?")::) class="btn btn-danger btn-sm" >
+								<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+							</a>
+						::end::
+					</td>
+
+				</tr>
+
+				::if x == 1::
+					::set subscriptionOperationDate = sDate(operation.date)::
+					::set subscriptionOperationAmount = operation.amount::
+				::end::
+			::end::
+		
+			<tr>
 
 				<td style="vertical-align: middle;">
-					::sDate(operation.date)::
-				</td>
-
-				<td style="vertical-align: middle;">
-					::if x==0::
-						<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::_("Order")::
-					::elseif x==1::
-						<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::raw _("CSA&nbsp;contract")::
-					::elseif x==2::
-						<i class="icon icon-euro" aria-hidden="true"></i> ::operation.getPaymentTypeName()::
-					::else::
-						<i class="fa fa-user" aria-hidden="true"></i> Souscription
+					::if subscriptionOperationDate != null::
+						::subscriptionOperationDate::
 					::end::
 				</td>
-			
-				<td style="font-size:1em;vertical-align: middle;padding-top:15px;padding-bottom:15px;">
-					::operation.name::
+
+				<td style="vertical-align: middle;">
+					<i class="fa fa-user" aria-hidden="true"></i> Souscription
+				</td>
+
+				<td style="vertical-align: middle;padding-top:15px;padding-bottom:15px;">
+					Total Commmandes
 				</td>
 
 				<td style="vertical-align: middle;">
-					&nbsp;&nbsp;::operation.amount::&nbsp;::currency()::
-				</td>
-
-				<td class="text-right" style="vertical-align: middle;">
-					::if operation.type==2::
-					<div class="btn-group" role="group">
-						$$edit(::_("Edit")::,/transaction/edit/::operation.id::?subscription=single)
-						$$delete(::_("Del.")::,/transaction/delete/::operation.id::?token=::token::&subscription=single)
-					</div>
-					::elseif isAdmin::
-						<a href="/transaction/delete/::operation.id::?token=::token::" $$confirm(::_("Delete ?")::) class="btn btn-danger btn-sm" >
-							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-						</a>
+					::if subscriptionOperationAmount != null::
+						-&nbsp;::-subscriptionOperationAmount::&nbsp;::currency()::
+					::else::
+						0&nbsp;::currency()::
 					::end::
 				</td>
 
 			</tr>
-			
-		::end::
-		<tr>
-			<td></td>
-			<td style="vertical-align: middle;">
-				<i class="fa fa-user" aria-hidden="true"></i> Souscription
-			</td>
-			<td style="vertical-align: middle;padding-top:15px;padding-bottom:15px;">
-				Total Commmandes
-			</td>
-			<td style="vertical-align: middle;">
-				-&nbsp;::subscriptionTotal::&nbsp;::currency()::
-			</td>
-		</tr>
 		
 		</table>
 		

@@ -87,8 +87,6 @@ class Amap extends Controller
 	function doPayments( user : db.User, ?args: { account: Bool } ) {
 
 		if ( args != null && args.account == true ) {
-
-			view.account = args.account;
 			
 			app.breadcrumb = [ { id : 'account', name : 'Mon compte', link : '/account' }, { id : 'account', name : 'Mon compte', link : '/account' } ];
 			// app.breadcrumb.push( { id : 'amap', name : 'Mon compte', link : '/amap' } );
@@ -111,7 +109,7 @@ class Amap extends Controller
 	// 	var rb = new sugoi.tools.ResultsBrowser(count, 10, browse);
 	// 	view.rb = rb;
 		// view.member = m;
-		// view.balance = db.UserGroup.get(m, app.user.getGroup()).balance;
+		view.globalbalance = db.UserGroup.get( user, app.user.getGroup() ).balance;
 
 		var subscriptionsByCatalog = service.SubscriptionService.getActiveSubscriptionsByCatalog( app.user, app.user.getGroup() );
 		view.subscriptionsByCatalog = subscriptionsByCatalog;
@@ -136,10 +134,19 @@ class Amap extends Controller
 					operationsBySubscription[subscription] = [];
 				}
 
-				var operations = db.Operation.manager.search( $user == user && $subscription == subscription, null, false ).array();
+				var operations = db.Operation.manager.search( $user == user && $subscription == subscription, { orderBy : -date }, false ).array();
 				operationsBySubscription[subscription] = operationsBySubscription[subscription].concat( operations );
 			}
 		}
+
+
+		var activeSubscriptions = service.SubscriptionService.getActiveSubscriptions( app.user, app.user.getGroup() );
+		activeSubscriptions.sort( function( b, a ) {
+
+			return  (a.getPaymentsTotal() - a.getTotalPrice()) < (b.getPaymentsTotal() - b.getTotalPrice()) ? 1 : -1;
+		} );
+
+		view.subscriptions = activeSubscriptions;
 
 		view.operationsBySubscription = operationsBySubscription;
 		

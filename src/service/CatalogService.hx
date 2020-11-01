@@ -6,7 +6,7 @@ import tink.core.Error;
 class CatalogService{
 
 
-    public static function getForm(catalog:db.Catalog) : sugoi.form.Form {
+    public static function getForm( catalog : db.Catalog ) : sugoi.form.Form {
 
 		if ( catalog.group == null || catalog.type == null || catalog.vendor == null ) {
 
@@ -52,9 +52,14 @@ class CatalogService{
 
 				form.getElement("orderStartDaysBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#ouverture_et_fermeture_de_commande";
 				form.getElement("orderEndHoursBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#ouverture_et_fermeture_de_commande";
-				
+
+				if( !catalog.group.hasPayments() ) {
+
+					form.getElement("catalogMinOrdersTotal").label = "Minimum de commandes sur la durée du contrat (en €)";
+				}
 				form.getElement("catalogMinOrdersTotal").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#minimum_de_commandes_sur_la_duree_du_contrat";
 				form.getElement("allowedOverspend").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#depassement_autorise";
+				
 			}
 			else { 
 				//CONST

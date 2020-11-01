@@ -331,10 +331,11 @@ class Cron extends Controller
 									}
 								
 									//Create order operation only
-									/* JB if ( distrib.catalog.group.hasPayments() ) {
+									// REFACTO TOTAL OPERATION
+									if ( distrib.catalog.group.hasPayments() ) {
 			
-										service.PaymentService.onOrderConfirm( automatedOrders );
-									}*/
+										service.PaymentService.onOrderConfirm( null, subscription );
+									}
 
 								}
 							}
@@ -382,7 +383,7 @@ class Cron extends Controller
 					var m = new Mail();
 					m.setSender(App.config.get("default_email"), "Cagette.net");
 					if(c.contact!=null) m.setReplyTo(c.contact.email, c.contact.getName());
-					for( sub in service.SubscriptionService.getSubscriptions(c)){
+					for( sub in service.SubscriptionService.getCatalogSubscriptions(c)){
 						if(sub.getAbsentDistribIds().length>0){
 							m.addRecipient(sub.user.email);
 							if(sub.user.email2!=null) m.addRecipient(sub.user.email2);

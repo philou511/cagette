@@ -21,7 +21,7 @@ class Subscriptions extends controller.Controller
 
 		if ( !app.user.canManageContract( catalog ) ) throw Error( '/', t._('Access forbidden') );
 
-		var catalogSubscriptions = SubscriptionService.getSubscriptions(catalog);
+		var catalogSubscriptions = SubscriptionService.getCatalogSubscriptions(catalog);
 		//sort by validation, then username
 		catalogSubscriptions.sort(function(a,b){
 			if( (a.isValidated?"1":"0")+a.user.lastName > (b.isValidated?"1":"0")+b.user.lastName ){
@@ -363,7 +363,7 @@ class Subscriptions extends controller.Controller
 		// 	return db.Operation.getOperationsWithIndex( user, group, index, limit, true );
 		// }
 
-		var operations = db.Operation.manager.search( $user == user && $subscription == subscription, null, false );
+		var operations = db.Operation.manager.search( $user == user && $subscription == subscription, { orderBy : -date }, false );
 		
 		/*var count = db.Operation.countOperations( user, group);
 		var rb = new sugoi.tools.ResultsBrowser(count, 10, browse);*/
@@ -378,6 +378,42 @@ class Subscriptions extends controller.Controller
 		
 		checkToken();
 	}
+
+	@tpl("contractadmin/subscriptionbalancetransfer.mtt")
+	public function doBalanceTransfer( subscription : db.Subscription ) {
+
+		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
+
+		// var user = subscription.user;
+		// var group = subscription.catalog.group;
+
+		// // service.PaymentService.updateUserBalance(m, app.user.getGroup());
+      	// // var browse : Int->Int->List<Dynamic>;
+		
+		// //default display
+		// // browse = function(index:Int, limit:Int) {
+
+		// // 	return db.Operation.getOperationsWithIndex( user, group, index, limit, true );
+		// // }
+
+		// var operations = db.Operation.manager.search( $user == user && $subscription == subscription, { orderBy : -date }, false );
+		
+		// /*var count = db.Operation.countOperations( user, group);
+		// var rb = new sugoi.tools.ResultsBrowser(count, 10, browse);*/
+		// view.operations = operations;
+		// view.member = user;
+		// view.subscription = subscription;
+		// view.subscriptionTotal = subscription.getTotalPrice();
+		// view.subscriptionPayments = subscription.getPaymentsTotal();
+		
+		// view.nav.push( 'subscriptions' );
+		view.c = subscription.catalog;
+		view.subscriptions = SubscriptionService.getUserVendorNotClosedSubscriptions( subscription );
+		view.nav.push( 'subscriptions' );
+		
+		// checkToken();
+	}
+
 
 
 	@logged @tpl("form.mtt")
@@ -437,7 +473,7 @@ class Subscriptions extends controller.Controller
 	@admin
 	public function doUnvalidateAll(catalog : db.Catalog){
 
-		for ( subscription in SubscriptionService.getSubscriptions(catalog) ) {
+		for ( subscription in SubscriptionService.getCatalogSubscriptions(catalog) ) {
 
 			SubscriptionService.updateValidation( subscription, false );
 		}

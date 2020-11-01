@@ -130,8 +130,7 @@ class Transaction extends controller.Controller
 			}
 			
 			op.insert();
-			
-			service.PaymentService.updateUserBalance(user, group);
+			service.PaymentService.updateUserBalance( user, group );
 
 			throw Ok( returnUrl, t._("Payment recorded") );
 
@@ -217,6 +216,7 @@ class Transaction extends controller.Controller
 			}
 
 			operation.update();
+			service.PaymentService.updateUserBalance( operation.user, operation.group );
 
 			throw Ok( returnUrl, t._("Operation updated"));
 			
@@ -271,7 +271,8 @@ class Transaction extends controller.Controller
 		if ( checkToken() ) {
 
 			operation.delete();
-
+			service.PaymentService.updateUserBalance( operation.user, operation.group );
+			
 			throw Ok( returnUrl, t._("Operation deleted") );
 			
 		}

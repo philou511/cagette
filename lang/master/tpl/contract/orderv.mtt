@@ -2,6 +2,13 @@
 <div id="content" class="col-md-12">
 
 	<h2>::catalog.name::</h2>
+
+	<div class="alert alert-danger" ::cond smallBalance != null::>
+					
+		<i class="icon icon-alert"></i>
+		Il vous reste seulement ::smallBalance:: € à dépenser. Si vous envisagez de commander plus, pensez à faire un paiement complémentaire.
+		
+	</div>
 			  
 	<!-- Nav tabs -->
 	<ul class="nav nav-tabs" role="tablist" id="subscriptionTabs">
@@ -28,7 +35,7 @@
 						<b>Contrat AMAP Variable</b>
 					</p>
 					<p>
-						::nl2br(catalog.description)::
+						::raw nl2br(catalog.description)::
 					</p>
 					::end::
 		
