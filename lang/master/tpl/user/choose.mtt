@@ -2,7 +2,7 @@
 
 	
 <!--<div class="col-md-8 col-md-offset-2" ::cond isCovid==true::>-->
-	::if(vendors!=null && vendors.length>0)::
+	::if(vendors!=null && vendors.length>0 && !isBlocked)::
 	<div class="col-md-12" >
 		<div class="alert alert-warning">
 			
@@ -213,8 +213,13 @@
 					_.newFeature(".row h2","Mise à jour de la rentrée",txt,"bottom");
 				},2000);
 			});*/
+
+			::if(isBlocked)::
+			_.overlay("/data/disabled.mtt","");
+			::end::
+
 			//]]>
-		</script>
+	</script>
 
 
 ::end::
