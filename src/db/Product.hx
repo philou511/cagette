@@ -126,6 +126,7 @@ class Product extends Object
 			distributionId : distribution==null ? null : distribution.id,
 			catalogId : catalog.id,
 			vendorId : catalog.vendor.id,
+			multiWeight : multiWeight,
 		}
 		
 		if(populateCategories){

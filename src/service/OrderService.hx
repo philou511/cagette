@@ -31,6 +31,7 @@ class OrderService
 		if( quantity < 0 ) throw new Error( "Quantity is negative" );
 		var vendor = product.catalog.vendor;
 		if( vendor.isDisabled()) throw new Error(vendor.name+" est désactivé. Raison : "+vendor.getDisabledReason());
+		var shopMode = product.catalog.group.hasShopMode();
 
 		//quantity
 		if ( !canHaveFloatQt(product) ){
@@ -40,14 +41,25 @@ class OrderService
 		}
 		
 		//multiweight : make one row per product
-		if (product.multiWeight && quantity > 1.0){
+		if ( product.multiWeight && quantity > 1.0 ) {
+
 			if (product.multiWeight && quantity != Math.abs(quantity)) throw new Error( t._("multi-weighing products should be ordered only with integer quantities") );
 			
-			var o = null;
-			for ( i in 0...Math.round(quantity)){
-				o = make(user, 1, product, distribId, paid, /*subscription,*/ user2,  invert);
-			}			
-			return o;
+			var newOrder = null;
+
+			for ( i in 0...Math.round(quantity) ) {
+
+				if( shopMode ) {
+
+					newOrder = make( user, 1, product, distribId, paid, null, user2, invert );
+				}
+				else {
+
+					newOrder = make( user, 1, product, distribId, paid, subscription );
+				}
+			}
+
+			return newOrder;
 		}
 		
 		//checks
@@ -90,7 +102,7 @@ class OrderService
 		//checks
 		if(order.distribution==null) throw new Error( "cant record an order for a variable catalog without a distribution linked" );
 		if(order.basket==null) throw new Error( "this order should have a basket" );
-		if( !order.distribution.catalog.group.hasShopMode() ) {
+		if( !shopMode ) {
 
 			if( subscription != null && subscription.id == null ) throw new Error( "La souscription a un id null." );
 			if( subscription == null ) throw new Error( "Impossible d'enregistrer une commande sans souscription." );
@@ -162,7 +174,7 @@ class OrderService
 				throw new Error( t._( "Error : product \"::product::\" quantity should be integer",{ product:order.product.name } ) );
 			}
 		}
-		
+
 		//paid
 		if (paid != null) {
 			order.paid = paid;
@@ -218,8 +230,8 @@ class OrderService
 						
 						e = StockMove({ product:order.product, move: 0 - addedquantity });
 					}					
-				}				
-				order.product.update();					
+				}
+				order.product.update();
 			}	
 		}
 
@@ -243,6 +255,58 @@ class OrderService
 		return order;
 	}
 
+
+	public static function editMultiWeight( order : db.UserOrder, newquantity : Float ) : db.UserOrder {
+
+		if( !tools.FloatTool.isInt(newquantity) ) {
+
+			throw new Error( "Erreur : la quantité du produit" + order.product.name + " devrait être un entier." );
+		}
+	
+		var shopMode = order.product.catalog.group.hasShopMode();
+
+		if( !shopMode && order.product.multiWeight ) {
+
+			var currentOrdersNb = db.UserOrder.manager.count( $subscription == order.subscription && $distribution == order.distribution && $product == order.product && $quantity > 0 );
+			if ( newquantity == currentOrdersNb ) { return order; }
+			
+			var orders = db.UserOrder.manager.search( $subscription == order.subscription && $distribution == order.distribution && $product == order.product && $quantity > 0, false).array();
+			if ( newquantity != 0 ) {
+
+				var quantityDiff : Int = Std.int(newquantity) - currentOrdersNb;
+				if ( quantityDiff < 0 ) {
+
+					for ( i in 0...-quantityDiff ) {
+
+						edit( orders[i], 0 );
+						orders.remove( orders[i] );
+					}
+				}
+				else if ( quantityDiff > 0 ) {
+
+					for ( i in 0...quantityDiff ) {
+
+						orders.push( make( order.user, 1, order.product, order.distribution.id, null, order.subscription ) );
+					}
+				}
+
+				for ( orderToEdit in orders ) {
+
+					edit( orderToEdit, 1 );
+				}
+			}
+			else {
+
+				for ( orderToEdit in orders ) {
+
+					edit( orderToEdit, 0 );
+				}
+			}
+			
+		}
+		
+		return order;
+	}
 
 	/**
 	 *  Delete an order

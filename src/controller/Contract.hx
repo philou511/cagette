@@ -338,6 +338,11 @@ class Contract extends Controller
 			
 			view.json = function(d) return haxe.Json.stringify(d);
 
+			view.multiWeightQuantity  = function( order : db.UserOrder ) {
+
+				return db.UserOrder.manager.count( $subscription == order.subscription && $distribution == order.distribution && $product == order.product && $quantity > 0 );
+			}
+
 			var openDistributions : Array<db.Distribution> = SubscriptionService.getOpenDistribsForSubscription( app.user, catalog, currentOrComingSubscription );
 			hasComingOpenDistrib = openDistributions.length != 0;
 	
@@ -586,7 +591,14 @@ class Contract extends Controller
 
 							if( newSubscriptionAbsentDistribs.length == 0 || newSubscriptionAbsentDistribs.find( d -> d.id == orderToEdit.order.distribution.id ) == null ) {
 								
-								varOrders.push( OrderService.edit( orderToEdit.order, orderToEdit.quantity ) );
+								if( !orderToEdit.order.product.multiWeight ) {
+
+									varOrders.push( OrderService.edit( orderToEdit.order, orderToEdit.quantity ) );
+								}
+								else {
+
+									varOrders.push( OrderService.editMultiWeight( orderToEdit.order, orderToEdit.quantity ) );
+								}
 							}
 							
 						}

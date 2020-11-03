@@ -327,8 +327,10 @@
 													::set o = d.ordersProducts[i]::
 													::if o.order==null::
 														::set q = ""::
-													::else::
+													::elseif !o.product.multiWeight::
 														::set q = o.order.quantity::
+													::else::
+														::set q = multiWeightQuantity( o.order )::
 													::end::
 													
 													::if canOrder::							
@@ -357,6 +359,9 @@
 												::foreach o d.ordersProducts::
 													::if o.order!=null::
 														::set q = o.order.quantity::
+														::if o.product.multiWeight::
+															::set q = multiWeightQuantity( o.order )::
+														::end::
 														::set price = o.product.price + o.product._catalog.computeFees(o.product.price)::
 														::set total = total+(q*price)::
 													::end::
