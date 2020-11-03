@@ -12,7 +12,8 @@ typedef RegisterBoxState = {
 	phone:String,
 	address1:String,
 	zipCode:String,
-	city:String
+    city:String,
+    tos:Bool, //terms of service
 };
 
 typedef RegisterBoxProps = {
@@ -33,7 +34,7 @@ class RegisterBox extends react.ReactComponentOf<RegisterBoxProps,RegisterBoxSta
 		if (props.redirectUrl == null) props.redirectUrl = "/";
 		if(props.message==null && props.addressRequired) props.message = "L'inscription à ce groupe nécéssite de donner son adresse.";
 		super(props);		
-		this.state = {firstName:"",lastName:"",email:"",password:"",error:null,phone:"",address1:"",zipCode:"",city:""};
+		this.state = {firstName:"",lastName:"",email:"",password:"",error:null,phone:"",address1:"",zipCode:"",city:"",tos:false};
 	}
 	
 	
@@ -72,7 +73,9 @@ class RegisterBox extends react.ReactComponentOf<RegisterBoxProps,RegisterBoxSta
 				</div>
 			</div>
 			</span>');
-		}
+        }
+        
+        var tosChecked = state.tos ? jsx('checked="checked"') : null;
 
 		return jsx('
 			<div>
@@ -105,9 +108,19 @@ class RegisterBox extends react.ReactComponentOf<RegisterBoxProps,RegisterBoxSta
 					<div className="form-group">
 						<label htmlFor="password" className="col-sm-4 control-label">Mot de passe : </label>
 						<div className="col-sm-8">
-							<input id="password" type="password" name="password" value=${state.password} className="form-control" onChange=$onChange/>					
+							<input id="password" $tosChecked type="password" name="password" value=${state.password} className="form-control" onChange=$onChange/>					
 						</div>					
-					</div>
+                    </div>
+                    
+                    <div className="form-group">                    
+                        <div className="col-sm-4">                			
+                        </div>					
+                        <div className="col-sm-8 control-label" style=${{textAlign:"left"}}>
+                            <input id="tos" type="checkbox" name="tos" className="text-right" onChange=$onChange style=${{marginRight:8}}/>		
+                            J\'accepte les <a href="/cgu" target="_blank">conditions générales d\'utilisation</a>
+                        </div>
+                    </div>
+
 					<p className="text-center">
 						<a onClick=$submit className="btn btn-primary btn-lg" >
 						<i className="icon icon-chevron-right"></i> Inscription</a>
@@ -131,8 +144,14 @@ class RegisterBox extends react.ReactComponentOf<RegisterBoxProps,RegisterBoxSta
 		e.preventDefault();
 		var name :String = untyped e.target.name;
 		var value :String = untyped e.target.value;
-		//trace('onChange : $name = $value');
-		Reflect.setField(state, name, value);
+        
+        if(name=="tos"){
+            state.tos = untyped e.target.checked;
+            // trace('onChange : tos = ${untyped e.target.checked}');
+        }else{
+            Reflect.setField(state, name, value);
+            // trace('onChange : $name = $value');
+        }		
 		this.setState(this.state);
 	}
 	
@@ -153,7 +172,7 @@ class RegisterBox extends react.ReactComponentOf<RegisterBoxProps,RegisterBoxSta
 
 	
 	public function submit(e:js.html.Event ){
-		
+
 		if (state.email == ""){
 			setError("Veuillez saisir votre email");
 			return;
@@ -172,7 +191,12 @@ class RegisterBox extends react.ReactComponentOf<RegisterBoxProps,RegisterBoxSta
 		if (state.lastName == ""){
 			setError("Veuillez saisir votre nom de famille");
 			return;
-		}
+        }
+        
+        if(state.tos == false){
+            setError("Vous devez accepter les conditions générales d'utilisation");
+			return;
+        }
 		
 		if (state.phone == "" && props.phoneRequired){
 			setError("Veuillez saisir votre numéro de téléphone");
@@ -205,7 +229,8 @@ class RegisterBox extends react.ReactComponentOf<RegisterBoxProps,RegisterBoxSta
 		req.addParameter("lastName", state.lastName);
 		req.addParameter("email", state.email);
 		req.addParameter("password", state.password);
-		req.addParameter("redirecturl", props.redirectUrl);
+        req.addParameter("redirecturl", props.redirectUrl);
+        req.addParameter("tos", state.tos?"1":"0");
 		if(props.phoneRequired) req.addParameter("phone", state.phone);
 		if(props.addressRequired){
 			req.addParameter("address1",state.address1);

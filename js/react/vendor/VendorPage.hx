@@ -59,6 +59,11 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 
 				<Typography component="p" style=${{fontSize:"1.1rem",color:CGColors.MediumGrey}}>
 					${CagetteTheme.getIcon("map-marker")} ${props.vendorInfo.city} (${props.vendorInfo.zipCode})
+                </Typography>
+                
+                <Typography component="p" style=${{fontSize:"0.8rem",color:CGColors.MediumGrey}}>
+                    SIRET : ${props.vendorInfo.companyNumber}<br/>
+                    ${props.vendorInfo.legalStatus}
 				</Typography>
 
 				${getHomepage()}
@@ -116,7 +121,9 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 			key: Std.string(distrib.id),
 			latitude: distrib.place.latitude,
 			longitude: distrib.place.longitude,
-			content: '<div><a href=${"/group/" + distrib.groupId} target="_blank">${distrib.groupName}</a></div>'
+            // content: '<div><a href=${"/group/" + distrib.groupId} target="_blank">${distrib.groupName}</a></div>'
+            groupId: distrib.groupId,
+            groupName:  distrib.groupName
 		} ));
 
 		return jsx('<>

@@ -42,8 +42,9 @@
 							<div class="col-md-3 text-center">
 								<div style="background-image:url('::c._vendor.getImage()::');" class="productImg xl"/> 									
 								<p>
-									<b>::c._vendor.name::</b><br/>
-									::c._vendor.city:: (::c._vendor.zipCode::)
+									<a href="::c._vendor.getLink()::" target="_blank"><b>::c._vendor.name::</b></a>
+									<br/>
+									::c._vendor.city::
 								</p>
 							</div>
 

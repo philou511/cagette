@@ -301,31 +301,71 @@ class PaymentService {
 	 * @param group
 	 * @return Array<payment.PaymentType>
 	 */
-	public static function getPaymentTypes(context:PaymentContext, ?group:db.Group):Array<payment.PaymentType> {
-		var url = switch (context) {
-			case PCAll: "/payments/getPaymentTypes?context=PCAll";
-			case PCGroupAdmin: "/payments/getPaymentTypes?context=PCGroupAdmin";
-			case PCPayment: "/payments/getPaymentTypes?context=PCPayment";
-			case PCManualEntry: "/payments/getPaymentTypes?context=PCManualEntry";
-		}
-		url += "&groupId=" + (group == null ?  App.current.getCurrentGroup().id : group.id);
+	public static function getPaymentTypes(context: PaymentContext, ?group: db.Group) : Array<payment.PaymentType>
+	{
+		var out : Array<payment.PaymentType> = [];
 
-		var res:Array<{id:String}> = service.BridgeService.call(url);
-		var out:Array<payment.PaymentType> = [];
-		for (p in res) {
-			var payment = switch (p.id) {
-				case "cash": new payment.Cash();
-				case "check": new payment.Check();
-				case "transfer": new payment.Transfer();
-				case "moneypot": new payment.MoneyPot();
-				case "onthespot": new payment.OnTheSpotPayment();
-				case "card-terminal": new payment.OnTheSpotCardTerminal();
-				case "mangopay-ec": new pro.payment.MangopayECPayment();
-				default: null;
-			}
-			if (payment != null) {
-				out.push(payment);
-			}
+		switch(context)
+		{
+			//every payment type
+			case PCAll:
+				var types = [
+					new payment.Cash(),
+					new payment.Check(),
+					new payment.Transfer(),	
+					new payment.MoneyPot(),
+					new payment.OnTheSpotPayment(),
+					new payment.OnTheSpotCardTerminal()						
+				];
+				var e = App.current.event(GetPaymentTypes({types:types}));
+				out = switch(e) {
+						case GetPaymentTypes(d): d.types;
+						default : null;
+					}
+
+			//when selecting wich payment types to enable
+			case PCGroupAdmin:
+				var allPaymentTypes = getPaymentTypes(PCAll);
+				//Exclude On the spot payment
+				var onTheSpot = Lambda.find(allPaymentTypes, function(x) return x.type == payment.OnTheSpotPayment.TYPE);
+				allPaymentTypes.remove(onTheSpot);
+				out = allPaymentTypes;
+
+
+			//For the payment page
+			case PCPayment:
+				if ( group.allowedPaymentsType == null ) return [];
+				//ontheSpot payment type replaces checks or cash
+			
+				var hasOnTheSpotPaymentTypes = false;
+				var all = getPaymentTypes(PCAll);
+				for ( paymentTypeId in group.allowedPaymentsType ){
+					var found = all.find(function(a) return a.type == paymentTypeId);
+					if (found != null)  {
+						if(found.onTheSpot==true){
+							hasOnTheSpotPaymentTypes = true;
+						}else{
+							out.push(found);
+						}
+					}
+				}
+				if(hasOnTheSpotPaymentTypes){
+					out.push(new payment.OnTheSpotPayment());
+				}
+
+			
+			//when a coordinator does a manual refund or adds manually a payment
+			case PCManualEntry:
+				//Exclude the MoneyPot payment
+				var paymentTypesInAdmin = getPaymentTypes(PCGroupAdmin);
+				var moneyPot = Lambda.find(paymentTypesInAdmin, function(x) return x.type == payment.MoneyPot.TYPE);
+				paymentTypesInAdmin.remove(moneyPot);
+				#if plugins
+				//cannot make a mgp payment manually !!
+				var mgp = paymentTypesInAdmin.find( x -> x.type == pro.payment.MangopayMPPayment.TYPE || x.type == pro.payment.MangopayECPayment.TYPE );
+				paymentTypesInAdmin.remove(mgp);
+				#end
+				out = paymentTypesInAdmin;
 		}
 		return out;
 	}

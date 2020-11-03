@@ -1,4 +1,5 @@
 package controller;
+import sugoi.form.elements.Checkbox;
 import pro.db.CagettePro;
 import haxe.crypto.Md5;
 import sugoi.form.elements.Input;
@@ -48,7 +49,10 @@ class User extends Controller
 		//home page
 		app.breadcrumb = [];
 		
-		if (app.user == null) throw t._("You are not connected");
+		//need to check new ToS
+		if(app.user.tosVersion != sugoi.db.Variable.getInt('tosVersion')){
+			throw Redirect("/user/tos");
+		} 
 		
 		var groups = app.user.getGroups();
 		
@@ -312,6 +316,23 @@ class User extends Controller
 			App.current.session.data.amapId = null;
 			throw Ok(url, t._("You left the group ::groupName::", {groupName:name}));
 		}
+	}
+
+	@tpl('form.mtt')
+	function doTos(){
+		var tosVersion = sugoi.db.Variable.getInt("tosVersion");
+		var form = new sugoi.form.Form("tos");
+		form.addElement(new sugoi.form.elements.Checkbox("tos","J'accepte les nouvelles <a href='/cgu' target='_blank'>conditions générales d'utilisation</a>"));
+
+		if(form.isValid() && form.getValueOf("tos")==true){
+			app.user.lock();
+			app.user.tosVersion = tosVersion;
+			app.user.update();
+			throw Redirect('/');
+		}
+		
+		view.title = "Mise à jour des conditions générales d'utilisation de Cagette.net"+' ( v. $tosVersion )';
+		view.form = form;
 	}
 	
 }

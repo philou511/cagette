@@ -52,7 +52,8 @@ class User extends Object {
 	public var ldate : SNull<SDateTime>;	//last connection
 	
 	public var flags : SFlags<UserFlags>;
-	@hideInForms public var tos	 : SBool; //terms of service / CGU	
+	
+	@hideInForms public var tosVersion: SNull<SInt>; //CGU version checked
 	@hideInForms public var tutoState : SNull<SData<{name:String,step:Int}>>; //tutorial state
 	
 	public var apiKey : SNull<SString<128>>; //private API key
