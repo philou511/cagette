@@ -397,14 +397,8 @@ class Cron extends Controller
 						group:c.group
 					} ) );
 					App.sendMail(m , c.group);	
-
-
 				}
-
-
 			}
-
-
 		});
 		task.execute(!App.config.DEBUG);
 		

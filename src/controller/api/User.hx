@@ -179,8 +179,10 @@ class User extends Controller
 		var address = p.exists("address1") ? StringTools.trim(p.get("address1")) : null;
 		var zipCode = p.exists("zipCode") ? StringTools.trim(p.get("zipCode")) : null;
 		var city = p.exists("city") ? StringTools.trim(p.get("city")) : null;
+		var tos = p.get("tos")=="1";
+
 		
-		service.UserService.register(firstName, lastName, email, phone, pass, address, zipCode, city);
+		service.UserService.register(firstName, lastName, email, phone, pass, address, zipCode, city, tos);
 		
 		json({success:true});
 	}

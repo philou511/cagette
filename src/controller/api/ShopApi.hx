@@ -224,6 +224,7 @@ class ShopApi extends Controller
 		for (c in Lambda.array(contracts)) {			
 			if (c.type != db.Catalog.TYPE_VARORDER) contracts.remove(c);//only varying orders
 			if (!c.isVisibleInShop()) contracts.remove(c);
+			if( c.vendor.isDisabled()) contracts.remove(c);
 		}
 		
 		var now = Date.now();

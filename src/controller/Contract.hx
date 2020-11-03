@@ -82,13 +82,12 @@ class Contract extends Controller
 	@logged @tpl("form.mtt")
 	public function doInsertVendor(email:String,name:String) {
 				
-		var vendor = new db.Vendor();
-		var form = db.Vendor.getForm(vendor);
+		var form = VendorService.getForm(new db.Vendor());
 				
 		if (form.isValid()) {
+			var vendor = null;
 			try{
-				form.toSpod(vendor);			
-				VendorService.create(vendor);
+				vendor = VendorService.create(form.getDatasAsObject());
 			}catch(e:Error){
 				throw Error(Web.getURI(),e.message);
 			}
