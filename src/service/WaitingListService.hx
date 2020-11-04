@@ -40,29 +40,6 @@ class WaitingListService{
 		}
 	}
 
-	/**
-		Put a member of the group back on waiting list
-	**/
-	public static function moveBackToWl(user:db.User,group:db.Group,message:String){
-		var t  = sugoi.i18n.Locale.texts;
-
-		//checks
-		var ug = db.UserGroup.get(user,group,true);
-		if( ug==null ) throw new Error(user.getName()+" ne fait pas partie de ce groupe.");
-		if( App.current.user.id==user.id ) throw new Error("Vous ne pouvez pas vous mettre vous-même en liste d'attente.");
-		if(ug.hasRight(GroupAdmin)) throw new Error("Vous ne pouvez pas mettre "+user.getName()+" en liste d'attente, car c'est un administrateur du groupe.");
-
-		ug.delete();
-
-		var w = new db.WaitingList();
-		w.user = user;
-		w.group = group;
-		w.message = message;
-		w.insert();
-
-		
-	}
-
 	public static function canRegister(user:db.User,group:db.Group){
 		var t  = sugoi.i18n.Locale.texts;
 		
@@ -90,81 +67,5 @@ class WaitingListService{
 		}
 		wl.delete();
 	}
-
-	/**
-		an admin cancels a request
-	**/
-	public static function cancelRequest(user:db.User,group:db.Group){
-		var t  = sugoi.i18n.Locale.texts;
-		if ( user == null) throw "user is null";
-		var wl = db.WaitingList.manager.select($amapId == group.id && $user == user,true);
-		if ( wl == null) throw "this user is not in waiting list";
-
-		//email the requester
-		App.quickMail(
-			wl.user.email,
-			t._("[::group::] Membership request refused.",{group:group.name}),
-			t._("Your membership request for <b>::group::</b> has been refused.",{group:group.name})
-		);
-
-		//email others admin
-		for( u in service.GroupService.getGroupMembersWithRights(group,[Right.GroupAdmin,Right.Membership]) ){
-			if(u.id==App.current.user.id) continue;
-			App.quickMail(
-				u.email,
-				t._("[::group::] ::name:: membership request has been refused by ::admin::.",{group:group.name, name:user.getName(), admin:App.current.user.getName()}),
-				t._("<p><b>::name::</b> was registred to the waiting list.</p><p><b>::admin::</b> has refused his/her request.</p>",{name:user.getName(), admin:App.current.user.getName()}),
-				group
-			);
-		}
-			
-		wl.delete();
-	}
-
-	/**
-		an admin approves a request to enter the waiting list
-	**/
-	public static function approveRequest(user:db.User,group:db.Group){
-		var t  = sugoi.i18n.Locale.texts;
-		if ( user == null) throw "user is null";
-		var wl = db.WaitingList.manager.select($amapId == group.id && $user == user,true);
-		if ( wl == null) throw "this user is not in waiting list";
-
-		if (db.UserGroup.get(user, group, false) == null){
-			var ua = new db.UserGroup();
-			ua.group = wl.group;
-			ua.user = wl.user;
-			ua.insert();	
-		}
-		
-		wl.delete();
-
-		//email the requester
-		App.quickMail(
-			wl.user.email,
-			t._("[::group::] Membership request accepted.",{group:group.name}),
-			t._("<p>Your membership request for <b>::group::</b> has been accepted !</p><p>You're now a member of the group.</p>",{group:group.name}),
-			group
-		);
-
-		//email others admin
-		for( u in service.GroupService.getGroupMembersWithRights(group,[Right.GroupAdmin,Right.Membership]) ){
-			if(u.id==App.current.user.id) continue;
-			App.quickMail(
-				u.email,
-				t._("[::group::] ::name:: membership request has been accepted by ::admin::.",{group:group.name, name:user.getName(), admin:App.current.user.getName()}),
-				t._("<p><b>::name::</b> was registred to the waiting list.</p><p><b>::admin::</b> has accepted his/her request.</p>",{name:user.getName(), admin:App.current.user.getName()}),
-				group
-			);
-		}
-			
-		wl.delete();
-	}
-
-	public static function countUsersInWl(group:db.Group) {
-		return db.WaitingList.manager.count($group == group);	
-	}
-
-
 
 }
