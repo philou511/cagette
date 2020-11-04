@@ -343,6 +343,11 @@ Called from controller/Main.hx line 117
 		sys.db.admin.Admin.handler();
 	}
 
+	@admin
+	function doBeta(d:Dispatch) {
+		d.dispatch(new controller.Beta());
+	}
+
 	
 	//CGU
 	public function doCgu() {
