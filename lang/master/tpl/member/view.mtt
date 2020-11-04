@@ -267,10 +267,10 @@
 										::set style = "color:#0C0;"::
 									::end::
 									<td style="vertical-align: middle;">
-										::subscriptionTotal::&nbsp;::currency()::
+										::formatNum(subscriptionTotal)::&nbsp;::currency()::
 									</td>
 									<td style="vertical-align: middle;::style::">
-										::balance::&nbsp;::currency()::
+										::formatNum(balance)::&nbsp;::currency()::
 									</td>
 									<!-- <td style="vertical-align: middle;" ::cond i == 0::>
 										$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
@@ -305,7 +305,7 @@
 				::set color = "0C0"::
 			::end::
 			<span style="color:#::color::;">
-				::userGroup.balance:: ::currency()::
+				::formatNum(userGroup.balance):: ::currency()::
 			</span>
 		</span>
 		

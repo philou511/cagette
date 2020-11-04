@@ -180,7 +180,7 @@
 										::subscriptionTotal::&nbsp;::currency()::
 									</td>
 									<td style="vertical-align: middle;::style::">
-										::balance::&nbsp;::currency()::
+										::formatNum(balance)::&nbsp;::currency()::
 									</td>
 									<!-- <td style="vertical-align: middle;" ::cond i == 0::>
 										$$check(::subscriptionService.isSubscriptionPaid(subscription)::)

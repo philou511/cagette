@@ -493,12 +493,12 @@
 									::if catalogMinOrdersTotal != null ::
 										::set remaining = catalogMinOrdersTotal - subscription.getTotalPrice()::
 										::if remaining > 0::
-											( Reste ::remaining::&nbsp;::currency():: à dépenser )
+											( Reste ::formatNum(remaining)::&nbsp;::currency():: à dépenser )
 										::end::
 									::end::
 								</td>
 								<td style="vertical-align: middle;">
-									::subscription.getPaymentsTotal() - subscriptionTotal::&nbsp;::currency()::
+									::formatNum(subscription.getPaymentsTotal() - subscriptionTotal)::&nbsp;::currency()::
 								</td>
 							</tr>
 							<tr class="greyhead text-center">

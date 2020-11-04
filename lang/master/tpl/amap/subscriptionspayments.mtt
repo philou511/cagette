@@ -60,9 +60,9 @@
 							::_("Balance")::&nbsp;:
 							::set balance = subscriptionPayments - subscriptionTotal::
 							::if balance < 0::
-								<span style="color:#C00;">::balance::&nbsp;::currency()::</span>
+								<span style="color:#C00;">::formatNum(balance)::&nbsp;::currency()::</span>
 							::else::
-								<span style="color:#0C0;">::balance::&nbsp;::currency()::</span>
+								<span style="color:#0C0;">::formatNum(balance)::&nbsp;::currency()::</span>
 							::end::
 						</td>
 

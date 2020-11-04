@@ -132,7 +132,7 @@
                                     ::subscription.getTotalPrice()::&nbsp;::currency()::
                                 </td>
                                 <td style="vertical-align: middle;">
-                                    ::subscription.getPaymentsTotal() - subscription.getTotalPrice()::&nbsp;::currency()::
+                                    ::formatNum(subscription.getPaymentsTotal() - subscription.getTotalPrice())::&nbsp;::currency()::
                                 </td>
                                 <td  ::cond catalog.type == TYPE_CONSTORDERS:: style="vertical-align: middle;">
                                     $$check(::subscriptionService.isSubscriptionPaid(subscription)::)

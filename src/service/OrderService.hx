@@ -90,6 +90,7 @@ class OrderService
 		//checks
 		if(order.distribution==null) throw new Error( "cant record an order for a variable catalog without a distribution linked" );
 		if(order.basket==null) throw new Error( "this order should have a basket" );
+		if(order.distribution.catalog.group==null) throw new Error( "Pouet" );
 		if( !order.distribution.catalog.group.hasShopMode() ) {
 
 			if( subscription != null && subscription.id == null ) throw new Error( "La souscription a un id null." );
@@ -279,6 +280,7 @@ class OrderService
 				var place = order.distribution.place;
 				var basket = db.Basket.get(user, order.distribution.multiDistrib);
 				
+				if( contract.group == null ) throw new Error( "Toto" );
 				if( contract.group.hasShopMode() && contract.group.hasPayments() ) {
 
 					var orders = basket.getOrders();
@@ -292,6 +294,7 @@ class OrderService
 				order.delete();
 			}
 
+			if( contract.group == null ) throw new Error( "Tutu" );
 			if( !contract.group.hasShopMode() ) {
 
 				service.SubscriptionService.createOrUpdateTotalOperation( order.subscription );
@@ -726,8 +729,18 @@ class OrderService
 			existingOrders = catalog.getUserOrders( user, distrib );			
 		}
 
-		var subscription : db.Subscription = null;
-		var group : db.Group  = null;
+		var group : db.Group = multiDistrib != null ? multiDistrib.group : catalog.group;
+		if ( group == null ) { throw new Error('Impossible de déterminer le groupe.'); }
+		var shopMode = group.hasShopMode();
+		var subscriptions = new Array< db.Subscription >();
+		if( !shopMode && catalog != null ) {
+
+			var subscription = db.Subscription.manager.select( $user == user && $catalog == catalog && $startDate <= multiDistrib.distribStartDate && multiDistrib.distribEndDate <= $endDate );
+			if ( subscription == null ) { throw new Error('Il n\'y a pas de souscription pour cette personne. Vous devez d\'abord créer une souscription avant de commander.'); }
+			
+			subscriptions.push( subscription );
+		}
+		
 		for ( order in ordersData ) {
 			
 			// Get product
@@ -752,21 +765,30 @@ class OrderService
 					distrib = multiDistrib.getDistributionFromProduct( product );
 				}
 
-				group = catalog != null ? catalog.group : distrib.catalog.group;
 				var newOrder : db.UserOrder = null;
-				if ( group.hasShopMode() ) {
+				if ( shopMode ) {
 
 					newOrder =  OrderService.make( user, order.qt , product, distrib == null ? null : distrib.id, order.paid );
 				}
 				else {
 
 					//Let's find the subscription for that user, catalog and distrib
-					subscription = db.Subscription.manager.select( $user == user && $catalog == distrib.catalog && $startDate <= distrib.date && distrib.date <= $endDate );
+					var subscription : db.Subscription = null;
+					if ( catalog != null ) {
+
+						subscription = subscriptions[0];
+					}
+					else {
+
+						subscription = db.Subscription.manager.select( $user == user && $catalog == distrib.catalog && $startDate <= distrib.date && distrib.date <= $endDate );
+					}
 					if ( subscription == null ) { throw new Error('Il n\'y a pas de souscription pour cette personne. Vous devez d\'abord créer une souscription avant de commander.'); }
 
-					if ( subscription != null ) {
+					newOrder =  OrderService.make( user, order.qt , product, distrib == null ? null : distrib.id, order.paid, subscription );
 
-						newOrder =  OrderService.make( user, order.qt , product, distrib == null ? null : distrib.id, order.paid, subscription );
+					if ( catalog == null && subscriptions.find( x -> x.id == subscription.id ) == null ) {
+
+						subscriptions.push( subscription );
 					}
 				}
 				
@@ -777,13 +799,17 @@ class OrderService
 		}
 
 		App.current.event( MakeOrder( orders ) );
-		if ( group.hasShopMode() ) {
+
+		if ( shopMode ) {
 
 			service.PaymentService.onOrderConfirm( orders );
 		}
 		else {
 
-			service.PaymentService.onOrderConfirm( null, subscription );
+			for( subscription in subscriptions ) {
+
+				service.PaymentService.onOrderConfirm( null, subscription );
+			}
 		}
 
 		return orders;

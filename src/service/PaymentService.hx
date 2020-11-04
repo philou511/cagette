@@ -269,7 +269,7 @@ class PaymentService {
 			}
 
 		}
-		else { //CSA Mode
+		else if( subscription.catalog.group.hasPayments() ) { //CSA Mode
 
 			// REFACTO TOTAL OPERATION
 

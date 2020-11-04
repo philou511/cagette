@@ -10,7 +10,7 @@
 				<td colspan="2"></td>
 				<td class="text-right" style="padding: 10px 0;">Solde</td>
 				<td style="vertical-align: middle;padding: 10px 0;">
-					::set balance = subscriptionPayments - subscriptionTotal::
+					::set balance = subscription.getBalance()::
 					::if balance < 0::
 						<span style="color:#C00;">::formatNum(balance)::&nbsp;::currency()::</span>
 					::else::

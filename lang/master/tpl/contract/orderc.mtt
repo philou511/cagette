@@ -421,7 +421,7 @@
 									::subscriptionTotal::&nbsp;::currency()::
 								</td>
 								<td style="vertical-align: middle;">
-									::subscription.getPaymentsTotal() - subscriptionTotal::&nbsp;::currency()::
+									::formatNum(subscription.getPaymentsTotal() - subscriptionTotal)::&nbsp;::currency()::
 								</td>
 								<!-- <td style="vertical-align: middle;">
 									$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
