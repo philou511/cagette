@@ -61,8 +61,8 @@ class Documents extends controller.Controller
 						  { value : "members", label : "Membres du groupe" },
 						  { value : "public", label : "Public" } ];
 
-		//In case of a group or a variable orders catalog
-		if ( catalog == null || catalog.type != 0 ) {
+		//In case of a group or shop mode
+		if ( catalog == null || catalog.group.hasShopMode() ) {
 
 			options = [	{ value : "members", label : "Membres du groupe" }, { value : "public", label : "Public" } ];
 		}
@@ -124,7 +124,6 @@ class Documents extends controller.Controller
 			if ( !app.user.canManageContract( catalog ) ) throw Error( '/', t._('Access forbidden') );
 			view.c = catalog;
 			view.catalog = catalog;
-			view.type_constorders = db.Catalog.TYPE_CONSTORDERS;
 			view.catalog = catalog;
 			returnPath = '/contractAdmin/documents/' + catalog.id;
 			errorPath = '/contractAdmin/documents/insert/' + catalog.id;

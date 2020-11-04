@@ -3,14 +3,15 @@
 <h2>Participation aux distributions</h2>
 
 	<p>
-		<a href="/contractAdmin/distributions/::c.id::?participateToAllDistributions=1" class="btn btn-default btn-sm">
-			<i class="icon icon-check"></i> Participer à toutes les distributions
-		</a>
-	
-		<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
-			<i class="icon icon-archive"></i> ::_("Old distributions")::
-		</a>
+		$$timeframe(::timeframe::)
 	</p>
+
+	<p>
+		<a href="/contractAdmin/distributions/::c.id::?participateToAllDistributions=1" class="btn btn-default">
+			<i class="icon icon-check"></i> Participer à toutes les distributions
+		</a>		
+	</p>
+
 
 	<table class="table">
 		::set now = now().getTime()::
@@ -64,7 +65,7 @@
 								</button>
 								<ul class="dropdown-menu">
 									<li>
-										::if(d._catalog.type!=0)::
+										::if d._catalog.type != TYPE_CONSTORDERS::
 										<a href="/distribution/edit/::d.id::">
 											<i class="icon icon-calendar"></i> Personnaliser les dates d'ouverture et de fermeture de commande
 										</a>

@@ -54,7 +54,7 @@ class MembershipService{
 			}
 
 			switch(paymentType.type){
-				case payment.Check.TYPE , payment.Transfer.TYPE , payment.Cash.TYPE : //ok
+				case payment.Check.TYPE , payment.Transfer.TYPE , payment.Cash.TYPE, payment.OnTheSpotCardTerminal.TYPE : //ok
 				default : throw new Error("Membership payement can only be transfer, cash or check");
 			}
 

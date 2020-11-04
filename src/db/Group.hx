@@ -21,6 +21,7 @@ enum GroupFlags {
 
 enum BetaFlags{
 	ShopV2; 		//BETA shop V2
+	MessagesV2;	    //BETA messages V2
 }
 
 //user registration options
@@ -60,7 +61,7 @@ class Group extends Object
 	@hideInForms public var membershipRenewalDate : SNull<SDate>;
 	@hideInForms public var membershipFee : SNull<STinyInt>;
 	
-	@hideInForms public var vatRates : SData<Map<String,Float>>;
+	@hideInForms public var vatRates : SNull<SData<Map<String,Float>>>;
 	
 	//options and flags
 	public var flags:SFlags<GroupFlags>;
@@ -84,6 +85,7 @@ class Group extends Object
 	
 	//payments
 	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
+	@hideInForms public var allowedPaymentsType2:SNull<SText>;
 	@hideInForms public var checkOrder:SNull<SString<64>>;
 	@hideInForms public var IBAN:SNull<SString<40>>;
 	@hideInForms public var allowMoneyPotWithNegativeBalance:SNull<SBool>;
@@ -126,6 +128,22 @@ class Group extends Object
 		Cliquez sur \"calendrier des permanences\" pour vous inscrire !";
 		vacantVolunteerRolesMailDaysBeforeDutyPeriod = 7;
 		
+	}
+
+	/**
+		serialization error proof getter
+	**/
+	public function getVatRates():Map<String,Float>{
+		try{
+			if(this.vatRates==null){
+				return ["5,5%" => 5.5, "20%" => 20];
+			} else return this.vatRates;
+		}catch(e:Dynamic){
+			this.lock();
+			this.vatRates = ["5,5%" => 5.5, "20%" => 20];
+			this.update();
+			return this.vatRates;
+		}
 	}
 	
 	/**
@@ -486,14 +504,23 @@ class Group extends Object
 			"txtIntro" 		=> t._("Short description"),
 			"txtHome" 		=> t._("Homepage text"),
 			"txtDistrib" 	=> t._("Text for distribution lists"),
-			"extUrl" 		=> t._("Group website URL"),
+			"extUrl" 		=> "URL de votre site web",
 			"membershipRenewalDate" => t._("Membership renewal date"),
 			"flags" 		=> t._("Options"),
 			"betaFlags" 	=> t._("Nouvelles fonctionnalités"),
-			"groupType" 	=> t._("Group type"),
+			"groupType" 	=> "Type de groupe (déclaratif)",
 			"regOption" 	=> t._("Registration setting"),
 			"contact" 		=> t._("Main contact"),
 			"legalRepresentative" => t._("Legal representative")			
 		];
+	}
+
+	override function update() {
+		sync();
+		super.update();
+	}
+
+	public function sync() {
+		this.allowedPaymentsType2 = this.allowedPaymentsType != null ? haxe.Json.stringify(this.allowedPaymentsType) : null;
 	}
 }

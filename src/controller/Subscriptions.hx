@@ -1,4 +1,6 @@
 package controller;
+import sugoi.db.Cache;
+import db.Catalog;
 import service.SubscriptionService;
 import tink.core.Error;
 using Lambda;
@@ -30,7 +32,6 @@ class Subscriptions extends controller.Controller
 		});
 		
 		view.catalog = catalog;
-		view.group = db.Group.manager.get( catalog.group.id );
 		view.c = catalog;
 		view.subscriptions = catalogSubscriptions;
 		view.validationsCount = catalogSubscriptions.count( function( subscription ) { return  !subscription.isValidated; } );
@@ -38,7 +39,7 @@ class Subscriptions extends controller.Controller
 
 			return DateTools.format( date, "%d/%m/%Y");
 		}
-		view.subscriptionService = service.SubscriptionService;
+		view.subscriptionService = SubscriptionService;
 		view.nav.push( 'subscriptions' );
 
 		//generate a token
@@ -53,9 +54,8 @@ class Subscriptions extends controller.Controller
 		if ( checkToken() ) {
 
 			try {
-				service.SubscriptionService.deleteSubscription( subscription );
-			}
-			catch( error : Error ) {
+				SubscriptionService.deleteSubscription( subscription );
+			} catch( error : Error ) {
 				throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, error.message );
 			}
 			throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La souscription pour ' + subscriptionUser.getName() + ' a bien été supprimée.' );
@@ -70,7 +70,7 @@ class Subscriptions extends controller.Controller
 
 		var catalogProducts = catalog.getProducts();
 
-		var startDateDP = new form.CagetteDatePicker("startDate","Date de début",catalog.startDate.getTime() > Date.now().getTime() ? catalog.startDate : Date.now() );
+		var startDateDP = new form.CagetteDatePicker("startDate","Date de début", SubscriptionService.getNewSubscriptionStartDate( catalog ) );
 		view.startDate = startDateDP;
 
 		var endDateDP = new form.CagetteDatePicker("endDate","Date de fin",catalog.endDate);
@@ -85,7 +85,7 @@ class Subscriptions extends controller.Controller
 
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, 'Veuillez sélectionner un membre.' );
 				}
-				var user = db.User.manager.get( userId );
+				var user = db.User.manager.get( userId, false );
 				if ( user == null ) {
 
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, t._( "Unable to find user #::num::", { num : userId } ) );
@@ -94,9 +94,6 @@ class Subscriptions extends controller.Controller
 
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, user + " ne fait pas partie de ce groupe" );
 				}
-
-				//var startDate = Date.fromString( app.params.get( "startdate" ) );
-				//var endDate = Date.fromString( app.params.get( "enddate" ) );
 				
 				startDateDP.populate();
 				endDateDP.populate();
@@ -107,16 +104,22 @@ class Subscriptions extends controller.Controller
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, "Vous devez sélectionner une date de début et de fin pour la souscription." );
 				}
 				
-				var ordersData = new Array< { productId : Int, quantity : Float, invertSharedOrder : Bool, userId2 : Int } >();
+				var ordersData = new Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
 				for ( product in catalogProducts ) {
 
-					var quantity : Float = Std.parseFloat( app.params.get( 'quantity' + product.id ) );
+					var quantity : Float = 0;
+					var qtyParam = app.params.get( 'quantity' + product.id );
+					if ( qtyParam != "" ) quantity = Std.parseFloat( qtyParam );
 					var user2 : db.User = null;
-					var userId2 : Int = Std.parseInt( app.params.get( 'user2' + product.id ) );
+					var userId2 : Int = null;
+					if( catalog.type == Catalog.TYPE_CONSTORDERS ) {
+
+						userId2 = Std.parseInt( app.params.get( 'user2' + product.id ) );
+					}
 					var invert = false;
 					if ( userId2 != null && userId2 != 0 ) {
 
-						user2 = db.User.manager.get( userId2 );
+						user2 = db.User.manager.get( userId2, false );
 						if ( user2 == null ) {
 
 							throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, t._( "Unable to find user #::num::", { num : userId2 } ) );
@@ -136,16 +139,26 @@ class Subscriptions extends controller.Controller
 
 					if ( quantity != 0 ) {
 
-						ordersData.push( { productId : product.id, quantity : quantity, invertSharedOrder : invert, userId2 : userId2 } );
+						if( catalog.type == Catalog.TYPE_CONSTORDERS ) {
+
+							ordersData.push( { productId : product.id, quantity : quantity, userId2 : userId2, invertSharedOrder : invert } );
+						}
+						else {
+
+							ordersData.push( { productId : product.id, quantity : quantity } );
+						}
+						
 					}
 					
 				}
 
 				if ( ordersData.length == 0 ) {
-					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, "Vous devez entrer au moins une quantité pour un produit." );
+
+					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, "La commande par défaut ne peut pas être vide. Vous devez obligatoirement commander quelque chose." );
 				}
 
-				service.SubscriptionService.createSubscription( user, catalog, startDate, endDate, ordersData, false );
+				var absencesNb = Std.parseInt( app.params.get( 'absencesNb' ) );
+				SubscriptionService.createSubscription( user, catalog, ordersData, absencesNb, startDate, endDate );
 
 				throw Ok( '/contractAdmin/subscriptions/' + catalog.id, 'La souscription pour ' + user.getName() + ' a bien été ajoutée.' );
 
@@ -156,12 +169,16 @@ class Subscriptions extends controller.Controller
 		}
 	
 		view.title = 'Nouvelle souscription';
+		view.edit = false;
 		view.canOrdersBeEdited = true;
 		view.c = catalog;
 		view.catalog = catalog;
 		view.showmember = true;
 		view.members = app.user.getGroup().getMembersFormElementData();
 		view.products = catalogProducts;
+		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( catalog ), function( distrib ) return Formatting.dDate( distrib.date ) );
+		view.subscriptionService = SubscriptionService;
+
 		view.nav.push( 'subscriptions' );
 
 	}
@@ -173,7 +190,7 @@ class Subscriptions extends controller.Controller
 
 		var catalogProducts = subscription.catalog.getProducts();
 
-		var canOrdersBeEdited = !service.SubscriptionService.hasPastDistribOrders( subscription );
+		var canOrdersBeEdited = !SubscriptionService.hasPastDistribOrders( subscription );
 
 		var startDateDP = new form.CagetteDatePicker("startDate","Date de début",subscription.startDate);
 		var endDateDP = new form.CagetteDatePicker("endDate","Date de fin",subscription.endDate);
@@ -184,9 +201,6 @@ class Subscriptions extends controller.Controller
 
 			try {
 
-				/*var startDate = Date.fromString( app.params.get( "startdate" ) );
-				var endDate = Date.fromString( app.params.get( "enddate" ) );*/
-				
 				startDateDP.populate();
 				endDateDP.populate();
 				var startDate = startDateDP.getValue();
@@ -196,19 +210,25 @@ class Subscriptions extends controller.Controller
 					throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous devez sélectionner une date de début et de fin pour la souscription." );
 				}
 
-				var ordersData = new Array< { productId : Int, quantity : Float, invertSharedOrder : Bool, userId2 : Int } >();
+				var ordersData = new Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
 				
 				if ( canOrdersBeEdited ) {
 
 					for ( product in catalogProducts ) {
 
-						var quantity : Float = Std.parseFloat( app.params.get( 'quantity' + product.id ) );
+						var quantity : Float = 0;
+						var qtyParam = app.params.get( 'quantity' + product.id );
+						if ( qtyParam != "" ) quantity = Std.parseFloat( qtyParam );
 						var user2 : db.User = null;
-						var userId2 : Int = Std.parseInt( app.params.get( 'user2' + product.id ) );
+						var userId2 : Int = null;
+						if( subscription.catalog.type == Catalog.TYPE_CONSTORDERS ) {
+							
+							userId2 = Std.parseInt( app.params.get( 'user2' + product.id ) );
+						}
 						var invert = false;
 						if ( userId2 != null && userId2 != 0 ) {
 
-							user2 = db.User.manager.get( userId2 );
+							user2 = db.User.manager.get( userId2, false );
 							if ( user2 == null ) {
 
 								throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, t._( "Unable to find user #::num::", { num : userId2 } ) );
@@ -228,18 +248,39 @@ class Subscriptions extends controller.Controller
 
 						if ( quantity != 0 ) {
 
-							ordersData.push( { productId : product.id, quantity : quantity, invertSharedOrder : invert, userId2 : userId2 } );
+							if( subscription.catalog.type == Catalog.TYPE_CONSTORDERS ) {
+
+								ordersData.push( { productId : product.id, quantity : quantity, userId2 : userId2, invertSharedOrder : invert } );
+							}
+							else {
+	
+								ordersData.push( { productId : product.id, quantity : quantity } );
+							}
+
 						}
 						
 					}
 
 					if ( ordersData.length == 0 ) {
 
-						throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous devez entrer au moins une quantité pour un produit." );
+						throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "La commande par défaut ne peut pas être vide. Vous devez obligatoirement commander quelque chose." );
 					}
 				}
 
-				service.SubscriptionService.updateSubscription( subscription, startDate, endDate, ordersData );
+				if ( !subscription.isValidated ) {
+
+					var absencesNb = Std.parseInt( app.params.get( 'absencesNb' ) );
+					SubscriptionService.updateSubscription( subscription, startDate, endDate, ordersData, null, absencesNb );
+				}
+				else {
+
+					var absentDistribIds = new Array<Int>();
+					for ( i in 0...subscription.getAbsencesNb() ) {
+					
+						absentDistribIds.push( Std.parseInt( app.params.get( 'absence' + i ) ) );
+					}
+					SubscriptionService.updateSubscription( subscription, startDate, endDate, ordersData, absentDistribIds );
+				}
 
 			} catch( error : Error ) {
 				
@@ -250,6 +291,7 @@ class Subscriptions extends controller.Controller
 		}
 
 		view.title = 'Modification de la souscription pour ' + subscription.user.getName();
+		view.edit = true;
 		view.canOrdersBeEdited = canOrdersBeEdited;
 		view.c = subscription.catalog;
 		view.catalog = subscription.catalog;
@@ -257,12 +299,20 @@ class Subscriptions extends controller.Controller
 		view.members = app.user.getGroup().getMembersFormElementData();
 		view.products = catalogProducts;
 		view.getProductOrder = function( productId : Int ) {
-
-			return service.SubscriptionService.getSubscriptionOrders( subscription ).find( function( order ) return order.product.id == productId );
+		
+			return SubscriptionService.getCSARecurrentOrders( subscription, null ).find( function( order ) return order.product.id == productId );
 		};
 		view.startdate = subscription.startDate;
 		view.enddate = subscription.endDate;
+		view.subscription = subscription;
 		view.nav.push( 'subscriptions' );
+		view.subscriptionService = SubscriptionService;
+		view.absencesDistribs = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
+		view.canAbsencesBeEdited = SubscriptionService.canAbsencesBeEdited( subscription.catalog );
+		view.absentDistribs = subscription.getAbsentDistribs();
+		if( !subscription.isValidated ) {
+			view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
+		}
 
 	}
 
@@ -271,9 +321,13 @@ class Subscriptions extends controller.Controller
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
 
-		try {			
-			service.SubscriptionService.validate( subscription );
-		} catch( error : Error ) {		
+		try {
+
+			SubscriptionService.updateValidation( subscription );			
+
+		}
+		catch( error : Error ) {
+
 			throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, error.message );
 		}
 
@@ -282,16 +336,128 @@ class Subscriptions extends controller.Controller
 	}
 
 	@admin
-	public function doUnvalidate(subscription : db.Subscription ){
-		if(checkToken()){
-			subscription.lock();
-			subscription.isValidated = false;
-			subscription.isPaid = false;
-			subscription.update();
-			throw Ok("/contractAdmin/subscriptions/"+subscription.catalog.id,'Souscription dévalidée');
+	public function doUnvalidate( subscription : db.Subscription ) {
+
+		if( checkToken() ) {
+
+			SubscriptionService.updateValidation( subscription, false );
+			throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'Souscription dévalidée' );
 		}
 
 	}
 
+	@logged @tpl("form.mtt")
+	function doAbsences( subscription : db.Subscription, ?args: { returnUrl: String } ) {
+
+		if( subscription.catalog.group.hasShopMode() ) throw Redirect( "/contract/view/" + subscription.catalog.id );
+
+		if ( args != null && args.returnUrl != null ) {
+
+			App.current.session.data.absencesReturnUrl = args.returnUrl;
+		}
+		
+		var absencesNb = subscription.getAbsencesNb();
+
+		if( !SubscriptionService.canAbsencesBeEdited( subscription.catalog ) || absencesNb == 0 ) {
+			throw Redirect( App.current.session.data.absencesReturnUrl );
+		}
+		
+		view.subscription = subscription;
+		view.subscriptionService = SubscriptionService;
+		view.catalog = subscription.catalog;
+		view.absentDistribsMaxNb = SubscriptionService.getAbsentDistribsMaxNb( subscription.catalog, subscription );
+		view.absencesDistribs = SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription );
+
+		var form = new sugoi.form.Form("subscriptionAbsences");
+		var absencesDistribs = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
+		var absentDistribIds = subscription.getAbsentDistribIds();
+		for ( i in 0...absencesNb ) {
+
+			form.addElement(new sugoi.form.elements.IntSelect( "absentDistrib" + i, "Je ne pourrai pas venir le :", absencesDistribs.array(), absentDistribIds[i], true ));
+		}
+		view.form = form;
+		
+		if ( form.checkToken() ) {
+
+			try {
+
+				var absentDistribIds = new Array<Int>();
+				for ( i in 0...absencesNb ) {
+				
+					absentDistribIds.push( Std.parseInt( form.getValueOf( 'absentDistrib' + i ) ) );
+				}
+				SubscriptionService.updateAbsencesDates( subscription, absentDistribIds );
+				
+			
+			}
+			catch( error : Error ) {
+			
+				throw Error( '/subscriptions/absences/' + subscription.id, error.message );
+			}
+
+			throw Ok( App.current.session.data.absencesReturnUrl, 'Vos dates d\'absences ont bien été mises à jour.' );
+
+		}
+	}
+	
+	@admin
+	public function doUnvalidateAll(catalog : db.Catalog){
+
+		for ( subscription in SubscriptionService.getSubscriptions(catalog) ) {
+
+			SubscriptionService.updateValidation( subscription, false );
+		}
+		throw Ok("/contractAdmin/subscriptions/"+catalog.id,'Souscriptions dévalidées');
+
+	}
+
+
+	@logged @tpl("form.mtt")
+	function doDefaultOrders( subscription : db.Subscription ) {
+
+		if( subscription.catalog.group.hasShopMode() ) throw Redirect( "/contract/view/" + subscription.catalog.id );
+		if( subscription.catalog.requiresOrdering == null || !subscription.catalog.requiresOrdering ) throw Redirect( "/contract/order/" + subscription.catalog.id );
+		
+		var form = new sugoi.form.Form("subscriptionDefaultOrders");
+		view.form = form;
+
+		form.addElement( new sugoi.form.elements.Html( 'title', '<h4 style="font-style: normal; text-align: center; margin-bottom: 20px;">Ma commande par défaut</h4>' ) );
+
+		var catalogProducts = subscription.catalog.getProducts();
+		for ( product in catalogProducts ) {
+
+			var defaultProductOrder = subscription.getDefaultOrders( product.id );
+			var defaultQuantity : Float = 0;
+			if ( defaultProductOrder.length != 0 && defaultProductOrder[0] != null ) {
+
+				defaultQuantity = defaultProductOrder[0].quantity;
+			}
+			form.addElement( new sugoi.form.elements.FloatInput( "quantity" + product.id, product.name + ' ' + product.price + ' €', defaultQuantity ) );
+		}
+		
+		
+		if ( form.checkToken() ) {
+
+			try {
+
+				var defaultOrders = new Array< { productId : Int, quantity : Float } >();
+				for ( product in catalogProducts ) {
+
+					var quantity : Float = form.getValueOf( 'quantity' + product.id );
+					defaultOrders.push( { productId : product.id, quantity : quantity } );
+				}
+
+				SubscriptionService.updateDefaultOrders( subscription, defaultOrders );
+			}
+			catch( error : Error ) {
+			
+				throw Error( '/subscriptions/defaultOrders/' + subscription.id, error.message );
+			}
+
+			throw Ok( '/contract/order/' + subscription.catalog.id, 'Votre commande par défaut a bien été mise à jour.' );
+
+		}
+
+	}
 
 }

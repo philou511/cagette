@@ -1,4 +1,5 @@
 package controller;
+import sugoi.form.elements.Html;
 import sugoi.form.elements.StringInput;
 import sugoi.form.elements.Checkbox;
 import db.UserOrder;
@@ -14,9 +15,10 @@ class Amap extends Controller
 	
 	@tpl("amap/default.mtt")
 	function doDefault() {
-		var contracts = db.Catalog.getActiveContracts(app.user.getGroup(), true, false);
-		for ( c in Lambda.array(contracts).copy()) {
-			if (c.endDate.getTime() < Date.now().getTime() ) contracts.remove(c);
+		var contracts = db.Catalog.getActiveContracts(app.user.getGroup(), true, false).array();
+		for ( c in contracts.copy()) {
+			if( c.endDate.getTime() < Date.now().getTime() ) contracts.remove(c);
+			if( c.vendor.isDisabled()) contracts.remove(c);
 		}
 		view.contracts = contracts;
 	}
@@ -34,15 +36,11 @@ class Amap extends Controller
 		var flags = form.getElement("flags");
 		untyped flags.excluded = [0,1,3,9];
 
-		//add a custom field for "shopmode"
-		var data = [
-			{label:t._("Shop Mode"),value:"shop"},
-			{label:t._("CSA Mode"),value:"CSA"},
-		];
-		var selected = group.flags.has(db.Group.GroupFlags.ShopMode) ? "shop" : "CSA";
-		form.addElement( new sugoi.form.elements.RadioGroup("mode",t._("Ordering Mode"),data, selected), 8);
-
-		
+		//group mode
+		var mode = group.flags.has(db.Group.GroupFlags.ShopMode) ? "Mode Boutique" : "Mode AMAP";
+		var html = new sugoi.form.elements.Html("mode",mode,"Mode de commande");
+		html.docLink = "https://wiki.cagette.net/admin:admin_boutique";
+		form.addElement(html ,7);
 	
 		if (form.checkToken()) {
 			
@@ -51,9 +49,12 @@ class Amap extends Controller
 				throw Error("/amap/edit",'Erreur, vous êtes en train de modifier "${editedGroup.name}" alors que vous êtes connecté à "${app.user.getGroup().name}"');
 			}
 			
+			var shopMode = group.hasShopMode();
+
 			form.toSpod(group);
 
-			if(form.getValueOf("mode")=="shop") group.flags.set(db.Group.GroupFlags.ShopMode) else group.flags.unset(db.Group.GroupFlags.ShopMode);
+			//keep shop mode
+			if(shopMode) group.flags.set(db.Group.GroupFlags.ShopMode);
 
 			if(group.betaFlags.has(db.Group.BetaFlags.ShopV2) && group.flags.has(db.Group.GroupFlags.CustomizedCategories)){
 				App.current.session.addMessage("Vous ne pouvez pas activer les catégories personnalisées et la nouvelle boutique. La nouvelle boutique ne fonctionne pas avec les catégories personnalisées.",true);

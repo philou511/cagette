@@ -17,80 +17,85 @@ class Messages extends Controller
 	
 	@tpl("messages/default.mtt")
 	function doDefault() {
-			
-		var form = new Form("msg");		
-		
-		var senderName = "";
-		var senderMail = "";
-		
-		if (App.current.session.data.whichUser == 1 && app.user.email2 != null) {
-			senderMail = app.user.email2;
-			senderName = app.user.firstName2 + " " + app.user.lastName2;
-			
-		}else {				
-			senderMail = app.user.email;
-			senderName = app.user.firstName + " " + app.user.lastName;
-		}
-		
-		var lists = getLists();
-		form.addElement( new StringInput("senderName", 	t._("Sender name"),senderName,true));
-		form.addElement( new StringInput("senderMail", 	t._("Sender E-Mail"),senderMail,true));
-		form.addElement( new StringSelect("list", 		t._("Recipients"),lists,"1", true,null,"style='width:500px;'"));
-		form.addElement( new StringInput("subject", 	t._("Subject:"),"",false,null,"style='width:500px;'") );
-		form.addElement( new TextArea("text", 			t._("Message:"), "", false, null, "style='width:500px;height:350px;'") );
-		
-		if (form.checkToken()) {
-			
-			var listId = form.getElement("list").value;
-			var recipients = getSelection(listId);
-			var mails = [];
-			for ( d in recipients ) {				
-				if (d.email != null) mails.push(d.email);
-				if (d.email2 != null) mails.push(d.email2);
-			}
 
-			if(form.getValueOf("text")=="" || form.getValueOf("text")==null){
-				throw Error("/messages",t._("The message body is empty !"));
+		var group = app.user.getGroup();
+		var useNewMessages = group.betaFlags.has(db.Group.BetaFlags.MessagesV2);
+		view.useNewMessages = useNewMessages;
+
+		if (useNewMessages == false) {
+			var form = new Form("msg");		
+			
+			var senderName = "";
+			var senderMail = "";
+			
+			if (App.current.session.data.whichUser == 1 && app.user.email2 != null) {
+				senderMail = app.user.email2;
+				senderName = app.user.firstName2 + " " + app.user.lastName2;
+				
+			}else {				
+				senderMail = app.user.email;
+				senderName = app.user.firstName + " " + app.user.lastName;
 			}
 			
-			//send mail confirmation link
-			var e = new sugoi.mail.Mail();		
-			e.setSubject(form.getValueOf("subject"));
-			for ( x in mails) e.addRecipient(x);
+			var lists = getLists();
+			form.addElement( new StringInput("senderName", 	t._("Sender name"),senderName,true));
+			form.addElement( new StringInput("senderMail", 	t._("Sender E-Mail"),senderMail,true));
+			form.addElement( new StringSelect("list", 		t._("Recipients"),lists,"1", true,null,"style='width:500px;'"));
+			form.addElement( new StringInput("subject", 	t._("Subject:"),"",false,null,"style='width:500px;'") );
+			form.addElement( new TextArea("text", 			t._("Message:"), "", false, null, "style='width:500px;height:350px;'") );
 			
-			e.setSender(App.config.get("default_email"),form.getValueOf("senderName"));		
-			e.setReplyTo(form.getValueOf("senderMail"),form.getValueOf("senderName"));
-			//sender : default email ( explicitly tells that the server send an email on behalf of the user )
-			//e.setHeader("Sender", App.config.get("default_email"));
-			var text :String = form.getValueOf("text");
-			var html = app.processTemplate("mail/message.mtt", { text:text,group:app.user.getGroup(),list:getListName(listId) });		
-			e.setHtmlBody(html);
-		
-			App.sendMail(e,app.user.getGroup(),listId,app.user);		
-			
-			//store message
-			var lm = new db.Message();
-			lm.amap =  app.user.getGroup();
-			lm.recipients = Lambda.array(Lambda.map(e.getRecipients(), function(x) return x.email));
-			lm.title = e.getSubject();
-			lm.date = Date.now();
-			lm.body = e.getHtmlBody();
-			if (listId != null) lm.recipientListId = listId;
-			lm.sender = app.user;
-			lm.insert();
+			if (form.checkToken()) {
+				
+				var listId = form.getElement("list").value;
+				var recipients = getSelection(listId);
+				var mails = [];
+				for ( d in recipients ) {				
+					if (d.email != null) mails.push(d.email);
+					if (d.email2 != null) mails.push(d.email2);
+				}
 
+				if(form.getValueOf("text")=="" || form.getValueOf("text")==null){
+					throw Error("/messages",t._("The message body is empty !"));
+				}
+				
+				//send mail confirmation link
+				var e = new sugoi.mail.Mail();		
+				e.setSubject(form.getValueOf("subject"));
+				for ( x in mails) e.addRecipient(x);
+				
+				e.setSender(App.config.get("default_email"),form.getValueOf("senderName"));		
+				e.setReplyTo(form.getValueOf("senderMail"),form.getValueOf("senderName"));
+				//sender : default email ( explicitly tells that the server send an email on behalf of the user )
+				//e.setHeader("Sender", App.config.get("default_email"));
+				var text :String = form.getValueOf("text");
+				var html = app.processTemplate("mail/message.mtt", { text:text,group:app.user.getGroup(),list:getListName(listId) });		
+				e.setHtmlBody(html);
 			
-			throw Ok("/messages", t._("The message has been sent"));
+				App.sendMail(e,app.user.getGroup(),listId,app.user);		
+				
+				//store message
+				var lm = new db.Message();
+				lm.amap =  app.user.getGroup();
+				lm.recipients = Lambda.array(Lambda.map(e.getRecipients(), function(x) return x.email));
+				lm.title = e.getSubject();
+				lm.date = Date.now();
+				lm.body = e.getHtmlBody();
+				if (listId != null) lm.recipientListId = listId;
+				lm.sender = app.user;
+				lm.insert();
+
+				
+				throw Ok("/messages", t._("The message has been sent"));
+			}
+			
+			view.form = form;
+			
+			if (app.user.isAmapManager()) {
+				view.sentMessages = Message.manager.search($amap == app.user.getGroup() && $recipientListId!=null, {orderBy:-date,limit:20}, false);
+			}else {
+				view.sentMessages = Message.manager.search($amap == app.user.getGroup() && $recipientListId!=null && $sender == app.user, {orderBy:-date,limit:20}, false);	
+			}
 		}
-		
-		view.form = form;
-		
-		if (app.user.isAmapManager()) {
-			view.sentMessages = Message.manager.search($amap == app.user.getGroup() && $recipientListId!=null, {orderBy:-date,limit:20}, false);
-		}else {
-			view.sentMessages = Message.manager.search($amap == app.user.getGroup() && $recipientListId!=null && $sender == app.user, {orderBy:-date,limit:20}, false);	
-		}
-		
 	}
 	
 	@tpl("messages/message.mtt")

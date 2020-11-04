@@ -29,6 +29,8 @@ class OrderService
 		if( distribId == null ) throw new Error( "You have to provide a distribId" );
 		if( quantity == null ) throw new Error( "Quantity is null" );
 		if( quantity < 0 ) throw new Error( "Quantity is negative" );
+		var vendor = product.catalog.vendor;
+		if( vendor.isDisabled()) throw new Error(vendor.name+" est désactivé. Raison : "+vendor.getDisabledReason());
 
 		//quantity
 		if ( !canHaveFloatQt(product) ){
@@ -43,7 +45,7 @@ class OrderService
 			
 			var o = null;
 			for ( i in 0...Math.round(quantity)){
-				o = make(user, 1, product, distribId, paid, user2, invert);
+				o = make(user, 1, product, distribId, paid, /*subscription,*/ user2,  invert);
 			}			
 			return o;
 		}
@@ -88,7 +90,11 @@ class OrderService
 		//checks
 		if(order.distribution==null) throw new Error( "cant record an order for a variable catalog without a distribution linked" );
 		if(order.basket==null) throw new Error( "this order should have a basket" );
-		if( subscription != null && subscription.id == null ) throw new Error( "La souscription a un id null." );
+		if( !order.distribution.catalog.group.hasShopMode() ) {
+
+			if( subscription != null && subscription.id == null ) throw new Error( "La souscription a un id null." );
+			if( subscription == null ) throw new Error( "Impossible d'enregistrer une commande sans souscription." );
+		} 
 
 		if ( subscription != null ) { 
 
@@ -241,23 +247,33 @@ class OrderService
 	/**
 	 *  Delete an order
 	 */
-	public static function delete(order:db.UserOrder) {
+	public static function delete(order:db.UserOrder,?force=false) {
 		var t = sugoi.i18n.Locale.texts;
 
 		if(order==null) throw new Error( t._( "This order has already been deleted." ) );
 		
 		order.lock();
 		
-		if (order.quantity == 0) {
+		if (order.quantity == 0 || force) {
 
 			var contract = order.product.catalog;
 			var user = order.user;
+			var product = order.product;
 
-			//Amap Contract
+			//stock mgmt
+			if (contract.hasStockManagement() && product.stock!=null && order.quantity!=null) {
+				//re-increment stock
+				product.lock();
+				product.stock +=  order.quantity;
+				product.update();
+				// e = StockMove({product:product, move:0-order.quantity });
+			}
+
 			if ( contract.type == db.Catalog.TYPE_CONSTORDERS ) {
 
 				order.delete();
 
+				//delete related operation
 				if( contract.group.hasPayments() ){
 					var orders = contract.getUserOrders(user);
 					if( orders.length == 0 ){
@@ -265,9 +281,9 @@ class OrderService
 						if(operation!=null) operation.delete();
 					}
 				}
-			}
-			else { //Variable orders contract
-				
+
+			} else {
+
 				//Get the basket for this user
 				var place = order.distribution.place;
 				var basket = db.Basket.get(user, order.distribution.multiDistrib);
@@ -279,13 +295,12 @@ class OrderService
 						var operation = service.PaymentService.findVOrderOperation(basket.multiDistrib, user);
 						if(operation!=null) operation.delete();
 					}
-
 				}
 
 				order.delete();
 			}
-		}
-		else {
+			
+		} else {
 			throw new Error( t._( "Deletion not possible: quantity is not zero." ) );
 		}
 
@@ -676,7 +691,7 @@ class OrderService
 			}
 			else {
 
-				orders = SubscriptionService.getSubscriptionOrders( subscription );
+				orders = SubscriptionService.getCSARecurrentOrders( subscription, null );
 			}
 				
 		}
@@ -688,7 +703,7 @@ class OrderService
 	// Create or update orders for variable catalogs
 	public static function createOrUpdateOrders( user : db.User, multiDistrib : db.MultiDistrib, catalog : db.Catalog,
 	ordersData : Array< { id : Int, productId : Int, qt : Float, paid : Bool } > ) : Array<db.UserOrder> {
-		
+
 		if ( multiDistrib == null && catalog == null ) {
 
 			throw new Error('You should provide at least a catalog or a multiDistrib');
@@ -742,8 +757,25 @@ class OrderService
 
 					distrib = multiDistrib.getDistributionFromProduct( product );
 				}
+
+				var group : db.Group  = catalog != null ? catalog.group : distrib.catalog.group;
+				var newOrder : db.UserOrder = null;
+				if ( group.hasShopMode() ) {
+
+					newOrder =  OrderService.make( user, order.qt , product, distrib == null ? null : distrib.id, order.paid );
+				}
+				else {
+
+					//Let's find the subscription for that user, catalog and distrib
+					var subscription = db.Subscription.manager.select( $user == user && $catalog == distrib.catalog && $startDate <= distrib.date && distrib.date <= $endDate );
+					if ( subscription == null ) { throw new Error('Il n\'y a pas de souscription pour cette personne. Vous devez d\'abord créer une souscription avant de commander.'); }
+
+					if ( subscription != null ) {
+
+						newOrder =  OrderService.make( user, order.qt , product, distrib == null ? null : distrib.id, order.paid, subscription );
+					}
+				}
 				
-				var newOrder =  OrderService.make( user, order.qt , product, distrib == null ? null : distrib.id, order.paid );
 				if ( newOrder != null ) orders.push( newOrder );
 				
 			}

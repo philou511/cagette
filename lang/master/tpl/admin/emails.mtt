@@ -27,7 +27,11 @@
 					::if(e.tries==0)::
 					<td class="warning">::e.tries::</td>
 					::else::
-					<td class="danger">::e.tries::</td>
+					<td class="danger">
+						::e.tries::
+						<a href="?reset=::e.id::" class="btn btn-xs btn-danger">Retry</a>
+
+					</td>
 					::end::
 
 					<td>::e.title::</td>

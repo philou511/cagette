@@ -291,17 +291,6 @@ class Distribution extends Object
 
 	}
 	
-	
-	/**
-     * Get open to orders deliveries
-     * @param	contract
-     */
-    public static function getOpenToOrdersDeliveries(contract:db.Catalog){
-
-        return Lambda.array(manager.search($orderStartDate <= Date.now() && $orderEndDate >= Date.now() && $catalog==contract,{orderBy:date},false));
-
-    }
-
 	/**
 	 * Return a string like $placeId-$date.
 	 * 

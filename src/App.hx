@@ -197,6 +197,7 @@ class App extends sugoi.BaseApp {
 		
 
 		out.set("ShopV2", "Nouvelle boutique");
+		out.set("MessagesV2", "Nouvelle messagerie");
 
 		out.set("ref", "Référence");
 		out.set("linkText", "Intitulé du lien");
@@ -234,8 +235,6 @@ class App extends sugoi.BaseApp {
 		out.set("percent", "Pourcentage");
 		out.set("pinned", "Mets en avant les produits");
 		
-		
-		
 		out.set("byMember", "Par adhérent");
 		out.set("byProduct", "Par produit");
 
@@ -243,7 +242,8 @@ class App extends sugoi.BaseApp {
 		out.set("ByProduct"	, "Par produit (produits vrac, stockés sans conditionnement)");
 		out.set("ByOffer"	, "Par offre (produits stockés déja conditionnés)");
 				
-		out.set("variablePrice", "Prix variable selon pesée");
+		out.set("variablePrice", "Prix variable selon pesée");		
+		
 		return out;
 	}
 	
@@ -253,10 +253,9 @@ class App extends sugoi.BaseApp {
 	
 	public static function getMailer():sugoi.mail.IMailer {
 		
-		var mailer : sugoi.mail.IMailer = new sugoi.mail.BufferedMailer();
-		
+		var mailer : sugoi.mail.IMailer = new mail.BufferedJsonMailer();		
 
-		if(App.config.DEBUG || App.config.HOST=="pp.cagette.net" || App.config.HOST=="localhost"){ 
+		/*if(App.config.DEBUG || App.config.HOST=="pp.cagette.net" || App.config.HOST=="localhost"){ 
 
 			//Dev env : emails are written to tmp folder
 			mailer = new sugoi.mail.DebugMailer();
@@ -274,7 +273,7 @@ class App extends sugoi.BaseApp {
 				//Buffered emails with SMTP
 				untyped mailer.defineFinalMailer("smtp");
 			}
-		}
+		}*/
 		return mailer;
 	}
 	

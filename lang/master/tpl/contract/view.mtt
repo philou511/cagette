@@ -53,13 +53,13 @@
 			<div class="col-md-5">
 				<h4><i class="icon icon-farmer"></i> ::_("Vendor")::</h4>
 				
-				<b>::vendor.name::</b><br/>			
-				<b>::vendor.city::</b> (::vendor.zipCode::)
+				<a href="::vendor.getLink()::" target="_blank"><b>::vendor.name::</b></a> <br/>			
+				::vendor.city:: 
 				<p ::cond vendor.desc!=null:: style="font-size: 13px;">
 					::raw nl2br(vendor.desc)::
 				</p>
 				
-				::if vendor.linkUrl!=null::
+				<!--::if vendor.linkUrl!=null::
 				<p>
 					::if vendor.linkText!=null::
 					<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::vendor.linkText::</a>
@@ -67,7 +67,7 @@
 					<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::_("Read more")::</a>
 					::end::
 				</p>
-				::end::
+				::end::-->
 				
 			</div>
 			<div class="col-md-4">		
@@ -114,16 +114,6 @@
 		<p>
 			::_("No planned distributions.")::
 		</p>
-		::else::
-			<!--
-				<p ::cond !hasUserCatalogSubscription && !user.getGroup().hasShopMode():: class="text-center">
-					<a href="/contract/order/::catalog.id::" class="btn btn-primary"><i class="icon icon-chevron-right"></i> ::_("Order")::</a>	
-				</p>
-				<p ::cond hasUserCatalogSubscription:: class="text-center">
-					<br />
-					Votre souscription à ce contrat a déjà été validée. Vous ne pouvez plus la modifier.
-				</p>
-			-->
 		::end::
 	</div>
 	

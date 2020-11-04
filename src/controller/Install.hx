@@ -310,5 +310,77 @@ class Install extends controller.Controller
 		}*/
 
 	}
+
+	/**
+		add suscriptions for CSA variable orders
+	**/
+	public function doAddSubscriptionsForCSAVariableOrders(key:String) {
+
+		if(key!=App.config.KEY) throw "admins only";
+		var print = function(str:String) Sys.println(str);
+
+		var activeCSAVariableCatalogs : List< db.Catalog > = db.Catalog.manager.unsafeObjects(
+			'SELECT Catalog.* 
+			FROM Catalog INNER JOIN `Group`
+			ON Catalog.groupId = `Group`.id
+			WHERE (`Group`.flags & 2=0)
+			AND Catalog.type = 1
+			AND Catalog.endDate >= NOW()', true );
+
+		for ( catalog in activeCSAVariableCatalogs ) {
+
+			catalog.orderEndHoursBeforeDistrib=24;
+			catalog.update();
+			
+			var ordersByUser = new Map< db.User, Array<db.UserOrder> >();
+			var productIds = catalog.getProducts(false).map( function(x) return x.id );
+			var orders = db.UserOrder.manager.search( $productId in productIds, false );
+
+			for ( order in orders ) {
+
+				if ( ordersByUser[order.user] == null ) {
+					ordersByUser[order.user] = [];
+				}
+				
+				if ( order.subscription == null ) {
+					if ( order.quantity != null && order.quantity > 0 ) {
+						ordersByUser[order.user].push( order );
+					}
+				}
+			}
+
+			for ( user in ordersByUser.keys() ) {
+
+				if ( ordersByUser[user].length != 0 ) {
+
+					print( "****USER "+user.id+"***** " + user );
+					print( Std.string(ordersByUser[user]) );
+					print( "****GROUP "+catalog.group.id+" ***** " + catalog.group );
+					print( "****CATALOG "+catalog.id+"***** " + catalog );
+
+					var subscription = new db.Subscription();
+					subscription.user = user;
+					subscription.catalog = catalog;
+					subscription.startDate 	= new Date( catalog.startDate.getFullYear(), catalog.startDate.getMonth(), catalog.startDate.getDate(), 0, 0, 0 );
+					subscription.endDate 	= new Date( catalog.endDate.getFullYear(), catalog.endDate.getMonth(), catalog.endDate.getDate(), 23, 59, 59 );
+					subscription.isValidated = false;
+					subscription.isPaid = false;
+					subscription.insert();
+				
+					for ( order in ordersByUser[user] ) {
+
+						print( order.toString() );
+						order.lock();
+						order.subscription = subscription;
+						order.update();
+					}
+
+				}
+
+			}
+		
+		}
+
+	}
 	
 }

@@ -1095,4 +1095,8 @@ tr.danger td div.basketNumber {
   height: 500px;
 }
 
+ul#subscriptionTabs.nav.nav-tabs > li.active > a {
+  background-color: white !important;
+}
+
 /*# sourceMappingURL=style.css.map */

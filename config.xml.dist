@@ -23,4 +23,5 @@
 	smtp_pass="blabla"
 
 	cagette_api="http://localhost:3010"
+	cagette_bridge_api="http://nest:3010"
 />

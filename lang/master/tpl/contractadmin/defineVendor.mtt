@@ -38,27 +38,43 @@
 						
 						<p style="line-height: 38px;">
 						
-						::if(cpro!=null)::
-								::set catalogs = cpro.getActiveVisibleCatalogs()::
-								Catalogue(s) :
-								
-								::foreach catalog catalogs::									
-									<a href="/p/pro/public/::catalog.id::" class="btn btn-default btn-sm" target="_blank">
-										<i class="icon icon-book"></i> ::catalog.name::
-									</a>&nbsp;
+							::if(cpro!=null)::
+
+									::set catalogs = cpro.getActiveVisibleCatalogs()::
+									Catalogue(s) :
+									
+									::foreach catalog catalogs::									
+										<a href="/p/pro/public/::catalog.id::" class="btn btn-default btn-sm" target="_blank">
+											<i class="icon icon-book"></i> ::catalog.name::
+										</a>&nbsp;
+									::end::
+									
+									::if shopMode::
+										<!-- even if the vendor is cpro, we can create a catalog for him/her -->
+										<a href="/contract/insert/::v.id::" class="btn btn-default btn-sm">
+											<i class="icon icon-plus"></i> Nouveau catalogue
+										</a>
+									::else::
+										<!-- even if the vendor is cpro, we can create a catalog for him/her -->
+										<a href="/contract/insertChoose/::v.id::" class="btn btn-default btn-sm">
+											<i class="icon icon-plus"></i> Nouveau catalogue
+										</a>
+									::end::
+							
+							::else::
+
+								::if shopMode::
+									<a href="/contract/insert/::v.id::" class="btn btn-default btn-sm">
+										<i class="icon icon-plus"></i> Nouveau catalogue
+									</a>
+								::else::
+									<a href="/contract/insertChoose/::v.id::" class="btn btn-default btn-sm">
+										<i class="icon icon-plus"></i> Nouveau catalogue
+									</a>
 								::end::
 								
-								<!-- even if the vendor is cpro, we can create a catalog for him -->
-								<a href="/contract/insertChoose/::v.id::" class="btn btn-default btn-sm">
-									<i class="icon icon-plus"></i> Nouveau catalogue
-								</a>
-								
-						
-						::else::						
-							<a href="/contract/insertChoose/::v.id::" class="btn btn-default btn-sm">
-								<i class="icon icon-plus"></i> Nouveau catalogue
-							</a>
-						::end::
+							::end::
+
 						</p>
 						
 					</div>

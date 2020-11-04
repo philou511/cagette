@@ -38,7 +38,8 @@ typedef MarkerInfo = {
 	var key: String;
 	var latitude: Float;
 	var longitude: Float;
-	var content: String;	
+    var groupId: Int;
+    var groupName: String;
 }
 
 class SimpleMap extends react.ReactComponentOfProps<{markers: Array<MarkerInfo>}> {
@@ -73,7 +74,11 @@ class SimpleMap extends react.ReactComponentOfProps<{markers: Array<MarkerInfo>}
 							<Marker key=${marker.key} position=${[marker.latitude, marker.longitude]} icon=${markerIcon}>
 								<Popup className="popup">
 									<div>
-										<div className="groupName">${marker.content}</div>
+                                        <div className="groupName">
+                                            <a href=${"/group/" + marker.groupId} target="_blank">
+                                                ${marker.groupName}
+                                            </a>
+                                        </div>
 									</div>
 								</Popup>
 							</Marker>
