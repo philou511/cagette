@@ -1,4 +1,13 @@
 ::use 'base.mtt'::
+<style>
+    .neo-block {
+        margin-bottom: 20px;
+        padding: 24px;
+        border: 1px solid #ccc;
+        border-radius: 20px;
+    }
+</style>
+
 <div style="margin-top: 32px; padding: 16px">
     <h1>Neo Modules</h1>
 
@@ -9,15 +18,87 @@
         ::end::
     </code>
 
+    <div class="neo-block">
+        <h4>userDistribSlotsSelector</h4>
+        <div id="userDistribSlotsSelector"></div>
+        <button id="userDistribSlotsSelector-btn">Open</button>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
 
-    <h4>Mangopay User Module</h4>
-    <div id="mangopay-user-module"></div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            neo.createNeoModule("mangopay-user-module", "mangopay", { userId: 1 });
-        });
-    </script>
+                document.getElementById("userDistribSlotsSelector-btn").addEventListener("click", function() {
+                    neo.createNeoModule(
+                        "userDistribSlotsSelector", 
+                        "userDistribSlotsSelector", { 
+                            distribId: 85669, 
+                            onCancel: function () { },
+                            onRegister: function () { } 
+                        })
+                });
+            });
+        </script>
+    </div>
 
+    <div class="neo-block">
+        <h4>distribSlotsResolver</h4>
+        <div id="distribSlotsResolver"></div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                neo.createNeoModule(
+                    "distribSlotsResolver", 
+                    "distribSlotsResolver", { 
+                        distribId: 85669
+                    });
+            });
+        </script>
+    </div>
+
+    <div class="neo-block">
+        <h4>placeDialog</h4>
+        <div id="placeDialog"></div>
+        <button id="placeDialog-btn">Open</button>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+
+                document.getElementById("placeDialog-btn").addEventListener("click", function() {
+                    neo.createNeoModule(
+                        "placeDialog", 
+                        "placeDialog",
+                        { 
+                            placeId: 1
+                        })
+                });
+            });
+        </script>
+    </div>
+
+    <div class="neo-block">
+        <h4>place</h4>
+        <div id="place"></div>
+        <button id="place-btn">Open</button>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+
+                document.getElementById("place-btn").addEventListener("click", function() {
+                    neo.createNeoModule(
+                        "place", 
+                        "place",
+                        { 
+                            placeId: 1
+                        })
+                });
+            });
+        </script>
+    </div>
+
+    <div class="neo-block">
+        <h4>Mangopay User Module</h4>
+        <div id="mangopay-user-module"></div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                neo.createNeoModule("mangopay-user-module", "mangopay", { userId: 1 });
+            });
+        </script>
+    </div>
 
 </div>
 ::end::
