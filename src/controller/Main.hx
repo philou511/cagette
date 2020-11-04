@@ -344,8 +344,8 @@ Called from controller/Main.hx line 117
 	}
 
 	@admin
-	function doBeta(d:Dispatch) {
-		d.dispatch(new controller.Beta());
+	function doDebug(d:Dispatch) {
+		d.dispatch(new controller.Debug());
 	}
 
 	

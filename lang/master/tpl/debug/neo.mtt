@@ -1,0 +1,23 @@
+::use 'base.mtt'::
+<div style="margin-top: 32px; padding: 16px">
+    <h1>Neo Modules</h1>
+
+
+    <code>
+        ::foreach script getNeoModuleScripts()::
+        <p>&#60;script src="::script::" /&#62;</p>
+        ::end::
+    </code>
+
+
+    <h4>Mangopay User Module</h4>
+    <div id="mangopay-user-module"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            neo.createNeoModule("mangopay-user-module", "mangopay", { userId: 1 });
+        });
+    </script>
+
+
+</div>
+::end::
