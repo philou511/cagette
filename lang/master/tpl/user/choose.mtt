@@ -215,7 +215,7 @@
 			});*/
 
 			::if(isBlocked)::
-			_.overlay("/data/disabled.mtt","");
+			_.overlay("/data/disabled.html","");
 			::end::
 
 			//]]>
