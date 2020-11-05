@@ -388,7 +388,11 @@ class AmapAdmin extends Controller
 			view.sales = s.getSalesAmount();
 			view.memberships = s.getMembershipNumber();
 			view.membershipsAmount = s.getMembershipAmount();
-
+			view.productNumber = s.getProductNumber();
+			view.memberNumber = s.getMembersNumber();
+			view.activeMembershipWithOrderNumber = s.getActiveMembershipWithOrderNumber();
+			view.activeMembershipMembers = s.getActiveMembershipMembers().length;		
+			view.membersWithOrderNumber = s.getMembersWithOrderNumber();
 		}
 
 		view.form = form;

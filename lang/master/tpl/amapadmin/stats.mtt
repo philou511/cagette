@@ -18,7 +18,36 @@
         <tr>
             <td class="col-md-6">C.A total</td>
             <td class="col-md-6">::formatNum(sales):: ::currency()::</td>
+        </tr>  
+        <tr>
+            <td class="col-md-6">Panier moyen</td>
+            <td class="col-md-6">::formatNum(sales/baskets):: ::currency()::</td>
+        </tr>   
+        <tr>
+            <td class="col-md-6">Nbre de produits proposés à la vente pendant cette période</td>
+            <td class="col-md-6">::productNumber::</td>
         </tr>      
+        </tbody>
+    </table>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr class="darkhead">
+                <th colspan="2">Membres</th>                
+            </tr>
+        </thead>
+
+        <tbody>     
+
+        <tr>
+            <td class="col-md-6">Nbre de membres dans ce groupe (maintenant)</td>
+            <td class="col-md-6">::memberNumber::</td>
+        </tr>
+
+        <tr>
+            <td class="col-md-6">% des membres ayant commandé</td>
+            <td class="col-md-6">::formatNum(membersWithOrderNumber/memberNumber*100)::% (::membersWithOrderNumber::/::memberNumber::)</td>        
+        </tr> 
         </tbody>
     </table>
 
@@ -29,14 +58,19 @@
             </tr>
         </thead>
 
-        <tbody>        
+        <tbody>     
+
         <tr>
-            <td class="col-md-6">Nbre d'adhésions faites sur cette période</td>
+            <td class="col-md-6">Nbre d'adhésions saisies sur cette période</td>
             <td class="col-md-6">::memberships::</td>
         </tr>
         <tr>
-            <td class="col-md-6">Montant des adhésions faites sur cette période</td>
+            <td class="col-md-6">Montant des adhésions saisies sur cette période</td>
             <td class="col-md-6">::formatNum(membershipsAmount):: ::currency()::</td>
+        </tr> 
+        <tr>
+            <td class="col-md-6">% des adhérents ayant commandé</td>
+            <td class="col-md-6">::formatNum(activeMembershipWithOrderNumber/activeMembershipMembers*100)::% (::activeMembershipWithOrderNumber::/::activeMembershipMembers::)</td>
         </tr> 
         </tbody>
     </table>

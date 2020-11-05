@@ -177,10 +177,7 @@ class PaymentService {
 		return op;
 	}
 	
-<<<<<<< HEAD
 	
-=======
->>>>>>> master
 	/**
 	 * when updating a (varying) order , we need to update the existing pending transaction
 	 */
