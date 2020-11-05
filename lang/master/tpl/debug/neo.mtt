@@ -18,6 +18,16 @@
         });
     </script>
 
+    <hr/>
+
+    <h4>Messaging Service Module</h4>
+    <div id="messaging-service-module"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            neo.createNeoModule("messaging-service-module", "messages", { groupId: 3386, whichUser: 0 });
+        });
+    </script>
+
 
 </div>
 ::end::
