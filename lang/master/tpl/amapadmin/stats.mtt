@@ -24,7 +24,7 @@
             <td class="col-md-6">::formatNum(sales/baskets):: ::currency()::</td>
         </tr>   
         <tr>
-            <td class="col-md-6">Nbre de produits proposés à la vente pendant cette période</td>
+            <td class="col-md-6">Nbre de produits différents vendus pendant cette période</td>
             <td class="col-md-6">::productNumber::</td>
         </tr>      
         </tbody>

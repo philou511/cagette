@@ -59,7 +59,9 @@ class ContractAdmin extends Controller
 		}
 		
 		view.contracts = contracts;
-		view.vendors = app.user.getGroup().getActiveVendors();
+		var vendors = app.user.getGroup().getActiveVendors();
+		view.vendors = vendors;
+		view.noSiret = vendors.filter(v -> v.companyNumber==null);
 		view.places = app.user.getGroup().getPlaces();
 		checkToken();
 
