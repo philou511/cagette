@@ -47,7 +47,7 @@ class Vendor extends Controller
 		if(vendor.email!=null && vendor.email.indexOf("@cagette.net")>-1) throw Error("/contractAdmin","Il est impossible de modifier ce producteur");
 
 		#if plugins
-		if(pro.db.CagettePro.getFromVendor(vendor)!=null) throw Error("/contractAdmin","Vous ne pouvez pas modifier la fiche de ce producteur, car il gère lui même sa fiche depuis Cagette Pro");
+		if(pro.db.CagettePro.getFromVendor(vendor)!=null && vendor.companyNumber!=null) throw Error("/contractAdmin","Vous ne pouvez pas modifier la fiche de ce producteur, car il gère lui même sa fiche depuis Cagette Pro");
 		#end
 
 		var form = VendorService.getForm(vendor);

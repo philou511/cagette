@@ -28,6 +28,11 @@
 					<i class="icon icon-file-pdf"></i> Documents
 				</a>
 			</li>
+			<li id="stats" ::attr class if(nav!=null && nav[1]=="stats") 'active'::>
+				<a href="/amapadmin/stats">
+					<i class="icon icon-chart"></i> Statistiques
+				</a>
+			</li>
 			::if nav != null::				
 				::foreach i nav::
 					::if i.name != null::
