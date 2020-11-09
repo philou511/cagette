@@ -6,6 +6,7 @@
   "homepage": "http://www.cagette.net",
   "dependencies": {},
   "devDependencies": {
+    "@types/react": "^16.9.55",
     "npm-run-all": "^4.1.2"
   },
   "scripts": {
