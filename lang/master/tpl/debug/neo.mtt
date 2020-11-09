@@ -9,96 +9,105 @@
 </style>
 
 <div style="margin-top: 32px; padding: 16px">
-    <h1>Neo Modules</h1>
-
-
-    <code>
-        ::foreach script getNeoModuleScripts()::
-        <p>&#60;script src="::script::" /&#62;</p>
-        ::end::
-    </code>
-
-    <div class="neo-block">
-        <h4>userDistribSlotsSelector</h4>
-        <div id="userDistribSlotsSelector"></div>
-        <button id="userDistribSlotsSelector-btn">Open</button>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-
-                document.getElementById("userDistribSlotsSelector-btn").addEventListener("click", function() {
-                    neo.createNeoModule(
-                        "userDistribSlotsSelector", 
-                        "userDistribSlotsSelector", { 
-                            distribId: 85669, 
-                            onCancel: function () { },
-                            onRegister: function () { } 
-                        })
-                });
-            });
-        </script>
+    <div style="margin-top: 48px; margin-bottom: 48px;">
+        <div id="to-boot"></div>
     </div>
 
     <div class="neo-block">
-        <h4>distribSlotsResolver</h4>
-        <div id="distribSlotsResolver"></div>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                neo.createNeoModule(
-                    "distribSlotsResolver", 
-                    "distribSlotsResolver", { 
-                        distribId: 85669
-                    });
-            });
-        </script>
+        <h4>Scripts</h4>
+        <code>
+            ::foreach script getNeoModuleScripts()::
+            <p>&#60;script src="::script::" /&#62;</p>
+            ::end::
+        </code>
+    
+        
+        <h4>hash</h4>
+        <p style="color: green;" id="hash-gen-success"></p>
+        <p style="color: red;" id="hash-gen-error"></p>
+        <div>
+            <code>
+                <textarea id="hash-gen-text" rows="10" cols="50"></textarea>
+            </code>
+            <div>
+                <button id="hash-gen-btn">GENERATE HASH</button>
+            </div>
+        </div>
     </div>
 
-    <div class="neo-block">
-        <h4>placeDialog</h4>
-        <div id="placeDialog"></div>
-        <button id="placeDialog-btn">Open</button>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const genText = document.getElementById("hash-gen-text");
+            const genError = document.getElementById("hash-gen-error");
+            const genSuccess = document.getElementById("hash-gen-success");
+            // genText.value = JSON.stringify({ moduleName: "module-name", "props": {} }, null, 2)
 
-                document.getElementById("placeDialog-btn").addEventListener("click", function() {
-                    neo.createNeoModule(
-                        "placeDialog", 
-                        "placeDialog",
-                        { 
-                            placeId: 1
-                        })
-                });
-            });
-        </script>
-    </div>
 
-    <div class="neo-block">
-        <h4>place</h4>
-        <div id="place"></div>
-        <button id="place-btn">Open</button>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
 
-                document.getElementById("place-btn").addEventListener("click", function() {
-                    neo.createNeoModule(
-                        "place", 
-                        "place",
-                        { 
-                            placeId: 1
-                        })
-                });
-            });
-        </script>
-    </div>
 
-    <div class="neo-block">
-        <h4>Mangopay User Module</h4>
-        <div id="mangopay-user-module"></div>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                neo.createNeoModule("mangopay-user-module", "mangopay", { userId: 1 });
-            });
-        </script>
-    </div>
+
+            function decodeModule(hash) {
+                try {
+                    const decoded = window.atob(hash);
+                    const module = JSON.parse(decoded);
+                    if (!module || !module.moduleName) throw new Error("Invalid module");
+                    return module;
+                } catch (error) {
+                    genError.innerHTML = error;
+                }
+            }
+
+            function initModule(module) {
+                try {
+                    neo.createNeoModule("to-boot", module.moduleName, module.props);
+                } catch (error) {
+                    genError.innerHTML = error;
+                }
+            }
+
+            function generateHash() {
+                genError.innerHTML = "";
+                genSuccess.innerHTML = "";
+                try {
+                    const value = JSON.parse(genText.value)
+                    genSuccess.innerHTML = window.location.origin + window.location.pathname + "?hash=" + btoa(JSON.stringify(value))
+                } catch (error) {
+                    genError.innerHTML = error;
+                }
+            }
+
+            document.getElementById("hash-gen-btn").addEventListener('click', generateHash);
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (!urlParams.get('hash')) {
+                genError.innerHTML = "No hash";
+            } else {
+                const module = decodeModule(urlParams.get('hash'));
+                genText.innerHTML = JSON.stringify(module, null, 2);
+                initModule(module);
+            }
+
+
+
+
+            // if (hash !== "") {
+            //     const decoded = window.atob(hash)
+            //     const m = JSON.parse(decoded)
+            //     if (!m || !m.moduleName) throw new Error("Invalid hash config")
+            //     document.getElementById("hash").innerHTML = JSON.stringify(m, null, 2)
+            //     genText.value = JSON.stringify(m, null, 2)
+
+            //     try {
+            //         neo.createNeoModule("to-boot", m.moduleName, m.props);
+            //     } catch (err) {
+            //         console.log("NO MODULE", err)
+            //     }
+            // } else {
+            //     genError.innerHTML = "No hash"
+            // }
+        });
+
+    </script>
 
 </div>
 ::end::
