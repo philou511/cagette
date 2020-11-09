@@ -28,6 +28,15 @@
         });
     </script>
 
+    <hr/>
+
+    <h4>Members Module</h4>
+    <div id="members-service-module"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            neo.createNeoModule("members-service-module", "messages", { groupId: 3386, whichUser: 0 });
+        });
+    </script>   
 
 </div>
 ::end::
