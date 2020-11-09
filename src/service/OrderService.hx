@@ -43,7 +43,7 @@ class OrderService
 		//multiweight : make one row per product
 		if ( product.multiWeight && quantity > 1.0 ) {
 
-			if (product.multiWeight && quantity != Math.abs(quantity)) throw new Error( t._("multi-weighing products should be ordered only with integer quantities") );
+			if ( !tools.FloatTool.isInt( quantity ) ) throw new Error( t._("multi-weighing products should be ordered only with integer quantities") );
 			
 			var newOrder = null;
 

@@ -69,13 +69,6 @@ class Product extends Controller
 				product.stock = (f.getValueOf("stock"):Float) * product.catalog.getDistribs(false).length;
 			}
 
-			var multiWeight : Bool = f.getValueOf('multiWeight');
-			if( multiWeight ) {
-
-				product.variablePrice = true;
-				product.hasFloatQt = false;
-			}
-
 			app.event(EditProduct(product));
 			product.update();
 			throw Ok('/contractAdmin/products/'+product.catalog.id, t._("The product has been updated"));
@@ -118,13 +111,6 @@ class Product extends Controller
 
 			f.toSpod(product);
 			product.catalog = contract;
-
-			var multiWeight : Bool = f.getValueOf('multiWeight');
-			if( multiWeight ) {
-
-				product.variablePrice = true;
-				product.hasFloatQt = false;
-			}
 
 			app.event(NewProduct(product));
 			product.insert();

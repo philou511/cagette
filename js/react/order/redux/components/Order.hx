@@ -123,13 +123,13 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 
 			<div className=${className3} style=${{ paddingTop: 15 }} >
 				${round(props.order.quantity * props.order.product.price)}&nbsp;${props.currency}
-			</div>
-			
-			<div className=${className4} >
-				$input			
-				${makeInfos()}
-			</div>
+            </div>
+            
+            ${ ( props.order.id > 0 || !props.order.product.multiWeight ) ?
 
+                jsx('<div className=${className4} >$input ${makeInfos()}</div>') : null 
+            }
+			
 			${paidInput( props.hasPayments )}				
 
 			${ props.catalogType == 0 ? jsx('<div className="col-md-4">$alternated</div>') : null }

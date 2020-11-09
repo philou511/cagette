@@ -187,6 +187,13 @@ class Product extends Object
 		if(qt==0.0) qt = null;
 		//round like 0.00
 		price = Formatting.roundTo(price,2);
+
+		//Only Integers are allowed for consumers and float for coordinators
+		if( this.multiWeight ) {
+
+			this.variablePrice = true;
+			this.hasFloatQt = false;
+		}
 	}
 
 	override public function update(){
