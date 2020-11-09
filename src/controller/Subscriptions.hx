@@ -24,7 +24,7 @@ class Subscriptions extends controller.Controller
 		var catalogSubscriptions = SubscriptionService.getCatalogSubscriptions(catalog);
 		//sort by validation, then username
 		catalogSubscriptions.sort(function(a,b){
-			if( (a.isValidated?"1":"0")+a.user.lastName > (b.isValidated?"1":"0")+b.user.lastName ){
+			if( (a.paid()?"1":"0")+a.user.lastName > (b.paid()?"1":"0")+b.user.lastName ){
 				return 1;
 			}else{
 				return -1;
@@ -34,7 +34,7 @@ class Subscriptions extends controller.Controller
 		view.catalog = catalog;
 		view.c = catalog;
 		view.subscriptions = catalogSubscriptions;
-		view.validationsCount = catalogSubscriptions.count( function( subscription ) { return  !subscription.isValidated; } );
+		view.negativeBalanceCount = catalogSubscriptions.count( function( subscription ) { return  !subscription.paid(); } );
 		view.dateToString = function( date : Date ) {
 
 			return DateTools.format( date, "%d/%m/%Y");
@@ -267,12 +267,13 @@ class Subscriptions extends controller.Controller
 					}
 				}
 
-				if ( !subscription.isValidated ) {
+				if ( subscription.catalog.type == Catalog.TYPE_VARORDER || !subscription.paid() ) {
 
 					var absencesNb = Std.parseInt( app.params.get( 'absencesNb' ) );
 					SubscriptionService.updateSubscription( subscription, startDate, endDate, ordersData, null, absencesNb );
 				}
-				else {
+
+				if ( subscription.catalog.type == Catalog.TYPE_VARORDER || subscription.paid() ) {
 
 					var absentDistribIds = new Array<Int>();
 					for ( i in 0...subscription.getAbsencesNb() ) {
@@ -310,20 +311,20 @@ class Subscriptions extends controller.Controller
 		view.absencesDistribs = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
 		view.canAbsencesBeEdited = SubscriptionService.canAbsencesBeEdited( subscription.catalog );
 		view.absentDistribs = subscription.getAbsentDistribs();
-		if( !subscription.isValidated ) {
+		if ( subscription.catalog.type == Catalog.TYPE_VARORDER || !subscription.paid() ) {
 			view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
 		}
 
 	}
 
 
-	public function doValidate( subscription : db.Subscription ) {
+	public function doMarkAsPaid( subscription : db.Subscription ) {
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
 
 		try {
 
-			SubscriptionService.updateValidation( subscription );			
+			SubscriptionService.markAsPaid( subscription );
 
 		}
 		catch( error : Error ) {
@@ -336,11 +337,11 @@ class Subscriptions extends controller.Controller
 	}
 
 	@admin
-	public function doUnvalidate( subscription : db.Subscription ) {
+	public function doUnmarkAsPaid( subscription : db.Subscription ) {
 
 		if( checkToken() ) {
 
-			SubscriptionService.updateValidation( subscription, false );
+			SubscriptionService.markAsPaid( subscription, false );
 			throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'Souscription dévalidée' );
 		}
 
@@ -471,11 +472,11 @@ class Subscriptions extends controller.Controller
 	}
 	
 	@admin
-	public function doUnvalidateAll(catalog : db.Catalog){
+	public function doUnmarkAll(catalog : db.Catalog){
 
 		for ( subscription in SubscriptionService.getCatalogSubscriptions(catalog) ) {
 
-			SubscriptionService.updateValidation( subscription, false );
+			SubscriptionService.markAsPaid( subscription, false );
 		}
 		throw Ok("/contractAdmin/subscriptions/"+catalog.id,'Souscriptions dévalidées');
 

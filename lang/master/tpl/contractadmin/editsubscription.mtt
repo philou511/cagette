@@ -147,7 +147,7 @@
 	
 				<hr/>
 
-				::if edit && subscription.isValidated::
+				::if edit && ( catalog.type == TYPE_VARORDERS || subscription.paid() )::
 
 					::set absencesNb = subscription.getAbsencesNb()::
 

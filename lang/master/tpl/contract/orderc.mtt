@@ -179,7 +179,7 @@
 								Si vous souhaitez souscrire à ce contrat, saisissez votre commande sur cette page.
 								Votre souscription débutera le <strong>::dDate( subscriptionService.getNewSubscriptionStartDate(catalog) )::</strong>
 								car il faut s'inscrire au plus tard <strong>::catalog.orderEndHoursBeforeDistrib:: heures</strong> avant une distribution pour qu'elle soit prise en compte.
-							::elseif currentOrComingSubscription.isValidated::
+							::elseif currentOrComingSubscription.paid()::
 								Votre souscription a été validée, vous ne pouvez plus la modifier.
 							::else::
 								Tant que votre souscription n'a pas encore été validée, vous pouvez revenir sur cette page et modifier votre commande. 				
@@ -392,7 +392,7 @@
 							</tr>					
 							<tr style="text-align: center;">
 								<td ::cond subscription._user2 != null::>
-									<i ::cond !subscription.isValidated:: class="icon icon-alert" style="color: #a94442;"></i>  
+									<i ::cond !subscription.paid():: class="icon icon-alert" style="color: #a94442;"></i>  
 									<a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
 									<br/> ( alterné avec <a href="/member/view/::subscription._user2.id::" target="_blank">::subscription._user2.getName()::</a> )
 								</td>
@@ -424,7 +424,7 @@
 									::formatNum(subscription.getPaymentsTotal() - subscriptionTotal)::&nbsp;::currency()::
 								</td>
 								<!-- <td style="vertical-align: middle;">
-									$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
+									$$check(::subscription.paid()::)
 								</td> -->
 							</tr>
 							<tr class="greyhead text-center" ::cond  catalog.hasAbsencesManagement() && absencesNb != 0::>

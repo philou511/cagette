@@ -12,7 +12,6 @@ class Subscription extends Object {
 	@:relation(catalogId) public var catalog : db.Catalog;
 	public var startDate : SDateTime;
 	public var endDate : SDateTime;
-	@hideInForms public var isValidated : SBool;
 	@hideInForms public var isPaid : SBool;
 	var defaultOrders : SNull<SText>;
 	var absentDistribIds : SNull<SText>;
@@ -20,6 +19,21 @@ class Subscription extends Object {
 	public function populate() {
 		
 		return App.current.user.getGroup().getMembersFormElementData();
+	}
+
+	public function paid() : Bool {
+
+		if( this.id == null ) return false;
+
+		if ( this.catalog.group.hasPayments() ) {
+
+			var totalPrice = getTotalPrice();
+			return 0 < totalPrice && totalPrice <= getPaymentsTotal();
+		}
+		else {
+
+			return this.isPaid;
+		}
 	}
 
 	public function getTotalPrice() : Float {
@@ -61,7 +75,11 @@ class Subscription extends Object {
 
 		if( this.id == null ) return 0;
 
-		return Formatting.roundTo( getPaymentsTotal() + getTotalOperation().amount, 2 );
+		var total : Float = 0;
+		var totalOperation = getTotalOperation();
+		if ( totalOperation != null ) total = totalOperation.amount;
+
+		return Formatting.roundTo( getPaymentsTotal() + total, 2 );
 	}
 
 	public function setDefaultOrders( defaultOrders : Array< { productId : Int, quantity : Float } > ) {

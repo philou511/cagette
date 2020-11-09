@@ -463,26 +463,21 @@ class SubscriptionService
 			var subs = subscriptions1.concat(subscriptions2).concat(subscriptions3);
 			throw TypedError.typed( 'Il y a déjà une souscription pour ce membre pendant la période choisie.'+"("+subs.join(',')+")", OverlappingSubscription );
 		}
-
-		if ( subscription.isValidated ) {
-
-			var view = App.current.view;
-
-			if ( subscription.id != null && hasPastDistribOrdersOutsideSubscription( subscription ) ) {
-				throw TypedError.typed( 
-					'La nouvelle période sélectionnée exclue des commandes déjà passées, Il faut élargir la période sélectionnée $subName.',
-					PastOrders
-				);
-			}
-
-			if ( hasPastDistribsWithoutOrders( subscription ) ) {
-				throw TypedError.typed(
-					'La nouvelle période sélectionnée inclue des distributions déjà passées auxquelles le membre n\'a pas participé, Il faut choisir une date ultérieure $subName.',
-					PastDistributionsWithoutOrders
-				);
-			}
+	
+		if ( subscription.id != null && hasPastDistribOrdersOutsideSubscription( subscription ) ) {
+			throw TypedError.typed( 
+				'La nouvelle période sélectionnée exclue des commandes déjà passées, Il faut élargir la période sélectionnée $subName.',
+				PastOrders
+			);
 		}
 
+		if ( hasPastDistribsWithoutOrders( subscription ) ) {
+			throw TypedError.typed(
+				'La nouvelle période sélectionnée inclue des distributions déjà passées auxquelles le membre n\'a pas participé, Il faut choisir une date ultérieure $subName.',
+				PastDistributionsWithoutOrders
+			);
+		}
+	
 		return true;
 	}
 
@@ -732,7 +727,7 @@ class SubscriptionService
 		subscription.catalog = catalog;
 		subscription.startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate 	= new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
-		subscription.isValidated = false;
+		subscription.isPaid = false;
 		
 		if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
 
@@ -789,9 +784,8 @@ class SubscriptionService
 		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
 
 		if ( absentDistribIds != null ) {
-			if ( subscription.isValidated ) {
-				subscription.setAbsentDistribIds( absentDistribIds );
-			}
+			
+			subscription.setAbsentDistribIds( absentDistribIds );
 		}
 		updateAbsencesNb( subscription, absencesNb );
 		
@@ -918,11 +912,10 @@ class SubscriptionService
 	}
 
 
-	public static function updateValidation( subscription : Subscription, ?validate : Bool = true ){
+	public static function markAsPaid( subscription : Subscription, ?paid : Bool = true ){
 
 		subscription.lock();
-		subscription.isValidated = validate;
-		subscription.isPaid = validate;
+		subscription.isPaid = paid;
 		subscription.update();
 	}
 
@@ -932,28 +925,39 @@ class SubscriptionService
 	  */
 	 public static function deleteSubscription( subscription : db.Subscription ) {
 
-		if(subscription.isValidated){
-			throw new Error("Impossible de supprimer une souscription qui a été validée");
-		}
-
 		if ( hasPastDistribOrders( subscription ) && !subscription.catalog.isDemoCatalog() ) {
 
 			throw TypedError.typed( 'Impossible de supprimer cette souscription car il y a des distributions passées avec des commandes.', PastOrders );
 		}
 
+		var hasPayments = subscription.catalog.group.hasPayments();
+		var balance = subscription.getBalance();
+		if ( hasPayments && balance != 0.0 ) {
+
+			throw new Error( 'Impossible de supprimer cette souscription car le solde n\'est pas à zéro. Veuillez d\'abord régulariser les paiements.' );
+		}
+
 		//Delete all the orders for this subscription
 		var subscriptionOrders = db.UserOrder.manager.search( $subscription == subscription, false );
 		for ( order in subscriptionOrders ) {
+
 			OrderService.delete(order,true);
 		}
 
-		//Delete the total operation if there's one
-		var totalOperation = subscription.getTotalOperation();
-		if ( totalOperation != null ) {
+		//Delete all the operations for this subscription
+		var subscriptionOperations = db.Operation.manager.search( $subscription == subscription, false );
+		for ( operation in subscriptionOperations ) {
 
-			totalOperation.lock();
-			totalOperation.delete();
+			operation.lock();
+			operation.delete();
 		}
+		
+		if( hasPayments ) {
+
+			//Update user balance
+			service.PaymentService.updateUserBalance( subscription.user, subscription.catalog.group );
+		}
+		
 
 		//Delete the subscription
 		subscription.lock();
@@ -970,7 +974,7 @@ class SubscriptionService
 	 */
 	public static function hasPastDistribOrders( subscription : db.Subscription ) : Bool {
 
-		if ( !subscription.isValidated || !hasPastDistributions( subscription ) ) {
+		if ( !hasPastDistributions( subscription ) ) {
 
 			return false;
 		}
@@ -1018,7 +1022,7 @@ class SubscriptionService
 
 			return false;
 		}
-		else {
+		else if ( ( subscription.catalog.type == db.Catalog.TYPE_VARORDER && subscription.catalog.requiresOrdering ) || subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
 
 			var pastDistributions = getSubscriptionDistribs( subscription, 'past' );
 			for ( distribution in pastDistributions ) {
@@ -1106,22 +1110,7 @@ class SubscriptionService
 		}
 
 		return orders;	
-	}
-
-
-	public static function isSubscriptionPaid( subscription : db.Subscription ) : Bool {
-
-		/*
-		var orders = db.UserOrder.manager.search( $subscription == subscription, false );
-		for ( order in orders ) {
-			if ( !order.paid ) {
-				return false;
-			}
-		}
-		return true;*/
-		return subscription.isPaid;
-
-	}
+	}	
 
 	public static function getLastDistribBeforeAbsences( catalog : db.Catalog ) : db.Distribution {
 
@@ -1155,9 +1144,9 @@ class SubscriptionService
 		var deadline = lastDistribBeforeAbsences.date.getTime();
 		var beforeDeadline = Date.now().getTime() < deadline;
 		var subscriptionInAbsencesPeriod = subscription == null || ( subscription.startDate.getTime() < deadline && subscription.endDate.getTime() > catalog.absencesStartDate.getTime() );
-		var notValidatedSub = subscription == null || !subscription.isValidated;
+		var forbidden = catalog.type == db.Catalog.TYPE_CONSTORDERS && subscription != null && subscription.paid();
 
-		return notValidatedSub && beforeDeadline && subscriptionInAbsencesPeriod;
+		return !forbidden && beforeDeadline && subscriptionInAbsencesPeriod;
 	}
 
 	public static function canAbsencesBeEdited( catalog : db.Catalog ) : Bool {

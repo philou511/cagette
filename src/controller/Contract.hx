@@ -567,15 +567,15 @@ class Contract extends Controller
 							subscriptionIsNew = true;
 							currentOrComingSubscription = SubscriptionService.createSubscription( app.user, catalog, varDefaultOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
 						}
-						else if ( !currentOrComingSubscription.isValidated ) {
+						else {
 							
 							SubscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, varDefaultOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
-						}
-						else if ( catalog.requiresOrdering && currentOrComingSubscription.getDefaultOrders().length == 0 ) {
+							if ( catalog.requiresOrdering && currentOrComingSubscription.getDefaultOrders().length == 0 ) {
 
-							SubscriptionService.updateDefaultOrders( currentOrComingSubscription, varDefaultOrders );
+								SubscriptionService.updateDefaultOrders( currentOrComingSubscription, varDefaultOrders );
+							}
 						}
-
+						
 						var newSubscriptionAbsentDistribs : Array<db.Distribution> = new Array<db.Distribution>();
 						if( subscriptionIsNew ) {
 
@@ -636,7 +636,7 @@ class Contract extends Controller
 						
 						SubscriptionService.createSubscription( app.user, catalog, constOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
 					}
-					else if ( !currentOrComingSubscription.isValidated ) {
+					else if ( !currentOrComingSubscription.paid() ) {
 						
 						SubscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, constOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
 					}
@@ -668,17 +668,13 @@ class Contract extends Controller
 		view.hasComingOpenDistrib = hasComingOpenDistrib;
 		view.catalogDistribsNb = db.Distribution.manager.count( $catalog == catalog );
 		view.newSubscriptionDistribsNb = db.Distribution.manager.count( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
-		view.canOrder = if ( catalog.type == db.Catalog.TYPE_VARORDER ) { true; }
-		else {
-
-			if( currentOrComingSubscription == null || !currentOrComingSubscription.isValidated ) {
+		view.canOrder = if( currentOrComingSubscription == null || !currentOrComingSubscription.paid() ) {
 				
-				catalog.isUserOrderAvailable();
-			} else {
-				
-				false;
-			}
-		}
+							catalog.isUserOrderAvailable();
+						} else {
+							
+							false;
+						};
 		view.userOrders = userOrders;
 		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( catalog, currentOrComingSubscription ), function( distrib ) return StringTools.replace( StringTools.replace( Formatting.dDate( distrib.date ), "Vendredi", "Ven." ), "Mercredi", "Mer." ) );
 		var subscriptions = SubscriptionService.getUserCatalogSubscriptions( app.user, catalog );

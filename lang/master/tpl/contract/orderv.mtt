@@ -338,11 +338,7 @@
 														::set q = o.order.quantity::
 													::end::
 													
-													::if canOrder::							
-														<input type="text" class="form-control" name="::"d"+d.distrib.id+"-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
-													::else::
-														::q::
-													::end::
+													<input type="text" class="form-control" name="::"d"+d.distrib.id+"-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
 													
 												</td>
 												::end::
@@ -537,13 +533,12 @@
 						</table>
 			
 						
-						::if(!subscription.isValidated)::
-							<a href="/contract/deleteSubscription/::subscription.id::" class="btn btn-danger btn-sm" onclick="return confirm('Effacer ?')">
-								<i class="icon icon-delete"></i>
-								&nbsp;Annuler la souscription
-							</a>
-						::end::
-			
+						
+						<a href="/contract/deleteSubscription/::subscription.id::" class="btn btn-danger btn-sm" onclick="return confirm('Effacer ?')">
+							<i class="icon icon-delete"></i>
+							&nbsp;Annuler la souscription
+						</a>
+						
 					::end::
 				
 				</div>

@@ -135,7 +135,7 @@
 								::end::
 								<tr style="text-align: center;">
 									<td ::cond i == 0 && subscription._user2 != null::>
-										<i ::cond !subscription.isValidated:: class="icon icon-alert" style="color: #a94442;"></i>  
+										<i ::cond !subscription.paid():: class="icon icon-alert" style="color: #a94442;"></i>  
 										<a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
 										<br/> ( alterné avec <a href="/member/view/::subscription._user2.id::" target="_blank">::subscription._user2.getName()::</a> )
 									</td>
@@ -183,7 +183,7 @@
 										::formatNum(balance)::&nbsp;::currency()::
 									</td>
 									<!-- <td style="vertical-align: middle;" ::cond i == 0::>
-										$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
+										$$check(::subscription.paid()::)
 									</td> -->
 								</tr>
 							</table>
