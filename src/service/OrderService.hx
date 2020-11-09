@@ -739,22 +739,17 @@ class OrderService
 
 			//We edit a whole multidistrib, edit only var orders.
 			orders = multiDistrib.getUserOrders(user , db.Catalog.TYPE_VARORDER);
-		}
-		else {
+		} else {
 			
 			//Edit a single catalog, may be CSA or variable
 			var distrib = null;
 			if( multiDistrib != null ) {
-
 				distrib = multiDistrib.getDistributionForContract(catalog);
 			}
 
 			if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
-
 				orders = catalog.getUserOrders( user, distrib, false );
-			}
-			else {
-
+			} else {
 				orders = SubscriptionService.getCSARecurrentOrders( subscription, null );
 			}
 				
