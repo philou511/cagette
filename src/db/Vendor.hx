@@ -1,4 +1,5 @@
 package db;
+import sugoi.form.validators.EmailValidator;
 import sys.db.Object;
 import sys.db.Types;
 import Common;
@@ -297,5 +298,24 @@ class Vendor extends Object
 		
 		return str;
 	}
+
+	function check(){
+		if(this.email==null){
+			throw new tink.core.Error("Vous devez obligatoirement saisir un email pour ce producteur.");
+		}
+
+		if(!EmailValidator.check(this.email) ) {
+			throw new tink.core.Error("Email invalide.");
+		}
+	}
+
+	override function insert(){
+		check();
+		super.insert();
+	}
 	
+	override function update(){
+		check();
+		super.update();
+	}
 }
