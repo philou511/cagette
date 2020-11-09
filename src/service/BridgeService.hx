@@ -26,7 +26,7 @@ class BridgeService {
 
 	public static function getNeoModuleScripts() {
 		var manifest = BridgeService.getNeoWebpackManifest();
-		return [manifest.get("runtime.js"), manifest.get("vendors.js"), manifest.get("neo.js")];
+		return [manifest.get("runtime.js"), manifest.get("reactlibs.js"), manifest.get("vendors.js"), manifest.get("neo.js")];
 	}
 
 	public static function call(uri:String) {

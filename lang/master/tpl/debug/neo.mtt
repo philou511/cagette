@@ -1,42 +1,113 @@
 ::use 'base.mtt'::
+<style>
+    .neo-block {
+        margin-bottom: 20px;
+        padding: 24px;
+        border: 1px solid #ccc;
+        border-radius: 20px;
+    }
+</style>
+
 <div style="margin-top: 32px; padding: 16px">
-    <h1>Neo Modules</h1>
+    <div style="margin-top: 48px; margin-bottom: 48px;">
+        <div id="to-boot"></div>
+    </div>
 
+    <div class="neo-block">
+        <h4>Scripts</h4>
+        <code>
+            ::foreach script getNeoModuleScripts()::
+            <p>&#60;script src="::script::" /&#62;</p>
+            ::end::
+        </code>
+    
+        
+        <h4>hash</h4>
+        <p style="color: green;" id="hash-gen-success"></p>
+        <p style="color: red;" id="hash-gen-error"></p>
+        <div>
+            <code>
+                <textarea id="hash-gen-text" rows="10" cols="50"></textarea>
+            </code>
+            <div>
+                <button id="hash-gen-btn">GENERATE HASH</button>
+            </div>
+        </div>
+    </div>
 
-    <code>
-        ::foreach script getNeoModuleScripts()::
-        <p>&#60;script src="::script::" /&#62;</p>
-        ::end::
-    </code>
-
-
-    <h4>Mangopay User Module</h4>
-    <div id="mangopay-user-module"></div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            neo.createNeoModule("mangopay-user-module", "mangopay", { userId: 1 });
+            const genText = document.getElementById("hash-gen-text");
+            const genError = document.getElementById("hash-gen-error");
+            const genSuccess = document.getElementById("hash-gen-success");
+            // genText.value = JSON.stringify({ moduleName: "module-name", "props": {} }, null, 2)
+
+
+
+
+
+            function decodeModule(hash) {
+                try {
+                    const decoded = window.atob(hash);
+                    const module = JSON.parse(decoded);
+                    if (!module || !module.moduleName) throw new Error("Invalid module");
+                    return module;
+                } catch (error) {
+                    genError.innerHTML = error;
+                }
+            }
+
+            function initModule(module) {
+                try {
+                    neo.createNeoModule("to-boot", module.moduleName, module.props);
+                } catch (error) {
+                    genError.innerHTML = error;
+                }
+            }
+
+            function generateHash() {
+                genError.innerHTML = "";
+                genSuccess.innerHTML = "";
+                try {
+                    const value = JSON.parse(genText.value)
+                    genSuccess.innerHTML = window.location.origin + window.location.pathname + "?hash=" + btoa(JSON.stringify(value))
+                } catch (error) {
+                    genError.innerHTML = error;
+                }
+            }
+
+            document.getElementById("hash-gen-btn").addEventListener('click', generateHash);
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (!urlParams.get('hash')) {
+                genError.innerHTML = "No hash";
+            } else {
+                const module = decodeModule(urlParams.get('hash'));
+                genText.innerHTML = JSON.stringify(module, null, 2);
+                initModule(module);
+            }
+
+
+
+
+            // if (hash !== "") {
+            //     const decoded = window.atob(hash)
+            //     const m = JSON.parse(decoded)
+            //     if (!m || !m.moduleName) throw new Error("Invalid hash config")
+            //     document.getElementById("hash").innerHTML = JSON.stringify(m, null, 2)
+            //     genText.value = JSON.stringify(m, null, 2)
+
+            //     try {
+            //         neo.createNeoModule("to-boot", m.moduleName, m.props);
+            //     } catch (err) {
+            //         console.log("NO MODULE", err)
+            //     }
+            // } else {
+            //     genError.innerHTML = "No hash"
+            // }
         });
+
     </script>
-
-    <hr/>
-
-    <h4>Messaging Service Module</h4>
-    <div id="messaging-service-module"></div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            neo.createNeoModule("messaging-service-module", "messages", { groupId: 3386, whichUser: 0 });
-        });
-    </script>
-
-    <hr/>
-
-    <h4>Members Module</h4>
-    <div id="members-service-module"></div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            neo.createNeoModule("members-service-module", "members", { groupId: 3386, token: "token" });
-        });
-    </script>   
 
 </div>
 ::end::
