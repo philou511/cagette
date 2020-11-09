@@ -507,6 +507,13 @@ class OrderService
 			if(order!=null) orders.push( order );
 		}
 		
+		//store total price
+		if(orders.length>0){
+			var basket = orders[0].basket;
+			basket.total = basket.getOrdersTotal();
+			basket.update();
+		}
+
 		App.current.event(MakeOrder(orders));
 		
 		//delete tmpBasket

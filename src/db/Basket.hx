@@ -6,14 +6,15 @@ import Common;
 /**
  * Basket : represents the orders of a user for specific multidistrib
  */
-//@:index(userId,placeId,ddate,unique)
 @:index(ref)
 class Basket extends Object
 {
 	public var id : SId;
-	public var ref : SNull<SString<256>>; //basket unique ref, used also by tmpBasket
-	public var cdate : SDateTime; //date when the order has been placed
-	public var num : SInt;		 //order number
+	public var ref : SNull<SString<256>>; 	//basket unique ref, used also by tmpBasket
+	public var cdate : SDateTime; 			//date when the order has been placed
+	public var num : SInt;		 			//Basket number for distribution
+	public var total : SNull<SFloat>;		//orders total price for *stats*, this is not reliable, dont use this for payments
+
 
 	@:relation(userId) public var user : db.User;
 	@:relation(multiDistribId) public var multiDistrib : db.MultiDistrib;
