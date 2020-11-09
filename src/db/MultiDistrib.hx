@@ -348,7 +348,7 @@ class MultiDistrib extends Object
 	public function getUserOrders(user:db.User,?type:Int){
 		var out = [];
 		for ( d in getDistributions(type) ){
-			var pids = Lambda.map( d.catalog.getProducts(false), function(x) return x.id);		
+			var pids = d.catalog.getProducts(false).map(x->x.id);		
 			var userOrders =  db.UserOrder.manager.search( $userId == user.id && $distributionId==d.id && $productId in pids , false);	
 			for( o in userOrders ){
 				out.push(o);
