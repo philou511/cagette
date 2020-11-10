@@ -142,26 +142,14 @@ class Transaction extends controller.Controller
 	
 	
 	@tpl('form.mtt')
-	public function doEdit( operation : db.Operation, ?args: { subscription : String } ) {
+	public function doEdit( operation : db.Operation ) {
 
 		var hasShopMode = operation.group.hasShopMode();
 		var returnUrl = '/member/payments/' + operation.user.id;
 
 		if ( !hasShopMode ) {
 
-			if ( args != null ) {
-
-				if( args.subscription == 'single' ) {
-
-					App.current.session.data.returnUrl = '/contractAdmin/subscriptions/payments/' + operation.subscription.id;
-				}
-				else {
-
-					App.current.session.data.returnUrl = '/amap/payments/' + operation.user.id;
-				}
-				
-			}
-
+			App.current.session.data.returnUrl = '/contractAdmin/subscriptions/payments/' + operation.subscription.id;
 			returnUrl = App.current.session.data.returnUrl;
 			
 			// '/contractAdmin/subscriptions/payments/' + operation.subscription.id
@@ -228,7 +216,7 @@ class Transaction extends controller.Controller
 	/**
 	 * Delete an operation
 	 */
-	public function doDelete( operation : db.Operation, ?args: { subscription: String } ) {
+	public function doDelete( operation : db.Operation ) {
 
 		var hasShopMode = operation.group.hasShopMode();
 
@@ -236,21 +224,8 @@ class Transaction extends controller.Controller
 
 		if ( !hasShopMode ) {
 
-			if ( args != null ) {
-
-				if( args.subscription == 'single' ) {
-
-					App.current.session.data.returnUrl = '/contractAdmin/subscriptions/payments/' + operation.subscription.id;
-				}
-				else {
-
-					App.current.session.data.returnUrl = '/amap/payments/' + operation.user.id;
-				}
-				
-			}
-
+			App.current.session.data.returnUrl = '/contractAdmin/subscriptions/payments/' + operation.subscription.id;
 			returnUrl = App.current.session.data.returnUrl;
-
 		}
 
 		if( !hasShopMode && operation.subscription == null ) {
@@ -263,7 +238,7 @@ class Transaction extends controller.Controller
 		App.current.event( PreOperationDelete( operation ) );
 
 		//only an admin can delete an order op
-		if( ( operation.type == db.Operation.OperationType.VOrder || operation.type == db.Operation.OperationType.COrder ) && !app.user.isAdmin() ) {
+		if( ( operation.type == db.Operation.OperationType.VOrder || operation.type == db.Operation.OperationType.SubscriptionTotal ) && !app.user.isAdmin() ) {
 
 			throw Error( returnUrl, t._("Action forbidden"));
 		}

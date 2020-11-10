@@ -1,6 +1,7 @@
 package controller;
 import sugoi.db.Cache;
 import db.Catalog;
+import db.Operation.OperationType;
 import service.SubscriptionService;
 import tink.core.Error;
 using Lambda;
@@ -352,27 +353,15 @@ class Subscriptions extends controller.Controller
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
 
+		//Let's do an update just in case the total operation is not coherent
+		view.subscriptionTotal = SubscriptionService.createOrUpdateTotalOperation( subscription );
+
 		var user = subscription.user;
-		var group = subscription.catalog.group;
-
-		// service.PaymentService.updateUserBalance(m, app.user.getGroup());
-      	// var browse : Int->Int->List<Dynamic>;
+		var payments = db.Operation.manager.search( $user == user && $subscription == subscription && $type == Payment, { orderBy : -date }, false );
 		
-		//default display
-		// browse = function(index:Int, limit:Int) {
-
-		// 	return db.Operation.getOperationsWithIndex( user, group, index, limit, true );
-		// }
-
-		var operations = db.Operation.manager.search( $user == user && $subscription == subscription, { orderBy : -date }, false );
-		
-		/*var count = db.Operation.countOperations( user, group);
-		var rb = new sugoi.tools.ResultsBrowser(count, 10, browse);*/
-		view.operations = operations;
+		view.payments = payments;
 		view.member = user;
 		view.subscription = subscription;
-		view.subscriptionTotal = subscription.getTotalPrice();
-		view.subscriptionPayments = subscription.getPaymentsTotal();
 		
 		view.nav.push( 'subscriptions' );
 		view.c = subscription.catalog;
@@ -384,6 +373,9 @@ class Subscriptions extends controller.Controller
 	public function doBalanceTransfer( subscription : db.Subscription ) {
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
+		if ( subscription.getBalance() <= 0 ) throw Error( '/contractAdmin/subscriptions/payments/' + subscription.id, 'Le solde doit être positif pour pouvoir le transférer sur une autre souscription.' );
+		var subscriptionsChoices = SubscriptionService.getUserVendorNotClosedSubscriptions( subscription );
+		if ( subscriptionsChoices.length == 0  ) throw Error( '/contractAdmin/subscriptions/payments/' + subscription.id, 'Ce membre n\'a pas d\'autre souscription. Veuillez en créer une nouvelle avec le même producteur.' );
 
 		// var user = subscription.user;
 		// var group = subscription.catalog.group;
@@ -406,13 +398,31 @@ class Subscriptions extends controller.Controller
 		// view.subscription = subscription;
 		// view.subscriptionTotal = subscription.getTotalPrice();
 		// view.subscriptionPayments = subscription.getPaymentsTotal();
+
+		if ( checkToken() ) {
+
+			try {
+
+				var subscriptionId = Std.parseInt( app.params.get( 'subscription' ) );
+				if ( subscriptionId == null ) throw Error( '/contractAdmin/subscriptions/balanceTransfer/' + subscription.id, "Vous devez sélectionner une souscription." );
+
+				var selectedSubscription = db.Subscription.manager.get( subscriptionId );
+				SubscriptionService.transferBalance( subscription, selectedSubscription );
+				
+			} catch( error : Error ) {
+				
+				throw Error( '/contractAdmin/subscriptions/balanceTransfer/' + subscription.id, error.message );
+			}
+
+			throw Ok( '/contractAdmin/subscriptions/payments/' + subscription.id, 'Le transfert a bien été effectué.' );
+		}
+
+		view.title = "Report de solde pour " + subscription.user.getName();
 		
 		// view.nav.push( 'subscriptions' );
 		view.c = subscription.catalog;
-		view.subscriptions = SubscriptionService.getUserVendorNotClosedSubscriptions( subscription );
+		view.subscriptions = subscriptionsChoices;
 		view.nav.push( 'subscriptions' );
-		
-		// checkToken();
 	}
 
 

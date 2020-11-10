@@ -1106,7 +1106,8 @@ class SubscriptionService
 
 		if ( subscription.catalog.group.hasPayments() ) {
 
-			service.PaymentService.onOrderConfirm( null, subscription );
+			// create/update a single operation for the subscription total price
+			createOrUpdateTotalOperation( subscription );
 		}
 
 		return orders;	
@@ -1240,40 +1241,44 @@ class SubscriptionService
 
 	public static function createOrUpdateTotalOperation( subscription : db.Subscription ) : db.Operation {
 
+		if( subscription == null )  throw new Error( 'Pas de souscription fournie.' );
+
 		// REFACTO TOTAL OPERATION
 		var totalOperation : db.Operation = null;
+		var currentTotalPrice = subscription.getTotalPrice();
 
 		if ( subscription.catalog.group.hasPayments() ) {
 
-			if( subscription == null )  throw new Error( 'Pas de souscription fournie.' );
-
-			totalOperation = db.Operation.manager.select ( $user == subscription.user && $subscription == subscription && $type == COrder, true );
+			totalOperation = db.Operation.manager.select ( $user == subscription.user && $subscription == subscription && $type == SubscriptionTotal, true );
 	
 			if( totalOperation == null ) {
 	
 				totalOperation = new db.Operation();
 				totalOperation.name = "Total Commmandes";
-				totalOperation.type = COrder;
+				totalOperation.type = SubscriptionTotal;
 				totalOperation.user = subscription.user;
 				totalOperation.subscription = subscription;
 				totalOperation.group = subscription.catalog.group;
 				totalOperation.pending = false;
 			}
 	
-			totalOperation.date = Date.now();
-			totalOperation.amount = 0 - subscription.getTotalPrice();
-	
-			if ( totalOperation.id != null ) {
-	
-				totalOperation.update();
-			}
-			else {
-	
-				totalOperation.insert();
-			}
-	
-			service.PaymentService.updateUserBalance( totalOperation.user, totalOperation.group );
+			if( totalOperation.id == null || totalOperation.amount != (0 - currentTotalPrice) ) {
 
+				totalOperation.date = Date.now();
+				totalOperation.amount = 0 - currentTotalPrice;
+		
+				if ( totalOperation.id != null ) {
+		
+					totalOperation.update();
+				}
+				else {
+		
+					totalOperation.insert();
+				}
+		
+				service.PaymentService.updateUserBalance( totalOperation.user, totalOperation.group );
+			}
+			
 		}
 
 		return totalOperation;
@@ -1294,6 +1299,50 @@ class SubscriptionService
 			}
 			
 		}
+	}
+
+	public static function transferBalance( fromSubscription : db.Subscription, toSubscription : db.Subscription ) {
+
+		var balance = fromSubscription.getBalance();
+		if ( fromSubscription.catalog.group.hasPayments() ) {
+
+			if( fromSubscription == null || toSubscription == null )  throw new Error( 'Pas de souscriptions fournies.' );
+			if( fromSubscription.user.id != toSubscription.user.id )  throw new Error( 'Le transfert est possible uniquement pour un même membre.' );
+			if( balance <= 0 ) throw new Error( 'Impossible de transférer un solde négatif ou à zéro.' );
+			if( !toSubscription.catalog.group.hasPayments() ) throw new Error( 'Le groupe de destination n\'a pas la gestion des paiements activée.' );
+
+			var operationFrom = new db.Operation();
+			operationFrom.name = "Transfert du solde sur la souscription #" + toSubscription.id + " de " + toSubscription.catalog.name;
+			operationFrom.type = Payment;
+			operationFrom.setPaymentData( { type : 'transfer' } );
+			operationFrom.user = fromSubscription.user;
+			operationFrom.subscription = fromSubscription;
+			operationFrom.group = fromSubscription.catalog.group;
+			operationFrom.pending = false;
+			operationFrom.date = Date.now();
+			operationFrom.amount = 0 - balance;
+
+			var operationTo = new db.Operation();
+			operationTo.name = "Transfert du solde de la souscription #" + fromSubscription.id + " de " + fromSubscription.catalog.name;
+			operationTo.type = Payment;
+			operationTo.setPaymentData( { type : 'transfer' } );
+			operationTo.user = toSubscription.user;
+			operationTo.subscription = toSubscription;
+			operationTo.group = toSubscription.catalog.group;
+			operationTo.pending = false;
+			operationTo.date = Date.now();
+			operationTo.amount = balance;
+
+			operationFrom.insert();
+			operationTo.insert();
+	
+			service.PaymentService.updateUserBalance( fromSubscription.user, fromSubscription.catalog.group );
+			if( fromSubscription.catalog.group.id != toSubscription.catalog.group.id && toSubscription.catalog.group.hasPayments() ) {
+
+				service.PaymentService.updateUserBalance( fromSubscription.user, toSubscription.catalog.group );
+			}
+		}
+
 	}
 
 	public static function getDistribOrdersAverageTotal( subscription : db.Subscription ) : Float {

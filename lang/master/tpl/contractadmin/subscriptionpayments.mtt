@@ -17,64 +17,49 @@
 						<span style="color:#0C0;">::formatNum(balance)::&nbsp;::currency()::</span>
 					::end::
 				</td>
+				::if balance > 0::
+					<td>
+						<a href="/contractAdmin/subscriptions/balanceTransfer/::subscription.id::" class="btn btn-default btn-sm">
+							<i class="icon icon-sign-out"></i>&nbsp;Transférer le solde
+						</a>
+					</td>
+				::end::
 			</tr>
 
-			::foreach operation operations::
+			::foreach payment payments::
 
-				::set x = operation.getTypeIndex()::
-				<tr ::cond x != 1::>
+				<tr>
 
 					<td style="vertical-align: middle;">
-						::sDate(operation.date)::
+						::sDate(payment.date)::
 					</td>
 
 					<td style="vertical-align: middle;">
-						::if x==0::
-							<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::_("Order")::
-						::elseif x==1::
-							<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::raw _("CSA&nbsp;contract")::
-						::elseif x==2::
-							<i class="icon icon-euro" aria-hidden="true"></i> ::operation.getPaymentTypeName()::
-						::else::
-							<i class="fa fa-user" aria-hidden="true"></i> Souscription
-						::end::
+						<i class="icon icon-euro" aria-hidden="true"></i> ::payment.getPaymentTypeName()::
 					</td>
 				
 					<td style="font-size:1em;vertical-align: middle;padding-top:15px;padding-bottom:15px;">
-						::operation.name::
+						::payment.name::
 					</td>
 
 					<td style="vertical-align: middle;">
-						&nbsp;&nbsp;::operation.amount::&nbsp;::currency()::
+						&nbsp;&nbsp;::payment.amount::&nbsp;::currency()::
 					</td>
 
-					<td class="text-right" style="vertical-align: middle;">
-						::if operation.type==2::
+					<td style="vertical-align: middle;">
 						<div class="btn-group" role="group">
-							$$edit(::_("Edit")::,/transaction/edit/::operation.id::?subscription=single)
-							$$delete(::_("Del.")::,/transaction/delete/::operation.id::?token=::token::&subscription=single)
+							$$edit(::_("Edit")::,/transaction/edit/::payment.id::)
+							$$delete(::_("Del.")::,/transaction/delete/::payment.id::?token=::token::)
 						</div>
-						::elseif isAdmin::
-							<a href="/transaction/delete/::operation.id::?token=::token::" $$confirm(::_("Delete ?")::) class="btn btn-danger btn-sm" >
-								<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-							</a>
-						::end::
 					</td>
 
 				</tr>
-
-				::if x == 1::
-					::set subscriptionOperationDate = sDate(operation.date)::
-					::set subscriptionOperationAmount = operation.amount::
-				::end::
 			::end::
 		
 			<tr>
 
 				<td style="vertical-align: middle;">
-					::if subscriptionOperationDate != null::
-						::subscriptionOperationDate::
-					::end::
+					::sDate(subscriptionTotal.date)::
 				</td>
 
 				<td style="vertical-align: middle;">
@@ -86,8 +71,8 @@
 				</td>
 
 				<td style="vertical-align: middle;">
-					::if subscriptionOperationAmount != null::
-						-&nbsp;::-subscriptionOperationAmount::&nbsp;::currency()::
+					::if subscriptionTotal.amount != 0::
+						-&nbsp;::-subscriptionTotal.amount::&nbsp;::currency()::
 					::else::
 						0&nbsp;::currency()::
 					::end::

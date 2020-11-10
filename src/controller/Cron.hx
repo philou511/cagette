@@ -334,7 +334,7 @@ class Cron extends Controller
 									// REFACTO TOTAL OPERATION
 									if ( distrib.catalog.group.hasPayments() ) {
 			
-										service.PaymentService.onOrderConfirm( null, subscription );
+										service.SubscriptionService.createOrUpdateTotalOperation( subscription );
 									}
 
 								}

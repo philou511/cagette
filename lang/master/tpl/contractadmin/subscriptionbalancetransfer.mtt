@@ -21,14 +21,14 @@
 	
 			<div class="form-group">
 
-				<label class="col-sm-3 control-label" for="user" id="userLabel">
+				<label class="col-sm-3 control-label" for="subscription" id="subscriptionLabel">
 					Souscription *
 				</label>
 				<div class="col-sm-9">
-					<select name="user" id="user" class="form-control" required="required">
+					<select name="subscription" id="subscription" class="form-control" required="required">
 						<option value="0">-</option>
 						::foreach subscription subscriptions::
-							<option value="::subscription.id::">::subscription::</option>
+							<option value="::subscription.id::">::subscription._catalog.name:: | ::sDate(subscription.startDate):: - ::sDate(subscription.endDate):: | Solde : ::subscription.getBalance():: ::currency()::</option>
 						::end::
 					</select>
 				</div>

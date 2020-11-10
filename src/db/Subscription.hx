@@ -54,7 +54,7 @@ class Subscription extends Object {
 
 		if( this.id == null ) return null;
 
-		return db.Operation.manager.select( $user == this.user && $subscription == this && $type == COrder, true );
+		return db.Operation.manager.select( $user == this.user && $subscription == this && $type == SubscriptionTotal, true );
 	}
 
 	public function getPaymentsTotal() : Float {

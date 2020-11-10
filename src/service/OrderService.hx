@@ -873,7 +873,7 @@ class OrderService
 
 			for( subscription in subscriptions ) {
 
-				service.PaymentService.onOrderConfirm( null, subscription );
+				service.SubscriptionService.createOrUpdateTotalOperation( subscription );
 			}
 		}
 

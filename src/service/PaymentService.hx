@@ -78,7 +78,7 @@ class PaymentService {
 	/**
 	 * Create a new order operation
 	 */
-	 public static function makeOrderOperation( orders : Array<db.UserOrder>, ?basket : db.Basket, ?subscription : db.Subscription ) {
+	 public static function makeOrderOperation( orders : Array<db.UserOrder>, basket : db.Basket ) {
 		
 		if (orders == null) throw "orders are null";
 		if (orders.length == 0) throw "no orders";
@@ -103,41 +103,21 @@ class PaymentService {
 		var user = orders[0].user;
 		var group = catalog.group;
 		
-		if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
-			//Constant orders			
-			// JB if(csaContract==null || csaContract.type!=db.Catalog.TYPE_CONSTORDERS) throw new Error("A CSA contract should be provided");
-			// TODO check catalog is the same as susbcription.catalog
-			//check orders are from the same contract
-			/* JB for (o in orders){
-				if(o.product.catalog.id!=csaContract.id) throw new Error("CSA Orders should be from the same contract");
-			}*/
+		if (basket == null)
+			throw new Error("variable orders should have a basket");
+		if (basket.user.id != user.id)
+			throw new Error("user and basket mismatch");
 
-			var dNum = catalog.getDistribs(false).length;
-			op.name = "" + catalog.name + " (" + catalog.vendor.name+") " + dNum + " " + t._("deliveries");
-			op.amount = dNum * (0 - _amount);
-			op.date = Date.now();
-			op.type = COrder;
-			op.subscription = subscription;
-			op.user = user;
-			op.group = group;
-			op.pending = true;
-		} else {
-			if (basket == null)
-				throw new Error("variable orders should have a basket");
-			if (basket.user.id != user.id)
-				throw new Error("user and basket mismatch");
-
-			// varying orders
-			var date = App.current.view.dDate(orders[0].distribution.date);
-			op.name = t._("Order for ::date::", {date: date});
-			op.amount = 0 - _amount;
-			op.date = Date.now();
-			op.type = VOrder;
-			op.basket = basket;
-			op.user = user;
-			op.group = group;
-			op.pending = true;
-		}
+		// varying orders
+		var date = App.current.view.dDate(orders[0].distribution.date);
+		op.name = t._("Order for ::date::", {date: date});
+		op.amount = 0 - _amount;
+		op.date = Date.now();
+		op.type = VOrder;
+		op.basket = basket;
+		op.user = user;
+		op.group = group;
+		op.pending = true;
 
 		op.insert();
 		updateUserBalance(op.user, op.group);
@@ -201,81 +181,71 @@ class PaymentService {
 		Can handle orders happening on different multidistribs.
 			 	Orders are supposed to be from the same user.
 	 */
-	public static function onOrderConfirm( orders : Array<db.UserOrder>, ?subscription : db.Subscription  ) : Array<db.Operation> { 
+	public static function onOrderConfirm( orders : Array<db.UserOrder> ) : Array<db.Operation> { 
 
 		var out = [];
-		if( subscription == null ) {
-
-			//make sure we dont have null orders in the array
-			orders = orders.filter( o -> return o!=null );
-			if (orders.length == 0) return null;
+	
+		//make sure we dont have null orders in the array
+		orders = orders.filter( o -> return o!=null );
+		if (orders.length == 0) return null;
+		
+		for( o in orders){
+			if(o.user==null){
+				throw new Error("order "+o.id+" has no user");
+			} 
 			
-			for( o in orders){
-				if(o.user==null){
-					throw new Error("order "+o.id+" has no user");
-				} 
-				
-				if(o.user.id!=orders[0].user.id){
-					throw new Error("Those orders are from different users");
-				}
+			if(o.user.id!=orders[0].user.id){
+				throw new Error("Those orders are from different users");
 			}
-
-			var user = orders[0].user;
-			var group = orders[0].product.catalog.group;
-			
-			// varying contract :
-			// manage separatly orders which occur at different dates
-			var ordersGroup = null;
-			try {
-				ordersGroup = tools.ObjectListTool.groupOrdersByKey(orders);
-			} catch (e:Dynamic) {
-				App.current.logError(service.OrderService.prepare(orders));
-				neko.Lib.rethrow(e);
-			}
-			
-			for ( orders in ordersGroup ) {
-				
-				//find basket
-				var basket = null;
-				for (o in orders) {
-					if (o.basket != null) {
-						basket = o.basket;
-						break;
-					}
-				}
-
-				var distrib = basket.multiDistrib;
-
-				// get all orders for the same multidistrib, in order to update related operation.
-				var allOrders = distrib.getUserOrders(user, db.Catalog.TYPE_VARORDER);
-
-				// existing transaction
-				var existing = findVOrderOperation(distrib, user, false);
-
-				var op;
-				if (existing != null) {
-					op = updateOrderOperation(existing, allOrders, basket);
-				} else {
-					op = makeOrderOperation(allOrders, basket);
-				}
-				out.push(op);
-
-				// delete order and payment operations if sum of orders qt is 0
-				/*var sum = 0.0;
-					for ( o in allOrders) sum += o.quantity;
-					if ( sum == 0 ) {
-						existing.delete();
-						op.delete();
-				}*/
-			}
-
 		}
-		else if( subscription.catalog.group.hasPayments() ) { //CSA Mode
 
-			// REFACTO TOTAL OPERATION
+		var user = orders[0].user;
+		var group = orders[0].product.catalog.group;
+		
+		// varying contract :
+		// manage separatly orders which occur at different dates
+		var ordersGroup = null;
+		try {
+			ordersGroup = tools.ObjectListTool.groupOrdersByKey(orders);
+		} catch (e:Dynamic) {
+			App.current.logError(service.OrderService.prepare(orders));
+			neko.Lib.rethrow(e);
+		}
+		
+		for ( orders in ordersGroup ) {
+			
+			//find basket
+			var basket = null;
+			for (o in orders) {
+				if (o.basket != null) {
+					basket = o.basket;
+					break;
+				}
+			}
 
-			// create/update a single operation for the subscription total price
-			out.push( service.SubscriptionService.createOrUpdateTotalOperation( subscription ) );
+			var distrib = basket.multiDistrib;
+
+			// get all orders for the same multidistrib, in order to update related operation.
+			var allOrders = distrib.getUserOrders(user, db.Catalog.TYPE_VARORDER);
+
+			// existing transaction
+			var existing = findVOrderOperation(distrib, user, false);
+
+			var op;
+			if (existing != null) {
+				op = updateOrderOperation(existing, allOrders, basket);
+			} else {
+				op = makeOrderOperation(allOrders, basket);
+			}
+			out.push(op);
+
+			// delete order and payment operations if sum of orders qt is 0
+			/*var sum = 0.0;
+				for ( o in allOrders) sum += o.quantity;
+				if ( sum == 0 ) {
+					existing.delete();
+					op.delete();
+			}*/
 		}
 			
 		return out;

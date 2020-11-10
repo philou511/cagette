@@ -4,7 +4,7 @@ import tink.core.Error;
 
 enum OperationType{
 	VOrder; 	// 0 order on a variable order (debt)
-	COrder;		// 1 order on a CSA contract	(debt)
+	SubscriptionTotal; // 1 order on a CSA contract classic or variable (debt)
 	Payment;	// 2 payment of a debt	
 	Membership;	// 3 membership (debt)
 }
@@ -60,7 +60,7 @@ class Operation extends sys.db.Object
 
 	public function getOrderData(){
 		return switch(type){
-			case COrder, VOrder : this.getData();				
+			case SubscriptionTotal, VOrder : this.getData();				
 			default : null;
 		}
 	}
@@ -157,13 +157,16 @@ class Operation extends sys.db.Object
 
 	function check() {
 
-		if(type==Payment && getPaymentType()==null){
+		if ( type == Payment && getPaymentType() == null ) {
+
 			throw new tink.core.Error("Payment operation should have a type");
-		} else if (type==VOrder && this.basket==null){
-			throw new tink.core.Error("Variable Order operation should have a basket");
-		} else if (type==COrder && this.subscription==null){
-			throw new tink.core.Error("CSA Order operation should have a subscription");
 		}
+		else if ( type == VOrder && this.basket == null ) {
+
+			throw new tink.core.Error("Variable Order operation should have a basket");
+		}
+		
+		if ( !this.group.hasShopMode() && this.subscription == null ) throw new tink.core.Error("Aucune souscription n\'est associée à cette opération.");
 
 		amount = Formatting.roundTo( amount, 2 );
 	}

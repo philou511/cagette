@@ -614,7 +614,7 @@ class Contract extends Controller
 						//Create or update a single order operation for the subscription total orders price
 						if ( catalog.group.hasPayments() ) {
 
-							service.PaymentService.onOrderConfirm( null, currentOrComingSubscription );
+							service.SubscriptionService.createOrUpdateTotalOperation( currentOrComingSubscription );
 						}
 
 					}
