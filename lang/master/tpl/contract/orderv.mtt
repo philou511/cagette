@@ -177,7 +177,7 @@
 								<th>Absences</th>
 							</tr>
 							<tr style="text-align: center;">
-								::set label = subscriptionService.getDescription(null, catalog)::
+								::set label = subscriptionService.getDescription(null, catalog, false)::
 								<td style="vertical-align: middle;">
 									::if label != null:
 										::raw label::
@@ -464,7 +464,7 @@
 								<th class="text-center col-md-1">Total</th>
 								<th class="text-center col-md-1">Solde</th>
 							</tr>
-							::set label = subscriptionService.getDescription(subscription, catalog)::
+							::set label = subscriptionService.getDescription(subscription, catalog, false)::
 							<tr style="text-align: center;">
 								<td style="vertical-align: middle;">
 									::if label != null:

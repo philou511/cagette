@@ -343,7 +343,6 @@ class OrderService
 				var place = order.distribution.place;
 				var basket = db.Basket.get(user, order.distribution.multiDistrib);
 				
-				if( contract.group == null ) throw new Error( "Toto" );
 				if( contract.group.hasShopMode() && contract.group.hasPayments() ) {
 
 					var orders = basket.getOrders();
@@ -357,7 +356,6 @@ class OrderService
 				order.delete();
 			}
 
-			if( contract.group == null ) throw new Error( "Tutu" );
 			if( !contract.group.hasShopMode() ) {
 
 				service.SubscriptionService.createOrUpdateTotalOperation( order.subscription );

@@ -334,7 +334,7 @@ class SubscriptionService
 	}
 
 
-	public static function getDescription( subscription : db.Subscription, catalog : db.Catalog ) {
+	public static function getDescription( subscription : db.Subscription, catalog : db.Catalog, ?hideNB : Bool = false ) {
 
 		var label : String = '';
 		if ( subscription == null || catalog.type == db.Catalog.TYPE_VARORDER ) {
@@ -354,7 +354,9 @@ class SubscriptionService
 				
 				label += '<br />Minimum de commandes sur la durée du contrat : ' + catalogMinOrdersTotal + ' €';
 				label += '<br />Maximum de commandes sur la durée du contrat : '  + ( catalogMinOrdersTotal + catalog.allowedOverspend ) + ' €';
-				label += '<br /><b>NB : </b>Les seuils de commandes sur la durée du contrat sont calculés au prorata du nombre de vos distributions.';
+				if ( !hideNB ) {
+					label += '<br /><b>NB : </b>Les seuils de commandes sur la durée du contrat sont calculés au prorata du nombre de vos distributions.';
+				}
 			}
 
 		}

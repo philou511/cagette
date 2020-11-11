@@ -93,7 +93,7 @@
                             ::end::
                         </tr>
                         ::foreach subscription subscriptions::
-                            ::set orderName = subscriptionService.getDescription(subscription, catalog)::
+                            ::set orderName = subscriptionService.getDescription(subscription, catalog, false)::
                             ::if orderName == null::
                                 ::set class="danger text-danger"::
                             ::else::
@@ -136,7 +136,7 @@
                                     au ::dateToString(subscription.endDate)::
                                 </td>
                                 <td style="vertical-align: middle;">
-                                    ::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
+                                    <a title="Voir les commandes" target="_blank" href="/member/orders/::subscription._user.id::/::catalog.id::">::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::</a>
                                 </td>
                                 <td style="vertical-align: middle;">
                                     ::subscription.getTotalPrice()::&nbsp;::currency()::

@@ -372,7 +372,7 @@
 					::foreach subscription subscriptions::
 
 						<table class="table table-condensed table-bordered">
-							::set orderName = subscriptionService.getDescription(subscription, catalog)::
+							::set orderName = subscriptionService.getDescription(subscription, catalog, false)::
 							::if orderName == null::
 								::set class="danger text-danger"::
 							::else::

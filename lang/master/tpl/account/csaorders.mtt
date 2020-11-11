@@ -1,0 +1,105 @@
+::use 'design.mtt'::
+<div class="col-md-12">
+
+	<h2>::title::</h2>
+	
+	<div class="article">
+
+		<!-- VARYING ORDERS FOR SHOP MODE -->
+		::if !old::
+			<a href="?old=1" class="btn btn-default btn-sm">
+				<i class="icon icon-archive"></i>
+				::if account::
+					 Mes commandes passées
+				::else::
+					Commandes passées
+				::end::
+			</a>
+		::else::
+			::if account::
+				::set url = "/account/orders/" + catalog.id ::
+				::set text = "Mes commandes à venir"::
+			::else::
+				::set url = "/member/orders/" + member.id + "/" + catalog.id ::
+				::set text = "Commandes à venir"::
+			::end::
+			<a href="::url::" class="btn btn-default btn-sm">
+				<i class="icon icon-basket"></i> ::text::
+			</a>
+		::end::
+		
+		::if distribs.length > 0::
+			<h4 class="text-center">::catalog.name::</h4>
+	
+			::foreach d distribs::
+
+				::set orders = d.getUserOrders(member)::
+				
+				::if(orders!=null && orders.length>0)::
+
+					::set ordersFound = true::
+					<h5 style="margin-top:50px;">
+						::if account::
+							::_("Order delivered on")::
+						::else::
+							Distribution du 
+						::end::
+						::dDate(d.date)::
+					</h5>
+					<table class="table table-bordered table-condensed text-center" >
+						<tr class="greyhead">
+							<th class="col-md-1">::_("Qty||short version for quantity")::</th>
+							<th class="col-md-4">::_("Product")::</th>
+							<th class="col-md-1"><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">::_("U.P||short version of price per unit")::</a></th>
+							<th class="col-md-2">::_("Sub-total")::</th>
+							<th class="col-md-1">::_("Fees")::</th>
+							<th class="col-md-1">::_("Total")::</th>
+						</tr>
+						::set total = 0::
+						::foreach o prepare(orders)::
+							<tr>
+								<td style="vertical-align: middle;">
+									::raw o.smartQt::
+								</td>
+								<td style="vertical-align: middle;">
+									<a href="#" onclick="_.overlay('/shop/productInfo/::o.productId::','::o.productName::')">
+										<img src="::o.productImage::" style="width:32px;height:32px;" />
+										::o.productName::
+									</a>
+								</td>
+								<td style="vertical-align: middle;">
+									::formatNum(o.productPrice)::&nbsp;::currency()::
+								</td>
+								<td style="vertical-align: middle;">
+									::formatNum(o.subTotal)::&nbsp;::currency()::
+								</td>
+								<td style="vertical-align: middle;">
+									$$nullSafe(::formatNum(o.fees)::)
+								</td>
+								<td style="vertical-align: middle;">
+									::formatNum(o.total)::&nbsp;::currency()::
+									::set total = total + o.total::
+								</td>
+							
+							</tr>
+						::end::	
+						<tr>
+							<td colspan="4"></td>
+							<td style="vertical-align: middle;">TOTAL</td>
+							<td style="vertical-align: middle;"><b>::formatNum(total)::&nbsp;::currency()::</b></td>
+						</tr>
+					</table>
+				::end::
+			::end::
+		::end::
+
+		::if ordersFound != true::
+			<div class="text-center" style="margin:50px 0;">
+				Il n'y a aucune commande.
+			</div>
+		::end::
+
+	</div>
+</div>
+
+::end::
