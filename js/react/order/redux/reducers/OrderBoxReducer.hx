@@ -116,19 +116,23 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
             case SelectProduct( productId ):
                 var copiedOrders = state.orders.copy();
                 var orderFound : Bool = false;
-                for( order in copiedOrders ) {
+                var selectedProduct = Lambda.find( state.products, function( product ) return product.id == productId );
+                if( !selectedProduct.multiWeight ) {
 
-                    if( order.product.id == productId ) {
+                    for( order in copiedOrders ) {
 
-                        order.quantity += 1;
-                        orderFound = true;
-                        break;
+                        if( order.product.id == productId ) {
+
+                            order.quantity += 1;
+                            orderFound = true;
+                            break;
+                        }
+                    
                     }
                 }
                 
                 if ( !orderFound ) {
 
-                    var selectedProduct = Lambda.find( state.products, function( product ) return product.id == productId );
                     var catalog = Lambda.find( state.catalogs, function( catalog ) return catalog.id == selectedProduct.catalogId );
                     var order : UserOrder = cast {};
                     order.id =  0 - Std.random(1000000);

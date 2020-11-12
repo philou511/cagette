@@ -218,9 +218,6 @@ class VendorService{
 			var siret = ~/[^\d]/g.replace(data.companyNumber,"");//remove non numbers
 			if(siret=="" || siret==null) throw new Error("Le numéro SIRET est requis.");
 			var sameSiret = db.Vendor.manager.search($companyNumber==siret).array();
-			if( !App.config.DEBUG && sameSiret.length>0 && sameSiret[0].id!=vendor.id){
-				throw new Error("Il y a déjà un producteur enregistré avec ce numéro SIRET");			
-			}
 			
 			var raw = c.call("GET","https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/"+siret);
 			var res = haxe.Json.parse(raw);
@@ -241,12 +238,14 @@ class VendorService{
 					}
 				}
 				
-				// if(vendor.activityCode==null){
-					vendor.activityCode = res.etablissement.activite_principale;
-				// }
-				// if(vendor.legalStatus==null){
-					vendor.legalStatus = res.etablissement.unite_legale.categorie_juridique;
-				// }
+				vendor.activityCode = res.etablissement.activite_principale;
+				vendor.legalStatus = res.etablissement.unite_legale.categorie_juridique;
+				
+				//do not authorize duplicate companyNumber if not Coop legalStatus
+				var coopStatuses = [5560,5460,5558];
+				if( !App.config.DEBUG && sameSiret.length>0 && sameSiret[0].id!=vendor.id && !Lambda.has(coopStatuses,vendor.legalStatus) ){
+					throw new Error("Il y a déjà un producteur enregistré avec ce numéro SIRET");			
+				}
 
 				//unban if banned
 				if(vendor.disabled==db.Vendor.DisabledReason.IncompleteLegalInfos){
@@ -254,13 +253,10 @@ class VendorService{
 					App.current.session.addMessage("Merci d'avoir saisi vos informations légales. Votre compte a été débloqué.",false);
 				}
 			}
-
-		}
-		
+		}		
 
 		return vendor;
 	}
-
 
 	/**
 		Loads vendors professions from json

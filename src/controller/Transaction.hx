@@ -92,7 +92,6 @@ class Transaction extends controller.Controller
 		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label||label or name for a payment"), op.name, true));
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), op.amount, true));
 		f.addElement(new form.CagetteDatePicker("date", t._("Date"), op.date, NativeDatePickerType.date, true));
-		//f.addElement(new sugoi.form.elements.DatePicker("pending", t._("Confirmed"), !op.pending, true));
 		//related operation
 		var unpaid = db.Operation.manager.search( $user == op.user && $group == op.group && $type != Payment ,{limit:20,orderBy:-date});
 		var data = unpaid.map(function(x) return {label:x.name, value:x.id}).array();

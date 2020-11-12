@@ -125,6 +125,8 @@ typedef ProductInfo = {
 	catalogTaxName : Null<String>,	//label pour la commission : ex: "frais divers"
 	?vendorId : Int,
 	?distributionId:Null<Int>, //in the context of a distrib
+
+	?multiWeight : Bool, //Used in OrderBox to be able to create a new order when selecting a product that is multiweight
 }
 
 //used in shop client

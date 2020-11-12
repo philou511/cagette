@@ -1,11 +1,21 @@
 ::use 'design.mtt'::
 
 <div class="col-md-12">
-	
 	::foreach v vendors::		
 		::if(v.disabled!=null)::
-			<div class="alert alert-danger"><i class="icon icon-alert"></i> Le producteur <b>::v.name::</b> est désactivé : ::v.getDisabledReason()::</div>
+			<div class="alert alert-danger"><i class="icon icon-alert"></i> Le producteur <b>::v.name::</b> est désactivé : ::v.getDisabledReason()::</div>	
+		::end::	
+	::end::
+
+	::if(noSiret.length>0)::
+	<div class="alert alert-danger"><i class="icon icon-alert"></i> Attention, les producteurs <b>
+		::foreach v noSiret::
+		<a href="/vendor/edit/::v.id::">::v.name::</a>, 
 		::end::
+	</b> n'ont pas défini leurs informations légales obligatoires. 
+	<br/><b>Cliquez sur leur nom pour mettre à jour leur fiche</b> sinon ils seront bloqués à partir du 16 Novembre 2020.
+	<br/>( Plus d'explications dans <a href="http://r.sib.cagette.net/mk/mr/3ec6isWJSaecmldXKXB6lxfdyAyunnfxt2-PnkMb3ILG5Z4tOOp9aC69DiRV3OT6pspWN96jlWMRgmPteVSqQVJ-_zqr40kua1nR" target="_blank">notre email du 22 Octobre</a> envoyé à tous les coordinateurs de groupes. )
+	</div>
 	::end::
 
 	
@@ -75,6 +85,8 @@
 		::end::
 
 		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> Anciens catalogues</a>
+
+		::if user.canManageAllContracts():: 
 		<div class="dropdown" style="display:inline-block;">
 		  <button class="btn btn-default btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 			<i class="icon icon-list"></i> ::_("Global orders view")::
@@ -85,6 +97,7 @@
 			<li><a href="/contractAdmin/ordersByTimeFrame">::_("Timeframe")::</a></li>			
 		  </ul>
 		</div>
+		::end::
 		
 	</div>
 	
