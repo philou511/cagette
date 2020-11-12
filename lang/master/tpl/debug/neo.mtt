@@ -1,112 +1,40 @@
 ::use 'base.mtt'::
-<style>
-    .neo-block {
-        margin-bottom: 20px;
-        padding: 24px;
-        border: 1px solid #ccc;
-        border-radius: 20px;
-    }
-</style>
 
 <div style="margin-top: 32px; padding: 16px">
-    <div style="margin-top: 48px; margin-bottom: 48px;">
+    <div style="margin-top: 24px; margin-bottom: 48px;">
         <div id="to-boot"></div>
     </div>
 
-    <div class="neo-block">
-        <h4>Scripts</h4>
-        <code>
-            ::foreach script getNeoModuleScripts()::
-            <p>&#60;script src="::script::" /&#62;</p>
-            ::end::
-        </code>
-    
-        
-        <h4>hash</h4>
-        <p style="color: green;" id="hash-gen-success"></p>
-        <p style="color: red;" id="hash-gen-error"></p>
-        <div>
-            <code>
-                <textarea id="hash-gen-text" rows="10" cols="50"></textarea>
-            </code>
-            <div>
-                <button id="hash-gen-btn">GENERATE HASH</button>
-            </div>
-        </div>
+    <div style="margin-top: 48px; margin-bottom: 48px;">
+        <div id="debug-module"></div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const genText = document.getElementById("hash-gen-text");
-            const genError = document.getElementById("hash-gen-error");
-            const genSuccess = document.getElementById("hash-gen-success");
-            // genText.value = JSON.stringify({ moduleName: "module-name", "props": {} }, null, 2)
 
+            neo.createNeoModule("debug-module", "debug", {
 
-
-
-
-            function decodeModule(hash) {
-                try {
-                    const decoded = window.atob(hash);
-                    const module = JSON.parse(decoded);
-                    if (!module || !module.moduleName) throw new Error("Invalid module");
-                    return module;
-                } catch (error) {
-                    genError.innerHTML = error;
-                }
-            }
-
-            function initModule(module) {
-                try {
-                    neo.createNeoModule("to-boot", module.moduleName, module.props);
-                } catch (error) {
-                    genError.innerHTML = error;
-                }
-            }
-
-            function generateHash() {
-                genError.innerHTML = "";
-                genSuccess.innerHTML = "";
-                try {
-                    const value = JSON.parse(genText.value)
-                    genSuccess.innerHTML = window.location.origin + window.location.pathname + "?hash=" + btoa(JSON.stringify(value))
-                } catch (error) {
-                    genError.innerHTML = error;
-                }
-            }
-
-            document.getElementById("hash-gen-btn").addEventListener('click', generateHash);
-
-            const urlParams = new URLSearchParams(window.location.search);
-            if (!urlParams.get('hash')) {
-                genError.innerHTML = "No hash";
-            } else {
-                const module = decodeModule(urlParams.get('hash'));
-                genText.innerHTML = JSON.stringify(module, null, 2);
-                initModule(module);
-            }
-
-
-
-
-            // if (hash !== "") {
-            //     const decoded = window.atob(hash)
-            //     const m = JSON.parse(decoded)
-            //     if (!m || !m.moduleName) throw new Error("Invalid hash config")
-            //     document.getElementById("hash").innerHTML = JSON.stringify(m, null, 2)
-            //     genText.value = JSON.stringify(m, null, 2)
-
-            //     try {
-            //         neo.createNeoModule("to-boot", m.moduleName, m.props);
-            //     } catch (err) {
-            //         console.log("NO MODULE", err)
-            //     }
-            // } else {
-            //     genError.innerHTML = "No hash"
-            // }
+                onLoadModule: function (data, hash) {
+                    const urlSearch = new URLSearchParams(window.location.search);
+                    const currentHash = urlSearch.get("hash");
+                    if (currentHash !== hash) {
+                        urlSearch.set("hash", hash);
+                        window.location.href = `${window.location.origin}${window.location.pathname}?${urlSearch.toString()}`;
+                    } else {
+                        neo.unmountComponentAtNode("to-boot");
+                        neo.createNeoModule("to-boot", data.moduleName, data.props);
+                    }
+                },
+                onUnloadModule: function () {
+                    neo.unmountComponentAtNode("to-boot");
+                },
+                scriptsList: [
+                    :: foreach script getNeoModuleScripts()::
+                    "::script::",
+                    :: end::
+                ]
+            });
         });
-
     </script>
 
 </div>
