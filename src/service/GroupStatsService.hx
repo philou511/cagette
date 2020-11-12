@@ -79,13 +79,16 @@ class GroupStatsService{
     public function getActiveMembershipWithOrderNumber(){
         var mdIds = db.MultiDistrib.getFromTimeRange( group , from , to  ).array().map(md->md.id);
         var distribIds = Distribution.manager.search($multiDistribId in mdIds,false).array().map(d->d.id);
+        if(distribIds.length==0) return 0;
         var userIds = getActiveMembershipMembers();
+        if(userIds.length==0) return 0;
         return sys.db.Manager.cnx.request('select count(distinct userId) from UserOrder where distributionId in (${distribIds.join(",")}) and userId in (${userIds.join(",")})').getIntResult(0);
     }
 
     public function getMembersWithOrderNumber(){
         var mdIds = db.MultiDistrib.getFromTimeRange( group , from , to  ).array().map(md->md.id);
         var distribIds = Distribution.manager.search($multiDistribId in mdIds,false).array().map(d->d.id);
+        if(distribIds.length==0) return 0;
         return sys.db.Manager.cnx.request('select count(distinct userId) from UserOrder where distributionId in (${distribIds.join(",")})').getIntResult(0);
     }
 
@@ -93,7 +96,19 @@ class GroupStatsService{
 
     public function getMembershipAmount(){
         var amount = 0.0;
-        for ( m in Membership.manager.search($date >= from && $date < to  && $group == group, false) ) amount += m.amount;
+        for ( m in Membership.manager.search($date >= from && $date < to  && $group == group, false) ){
+
+            //fix on the fly
+            if(m.amount==0 || m.amount==null){
+                m.lock();
+                if(m.operation!=null){
+                    m.amount = Math.abs(m.operation.amount);
+                    m.update();
+                }
+            }
+
+            amount += m.amount;
+        } 
         return amount;
     }
 
@@ -103,6 +118,7 @@ class GroupStatsService{
     public function getProductNumber(){
         var mdIds = db.MultiDistrib.getFromTimeRange( group , from , to  ).array().map(md->md.id);
         var distribIds = Distribution.manager.search($multiDistribId in mdIds,false).array().map(d->d.id);
+        if(distribIds.length==0) return 0;
         return sys.db.Manager.cnx.request('select count(distinct productId) from UserOrder where distributionId in (${distribIds.join(",")})').getIntResult(0);
     }
 

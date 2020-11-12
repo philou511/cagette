@@ -150,7 +150,7 @@ class Distribution extends Controller
 	@tpl('distribution/listByDate.mtt')
 	function doListByDate(date:Date,place:db.Place, ?type:String, ?fontSize:String) {
 		
-		if (!app.user.isContractManager()) throw Error('/', t._("Forbidden action"));
+		checkHasDistributionSectionAccess();
 		
 		view.place = place;		
 		view.onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(app.user.getGroup());

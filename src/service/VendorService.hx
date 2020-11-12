@@ -243,7 +243,7 @@ class VendorService{
 				
 				//do not authorize duplicate companyNumber if not Coop legalStatus
 				var coopStatuses = [5560,5460,5558];
-				if( !App.config.DEBUG && sameSiret.length>0 && sameSiret[0].id!=vendor.id && !Lambda.has(coopStatuses,vendor.legalStatus) ){
+				if( !App.config.DEBUG && sameSiret.length>0 && sameSiret[0].id!=vendor.id && coopStatuses.find(s-> Std.string(s)==Std.string(vendor.legalStatus))==null ){
 					throw new Error("Il y a déjà un producteur enregistré avec ce numéro SIRET");			
 				}
 

@@ -776,5 +776,11 @@ class ContractAdmin extends Controller
 		}
 		
 	}
+
+	@tpl("contractadmin/tmpBaskets.mtt")
+	function doTmpBaskets(md:db.MultiDistrib){
+		view.md = md;
+		view.tmpBaskets = db.TmpBasket.manager.search($multiDistrib == md,false);
+	}
 	
 }
