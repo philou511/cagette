@@ -26,7 +26,7 @@
 						<b>Contrat AMAP classique</b>
 					</p>
 					<p>
-						::nl2br(catalog.description)::
+						::raw nl2br(catalog.description)::
 					</p>
 
 					<div ::cond visibleDocuments.length != 0::>

@@ -28,13 +28,5 @@
     "fromCatalog": "Depuis un catalogue",
     "chooseCatalog": "Catalogues",
     "emailError": "Cette addresse email n'est pas correcte"
-  },
-  "lists": {
-    "all": "Tous les membres du groupe",
-    "test": "TEST : moi + conjoint·e",
-    "admins": "Les administrateurs",
-    "hasNoOrders": "Membres sans commande",
-    "noMembership": "Adhésions à renouveler",
-    "contractSubscribers": "{{name}} du {{startDate}} au {{endDate}}"
   }
 }

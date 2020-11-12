@@ -28,7 +28,7 @@
 						<b>Contrat AMAP Variable</b>
 					</p>
 					<p>
-						::nl2br(catalog.description)::
+						::raw nl2br(catalog.description)::
 					</p>
 					::end::
 		
