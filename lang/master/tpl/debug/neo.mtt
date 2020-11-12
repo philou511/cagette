@@ -1,0 +1,41 @@
+::use 'base.mtt'::
+
+<div style="margin-top: 32px; padding: 16px">
+    <div style="margin-top: 24px; margin-bottom: 48px;">
+        <div id="to-boot"></div>
+    </div>
+
+    <div style="margin-top: 48px; margin-bottom: 48px;">
+        <div id="debug-module"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            neo.createNeoModule("debug-module", "debug", {
+
+                onLoadModule: function (data, hash) {
+                    const urlSearch = new URLSearchParams(window.location.search);
+                    const currentHash = urlSearch.get("hash");
+                    if (currentHash !== hash) {
+                        urlSearch.set("hash", hash);
+                        window.location.href = `${window.location.origin}${window.location.pathname}?${urlSearch.toString()}`;
+                    } else {
+                        neo.unmountComponentAtNode("to-boot");
+                        neo.createNeoModule("to-boot", data.moduleName, data.props);
+                    }
+                },
+                onUnloadModule: function () {
+                    neo.unmountComponentAtNode("to-boot");
+                },
+                scriptsList: [
+                    :: foreach script getNeoModuleScripts()::
+                    "::script::",
+                    :: end::
+                ]
+            });
+        });
+    </script>
+
+</div>
+::end::
