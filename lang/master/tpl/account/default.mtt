@@ -1,20 +1,21 @@
 ::use 'design.mtt'::
 <div class="col-md-8">
 
+	::set hasPayments = user.getGroup().hasPayments()::
+	::set hasShopMode = user.getGroup().hasShopMode()::
+
 	<h2>
-		::if user.getGroup().hasShopMode()::
+		::if hasShopMode::
 			::_("Last orders")::
 		::else::
 			Mes souscriptions
 		::end::
 	</h2>
-
-	::set payments = user.getGroup().hasPayments()::
 	
 	<div class="article">
 
 		<!-- VARYING ORDERS FOR SHOP MODE -->
-		::if user.getGroup().hasShopMode() && distribs.length > 0::
+		::if hasShopMode && distribs.length > 0::
 			<h4><i class="icon icon-basket"></i>  Commandes variables</h4>
 	
 			::foreach d distribs::
@@ -36,7 +37,7 @@
 							<th class="col-md-2">::_("Sub-total")::</th>
 							<th class="col-md-1">::_("Fees")::</th>
 							<th class="col-md-1">::_("Total")::</th>
-							<th class="col-md-1" ::cond !payments::>::_("Paid")::</th>			
+							<th class="col-md-1" ::cond !hasPayments::>::_("Paid")::</th>			
 						</tr>
 						::set total = 0::
 						::foreach o prepare(orders)::
@@ -63,7 +64,7 @@
 									::formatNum(o.total)::&nbsp;::currency()::
 									::set total = total + o.total::
 								</td>
-								<td ::cond !payments:: class="text-center">
+								<td ::cond !hasPayments:: class="text-center">
 									$$check(::o.paid::)
 								</td>
 							
@@ -71,7 +72,7 @@
 						::end::	
 						<tr>
 							<td colspan="4">
-								::if user.getGroup().hasShopMode() && !user.getGroup().hasPayments():: 
+								::if hasShopMode && !hasPayments:: 
 									$$edit(Modifier cette commande,/contract/editVarOrders/::d.id::)
 								::end::
 							</td>
@@ -84,9 +85,8 @@
 		::end::
 
 		<!-- SUBSCRIPTIONS FOR CSA MODE -->
-		::if !user.getGroup().hasShopMode() && count( subscriptionsByCatalog ) > 0 ::
+		::if !hasShopMode && count( subscriptionsByCatalog ) > 0 ::
 			
-			::set globalBalance = 0::
 			::foreach i loopList(0, 2)::
 
 				::set subscriptionsFound = false::
@@ -132,8 +132,11 @@
 									::end::
 									<th class="text-center col-md-2">Nombre de distributions</th>
 									<th class="text-center col-md-1">Total</th>
-									<th class="text-center col-md-1">Solde</th>
-									<!-- <th class="text-center col-md-1" ::cond i == 1::>Payé</th> -->
+									::if hasPayments::
+										<th class="text-center col-md-1">Solde</th>
+									::elseif i == 1::
+										<th class="text-center col-md-1">Payé</th>
+									::end::
 								</tr>
 								::set orderName = subscriptionService.getDescription(subscription, catalog, true)::
 								::if i == 1 && orderName == null::
@@ -179,20 +182,25 @@
 									</td>
 									::set subscriptionTotal = subscription.getTotalPrice()::
 									::set balance = subscription.getPaymentsTotal() - subscriptionTotal::
-									::set style = "color:#C00;font-weight:bold;"::
-									::set globalBalance = globalBalance + balance::
-									::if balance >= 0::
-										::set style = "color:#0C0;"::
-									::end::
 									<td style="vertical-align: middle;">
 										::subscriptionTotal::&nbsp;::currency()::
 									</td>
-									<td style="vertical-align: middle;::style::">
-										::formatNum(balance)::&nbsp;::currency()::
-									</td>
-									<!-- <td style="vertical-align: middle;" ::cond i == 1::>
-										$$check(::subscription.paid()::)
-									</td> -->
+									::if hasPayments::
+										::set balance = subscription.getPaymentsTotal() - subscription.getTotalPrice()::
+										::set background = ""::
+										::if balance < 0::
+											::set background = "background-color: #d9534f;"::
+										::else::
+										::set background = "background-color: #84bd55;"::
+										::end::
+										<td style="vertical-align: middle;color: white;font-weight:bold; ::background::">
+											::formatNum(balance)::&nbsp;::currency()::
+										</td>
+									::elseif i == 1::
+										<td style="vertical-align: middle;">
+											$$check(::subscription.paid()::)
+										</td>
+									::end::
 								</tr>
 							</table>
 							::if catalog.catalogMinOrdersTotal != null::
@@ -233,31 +241,39 @@
 		
 	</div>
 	
-	::if user.getGroup().hasPayments()::
+	::if hasPayments::
 	<h3>::_("Payments")::</h3>
 	<div  class="article">
 		<span style="font-size:1.3em;">
 			
-			::if user.getGroup().hasShopMode()::
+			::if hasShopMode::
 				::_("Balance"):: :
+				::if userGroup.balance < 0:: 
+					::set color = "C00"::
+				::else::
+					::set color = "0C0"::
+				::end::
+				<span style="color:#::color::;">
+					::userGroup.balance:: ::currency()::
+				</span>
 			::else::
 				Solde global :
+				::set background = ""::
+				::if userGroup.balance < 0::
+					::set background = "background-color: #d9534f;"::
+				::else::
+				::set background = "background-color: #84bd55;"::
+				::end::
+				<span style="color: white;font-weight:bold; ::background::">
+					::formatNum(userGroup.balance)::&nbsp;::currency()::
+				</span>
 			::end::
-
-			::if userGroup.balance < 0:: 
-				::set color = "C00"::
-			::else::
-				::set color = "0C0"::
-			::end::
-			<span style="color:#::color::;">
-				::userGroup.balance:: ::currency()::
-			</span>
 			
 		</span>
 		
 		<span style="margin-left:30px;">
 			::set link = "/account/payments"::
-			::if !user.getGroup().hasShopMode()::
+			::if !hasShopMode::
 				::set link = "/amap/payments/" + user.id + "?account=true"::
 			::end::
 			<a href="::link::" class="btn btn-default btn-small">

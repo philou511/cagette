@@ -57,13 +57,16 @@
 						</td>
 
 						<td style="vertical-align: middle;">
-							::_("Balance")::&nbsp;:
+							::_("Balance")::&nbsp;&nbsp;
 							::set balance = subscriptionPayments - subscriptionTotal::
 							::if balance < 0::
-								<span style="color:#C00;">::formatNum(balance)::&nbsp;::currency()::</span>
+								::set background = "background-color: #d9534f;"::
 							::else::
-								<span style="color:#0C0;">::formatNum(balance)::&nbsp;::currency()::</span>
+								::set background = "background-color: #84bd55;"::
 							::end::
+							<span style="color: white;font-weight:bold;::background::; padding:10px;">
+								::formatNum(balance)::&nbsp;::currency()::
+							</span>
 						</td>
 
 					</tr>
@@ -141,13 +144,13 @@
 		<div style="font-size:1.3em;top: 10px;position: absolute;left: 20px;">
 
 			Solde global :
-			::if globalbalance < 0:: 
-				::set style = "color:#C00;font-weight:bold;"::
+			::if globalbalance < 0::
+				::set background = "background-color: #d9534f;"::
 			::else::
-				::set style = "color:#0C0;"::
+				::set background = "background-color: #84bd55;"::
 			::end::
-			<span style="::style::">
-				::globalbalance:: ::currency()::
+			<span style="color: white;font-weight:bold;::background::; padding:10px;">
+				::formatNum(globalbalance)::&nbsp;::currency()::
 			</span>
 
 		</div>

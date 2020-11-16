@@ -8,14 +8,16 @@
 
 			<tr style="font-size:1.1em;font-weight:bold;background-color:#EEE;">
 				<td colspan="2"></td>
-				<td class="text-right" style="padding: 10px 0;">Solde</td>
-				<td style="vertical-align: middle;padding: 10px 0;">
-					::set balance = subscription.getBalance()::
-					::if balance < 0::
-						<span style="color:#C00;">::formatNum(balance)::&nbsp;::currency()::</span>
-					::else::
-						<span style="color:#0C0;">::formatNum(balance)::&nbsp;::currency()::</span>
-					::end::
+				<td class="text-right" style="padding: 10px 0;">Solde &nbsp;</td>
+				::set balance = subscription.getBalance()::
+					::set background = ""::
+				::if balance < 0::
+					::set background = "background-color: #d9534f;"::
+				::else::
+					::set background = "background-color: #84bd55;"::
+				::end::
+				<td style="vertical-align: middle;padding: 10px 0;color: white;font-weight:bold;::background::">
+					::formatNum(balance)::&nbsp;::currency()::
 				</td>
 				::if balance > 0::
 					<td>

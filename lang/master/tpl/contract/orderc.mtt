@@ -1,6 +1,8 @@
 ::use 'design.mtt'::
 <div id="content" class="col-md-12">
 
+	::set hasPayments = catalog._group.hasPayments()::
+
 	<h2>::catalog.name::</h2>
 
 	<!-- Nav tabs -->
@@ -387,8 +389,11 @@
 								<th class="text-center col-md-1" ::cond absencesNb != 0::>Nombre d'absences</th>
 								<th class="text-center col-md-2">Nombre de distributions</th>
 								<th class="text-center col-md-1">Total</th>
-								<th class="text-center col-md-1">Solde</th>
-								<!-- <th class="text-center col-md-1">Payé</th> -->
+								::if hasPayments::
+									<th class="text-center col-md-1">Solde</th>
+								::else::
+									<th class="text-center col-md-1">Payé</th>
+								::end::
 							</tr>					
 							<tr style="text-align: center;">
 								<td ::cond subscription._user2 != null::>
@@ -420,12 +425,22 @@
 								<td style="vertical-align: middle;">
 									::subscriptionTotal::&nbsp;::currency()::
 								</td>
-								<td style="vertical-align: middle;">
-									::formatNum(subscription.getPaymentsTotal() - subscriptionTotal)::&nbsp;::currency()::
-								</td>
-								<!-- <td style="vertical-align: middle;">
-									$$check(::subscription.paid()::)
-								</td> -->
+								::if hasPayments::
+									::set balance = subscription.getPaymentsTotal() - subscriptionTotal::
+									::set background = ""::
+									::if balance < 0::
+										::set background = "background-color: #d9534f;"::
+									::else::
+									::set background = "background-color: #84bd55;"::
+									::end::
+									<td style="vertical-align: middle;color: white;font-weight:bold; ::background::">
+										::formatNum(balance)::&nbsp;::currency()::
+									</td>
+								::else::
+									<td style="vertical-align: middle;">
+										$$check(::subscription.paid()::)
+									</td>
+								::end::
 							</tr>
 							<tr class="greyhead text-center" ::cond  catalog.hasAbsencesManagement() && absencesNb != 0::>
 								<th class="text-center col-md-12" colspan="7" >Mes absences (modifiables jusqu'au ::dDate( subscriptionService.getLastDistribBeforeAbsences( catalog ).date )::)</th>

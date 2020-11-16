@@ -1,6 +1,8 @@
 ::use 'design.mtt'::
 <div id="content" class="col-md-12">
 
+	::set hasPayments = catalog._group.hasPayments()::
+
 	<h2>::catalog.name::</h2>
 
 	<div class="alert alert-danger" ::cond smallBalance != null::>
@@ -466,7 +468,9 @@
 								<th class="text-center col-md-1" ::cond absencesNb != 0::>Nombre d'absences</th>
 								<th class="text-center col-md-1">Nombre de distributions</th>
 								<th class="text-center col-md-1">Total</th>
-								<th class="text-center col-md-1">Solde</th>
+								::if hasPayments::
+									<th class="text-center col-md-1">Solde</th>
+								::end::
 							</tr>
 							::set label = subscriptionService.getDescription(subscription, catalog, false)::
 							<tr style="text-align: center;">
@@ -502,9 +506,18 @@
 										::end::
 									::end::
 								</td>
-								<td style="vertical-align: middle;">
-									::formatNum(subscription.getPaymentsTotal() - subscriptionTotal)::&nbsp;::currency()::
-								</td>
+								::if hasPayments::
+									::set balance = subscription.getPaymentsTotal() - subscriptionTotal::
+									::set background = ""::
+									::if balance < 0::
+										::set background = "background-color: #d9534f;"::
+									::else::
+										::set background = "background-color: #84bd55;"::
+									::end::
+									<td style="vertical-align: middle;color: white;font-weight:bold; ::background::">
+										::formatNum(balance)::&nbsp;::currency()::
+									</td>
+								::end::
 							</tr>
 							<tr class="greyhead text-center">
 								<th class="text-center col-md-7" colspan="2" ::cond catalog.requiresOrdering::>Ma commande par défaut</th>
