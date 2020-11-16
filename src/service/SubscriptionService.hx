@@ -38,7 +38,7 @@ class SubscriptionService
 	**/
 	public static function getActiveSubscriptions( user : db.User, group : db.Group ) : Array<db.Subscription> {
 
-		var catalogIds = group.getActiveContracts().map( c -> return c.id );
+		var catalogIds = group.getActiveContracts( true ).map( c -> return c.id );
 		return db.Subscription.manager.search( ( $user == user || $user2 == user ) && ( $catalogId in catalogIds ), false ).array();
 	}
 
@@ -1352,7 +1352,7 @@ class SubscriptionService
 		if( subscription == null || subscription.id == null )  throw new Error( 'Pas de souscription fournie.' );
 
 		var distribsOrderedNb = sys.db.Manager.cnx.request('SELECT COUNT(DISTINCT distributionId) FROM UserOrder WHERE subscriptionId=${subscription.id}').getIntResult(0);
-		if( distribsOrderedNb == 0 ) return null;
+		if( distribsOrderedNb == 0 ) return 0;
 
 		return subscription.getTotalPrice() / distribsOrderedNb;
 	}

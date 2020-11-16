@@ -27,55 +27,16 @@ class Transaction extends controller.Controller
 
 		var group = app.user.getGroup();
 		var hasShopMode = group.hasShopMode();
-		var returnUrl = '/member/payments/' + user.id;
-		
-		if ( !hasShopMode ) {
-
-			if ( subscription != null ) {
-
-				returnUrl = '/contractAdmin/subscriptions/payments/' + subscription.id;
-			}
-			else {
-
-				returnUrl = '/amap/payments/' + user.id;
-			}
-			
-			// '/contractAdmin/subscriptions/payments/' + operation.subscription.id
-		}
-		
-		var op = new db.Operation();
-		op.user = user;
-		op.date = Date.now();
-		
+			var returnUrl = '/member/payments/' + user.id;
+	
 		var form = new sugoi.form.Form("payement");
 
 		if ( !hasShopMode ) {
 
-			if ( subscription != null ) {
+			if ( subscription == null ) throw Error("/member/view/" + user.id, "Pas de souscription fournie." );
 
-				form.addElement( new sugoi.form.elements.Html( "subscription", '<div class="control-label" style="text-align:left;"> ${ subscription.catalog.name } - ${ subscription.catalog.vendor.name } </div>', 'Souscription' ) );
-			}
-			else {
-
-				var activeSubscriptions = service.SubscriptionService.getActiveSubscriptions( user, group );
-				var subscriptions = Lambda.map( activeSubscriptions, function( sub ) return { label : sub.catalog.name + ' - ' + sub.catalog.vendor.name, value : sub.id } ).array();
-				form.addElement( new sugoi.form.elements.IntSelect( 'subscriptionId', 'Souscription', subscriptions, null, true ) );
-			}
-
-
-			// if ( args != null && args.s != null ) {
-
-			// 	subscription = db.Subscription.manager.get( args.s );
-
-			// 	if ( subscription != null ) {
-
-			// 		form.addElement( new sugoi.form.elements.Html( "subscription", '<div class="control-label" style="text-align:left;"> ${ subscription.catalog.name } - ${ subscription.catalog.vendor.name } </div>', 'Souscription' ) );
-			// 	}
-			// }
-
-			// TODO JB Ajouter erreur si subscription est à null
-			// App.current.session.data.absencesReturnUrl = args.returnUrl;
-			//RETURN /contractAdmin/subscriptions/payments/338
+			returnUrl = '/contractAdmin/subscriptions/payments/' + subscription.id;
+			form.addElement( new sugoi.form.elements.Html( "subscription", '<div class="control-label" style="text-align:left;"> ${ subscription.catalog.name } - ${ subscription.catalog.vendor.name } </div>', 'Souscription' ) );
 		}
 
 		form.addElement(new sugoi.form.elements.StringInput("name", t._("Label||label or name for a payment"), null, true));
@@ -100,19 +61,25 @@ class Transaction extends controller.Controller
 		// new(name:String, label:String, ?value:T, ?required:Bool = false, ?display:Bool = false,  ?attributes:String = "")
 		
 		if (form.isValid()){
-			form.toSpod(op);
-			op.type = db.Operation.OperationType.Payment;			
-			op.setPaymentData({type:form.getValueOf("Mtype")});
-			op.group = group;
-			op.user = user;
+
+			var operation = new db.Operation();
+			operation.user = user;
+			operation.date = Date.now();
+
+			form.toSpod(operation);
+
+			operation.type = db.Operation.OperationType.Payment;			
+			operation.setPaymentData({type:form.getValueOf("Mtype")});
+			operation.group = group;
+			operation.user = user;
 			
 			if( hasShopMode ) {
 
 				if (form.getValueOf("unpaid") != null){
 					var t2 = db.Operation.manager.get(form.getValueOf("unpaid"));
-					op.relation = t2;
-					if (t2.amount + op.amount == 0) {
-						op.pending = false;
+					operation.relation = t2;
+					if (t2.amount + operation.amount == 0) {
+						operation.pending = false;
 						t2.lock();
 						t2.pending = false;
 						t2.update();
@@ -120,16 +87,11 @@ class Transaction extends controller.Controller
 				}
 			}
 			else {
-
-				if( subscription == null ) {
-
-					subscription = db.Subscription.manager.get( form.getValueOf( 'subscriptionId' ) );
-				}
-
-				op.subscription = subscription;
+				
+				operation.subscription = subscription;
 			}
 			
-			op.insert();
+			operation.insert();
 			service.PaymentService.updateUserBalance( user, group );
 
 			throw Ok( returnUrl, t._("Payment recorded") );

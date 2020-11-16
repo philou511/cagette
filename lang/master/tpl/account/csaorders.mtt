@@ -28,8 +28,9 @@
 			</a>
 		::end::
 		
+		<h4 class="text-center">::catalog.name::</h4>
+
 		::if distribs.length > 0::
-			<h4 class="text-center">::catalog.name::</h4>
 	
 			::foreach d distribs::
 

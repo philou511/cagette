@@ -673,7 +673,13 @@ class Contract extends Controller
 		if ( catalog.type == db.Catalog.TYPE_VARORDER && catalog.group.hasPayments() ) {
 
 			var balance = currentOrComingSubscription.getBalance();
-			view.smallBalance = balance < ( 7 * SubscriptionService.getDistribOrdersAverageTotal( currentOrComingSubscription ) ) ? balance : null;
+			var remainingDistribsNb = SubscriptionService.getSubscriptionRemainingDistribsNb( currentOrComingSubscription );
+			var averageSpentPerDistrib = SubscriptionService.getDistribOrdersAverageTotal( currentOrComingSubscription );
+			var remainingDistribsToZero = Math.floor( balance / averageSpentPerDistrib );
+			if( remainingDistribsToZero <= 4  && remainingDistribsToZero < remainingDistribsNb && 3 <= SubscriptionService.getSubscriptionDistribsNb( currentOrComingSubscription ) ) {
+
+				view.smallBalance = balance < ( remainingDistribsNb * averageSpentPerDistrib ) ? balance : null;
+			}
 		}
 
 		view.currentOrComingSubscription = currentOrComingSubscription;

@@ -6,7 +6,11 @@
 	<div class="alert alert-danger" ::cond smallBalance != null::>
 					
 		<i class="icon icon-alert"></i>
-		Il vous reste seulement ::smallBalance:: € à dépenser. Si vous envisagez de commander plus, pensez à faire un paiement complémentaire.
+		::if smallBalance > 0::
+			Il vous reste seulement ::smallBalance:: € à dépenser. Si vous envisagez de commander plus, pensez à faire un paiement complémentaire.
+		::else::
+			Pensez à faire un paiement complémentaire pour réapprovisionner votre souscription.
+		::end::
 		
 	</div>
 			  
