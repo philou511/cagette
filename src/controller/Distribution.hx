@@ -59,8 +59,8 @@ class Distribution extends Controller
 		view.timeframe = timeframe;
 
 		//legal infos alert
-		var vendors = app.user.getGroup().getActiveVendors();
-		view.noSiret = vendors.filter(v -> v.companyNumber==null);
+		// var vendors = app.user.getGroup().getActiveVendors();
+		// view.noSiret = vendors.filter(v -> v.companyNumber==null);
 
 		checkToken();
 	}

@@ -1,6 +1,6 @@
 ::use 'design.mtt'::
 
-
+<!--
 ::if(noSiret.length>0)::
 	<div class="alert alert-danger"><i class="icon icon-alert"></i> Attention, les producteurs <b>
 		::foreach v noSiret::
@@ -12,7 +12,7 @@
 	<br/> Contactez-nous sur support@cagette.net si vous avez des questions.
 	</div>
 ::end::
-
+-->
 
 
 <h2 style="margin:12px">::_("Distributions")::</h2>

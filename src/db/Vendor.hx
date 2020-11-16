@@ -277,12 +277,12 @@ class Vendor extends Object
 
 		//legal status
 		for ( c in service.VendorService.getLegalStatuses()){
-			if(c.id == this.legalStatus) {
+			if(Std.string(c.id) == Std.string(this.legalStatus)) {
 				str += c.name;
 				break;
 			}
 		}
-		if(str=="") str = "???";
+		if(str=="") str = "Statut juridique inconnu";
 
 		if(full){
 			//capital
