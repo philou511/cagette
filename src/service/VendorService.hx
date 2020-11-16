@@ -167,7 +167,12 @@ class VendorService{
 			if(vendor.legalStatus!=null){
 				form.addElement(new sugoi.form.elements.Html("html",vendor.getLegalStatus(false),"Statut juridique"));
 			}else{
-				form.addElement(new sugoi.form.elements.IntSelect('legalStatus',"Forme juridique",[{label:"Société",value:0},{label:"Entreprise individuelle",value:1},{label:"Association",value:2}],null,true));
+				var data = [
+					{label:"Société",value:0},
+					{label:"Entreprise individuelle",value:1},
+					{label:"Association",value:2},
+					{label:"Particulier (mettez 0 comme numéro SIRET)",value:3}];
+				form.addElement(new sugoi.form.elements.IntSelect('legalStatus',"Forme juridique",data,null,true));
 			}
 
 			form.addElement(new sugoi.form.elements.StringInput("companyNumber","Numéro SIRET (14 chiffres) ou numéro RNA pour les associations.",vendor.companyNumber,true));
@@ -211,8 +216,14 @@ class VendorService{
 			vendor.legalStatus = 9220;//association déclarée
 		}
 
+		//particulier
+		if(legalInfos && data.legalStatus==3){
+
+			vendor.legalStatus = -1;//particulier
+		}
+
 		//check SIRET if french and not association
-		if(legalInfos && data.country=="FR" && data.legalStatus!=2){
+		if(legalInfos && data.country=="FR" && data.legalStatus!=2 && data.legalStatus!=3){
 			//https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/82902831500010
 			var c = new sugoi.apis.linux.Curl();
 			var siret = ~/[^\d]/g.replace(data.companyNumber,"");//remove non numbers
@@ -243,7 +254,7 @@ class VendorService{
 				
 				//do not authorize duplicate companyNumber if not Coop legalStatus
 				var coopStatuses = [5560,5460,5558];
-				if( !App.config.DEBUG && sameSiret.length>0 && sameSiret[0].id!=vendor.id && !Lambda.has(coopStatuses,vendor.legalStatus) ){
+				if( !App.config.DEBUG && sameSiret.length>0 && sameSiret[0].id!=vendor.id && coopStatuses.find(s-> Std.string(s)==Std.string(vendor.legalStatus))==null ){
 					throw new Error("Il y a déjà un producteur enregistré avec ce numéro SIRET");			
 				}
 

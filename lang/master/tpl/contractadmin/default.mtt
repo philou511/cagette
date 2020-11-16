@@ -7,6 +7,7 @@
 		::end::	
 	::end::
 
+	<!--
 	::if(noSiret.length>0)::
 	<div class="alert alert-danger"><i class="icon icon-alert"></i> Attention, les producteurs <b>
 		::foreach v noSiret::
@@ -15,8 +16,9 @@
 	</b> n'ont pas défini leurs informations légales obligatoires. 
 	<br/><b>Cliquez sur leur nom pour mettre à jour leur fiche</b> sinon ils seront bloqués à partir du 16 Novembre 2020.
 	<br/>( Plus d'explications dans <a href="http://r.sib.cagette.net/mk/mr/3ec6isWJSaecmldXKXB6lxfdyAyunnfxt2-PnkMb3ILG5Z4tOOp9aC69DiRV3OT6pspWN96jlWMRgmPteVSqQVJ-_zqr40kua1nR" target="_blank">notre email du 22 Octobre</a> envoyé à tous les coordinateurs de groupes. )
+	<br/> Contactez-nous sur support@cagette.net si vous avez des questions.	
 	</div>
-	::end::
+	::end::-->
 
 	
 	<div class="article" id="contracts">

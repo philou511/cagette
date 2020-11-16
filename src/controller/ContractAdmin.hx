@@ -61,7 +61,7 @@ class ContractAdmin extends Controller
 		view.contracts = contracts;
 		var vendors = app.user.getGroup().getActiveVendors();
 		view.vendors = vendors;
-		view.noSiret = vendors.filter(v -> v.companyNumber==null);
+		// view.noSiret = vendors.filter(v -> v.companyNumber==null);
 		view.places = app.user.getGroup().getPlaces();
 		checkToken();
 
@@ -778,6 +778,12 @@ class ContractAdmin extends Controller
 			view.distributions = c.getDistribs(true);
 		}
 		
+	}
+
+	@tpl("contractadmin/tmpBaskets.mtt")
+	function doTmpBaskets(md:db.MultiDistrib){
+		view.md = md;
+		view.tmpBaskets = db.TmpBasket.manager.search($multiDistrib == md,false);
 	}
 	
 }
