@@ -670,15 +670,18 @@ class Contract extends Controller
 		App.current.breadcrumb = [ { link : "/home", name : "Commandes", id : "home" }, { link : "/home", name : "Commandes", id : "home" } ]; 
 		view.subscriptionService = SubscriptionService;
 		view.catalog = catalog;
-		if ( catalog.type == db.Catalog.TYPE_VARORDER && catalog.group.hasPayments() ) {
+		if ( currentOrComingSubscription != null && catalog.type == db.Catalog.TYPE_VARORDER && catalog.group.hasPayments() ) {
 
 			var balance = currentOrComingSubscription.getBalance();
 			var remainingDistribsNb = SubscriptionService.getSubscriptionRemainingDistribsNb( currentOrComingSubscription );
 			var averageSpentPerDistrib = SubscriptionService.getDistribOrdersAverageTotal( currentOrComingSubscription );
-			var remainingDistribsToZero = Math.floor( balance / averageSpentPerDistrib );
-			if( remainingDistribsToZero <= 4  && remainingDistribsToZero < remainingDistribsNb && 3 <= SubscriptionService.getSubscriptionDistribsNb( currentOrComingSubscription ) ) {
+			if( averageSpentPerDistrib != 0 && remainingDistribsNb != 0 ) {
 
-				view.smallBalance = balance < ( remainingDistribsNb * averageSpentPerDistrib ) ? balance : null;
+				var remainingDistribsToZero = Math.floor( balance / averageSpentPerDistrib );
+				if( remainingDistribsToZero <= 4  && remainingDistribsToZero < remainingDistribsNb && 3 <= SubscriptionService.getSubscriptionDistribsNb( currentOrComingSubscription ) ) {
+
+					view.smallBalance = balance < ( remainingDistribsNb * averageSpentPerDistrib ) ? balance : null;
+				}
 			}
 		}
 

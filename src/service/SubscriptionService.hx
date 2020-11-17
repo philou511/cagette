@@ -89,59 +89,20 @@ class SubscriptionService
 		var now = Date.now();
 		
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
+
 			return db.Distribution.manager.select( $catalog == catalog && $date > now && $orderStartDate <= now && $orderEndDate > now, { orderBy : date }, false );
-		} else {
+		}
+		else {
 
-			if ( catalog.orderEndHoursBeforeDistrib == null ) catalog.orderEndHoursBeforeDistrib = 0;
-
-			var openComingDistrib : db.Distribution = null;
-			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > now, { orderBy : date }, false );
-			for ( distrib in futureDistribs ) {
-
-				var orderEndDate = DateTools.delta( distrib.date, -(1000 * 60 * 60 * catalog.orderEndHoursBeforeDistrib) );
-				if ( now.getTime() < orderEndDate.getTime() ) {
-
-					openComingDistrib = distrib;
-					break;
-				}
-			}
-			return openComingDistrib;
+			return db.Distribution.manager.select( $catalog == catalog && $date > now && $orderEndDate > now, { orderBy : date }, false );
 		}
 	}
 
 	public static function getComingUnclosedDistrib(catalog:db.Catalog) {
-		//bug with this : creating a sub with no open future distrib was causing an exception, because getNewSubscriptionStartDate()==null
-		// var comingOpenDistrib = getComingOpenDistrib( catalog );
-
-		var notClosedComingDistrib = null;
-		var now = Date.now();
-
-		if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
-
-			//apply dynamically catalog.orderEndHoursBeforeDistrib to distrib.date
-			//TODO : store orderEndDate directly in db.Distribution on participate()
-
-			if ( catalog.orderEndHoursBeforeDistrib == null ) catalog.orderEndHoursBeforeDistrib = 0;				
-
-			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > now, { orderBy : date }, false ).array();
-			for ( distrib in futureDistribs ) {
-				var orderEndDate = DateTools.delta( distrib.date, -(1000 * 60 * 60 * catalog.orderEndHoursBeforeDistrib) );
-				if ( now.getTime() < orderEndDate.getTime() ) {
-					notClosedComingDistrib = distrib;
-					break;
-				}
-			}
-			
-		} else {
-			notClosedComingDistrib = db.Distribution.manager.select( $catalog == catalog && $date > now && $orderEndDate > now, { orderBy : date }, false );
-			
-		}
-		return notClosedComingDistrib;
 		
+		var now = Date.now();
+		return db.Distribution.manager.select( $catalog == catalog && $date > now && $orderEndDate > now, { orderBy : date }, false );
 	}
-
-
-
 
 	public static function getOpenDistribsForSubscription( user : db.User, catalog : db.Catalog, currentOrComingSubscription : db.Subscription ) : Array< db.Distribution > {
 

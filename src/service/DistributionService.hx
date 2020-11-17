@@ -85,11 +85,9 @@ class DistributionService
 		if (d.date.getTime() < catalogStartDate.getTime()){
 			throw new Error(t._("The date of the delivery must be after the begining of the catalog (::contractBeginDate::)", {contractBeginDate:view.hDate(catalog.startDate)}));
 		} 
-		
-		if (catalog.type == db.Catalog.TYPE_VARORDER ) {
-			if (d.date.getTime() < d.orderEndDate.getTime() ) throw new Error(t._("The distribution start date must be set after the orders end date."));
-			if (d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw new Error(t._("The orders end date must be set after the orders start date !"));
-		}
+
+		if (d.date.getTime() < d.orderEndDate.getTime() ) throw new Error(t._("The distribution start date must be set after the orders end date."));
+		if ( catalog.type == db.Catalog.TYPE_VARORDER && d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw new Error(t._("The orders end date must be set after the orders start date !"));
 	}
 
 	 /**
@@ -106,8 +104,8 @@ class DistributionService
 
 		if(contract.type==db.Catalog.TYPE_VARORDER){
 			d.orderStartDate = orderStartDate;
-			d.orderEndDate = orderEndDate;
 		}
+		d.orderEndDate = orderEndDate;
 
 		//end date cleaning			
 		if (end == null) {
@@ -357,8 +355,9 @@ class DistributionService
 				d.multiDistrib.distribEndDate = end; 
 				if(d.catalog.type==db.Catalog.TYPE_VARORDER){
 					d.multiDistrib.orderStartDate = orderStartDate;
-					d.multiDistrib.orderEndDate = orderEndDate;
 				}
+				d.multiDistrib.orderEndDate = orderEndDate;
+
 				d.multiDistrib.update();
 			}else{
 				throw new Error(t._("The distribution date is different from the date of the general distribution."));
@@ -382,8 +381,9 @@ class DistributionService
 		d.place = db.Place.manager.get(placeId);
 		if(d.catalog.type==db.Catalog.TYPE_VARORDER){
 			d.orderStartDate = orderStartDate;
-			d.orderEndDate = orderEndDate;
 		}
+		d.orderEndDate = orderEndDate;
+		
 					
 		if (end == null) {
 			d.end = DateTools.delta(d.date, 1000.0 * 60 * 60);
@@ -485,8 +485,9 @@ class DistributionService
 		
 		if(d.catalog.type==db.Catalog.TYPE_VARORDER){
 			d.orderStartDate = orderStartDate;
-			d.orderEndDate = orderEndDate;
 		}
+		d.orderEndDate = orderEndDate;
+		
 		
 		checkDistrib(d);
 
