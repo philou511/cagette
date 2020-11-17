@@ -543,7 +543,8 @@ class ContractAdmin extends Controller
 					nc.requiresOrdering = catalog.requiresOrdering;
 					nc.distribMinOrdersTotal = catalog.distribMinOrdersTotal;
 					nc.catalogMinOrdersTotal = catalog.catalogMinOrdersTotal;
-					nc.allowedOverspend = catalog.type == Catalog.TYPE_VARORDER ? catalog.allowedOverspend : 500;
+					var defaultAllowedOverspend = app.user.getGroup().hasPayments() ? 10 : 500;
+					nc.allowedOverspend = catalog.type == Catalog.TYPE_VARORDER ? catalog.allowedOverspend : defaultAllowedOverspend;
 				}
 			}
 			nc.vendor = catalog.vendor;

@@ -15,6 +15,8 @@ class CatalogService{
 
 		var t = sugoi.i18n.Locale.texts;
 
+		var hasPayments = catalog.group.hasPayments();
+
 		var customMap = new form.CagetteForm.FieldTypeToElementMap();
 		customMap["DDate"] = form.CagetteForm.renderDDate;
 		customMap["DTimeStamp"] = form.CagetteForm.renderDDate;
@@ -53,7 +55,7 @@ class CatalogService{
 				form.getElement("orderStartDaysBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#ouverture_et_fermeture_de_commande";
 				form.getElement("orderEndHoursBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#ouverture_et_fermeture_de_commande";
 
-				if( !catalog.group.hasPayments() ) {
+				if( !hasPayments ) {
 
 					form.getElement("catalogMinOrdersTotal").label = "Minimum de commandes sur la durée du contrat (en €)";
 				}
@@ -83,7 +85,15 @@ class CatalogService{
 				if ( catalog.type == Catalog.TYPE_VARORDER ) {
 
 					form.getElement("orderStartDaysBeforeDistrib").value = 365;
-					form.getElement("allowedOverspend").value = 500;
+
+					if ( hasPayments ) {
+
+						form.getElement("allowedOverspend").value = 10;
+					}
+					else {
+
+						form.getElement("allowedOverspend").value = 500;
+					}
 				}
 				form.getElement("orderEndHoursBeforeDistrib").value = 24;
 
