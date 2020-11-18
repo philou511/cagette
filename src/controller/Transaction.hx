@@ -57,9 +57,7 @@ class Transaction extends controller.Controller
 			var data = unpaid.map(function(x) return {label:x.name, value:x.id}).array();
 			form.addElement(new sugoi.form.elements.IntSelect("unpaid", t._("As a payment for :"), data, null, false));
 		}
-		
-		// new(name:String, label:String, ?value:T, ?required:Bool = false, ?display:Bool = false,  ?attributes:String = "")
-		
+	
 		if (form.isValid()){
 
 			var operation = new db.Operation();
@@ -113,8 +111,6 @@ class Transaction extends controller.Controller
 
 			App.current.session.data.returnUrl = '/contractAdmin/subscriptions/payments/' + operation.subscription.id;
 			returnUrl = App.current.session.data.returnUrl;
-			
-			// '/contractAdmin/subscriptions/payments/' + operation.subscription.id
 		}
 		
 		if ( !app.user.canAccessMembership() || operation.group.id != app.user.getGroup().id ) {
@@ -135,7 +131,7 @@ class Transaction extends controller.Controller
 		form.addElement(new sugoi.form.elements.StringInput("name", t._("Label||label or name for a payment"), operation.name, true));
 		form.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), operation.amount, true));
 		form.addElement(new form.CagetteDatePicker("date", t._("Date"), operation.date, NativeDatePickerType.date, true));
-		//form.addElement(new sugoi.form.elements.DatePicker("pending", t._("Confirmed"), !operation.pending, true));
+
 		//related operation
 		if ( hasShopMode ) {
 

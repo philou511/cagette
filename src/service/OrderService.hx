@@ -333,18 +333,14 @@ class OrderService
 				// e = StockMove({product:product, move:0-order.quantity });
 			}
 
-			if ( contract.type == db.Catalog.TYPE_CONSTORDERS ) {
+			var hasPayments = contract.group.hasPayments();
 
-				order.delete();
-			}
-			else {
+			if ( contract.group.hasShopMode() ) {
 
-				//Get the basket for this user
-				var place = order.distribution.place;
-				var basket = db.Basket.get(user, order.distribution.multiDistrib);
-				
-				if( contract.group.hasShopMode() && contract.group.hasPayments() ) {
+				if( hasPayments ) {
 
+					//Get the basket for this user
+					var basket = db.Basket.get(user, order.distribution.multiDistrib);
 					var orders = basket.getOrders();
 					//Check if it is the last order, if yes then delete the related operation
 					if( orders.length == 1 && orders[0].id==order.id ){
@@ -355,10 +351,14 @@ class OrderService
 
 				order.delete();
 			}
+			else {
 
-			if( !contract.group.hasShopMode() ) {
+				order.delete();
 
-				service.SubscriptionService.createOrUpdateTotalOperation( order.subscription );
+				if( hasPayments ) {
+
+					service.SubscriptionService.createOrUpdateTotalOperation( order.subscription );
+				}
 			}
 	
 		}
@@ -867,7 +867,7 @@ class OrderService
 
 			service.PaymentService.onOrderConfirm( orders );
 		}
-		else {
+		else if ( group.hasPayments() ) {
 
 			for( subscription in subscriptions ) {
 

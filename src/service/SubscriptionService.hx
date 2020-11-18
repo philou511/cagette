@@ -1206,9 +1206,7 @@ class SubscriptionService
 
 		if( subscription == null )  throw new Error( 'Pas de souscription fournie.' );
 
-		// REFACTO TOTAL OPERATION
 		var totalOperation : db.Operation = null;
-		var currentTotalPrice = subscription.getTotalPrice();
 
 		if ( subscription.catalog.group.hasPayments() ) {
 
@@ -1225,6 +1223,7 @@ class SubscriptionService
 				totalOperation.pending = false;
 			}
 	
+			var currentTotalPrice = subscription.getTotalPrice();
 			if( totalOperation.id == null || totalOperation.amount != (0 - currentTotalPrice) ) {
 
 				totalOperation.date = Date.now();
@@ -1250,8 +1249,6 @@ class SubscriptionService
 	
 	public static function updateCatalogSubscriptionsOperation( catalog : db.Catalog ) {
 
-		// REFACTO TOTAL OPERATION
-		
 		var group = catalog.group;
 		if ( group.hasPayments()) {
 

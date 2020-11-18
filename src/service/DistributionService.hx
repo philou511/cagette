@@ -146,12 +146,11 @@ class DistributionService
 		}
 		else {
 
-			// REFACTO TOTAL OPERATION
 			d.insert();
 
 			//In case this is a distrib for an amap contract with payments enabled, it will update all the operations
 			//names and amounts with the new number of distribs
-			if( !contract.group.hasShopMode() )  {
+			if( !contract.group.hasShopMode() && contract.group.hasPayments() )  {
 
 				service.SubscriptionService.updateCatalogSubscriptionsOperation( d.catalog );
 			}

@@ -35,7 +35,15 @@ class Subscriptions extends controller.Controller
 		view.catalog = catalog;
 		view.c = catalog;
 		view.subscriptions = catalogSubscriptions;
-		view.negativeBalanceCount = catalogSubscriptions.count( function( subscription ) { return  !subscription.paid(); } );
+		if ( catalog.group.hasPayments() ) {
+
+			view.negativeBalanceCount = catalogSubscriptions.count( function( subscription ) { return  subscription.getBalance() < 0; } );
+		}
+		else {
+
+			view.negativeBalanceCount = catalogSubscriptions.count( function( subscription ) { return  !subscription.paid(); } );
+		}
+		
 		view.dateToString = function( date : Date ) {
 
 			return DateTools.format( date, "%d/%m/%Y");
@@ -352,6 +360,7 @@ class Subscriptions extends controller.Controller
 	public function doPayments( subscription : db.Subscription ) {
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
+		if ( !subscription.catalog.group.hasPayments() ) throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La gestion des paiements n\'est pas activée.' );
 
 		//Let's do an update just in case the total operation is not coherent
 		view.subscriptionTotal = SubscriptionService.createOrUpdateTotalOperation( subscription );
@@ -373,31 +382,11 @@ class Subscriptions extends controller.Controller
 	public function doBalanceTransfer( subscription : db.Subscription ) {
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
+		if ( !subscription.catalog.group.hasPayments() ) throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La gestion des paiements n\'est pas activée.' );
+
 		if ( subscription.getBalance() <= 0 ) throw Error( '/contractAdmin/subscriptions/payments/' + subscription.id, 'Le solde doit être positif pour pouvoir le transférer sur une autre souscription.' );
 		var subscriptionsChoices = SubscriptionService.getUserVendorNotClosedSubscriptions( subscription );
 		if ( subscriptionsChoices.length == 0  ) throw Error( '/contractAdmin/subscriptions/payments/' + subscription.id, 'Ce membre n\'a pas d\'autre souscription. Veuillez en créer une nouvelle avec le même producteur.' );
-
-		// var user = subscription.user;
-		// var group = subscription.catalog.group;
-
-		// // service.PaymentService.updateUserBalance(m, app.user.getGroup());
-      	// // var browse : Int->Int->List<Dynamic>;
-		
-		// //default display
-		// // browse = function(index:Int, limit:Int) {
-
-		// // 	return db.Operation.getOperationsWithIndex( user, group, index, limit, true );
-		// // }
-
-		// var operations = db.Operation.manager.search( $user == user && $subscription == subscription, { orderBy : -date }, false );
-		
-		// /*var count = db.Operation.countOperations( user, group);
-		// var rb = new sugoi.tools.ResultsBrowser(count, 10, browse);*/
-		// view.operations = operations;
-		// view.member = user;
-		// view.subscription = subscription;
-		// view.subscriptionTotal = subscription.getTotalPrice();
-		// view.subscriptionPayments = subscription.getPaymentsTotal();
 
 		if ( checkToken() ) {
 
@@ -419,7 +408,6 @@ class Subscriptions extends controller.Controller
 
 		view.title = "Report de solde pour " + subscription.user.getName();
 		
-		// view.nav.push( 'subscriptions' );
 		view.c = subscription.catalog;
 		view.subscriptions = subscriptionsChoices;
 		view.nav.push( 'subscriptions' );

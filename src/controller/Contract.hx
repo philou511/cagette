@@ -611,14 +611,7 @@ class Contract extends Controller
 							}
 						}
 
-						//Create or update a single order operation for the subscription total orders price
-						if ( catalog.group.hasPayments() ) {
-
-							service.SubscriptionService.createOrUpdateTotalOperation( currentOrComingSubscription );
-						}
-
 					}
-
 				}
 				catch ( e : Error ) {
 
@@ -658,6 +651,12 @@ class Contract extends Controller
 
 					throw Error( "/contract/order/" + catalog.id, e.message );
 				}
+			}
+
+			//Create or update a single order operation for the subscription total orders price
+			if ( currentOrComingSubscription != null && catalog.group.hasPayments() ) {
+
+				service.SubscriptionService.createOrUpdateTotalOperation( currentOrComingSubscription );
 			}
 
 			if ( !hasRequirementsError ) {

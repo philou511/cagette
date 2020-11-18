@@ -62,15 +62,6 @@ class Amap extends Controller
 				group.update();
 			}
 
-			//warning AMAP+payments
-			/* JB
-			if( !group.flags.has(db.Group.GroupFlags.ShopMode) &&  group.hasPayments() ){
-				//App.current.session.addMessage("ATTENTION : nous ne vous recommandons pas d'activer la gestion des paiements si vous êtes une AMAP. Ce cas de figure n'est pas bien géré par Cagette.net.",true);
-				App.current.session.addMessage("L'activation de la gestion des paiements n'est pas autorisée si vous êtes une AMAP. Ce cas de figure n'est pas bien géré par Cagette.net.",true);
-				group.flags.unset(db.Group.GroupFlags.HasPayments);
-				group.update();
-			} */
-			
 			if (group.extUrl != null){
 				if ( group.extUrl.indexOf("http://") ==-1 &&  group.extUrl.indexOf("https://") ==-1 ){
 					group.extUrl = "http://" + group.extUrl;
@@ -90,43 +81,14 @@ class Amap extends Controller
 		if ( args != null && args.account == true ) {
 			
 			app.breadcrumb = [ { id : 'account', name : 'Mon compte', link : '/account' }, { id : 'account', name : 'Mon compte', link : '/account' } ];
-			// app.breadcrumb.push( { id : 'amap', name : 'Mon compte', link : '/amap' } );
-			// app.breadcrumb.find( x -> x.id == 'amap' ).name = 'Mon compte';
 		}
 		else {
 
 			app.breadcrumb = [ { id : 'member', name : 'Membres', link : '/member' }, { id : 'member', name : 'Membres', link : '/member' } ];
 		}
-		
-	// 	service.PaymentService.updateUserBalance(m, app.user.getGroup());		
-    //    var browse:Int->Int->List<Dynamic>;
-		
-	// 	//default display
-	// 	browse = function(index:Int, limit:Int) {
-	// 		return db.Operation.getOperationsWithIndex(m,app.user.getGroup(),index,limit,true);
-	// 	}
-		
-	// 	var count = db.Operation.countOperations(m,app.user.getGroup());
-	// 	var rb = new sugoi.tools.ResultsBrowser(count, 10, browse);
-	// 	view.rb = rb;
-		// view.member = m;
-		view.globalbalance = db.UserGroup.get( user, app.user.getGroup() ).balance;
-
+	
 		var subscriptionsByCatalog = service.SubscriptionService.getActiveSubscriptionsByCatalog( app.user, app.user.getGroup() );
-		view.subscriptionsByCatalog = subscriptionsByCatalog;
-		// view.subscriptionService = SubscriptionService;
-
-		// var subscription = db.Subscription.manager.get( 372 );
-		
-		// view.operations = operations;
-		view.member = user;
-		// view.subscription = subscription;
-		// view.subscriptionTotal = subscription.getTotalPrice();
-		// view.subscriptionPayments = subscription.getPaymentsTotal();
-		// view.nav.push( 'members' );
-
 		var operationsBySubscription = new Map< db.Subscription, Array< db.Operation > >();
-
 		for ( catalog in subscriptionsByCatalog.keys() ) {
 
 			for ( subscription in subscriptionsByCatalog[catalog] ) {
@@ -147,8 +109,9 @@ class Amap extends Controller
 			return  (a.getPaymentsTotal() - a.getTotalPrice()) < (b.getPaymentsTotal() - b.getTotalPrice()) ? 1 : -1;
 		} );
 
+		view.globalbalance = db.UserGroup.get( user, app.user.getGroup() ).balance;
+		view.member = user;
 		view.subscriptions = activeSubscriptions;
-
 		view.operationsBySubscription = operationsBySubscription;
 		
 		checkToken();

@@ -84,7 +84,6 @@
 		
 		</table>
 		
-		<!-- TODO JB RAJOUTER IF SHOPMODE -->
 		$$insert(::_("Insert a payement")::,/transaction/insertPayment/::member.id::/::subscription.id::)
 		
 </div>
