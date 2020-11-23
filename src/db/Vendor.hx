@@ -307,6 +307,18 @@ class Vendor extends Object
 		if(!EmailValidator.check(this.email) ) {
 			throw new tink.core.Error("Email invalide.");
 		}
+
+		//disable if missing legal infos
+		#if plugins
+		var cpro = pro.db.CagettePro.getFromVendor(this);
+		if(companyNumber==null){
+			if(cpro!=null && cpro.training){
+				//do not disable training accounts
+			}else{
+				disabled = DisabledReason.IncompleteLegalInfos;
+			}			
+		}
+		#end
 	}
 
 	override function insert(){
