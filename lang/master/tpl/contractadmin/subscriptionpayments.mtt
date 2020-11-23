@@ -21,13 +21,22 @@
 				</td>
 				::if balance > 0::
 					<td>
-						<a href="/contractAdmin/subscriptions/balanceTransfer/::subscription.id::" class="btn btn-default btn-sm">
+						<a href="/contractAdmin/subscriptions/balanceTransfer/::subscription.id::" class="btn btn-default btn-sm" data-toggle="tooltip" title="Transférer le solde de cette souscription sur une autre souscription avec le même membre et le même producteur.">
 							<i class="icon icon-sign-out"></i>&nbsp;Transférer le solde
+
+							
 						</a>
 					</td>
 				::end::
 			</tr>
 
+			<tr>
+				<th>Date de l'opération</th>
+				<th>Type</th>
+				<th>Description</th>
+				<th>Montant</th>
+				<th>Actions</th>
+			</tr>
 			::foreach payment payments::
 
 				<tr>
@@ -65,7 +74,7 @@
 				</td>
 
 				<td style="vertical-align: middle;">
-					<i class="fa fa-user" aria-hidden="true"></i> Souscription
+					<i class="icon icon-calendar-check"></i> Souscription
 				</td>
 
 				<td style="vertical-align: middle;padding-top:15px;padding-bottom:15px;">
@@ -79,7 +88,7 @@
 						0&nbsp;::currency()::
 					::end::
 				</td>
-
+				<td></td>
 			</tr>
 		
 		</table>

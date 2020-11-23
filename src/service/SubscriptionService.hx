@@ -50,13 +50,10 @@ class SubscriptionService
 		var notClosedSubscriptions = db.Subscription.manager.search( $user == subscription.user && $endDate >= Date.now(), false ).array();
 		var vendorNotClosedSubscriptions = new Array<db.Subscription>();
 		for ( sub in notClosedSubscriptions ) {
-
 			if( sub.id != subscription.id && sub.catalog.vendor.id == subscription.catalog.vendor.id ) {
-
 				vendorNotClosedSubscriptions.push( sub );
 			}
 		}
-
 		return vendorNotClosedSubscriptions;
 	}
 
@@ -86,14 +83,10 @@ class SubscriptionService
 	**/
 	public static function getComingOpenDistrib( catalog : db.Catalog ) : db.Distribution {
 
-		var now = Date.now();
-		
+		var now = Date.now();		
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
-
 			return db.Distribution.manager.select( $catalog == catalog && $date > now && $orderStartDate <= now && $orderEndDate > now, { orderBy : date }, false );
-		}
-		else {
-
+		} else {
 			return db.Distribution.manager.select( $catalog == catalog && $date > now && $orderEndDate > now, { orderBy : date }, false );
 		}
 	}
@@ -109,18 +102,14 @@ class SubscriptionService
 		var openDistribs = new Array< db.Distribution >();
 
 		if ( currentOrComingSubscription != null ) {
-
 			openDistribs = getSubscriptionDistribs( currentOrComingSubscription, "open" );
-		}
-		else {
-
+		} else {
 			var now = Date.now();
 			openDistribs = db.Distribution.manager.search( $catalog == catalog && $orderStartDate <= now && $orderEndDate > now, { orderBy : date }, false ).array();
 		}
 
 		return openDistribs;
     }
-
 
 	public static function getCurrentOrComingSubscription( user : db.User, catalog : db.Catalog ) : db.Subscription {
 
@@ -1011,7 +1000,6 @@ class SubscriptionService
 	public static function createCSARecurrentOrders( subscription : db.Subscription,
 		ordersData : Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool } >, ?oldAbsentDistribIds : Array<Int> ) : Array<db.UserOrder> {
 
-
 		if ( ordersData == null || ordersData.length == 0 ) {
 
 			ordersData = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool } >();
@@ -1020,8 +1008,7 @@ class SubscriptionService
 
 				ordersData.push( { productId : order.product.id, quantity : order.quantity, userId2 : order.user2 != null ? order.user2.id : null, invertSharedOrder : order.hasInvertSharedOrder() } );
 			}
-		}
-		else if ( hasPastDistribOrders( subscription ) ) {
+		} else if ( hasPastDistribOrders( subscription ) ) {
 
 			throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées il faut modifier la date de fin de
 			la souscription et en recréer une nouvelle pour la nouvelle période. Vous pourrez ensuite définir une nouvelle commande pour cette nouvelle souscription.', SubscriptionServiceError.PastOrders );
@@ -1059,16 +1046,13 @@ class SubscriptionService
 					
 					var newOrder =  OrderService.make( subscription.user, order.quantity , product,  distribution.id, false, subscription, user2, invert );
 					if ( newOrder != null ) orders.push( newOrder );
-
 				}
-
 			}
 		}
 		
 		App.current.event( MakeOrder( orders ) );
 
 		if ( subscription.catalog.group.hasPayments() ) {
-
 			// create/update a single operation for the subscription total price
 			createOrUpdateTotalOperation( subscription );
 		}
@@ -1223,6 +1207,7 @@ class SubscriptionService
 				totalOperation.pending = false;
 			}
 	
+			//create or update it if needed
 			var currentTotalPrice = subscription.getTotalPrice();
 			if( totalOperation.id == null || totalOperation.amount != (0 - currentTotalPrice) ) {
 
@@ -1230,19 +1215,14 @@ class SubscriptionService
 				totalOperation.amount = 0 - currentTotalPrice;
 		
 				if ( totalOperation.id != null ) {
-		
 					totalOperation.update();
-				}
-				else {
-		
+				} else {		
 					totalOperation.insert();
 				}
 		
 				service.PaymentService.updateUserBalance( totalOperation.user, totalOperation.group );
-			}
-			
+			}			
 		}
-
 		return totalOperation;
 	}
 

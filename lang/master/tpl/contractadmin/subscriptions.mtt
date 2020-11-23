@@ -72,7 +72,7 @@
 
         ::if(user.isAdmin())::
         <a href="/contractAdmin/subscriptions/unmarkAll/::catalog.id::" class="btn btn-default btn-sm">
-            <i class="icon icon-square"></i> Admin : Dévalider toutes les souscriptions
+            <i class="icon icon-square"></i> Admin : Marquer toutes les souscriptions comme non payées
         </a>
         ::end::
         
@@ -174,19 +174,19 @@
                                                 </a>
                                             </li>	
 
-                                            ::if(user.isAdmin())::
-                                            <li>
-                                                <a href="/contractAdmin/subscriptions/unmarkAsPaid/::subscription.id::?token=::token::">
-                                                    <i class="icon icon-square"></i> Admin : Dévalider
-                                                </a>
-                                            </li>	
-                                            ::end::
-
+                                            ::if(subscription._catalog._group.hasPayments())::
                                             <li>
                                                 <a href="/contractAdmin/subscriptions/payments/::subscription.id::">
                                                     <i class="icon icon-euro"></i> ::_("Payments")::
                                                 </a>
                                             </li>
+                                            ::elseif(user.isAdmin())::
+                                            <li>
+                                                <a href="/contractAdmin/subscriptions/unmarkAsPaid/::subscription.id::?token=::token::">
+                                                    <i class="icon icon-square"></i> Admin : Marquer comme non payé
+                                                </a>
+                                            </li>	
+                                            ::end::
                                         </ul>
                                     </div>
                                 </td>

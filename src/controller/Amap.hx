@@ -1,4 +1,5 @@
 package controller;
+import service.SubscriptionService;
 import sugoi.form.elements.Html;
 import sugoi.form.elements.StringInput;
 import sugoi.form.elements.Checkbox;
@@ -50,11 +51,22 @@ class Amap extends Controller
 			}
 			
 			var shopMode = group.hasShopMode();
+			var hasPayments = group.hasPayments();
 
 			form.toSpod(group);
 
 			//keep shop mode
 			if(shopMode) group.flags.set(db.Group.GroupFlags.ShopMode);
+
+			//switch to payment enabled in CSA mode
+			if(!shopMode && !hasPayments && group.hasPayments()){
+				for ( c in group.getActiveContracts(true)){
+					for ( sub in SubscriptionService.getCatalogSubscriptions(c)){
+						//create operation
+						SubscriptionService.createOrUpdateTotalOperation( sub );
+					}
+				}				
+			}
 
 			if(group.betaFlags.has(db.Group.BetaFlags.ShopV2) && group.flags.has(db.Group.GroupFlags.CustomizedCategories)){
 				App.current.session.addMessage("Vous ne pouvez pas activer les catégories personnalisées et la nouvelle boutique. La nouvelle boutique ne fonctionne pas avec les catégories personnalisées.",true);

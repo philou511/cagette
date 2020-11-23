@@ -265,9 +265,12 @@ class CatalogService{
 		}
 	}
 
+	/**
+		update future distribs start/end Order Dates
+	**/
 	public static function updateFutureDistribsStartEndOrdersDates( catalog : db.Catalog, newOrderStartDays : Int, newOrderEndHours : Int ) : String {
 
-		if ( catalog.group.hasShopMode() ) return '';
+		if ( catalog.group.hasShopMode() ) return null;
 
 		if ( newOrderStartDays != null || newOrderEndHours != null ) {
 
@@ -276,44 +279,33 @@ class CatalogService{
 
 				distrib.lock();
 
-				if ( newOrderStartDays != null ) {
-	
+				if ( newOrderStartDays != null ) {	
 					distrib.orderStartDate = DateTools.delta( distrib.date, -1000.0 * 60 * 60 * 24 * newOrderStartDays );
 				}
 	
-				if ( newOrderEndHours != null ) {
-	
+				if ( newOrderEndHours != null ) {	
 					distrib.orderEndDate = DateTools.delta( distrib.date, -1000.0 * 60 * 60 * newOrderEndHours );
 				}
 
-				distrib.update();
-				
+				distrib.update();				
 			}
 
 			var message = '<br/>Attention ! ';
 			
 			if ( newOrderStartDays != null && newOrderEndHours != null ) {
-
 				message += 'Les nouveaux délais d\'ouverture et de fermeture de commande ont été appliqués à toutes les distributions à venir. 
-						   Si vous aviez personnalisé des dates d\'ouverture ou de fermeture, ces personnalisations ont été écrasées.';
-			}
-			else if ( newOrderStartDays != null ) {
-
+				Si vous aviez personnalisé des dates d\'ouverture ou de fermeture, ces personnalisations ont été écrasées.';
+			} else if ( newOrderStartDays != null ) {
 				message += 'Le nouveau délai d\'ouverture de commande a été appliqué à toutes les distributions à venir. 
-						   Si vous aviez personnalisé des dates d\'ouverture, ces personnalisations ont été écrasées.';
-			}
-			else {
-
+				Si vous aviez personnalisé des dates d\'ouverture, ces personnalisations ont été écrasées.';
+			} else {
 				message += 'Le nouveau délai de fermeture de commande a été appliqué à toutes les distributions à venir. 
-						   Si vous aviez personnalisé des dates de fermeture, ces personnalisations ont été écrasées.';
+				Si vous aviez personnalisé des dates de fermeture, ces personnalisations ont été écrasées.';
 			}
 
 			return message;
-
 		}
-
-		return '';
-
+		return null;
 	}
 
 }

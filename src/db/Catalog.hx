@@ -15,7 +15,6 @@ class Catalog extends Object
 {
 	public var id : SId;
 	public var name : SString<64>;
-
 	public var type : SInt;
 	
 	//responsable
@@ -56,7 +55,8 @@ class Catalog extends Object
 	{
 		super();
 		flags = cast 0;
-		distributorNum = 0;		
+		distributorNum = 0;	
+		orderEndHoursBeforeDistrib = 24;	
 		flags.set(UsersCanOrder);
 	
 	}	
