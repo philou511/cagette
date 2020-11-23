@@ -22,9 +22,7 @@ class Distribution extends Object
 	
 	//when orders are open
 	@hideInForms public var orderStartDate : SNull<SDateTime>; 
-	@hideInForms public var orderEndDate : SNull<SDateTime>;
-	
-	//@hideInForms public var validated :SBool;
+	@hideInForms public var orderEndDate : SNull<SDateTime>; //cannot be null since CSA contracts also have orderEndDate
 	
 	public static var DISTRIBUTION_VALIDATION_LIMIT = 10;
 	
@@ -123,6 +121,9 @@ class Distribution extends Object
 		This includes secondary user.
 	**/
 	public function getUserOrders(user:db.User):List<db.UserOrder>{
+
+		if( user == null || user.id == null ) throw new tink.core.Error( "Un membre doit être fourni." );
+
 		if ( this.catalog.type == db.Catalog.TYPE_CONSTORDERS){
 		 	return db.UserOrder.manager.search($distribution == this  && ($user==user || $user2==user) , false); 
 		}else{

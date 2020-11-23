@@ -1,7 +1,20 @@
 ::use 'design.mtt'::
 <div id="content" class="col-md-12">
 
+	::set hasPayments = catalog._group.hasPayments()::
+
 	<h2>::catalog.name::</h2>
+
+	<div class="alert alert-danger" ::cond smallBalance != null::>
+					
+		<i class="icon icon-alert"></i>
+		::if smallBalance > 0::
+			Il vous reste seulement ::smallBalance:: € à dépenser. Si vous envisagez de commander plus, pensez à faire un paiement complémentaire.
+		::else::
+			Pensez à faire un paiement complémentaire pour réapprovisionner votre souscription.
+		::end::
+		
+	</div>
 			  
 	<!-- Nav tabs -->
 	<ul class="nav nav-tabs" role="tablist" id="subscriptionTabs">
@@ -170,7 +183,7 @@
 								<th>Absences</th>
 							</tr>
 							<tr style="text-align: center;">
-								::set label = subscriptionService.getDescription(null, catalog)::
+								::set label = subscriptionService.getDescription(null, catalog, false)::
 								<td style="vertical-align: middle;">
 									::if label != null:
 										::raw label::
@@ -327,15 +340,13 @@
 													::set o = d.ordersProducts[i]::
 													::if o.order==null::
 														::set q = ""::
-													::else::
+													::elseif !o.product.multiWeight::
 														::set q = o.order.quantity::
+													::else::
+														::set q = multiWeightQuantity( o.order )::
 													::end::
 													
-													::if canOrder::							
-														<input type="text" class="form-control" name="::"d"+d.distrib.id+"-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
-													::else::
-														::q::
-													::end::
+													<input type="text" class="form-control" name="::"d"+d.distrib.id+"-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
 													
 												</td>
 												::end::
@@ -357,6 +368,9 @@
 												::foreach o d.ordersProducts::
 													::if o.order!=null::
 														::set q = o.order.quantity::
+														::if o.product.multiWeight::
+															::set q = multiWeightQuantity( o.order )::
+														::end::
 														::set price = o.product.price + o.product._catalog.computeFees(o.product.price)::
 														::set total = total+(q*price)::
 													::end::
@@ -454,8 +468,11 @@
 								<th class="text-center col-md-1" ::cond absencesNb != 0::>Nombre d'absences</th>
 								<th class="text-center col-md-1">Nombre de distributions</th>
 								<th class="text-center col-md-1">Total</th>
+								::if hasPayments::
+									<th class="text-center col-md-1">Solde</th>
+								::end::
 							</tr>
-							::set label = subscriptionService.getDescription(subscription, catalog)::
+							::set label = subscriptionService.getDescription(subscription, catalog, false)::
 							<tr style="text-align: center;">
 								<td style="vertical-align: middle;">
 									::if label != null:
@@ -477,17 +494,30 @@
 								<td style="vertical-align: middle;">
 									::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
 								</td>
+								::set subscriptionTotal = subscription.getTotalPrice()::
 								<td style="vertical-align: middle;">
-									::subscription.getTotalPrice()::&nbsp;::currency()::
+									::subscriptionTotal::&nbsp;::currency()::
 									<br/>
 									::set catalogMinOrdersTotal = subscriptionService.getCatalogMinOrdersTotal(subscription._catalog,subscription)::
 									::if catalogMinOrdersTotal != null ::
 										::set remaining = catalogMinOrdersTotal - subscription.getTotalPrice()::
 										::if remaining > 0::
-											( Reste ::remaining::&nbsp;::currency():: à dépenser )
+											( Reste ::formatNum(remaining)::&nbsp;::currency():: à dépenser )
 										::end::
 									::end::
 								</td>
+								::if hasPayments::
+									::set balance = subscription.getPaymentsTotal() - subscriptionTotal::
+									::set background = ""::
+									::if balance < 0::
+										::set background = "background-color: #d9534f;"::
+									::else::
+										::set background = "background-color: #84bd55;"::
+									::end::
+									<td style="vertical-align: middle;color: white;font-weight:bold; ::background::">
+										::formatNum(balance)::&nbsp;::currency()::
+									</td>
+								::end::
 							</tr>
 							<tr class="greyhead text-center">
 								<th class="text-center col-md-7" colspan="2" ::cond catalog.requiresOrdering::>Ma commande par défaut</th>
@@ -500,29 +530,7 @@
 									</div>
 									<div style="width: 45%; float: left; padding-top: 20px;">
 										$$edit(::_("Edit")::,/subscriptions/defaultOrders/::subscription.id::)
-										<script>
-											var defOrders = ::raw json(subscription.getDefaultOrders(null))::;
-
-											var fillWithDefaultOrders = function(){
-												for( input of document.querySelectorAll("form#order input")){
-													if(input.name.substr(0,1)!="d") continue;
-													if(input.value==null || input.value==""){
-														var inputProductId = input.name.split("-")[1].substr(1);
-														for(o of defOrders){
-															if(o.productId==inputProductId){
-																input.value = o.quantity;
-																break;
-															}
-														}
-													}
-												}
-												window.alert("Votre commande par défaut a été appliquée à toutes les cases vides du formulaire de commande. N'oubliez pas de valider le formulaire.");
-
-											};
-										</script>
-										
-
-										<a href="#" class='btn btn-default btn-sm' onclick="fillWithDefaultOrders()">
+										<a href="#" class='btn btn-default btn-sm' onclick='fillWithDefaultOrders( ::json( subscription.getDefaultOrders(null)):: )'>
 											<i class="icon icon-basket"></i> Remplir le formulaire avec<br/>ma commande par défaut</a>
 
 									</div>
@@ -547,13 +555,12 @@
 						</table>
 			
 						
-						::if(!subscription.isValidated)::
-							<a href="/contract/deleteSubscription/::subscription.id::" class="btn btn-danger btn-sm" onclick="return confirm('Effacer ?')">
-								<i class="icon icon-delete"></i>
-								&nbsp;Annuler la souscription
-							</a>
-						::end::
-			
+						
+						<a href="/contract/deleteSubscription/::subscription.id::" class="btn btn-danger btn-sm" onclick="return confirm('Effacer ?')">
+							<i class="icon icon-delete"></i>
+							&nbsp;Annuler la souscription
+						</a>
+						
 					::end::
 				
 				</div>
@@ -564,6 +571,30 @@
 	</div>
 	  
 </div>
+
+	<script>
+											
+		var fillWithDefaultOrders = function( defOrders ) {
+
+			for( input of document.querySelectorAll("form#order input")) { 
+
+				if( input.name.substr(0,1)!="d" ) continue;
+			
+				var inputProductId = input.name.split("-")[1].substr(1);
+				for( o of defOrders ) {
+
+					if( o.productId == inputProductId ) {
+
+						input.value = o.quantity;
+						break;
+					}
+				}
+				
+			}
+			window.alert("Votre commande par défaut a été appliquée à toutes les cases du formulaire de commande. N'oubliez pas de valider le formulaire.");
+
+		};
+	</script>
 
 	::if subscriptions.length > 0::
 

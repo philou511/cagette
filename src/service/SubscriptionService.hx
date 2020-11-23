@@ -1,5 +1,6 @@
 package service;
 import db.Group.RegOption;
+import db.Operation.OperationType;
 import db.Subscription;
 import db.Catalog;
 import Common;
@@ -27,7 +28,7 @@ class SubscriptionService
 	/**
 		get subscriptions of a catalog
 	**/
-	public static function getSubscriptions( catalog : db.Catalog ) {
+	public static function getCatalogSubscriptions( catalog : db.Catalog ) {
 
 		return db.Subscription.manager.search( $catalogId == catalog.id, false ).array();
 	}
@@ -37,8 +38,23 @@ class SubscriptionService
 	**/
 	public static function getActiveSubscriptions( user : db.User, group : db.Group ) : Array<db.Subscription> {
 
-		var catalogIds = group.getActiveContracts().map( c -> return c.id );
+		var catalogIds = group.getActiveContracts( true ).map( c -> return c.id );
 		return db.Subscription.manager.search( ( $user == user || $user2 == user ) && ( $catalogId in catalogIds ), false ).array();
+	}
+
+	/**
+		Get user not closed subscriptions for a given vendor
+	**/
+	public static function getUserVendorNotClosedSubscriptions( subscription : db.Subscription ) : Array<db.Subscription> {
+
+		var notClosedSubscriptions = db.Subscription.manager.search( $user == subscription.user && $endDate >= Date.now(), false ).array();
+		var vendorNotClosedSubscriptions = new Array<db.Subscription>();
+		for ( sub in notClosedSubscriptions ) {
+			if( sub.id != subscription.id && sub.catalog.vendor.id == subscription.catalog.vendor.id ) {
+				vendorNotClosedSubscriptions.push( sub );
+			}
+		}
+		return vendorNotClosedSubscriptions;
 	}
 
 	/**
@@ -67,80 +83,33 @@ class SubscriptionService
 	**/
 	public static function getComingOpenDistrib( catalog : db.Catalog ) : db.Distribution {
 
-		var now = Date.now();
-		
+		var now = Date.now();		
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 			return db.Distribution.manager.select( $catalog == catalog && $date > now && $orderStartDate <= now && $orderEndDate > now, { orderBy : date }, false );
 		} else {
-
-			if ( catalog.orderEndHoursBeforeDistrib == null ) catalog.orderEndHoursBeforeDistrib = 0;
-
-			var openComingDistrib : db.Distribution = null;
-			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > now, { orderBy : date }, false );
-			for ( distrib in futureDistribs ) {
-
-				var orderEndDate = DateTools.delta( distrib.date, -(1000 * 60 * 60 * catalog.orderEndHoursBeforeDistrib) );
-				if ( now.getTime() < orderEndDate.getTime() ) {
-
-					openComingDistrib = distrib;
-					break;
-				}
-			}
-			return openComingDistrib;
+			return db.Distribution.manager.select( $catalog == catalog && $date > now && $orderEndDate > now, { orderBy : date }, false );
 		}
 	}
 
 	public static function getComingUnclosedDistrib(catalog:db.Catalog) {
-		//bug with this : creating a sub with no open future distrib was causing an exception, because getNewSubscriptionStartDate()==null
-		// var comingOpenDistrib = getComingOpenDistrib( catalog );
-
-		var notClosedComingDistrib = null;
-		var now = Date.now();
-
-		if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
-
-			//apply dynamically catalog.orderEndHoursBeforeDistrib to distrib.date
-			//TODO : store orderEndDate directly in db.Distribution on participate()
-
-			if ( catalog.orderEndHoursBeforeDistrib == null ) catalog.orderEndHoursBeforeDistrib = 0;				
-
-			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > now, { orderBy : date }, false ).array();
-			for ( distrib in futureDistribs ) {
-				var orderEndDate = DateTools.delta( distrib.date, -(1000 * 60 * 60 * catalog.orderEndHoursBeforeDistrib) );
-				if ( now.getTime() < orderEndDate.getTime() ) {
-					notClosedComingDistrib = distrib;
-					break;
-				}
-			}
-			
-		} else {
-			notClosedComingDistrib = db.Distribution.manager.select( $catalog == catalog && $date > now && $orderEndDate > now, { orderBy : date }, false );
-			
-		}
-		return notClosedComingDistrib;
 		
+		var now = Date.now();
+		return db.Distribution.manager.select( $catalog == catalog && $date > now && $orderEndDate > now, { orderBy : date }, false );
 	}
-
-
-
 
 	public static function getOpenDistribsForSubscription( user : db.User, catalog : db.Catalog, currentOrComingSubscription : db.Subscription ) : Array< db.Distribution > {
 
 		var openDistribs = new Array< db.Distribution >();
 
 		if ( currentOrComingSubscription != null ) {
-
 			openDistribs = getSubscriptionDistribs( currentOrComingSubscription, "open" );
-		}
-		else {
-
+		} else {
 			var now = Date.now();
 			openDistribs = db.Distribution.manager.search( $catalog == catalog && $orderStartDate <= now && $orderEndDate > now, { orderBy : date }, false ).array();
 		}
 
 		return openDistribs;
     }
-
 
 	public static function getCurrentOrComingSubscription( user : db.User, catalog : db.Catalog ) : db.Subscription {
 
@@ -315,7 +284,7 @@ class SubscriptionService
 	}
 
 
-	public static function getDescription( subscription : db.Subscription, catalog : db.Catalog ) {
+	public static function getDescription( subscription : db.Subscription, catalog : db.Catalog, ?hideNB : Bool = false ) {
 
 		var label : String = '';
 		if ( subscription == null || catalog.type == db.Catalog.TYPE_VARORDER ) {
@@ -335,10 +304,13 @@ class SubscriptionService
 				
 				label += '<br />Minimum de commandes sur la durée du contrat : ' + catalogMinOrdersTotal + ' €';
 				label += '<br />Maximum de commandes sur la durée du contrat : '  + ( catalogMinOrdersTotal + catalog.allowedOverspend ) + ' €';
-				label += '<br /><b>NB : </b>Les seuils de commandes sur la durée du contrat sont calculés au prorata du nombre de vos distributions.';
+				if ( !hideNB ) {
+					label += '<br /><b>NB : </b>Les seuils de commandes sur la durée du contrat sont calculés au prorata du nombre de vos distributions.';
+				}
 			}
 
-		} else {
+		}
+		else {
 
 			var subscriptionOrders = getCSARecurrentOrders( subscription, null );
 
@@ -443,26 +415,21 @@ class SubscriptionService
 			var subs = subscriptions1.concat(subscriptions2).concat(subscriptions3);
 			throw TypedError.typed( 'Il y a déjà une souscription pour ce membre pendant la période choisie.'+"("+subs.join(',')+")", OverlappingSubscription );
 		}
-
-		if ( subscription.isValidated ) {
-
-			var view = App.current.view;
-
-			if ( subscription.id != null && hasPastDistribOrdersOutsideSubscription( subscription ) ) {
-				throw TypedError.typed( 
-					'La nouvelle période sélectionnée exclue des commandes déjà passées, Il faut élargir la période sélectionnée $subName.',
-					PastOrders
-				);
-			}
-
-			if ( hasPastDistribsWithoutOrders( subscription ) ) {
-				throw TypedError.typed(
-					'La nouvelle période sélectionnée inclue des distributions déjà passées auxquelles le membre n\'a pas participé, Il faut choisir une date ultérieure $subName.',
-					PastDistributionsWithoutOrders
-				);
-			}
+	
+		if ( subscription.id != null && hasPastDistribOrdersOutsideSubscription( subscription ) ) {
+			throw TypedError.typed( 
+				'La nouvelle période sélectionnée exclue des commandes déjà passées, Il faut élargir la période sélectionnée $subName.',
+				PastOrders
+			);
 		}
 
+		if ( hasPastDistribsWithoutOrders( subscription ) ) {
+			throw TypedError.typed(
+				'La nouvelle période sélectionnée inclue des distributions déjà passées auxquelles le membre n\'a pas participé, Il faut choisir une date ultérieure $subName.',
+				PastDistributionsWithoutOrders
+			);
+		}
+	
 		return true;
 	}
 
@@ -473,10 +440,22 @@ class SubscriptionService
 			return null;
 		}
 
+		if ( catalog.group.hasPayments() && subscription != null ) {
+
+			var subscriptionPayments = subscription.getPaymentsTotal();
+			if ( subscriptionPayments != 0 ) {
+
+				return subscriptionPayments;
+			}
+		}
+
 		var subscriptionDistribsNb = 0;
 		if ( subscription != null ) {
+
 			subscriptionDistribsNb = getSubscriptionDistribsNb( subscription, null, true );
-		} else {
+		}
+		else {
+
 			subscriptionDistribsNb = db.Distribution.manager.count( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
 		}
 		
@@ -700,7 +679,7 @@ class SubscriptionService
 		subscription.catalog = catalog;
 		subscription.startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate 	= new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
-		subscription.isValidated = false;
+		subscription.isPaid = false;
 		
 		if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
 
@@ -757,9 +736,8 @@ class SubscriptionService
 		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
 
 		if ( absentDistribIds != null ) {
-			if ( subscription.isValidated ) {
-				subscription.setAbsentDistribIds( absentDistribIds );
-			}
+			
+			subscription.setAbsentDistribIds( absentDistribIds );
 		}
 		updateAbsencesNb( subscription, absencesNb );
 		
@@ -886,11 +864,10 @@ class SubscriptionService
 	}
 
 
-	public static function updateValidation( subscription : Subscription, ?validate : Bool = true ){
+	public static function markAsPaid( subscription : Subscription, ?paid : Bool = true ){
 
 		subscription.lock();
-		subscription.isValidated = validate;
-		subscription.isPaid = validate;
+		subscription.isPaid = paid;
 		subscription.update();
 	}
 
@@ -900,20 +877,40 @@ class SubscriptionService
 	  */
 	 public static function deleteSubscription( subscription : db.Subscription ) {
 
-		if(subscription.isValidated){
-			throw new Error("Impossible de supprimer une souscription qui a été validée");
-		}
-
 		if ( hasPastDistribOrders( subscription ) && !subscription.catalog.isDemoCatalog() ) {
 
 			throw TypedError.typed( 'Impossible de supprimer cette souscription car il y a des distributions passées avec des commandes.', PastOrders );
 		}
 
+		var hasPayments = subscription.catalog.group.hasPayments();
+		var balance = subscription.getBalance();
+		if ( hasPayments && balance != 0.0 ) {
+
+			throw new Error( 'Impossible de supprimer cette souscription car le solde n\'est pas à zéro. Veuillez d\'abord régulariser les paiements.' );
+		}
+
 		//Delete all the orders for this subscription
 		var subscriptionOrders = db.UserOrder.manager.search( $subscription == subscription, false );
 		for ( order in subscriptionOrders ) {
+
 			OrderService.delete(order,true);
 		}
+
+		//Delete all the operations for this subscription
+		var subscriptionOperations = db.Operation.manager.search( $subscription == subscription, false );
+		for ( operation in subscriptionOperations ) {
+
+			operation.lock();
+			operation.delete();
+		}
+		
+		if( hasPayments ) {
+
+			//Update user balance
+			service.PaymentService.updateUserBalance( subscription.user, subscription.catalog.group );
+		}
+		
+
 		//Delete the subscription
 		subscription.lock();
 		subscription.delete();
@@ -929,7 +926,7 @@ class SubscriptionService
 	 */
 	public static function hasPastDistribOrders( subscription : db.Subscription ) : Bool {
 
-		if ( !subscription.isValidated || !hasPastDistributions( subscription ) ) {
+		if ( !hasPastDistributions( subscription ) ) {
 
 			return false;
 		}
@@ -977,7 +974,7 @@ class SubscriptionService
 
 			return false;
 		}
-		else {
+		else if ( ( subscription.catalog.type == db.Catalog.TYPE_VARORDER && subscription.catalog.requiresOrdering ) || subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
 
 			var pastDistributions = getSubscriptionDistribs( subscription, 'past' );
 			for ( distribution in pastDistributions ) {
@@ -1003,7 +1000,6 @@ class SubscriptionService
 	public static function createCSARecurrentOrders( subscription : db.Subscription,
 		ordersData : Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool } >, ?oldAbsentDistribIds : Array<Int> ) : Array<db.UserOrder> {
 
-
 		if ( ordersData == null || ordersData.length == 0 ) {
 
 			ordersData = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool } >();
@@ -1012,8 +1008,7 @@ class SubscriptionService
 
 				ordersData.push( { productId : order.product.id, quantity : order.quantity, userId2 : order.user2 != null ? order.user2.id : null, invertSharedOrder : order.hasInvertSharedOrder() } );
 			}
-		}
-		else if ( hasPastDistribOrders( subscription ) ) {
+		} else if ( hasPastDistribOrders( subscription ) ) {
 
 			throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées il faut modifier la date de fin de
 			la souscription et en recréer une nouvelle pour la nouvelle période. Vous pourrez ensuite définir une nouvelle commande pour cette nouvelle souscription.', SubscriptionServiceError.PastOrders );
@@ -1051,36 +1046,19 @@ class SubscriptionService
 					
 					var newOrder =  OrderService.make( subscription.user, order.quantity , product,  distribution.id, false, subscription, user2, invert );
 					if ( newOrder != null ) orders.push( newOrder );
-
 				}
-
 			}
 		}
 		
 		App.current.event( MakeOrder( orders ) );
 
-		if(subscription.catalog.group.hasPayments()){
-			service.PaymentService.onOrderConfirm( orders );
+		if ( subscription.catalog.group.hasPayments() ) {
+			// create/update a single operation for the subscription total price
+			createOrUpdateTotalOperation( subscription );
 		}
 
-		return orders;
-		
-	}
-
-
-	public static function isSubscriptionPaid( subscription : db.Subscription ) : Bool {
-
-		/*
-		var orders = db.UserOrder.manager.search( $subscription == subscription, false );
-		for ( order in orders ) {
-			if ( !order.paid ) {
-				return false;
-			}
-		}
-		return true;*/
-		return subscription.isPaid;
-
-	}
+		return orders;	
+	}	
 
 	public static function getLastDistribBeforeAbsences( catalog : db.Catalog ) : db.Distribution {
 
@@ -1114,9 +1092,9 @@ class SubscriptionService
 		var deadline = lastDistribBeforeAbsences.date.getTime();
 		var beforeDeadline = Date.now().getTime() < deadline;
 		var subscriptionInAbsencesPeriod = subscription == null || ( subscription.startDate.getTime() < deadline && subscription.endDate.getTime() > catalog.absencesStartDate.getTime() );
-		var notValidatedSub = subscription == null || !subscription.isValidated;
+		var forbidden = catalog.type == db.Catalog.TYPE_CONSTORDERS && subscription != null && subscription.paid();
 
-		return notValidatedSub && beforeDeadline && subscriptionInAbsencesPeriod;
+		return !forbidden && beforeDeadline && subscriptionInAbsencesPeriod;
 	}
 
 	public static function canAbsencesBeEdited( catalog : db.Catalog ) : Bool {
@@ -1205,6 +1183,116 @@ class SubscriptionService
 		subscription.lock();
 		subscription.setDefaultOrders( defaultOrders );
 		subscription.update();
+	}
+
+
+	public static function createOrUpdateTotalOperation( subscription : db.Subscription ) : db.Operation {
+
+		if( subscription == null )  throw new Error( 'Pas de souscription fournie.' );
+
+		var totalOperation : db.Operation = null;
+
+		if ( subscription.catalog.group.hasPayments() ) {
+
+			totalOperation = db.Operation.manager.select ( $user == subscription.user && $subscription == subscription && $type == SubscriptionTotal, true );
+	
+			if( totalOperation == null ) {
+	
+				totalOperation = new db.Operation();
+				totalOperation.name = "Total Commmandes";
+				totalOperation.type = SubscriptionTotal;
+				totalOperation.user = subscription.user;
+				totalOperation.subscription = subscription;
+				totalOperation.group = subscription.catalog.group;
+				totalOperation.pending = false;
+			}
+	
+			//create or update it if needed
+			var currentTotalPrice = subscription.getTotalPrice();
+			if( totalOperation.id == null || totalOperation.amount != (0 - currentTotalPrice) ) {
+
+				totalOperation.date = Date.now();
+				totalOperation.amount = 0 - currentTotalPrice;
+		
+				if ( totalOperation.id != null ) {
+					totalOperation.update();
+				} else {		
+					totalOperation.insert();
+				}
+		
+				service.PaymentService.updateUserBalance( totalOperation.user, totalOperation.group );
+			}			
+		}
+		return totalOperation;
+	}
+
+	
+	public static function updateCatalogSubscriptionsOperation( catalog : db.Catalog ) {
+
+		var group = catalog.group;
+		if ( group.hasPayments()) {
+
+			var catalogSubsciptions = SubscriptionService.getCatalogSubscriptions(catalog);
+			for ( subscription in catalogSubsciptions ) {
+
+				createOrUpdateTotalOperation( subscription );
+			}
+			
+		}
+	}
+
+	public static function transferBalance( fromSubscription : db.Subscription, toSubscription : db.Subscription ) {
+
+		var balance = fromSubscription.getBalance();
+		if ( fromSubscription.catalog.group.hasPayments() ) {
+
+			if( fromSubscription == null || toSubscription == null )  throw new Error( 'Pas de souscriptions fournies.' );
+			if( fromSubscription.user.id != toSubscription.user.id )  throw new Error( 'Le transfert est possible uniquement pour un même membre.' );
+			if( balance <= 0 ) throw new Error( 'Impossible de transférer un solde négatif ou à zéro.' );
+			if( !toSubscription.catalog.group.hasPayments() ) throw new Error( 'Le groupe de destination n\'a pas la gestion des paiements activée.' );
+
+			var operationFrom = new db.Operation();
+			operationFrom.name = "Transfert du solde sur la souscription #" + toSubscription.id + " de " + toSubscription.catalog.name;
+			operationFrom.type = Payment;
+			operationFrom.setPaymentData( { type : 'transfer' } );
+			operationFrom.user = fromSubscription.user;
+			operationFrom.subscription = fromSubscription;
+			operationFrom.group = fromSubscription.catalog.group;
+			operationFrom.pending = false;
+			operationFrom.date = Date.now();
+			operationFrom.amount = 0 - balance;
+
+			var operationTo = new db.Operation();
+			operationTo.name = "Transfert du solde de la souscription #" + fromSubscription.id + " de " + fromSubscription.catalog.name;
+			operationTo.type = Payment;
+			operationTo.setPaymentData( { type : 'transfer' } );
+			operationTo.user = toSubscription.user;
+			operationTo.subscription = toSubscription;
+			operationTo.group = toSubscription.catalog.group;
+			operationTo.pending = false;
+			operationTo.date = Date.now();
+			operationTo.amount = balance;
+
+			operationFrom.insert();
+			operationTo.insert();
+	
+			service.PaymentService.updateUserBalance( fromSubscription.user, fromSubscription.catalog.group );
+			if( fromSubscription.catalog.group.id != toSubscription.catalog.group.id && toSubscription.catalog.group.hasPayments() ) {
+
+				service.PaymentService.updateUserBalance( fromSubscription.user, toSubscription.catalog.group );
+			}
+		}
+
+	}
+
+	public static function getDistribOrdersAverageTotal( subscription : db.Subscription ) : Float {
+
+		if( subscription == null || subscription.id == null )  throw new Error( 'Pas de souscription fournie.' );
+
+		var distribsOrderedNb = sys.db.Manager.cnx.request('SELECT COUNT(DISTINCT distributionId) FROM UserOrder WHERE subscriptionId=${subscription.id}').getIntResult(0);
+		if( distribsOrderedNb == 0 ) return 0;
+
+		return subscription.getTotalPrice() / distribsOrderedNb;
 	}
 	
 }

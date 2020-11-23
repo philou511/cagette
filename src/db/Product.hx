@@ -126,6 +126,7 @@ class Product extends Object
 			distributionId : distribution==null ? null : distribution.id,
 			catalogId : catalog.id,
 			vendorId : catalog.vendor.id,
+			multiWeight : multiWeight,
 		}
 		
 		if(populateCategories){
@@ -184,8 +185,22 @@ class Product extends Object
 		if(this.vat==null) this.vat=0;
 		if(this.name.length>128) this.name = this.name.substr(0,128);
 		if(qt==0.0) qt = null;
+
+		//remove strange characters
+		for( s in ["",""]){
+			if(name!=null) name = StringTools.replace(name,s,"");
+			if(desc!=null) desc = StringTools.replace(desc,s,"");
+		}
+		
 		//round like 0.00
 		price = Formatting.roundTo(price,2);
+
+		//Only Integers are allowed for consumers and float for coordinators
+		if( this.multiWeight ) {
+
+			this.variablePrice = true;
+			this.hasFloatQt = false;
+		}
 	}
 
 	override public function update(){

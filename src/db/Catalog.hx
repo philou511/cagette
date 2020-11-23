@@ -15,7 +15,6 @@ class Catalog extends Object
 {
 	public var id : SId;
 	public var name : SString<64>;
-
 	public var type : SInt;
 	
 	//responsable
@@ -56,7 +55,8 @@ class Catalog extends Object
 	{
 		super();
 		flags = cast 0;
-		distributorNum = 0;		
+		distributorNum = 0;	
+		orderEndHoursBeforeDistrib = 24;	
 		flags.set(UsersCanOrder);
 	
 	}	
@@ -366,8 +366,10 @@ class Catalog extends Object
 		return out;
 	}
 	
-	public static function getLabels(){
+	public static function getLabels() {
+
 		var t = sugoi.i18n.Locale.texts;
+	
 		return [
 			"name" 				=> t._("Catalog name"),
 			"startDate" 		=> t._("Start date"),
@@ -383,7 +385,7 @@ class Catalog extends Object
 			"orderEndHoursBeforeDistrib" => "Fermeture des commandes (nbre d'heures avant distribution)",
 			"requiresOrdering" => "Obligation de commander à chaque distribution",
 			"distribMinOrdersTotal" => "Minimum de commande par distribution (en €)",
-			"catalogMinOrdersTotal" => "Minimum de commandes sur la durée du contrat (en €)",
+			"catalogMinOrdersTotal" => "Provision minimum initiale (en €)",
 			"allowedOverspend" => "Dépassement autorisé (en €)",
 			"absentDistribsMaxNb" => "Nombre maximum d'absences",
 			"absencesStartDate" => "Date de début de la période d'absences",

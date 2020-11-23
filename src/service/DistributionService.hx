@@ -13,36 +13,7 @@ using tools.DateTool;
  */
 class DistributionService
 {
-	/**
-	 *  It will update the name of the operation with the new number of distributions
-	 *  as well as the total amount
-	 *  @param contract - 
-	 */
-	public static function updateAmapContractOperations(contract:db.Catalog) {
-
-		//Update all operations for this amap contract when payments are enabled
-		if (contract.type == db.Catalog.TYPE_CONSTORDERS && contract.group.hasPayments()) {
-			//Get all the users who have orders for this contract
-			var users = contract.getUsers();
-			for ( user in users ){
-
-				//Get the one operation for this amap contract and user
-				var operation = service.PaymentService.findCOrderOperation(contract, user);
-
-				if (operation != null)
-				{
-					//Get all the orders for this contract and user
-					var orders = contract.getUserOrders(user);
-					//Update this operation with the new number of distributions, this will affect the name of the operation
-					//as well as the total amount to pay
-					service.PaymentService.updateOrderOperation(operation, orders);
-				}
-
-			}
-		}
-	}
-
-
+	
 	public static function checkMultiDistrib(d:db.MultiDistrib){
 
 		var t = sugoi.i18n.Locale.texts;
@@ -114,11 +85,9 @@ class DistributionService
 		if (d.date.getTime() < catalogStartDate.getTime()){
 			throw new Error(t._("The date of the delivery must be after the begining of the catalog (::contractBeginDate::)", {contractBeginDate:view.hDate(catalog.startDate)}));
 		} 
-		
-		if (catalog.type == db.Catalog.TYPE_VARORDER ) {
-			if (d.date.getTime() < d.orderEndDate.getTime() ) throw new Error(t._("The distribution start date must be set after the orders end date."));
-			if (d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw new Error(t._("The orders end date must be set after the orders start date !"));
-		}
+
+		if (d.date.getTime() < d.orderEndDate.getTime() ) throw new Error(t._("The distribution start date must be set after the orders end date."));
+		if ( catalog.type == db.Catalog.TYPE_VARORDER && d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw new Error(t._("The orders end date must be set after the orders start date !"));
 	}
 
 	 /**
@@ -135,8 +104,8 @@ class DistributionService
 
 		if(contract.type==db.Catalog.TYPE_VARORDER){
 			d.orderStartDate = orderStartDate;
-			d.orderEndDate = orderEndDate;
 		}
+		d.orderEndDate = orderEndDate;
 
 		//end date cleaning			
 		if (end == null) {
@@ -171,14 +140,20 @@ class DistributionService
 			App.current.event(e);
 		}
 		
-		if (d.date == null){
+		if ( d.date == null ) {
+
 			return d;
-		} else {
+		}
+		else {
+
 			d.insert();
 
 			//In case this is a distrib for an amap contract with payments enabled, it will update all the operations
 			//names and amounts with the new number of distribs
-			updateAmapContractOperations(d.catalog);
+			if( !contract.group.hasShopMode() && contract.group.hasPayments() )  {
+
+				service.SubscriptionService.updateCatalogSubscriptionsOperation( d.catalog );
+			}
 
 			return d;
 		}
@@ -322,11 +297,16 @@ class DistributionService
 			}
 		}
 
-		if( catalog.isConstantOrders() ){
-			//if there is at least one validated subscription, cancelation is not possible
-			if( db.Subscription.manager.count( $catalogId == catalog.id && $isValidated ) > 0){
+		var shopMode = catalog.group.hasShopMode();
+
+		if( !shopMode ){
+		
+			if( catalog.type == db.Catalog.TYPE_CONSTORDERS && db.Subscription.manager.count( $catalogId == catalog.id && $isPaid ) > 0) {
+
 				throw new Error("Vous ne pouvez pas participer à cette distribution car il y a déjà des souscriptions validées. Vous devez maintenir le même nombre de distributions dans les souscriptions des adhérents.");
-			} else if( db.Subscription.manager.count( $catalogId == catalog.id  ) > 0 ){
+			}
+			else if( db.Subscription.manager.count( $catalogId == catalog.id  ) > 0 ) {
+
 				App.current.session.addMessage( "Attention, vous avez déjà des souscriptions enregistrées pour ce contrat. Si vous créez des distributions supplémentaires, le montant à payer va varier." , true);
 			}
 		}
@@ -335,7 +315,7 @@ class DistributionService
 
 		var orderStartDate = md.orderStartDate;
 		var orderEndDate = md.orderEndDate;
-		if ( !catalog.group.hasShopMode() ) {
+		if ( !shopMode ) {
 
 			if ( catalog.orderStartDaysBeforeDistrib != null && catalog.orderStartDaysBeforeDistrib != 0 ) {
 
@@ -374,8 +354,9 @@ class DistributionService
 				d.multiDistrib.distribEndDate = end; 
 				if(d.catalog.type==db.Catalog.TYPE_VARORDER){
 					d.multiDistrib.orderStartDate = orderStartDate;
-					d.multiDistrib.orderEndDate = orderEndDate;
 				}
+				d.multiDistrib.orderEndDate = orderEndDate;
+
 				d.multiDistrib.update();
 			}else{
 				throw new Error(t._("The distribution date is different from the date of the general distribution."));
@@ -399,8 +380,9 @@ class DistributionService
 		d.place = db.Place.manager.get(placeId);
 		if(d.catalog.type==db.Catalog.TYPE_VARORDER){
 			d.orderStartDate = orderStartDate;
-			d.orderEndDate = orderEndDate;
 		}
+		d.orderEndDate = orderEndDate;
+		
 					
 		if (end == null) {
 			d.end = DateTools.delta(d.date, 1000.0 * 60 * 60);
@@ -502,8 +484,9 @@ class DistributionService
 		
 		if(d.catalog.type==db.Catalog.TYPE_VARORDER){
 			d.orderStartDate = orderStartDate;
-			d.orderEndDate = orderEndDate;
 		}
+		d.orderEndDate = orderEndDate;
+		
 		
 		checkDistrib(d);
 
@@ -542,11 +525,17 @@ class DistributionService
 	public static function cancelParticipation(d:db.Distribution,?dispatchEvent=true) {
 		var t = sugoi.i18n.Locale.texts;
 		
-		if( d.catalog.isConstantOrders() ){
+		var shopMode = d.catalog.group.hasShopMode();
+		if( !shopMode ) {
+
 			//if there is at least one validated subscription, cancelation is not possible
-			if( db.Subscription.manager.count( $catalogId == d.catalog.id && $isValidated ) > 0){
+			var subscriptions = db.Subscription.manager.search( $catalog == d.catalog );
+			if( subscriptions.count( function( subscription ) { return  !subscription.paid(); } ) > 0) {
+
 				throw new Error("Vous ne pouvez pas annuler cette distribution car il y a déjà des souscriptions validées. Vous pouvez cependant décaler cette distribution en fin de contrat afin de maintenir le même nombre dans les souscriptions des adhérents. Pour décaler une distribution, cliquez sur le bouton \"Dates\".");
-			} else if( db.Subscription.manager.count( $catalogId == d.catalog.id  ) > 0 ){
+			}
+			else if( subscriptions.length > 0 ) {
+
 				App.current.session.addMessage( "Attention, vous avez déjà des souscriptions enregistrées pour ce contrat. Si vous supprimez des distributions, le montant à payer va varier." , true);
 			}
 		}
@@ -589,8 +578,10 @@ class DistributionService
 		d.delete();
 
 		//In case this is a distrib for an amap contract with payments enabled, it will update all the operations
-		//names and amounts with the new number of distribs
-		updateAmapContractOperations(contract);
+		if ( !shopMode ) {
+
+			service.SubscriptionService.updateCatalogSubscriptionsOperation( contract );
+		}
 
 		//delete multidistrib if needed
 		/*if(d.multiDistrib!=null){

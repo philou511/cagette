@@ -1,6 +1,7 @@
 package controller;
 import sugoi.db.Cache;
 import db.Catalog;
+import db.Operation.OperationType;
 import service.SubscriptionService;
 import tink.core.Error;
 using Lambda;
@@ -21,10 +22,10 @@ class Subscriptions extends controller.Controller
 
 		if ( !app.user.canManageContract( catalog ) ) throw Error( '/', t._('Access forbidden') );
 
-		var catalogSubscriptions = SubscriptionService.getSubscriptions(catalog);
+		var catalogSubscriptions = SubscriptionService.getCatalogSubscriptions(catalog);
 		//sort by validation, then username
 		catalogSubscriptions.sort(function(a,b){
-			if( (a.isValidated?"1":"0")+a.user.lastName > (b.isValidated?"1":"0")+b.user.lastName ){
+			if( (a.paid()?"1":"0")+a.user.lastName > (b.paid()?"1":"0")+b.user.lastName ){
 				return 1;
 			}else{
 				return -1;
@@ -34,7 +35,15 @@ class Subscriptions extends controller.Controller
 		view.catalog = catalog;
 		view.c = catalog;
 		view.subscriptions = catalogSubscriptions;
-		view.validationsCount = catalogSubscriptions.count( function( subscription ) { return  !subscription.isValidated; } );
+		if ( catalog.group.hasPayments() ) {
+
+			view.negativeBalanceCount = catalogSubscriptions.count( function( subscription ) { return  subscription.getBalance() < 0; } );
+		}
+		else {
+
+			view.negativeBalanceCount = catalogSubscriptions.count( function( subscription ) { return  !subscription.paid(); } );
+		}
+		
 		view.dateToString = function( date : Date ) {
 
 			return DateTools.format( date, "%d/%m/%Y");
@@ -267,12 +276,13 @@ class Subscriptions extends controller.Controller
 					}
 				}
 
-				if ( !subscription.isValidated ) {
+				if ( subscription.catalog.type == Catalog.TYPE_VARORDER || !subscription.paid() ) {
 
 					var absencesNb = Std.parseInt( app.params.get( 'absencesNb' ) );
 					SubscriptionService.updateSubscription( subscription, startDate, endDate, ordersData, null, absencesNb );
 				}
-				else {
+
+				if ( subscription.catalog.type == Catalog.TYPE_VARORDER || subscription.paid() ) {
 
 					var absentDistribIds = new Array<Int>();
 					for ( i in 0...subscription.getAbsencesNb() ) {
@@ -310,20 +320,20 @@ class Subscriptions extends controller.Controller
 		view.absencesDistribs = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
 		view.canAbsencesBeEdited = SubscriptionService.canAbsencesBeEdited( subscription.catalog );
 		view.absentDistribs = subscription.getAbsentDistribs();
-		if( !subscription.isValidated ) {
+		if ( subscription.catalog.type == Catalog.TYPE_VARORDER || !subscription.paid() ) {
 			view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
 		}
 
 	}
 
 
-	public function doValidate( subscription : db.Subscription ) {
+	public function doMarkAsPaid( subscription : db.Subscription ) {
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
 
 		try {
 
-			SubscriptionService.updateValidation( subscription );			
+			SubscriptionService.markAsPaid( subscription );
 
 		}
 		catch( error : Error ) {
@@ -336,15 +346,74 @@ class Subscriptions extends controller.Controller
 	}
 
 	@admin
-	public function doUnvalidate( subscription : db.Subscription ) {
+	public function doUnmarkAsPaid( subscription : db.Subscription ) {
 
 		if( checkToken() ) {
 
-			SubscriptionService.updateValidation( subscription, false );
+			SubscriptionService.markAsPaid( subscription, false );
 			throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'Souscription dévalidée' );
 		}
 
 	}
+
+	@tpl("contractadmin/subscriptionpayments.mtt")
+	public function doPayments( subscription : db.Subscription ) {
+
+		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
+		if ( !subscription.catalog.group.hasPayments() ) throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La gestion des paiements n\'est pas activée.' );
+
+		//Let's do an update just in case the total operation is not coherent
+		view.subscriptionTotal = SubscriptionService.createOrUpdateTotalOperation( subscription );
+
+		var user = subscription.user;
+		var payments = db.Operation.manager.search( $user == user && $subscription == subscription && $type == Payment, { orderBy : -date }, false );
+		
+		view.payments = payments;
+		view.member = user;
+		view.subscription = subscription;
+		
+		view.nav.push( 'subscriptions' );
+		view.c = subscription.catalog;
+		
+		checkToken();
+	}
+
+	@tpl("contractadmin/subscriptionbalancetransfer.mtt")
+	public function doBalanceTransfer( subscription : db.Subscription ) {
+
+		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
+		if ( !subscription.catalog.group.hasPayments() ) throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La gestion des paiements n\'est pas activée.' );
+
+		if ( subscription.getBalance() <= 0 ) throw Error( '/contractAdmin/subscriptions/payments/' + subscription.id, 'Le solde doit être positif pour pouvoir le transférer sur une autre souscription.' );
+		var subscriptionsChoices = SubscriptionService.getUserVendorNotClosedSubscriptions( subscription );
+		if ( subscriptionsChoices.length == 0  ) throw Error( '/contractAdmin/subscriptions/payments/' + subscription.id, 'Ce membre n\'a pas d\'autre souscription. Veuillez en créer une nouvelle avec le même producteur.' );
+
+		if ( checkToken() ) {
+
+			try {
+
+				var subscriptionId = Std.parseInt( app.params.get( 'subscription' ) );
+				if ( subscriptionId == null ) throw Error( '/contractAdmin/subscriptions/balanceTransfer/' + subscription.id, "Vous devez sélectionner une souscription." );
+
+				var selectedSubscription = db.Subscription.manager.get( subscriptionId );
+				SubscriptionService.transferBalance( subscription, selectedSubscription );
+				
+			} catch( error : Error ) {
+				
+				throw Error( '/contractAdmin/subscriptions/balanceTransfer/' + subscription.id, error.message );
+			}
+
+			throw Ok( '/contractAdmin/subscriptions/payments/' + subscription.id, 'Le transfert a bien été effectué.' );
+		}
+
+		view.title = "Report de solde pour " + subscription.user.getName();
+		
+		view.c = subscription.catalog;
+		view.subscriptions = subscriptionsChoices;
+		view.nav.push( 'subscriptions' );
+	}
+
+
 
 	@logged @tpl("form.mtt")
 	function doAbsences( subscription : db.Subscription, ?args: { returnUrl: String } ) {
@@ -401,11 +470,11 @@ class Subscriptions extends controller.Controller
 	}
 	
 	@admin
-	public function doUnvalidateAll(catalog : db.Catalog){
+	public function doUnmarkAll(catalog : db.Catalog){
 
-		for ( subscription in SubscriptionService.getSubscriptions(catalog) ) {
+		for ( subscription in SubscriptionService.getCatalogSubscriptions(catalog) ) {
 
-			SubscriptionService.updateValidation( subscription, false );
+			SubscriptionService.markAsPaid( subscription, false );
 		}
 		throw Ok("/contractAdmin/subscriptions/"+catalog.id,'Souscriptions dévalidées');
 

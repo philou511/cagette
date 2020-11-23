@@ -225,6 +225,7 @@ class Group extends controller.Controller
 
 			case Amap : 
 				g.flags.unset(ShopMode);
+				g.flags.set(HasPayments);
 				g.hasMembership=true;
 				g.regOption = WaitingList;
 				

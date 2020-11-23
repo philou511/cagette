@@ -59,7 +59,9 @@ class ContractAdmin extends Controller
 		}
 		
 		view.contracts = contracts;
-		view.vendors = app.user.getGroup().getActiveVendors();
+		var vendors = app.user.getGroup().getActiveVendors();
+		view.vendors = vendors;
+		// view.noSiret = vendors.filter(v -> v.companyNumber==null);
 		view.places = app.user.getGroup().getPlaces();
 		checkToken();
 
@@ -163,6 +165,8 @@ class ContractAdmin extends Controller
 	 */
 	@tpl('contractadmin/ordersByTimeFrame.mtt')
 	function doOrdersByTimeFrame(?from:Date, ?to:Date/*, ?place:db.Place*/){
+
+		if(!app.user.canManageAllContracts())  throw Error('/',"Accès interdit");
 		
 		if (from == null) {
 		
@@ -231,6 +235,9 @@ class ContractAdmin extends Controller
 	 */
 	@tpl('contractadmin/ordersByDate.mtt')
 	function doOrdersByDate(?date:Date,?place:db.Place){
+
+		if(!app.user.canManageAllContracts())  throw Error('/',"Accès interdit");
+
 		if (date == null) {
 		
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
@@ -412,7 +419,10 @@ class ContractAdmin extends Controller
 		if ( checkToken() && args != null && args.delete != null ) {
 
 			try {
+
 				service.OrderService.delete(args.delete);
+				
+
 			}	catch( e : tink.core.Error ) {
 				throw Error( "/contractAdmin/orders/" + catalog.id, e.message );
 			}
@@ -533,7 +543,8 @@ class ContractAdmin extends Controller
 					nc.requiresOrdering = catalog.requiresOrdering;
 					nc.distribMinOrdersTotal = catalog.distribMinOrdersTotal;
 					nc.catalogMinOrdersTotal = catalog.catalogMinOrdersTotal;
-					nc.allowedOverspend = catalog.type == Catalog.TYPE_VARORDER ? catalog.allowedOverspend : 500;
+					var defaultAllowedOverspend = app.user.getGroup().hasPayments() ? 10 : 500;
+					nc.allowedOverspend = catalog.type == Catalog.TYPE_VARORDER ? catalog.allowedOverspend : defaultAllowedOverspend;
 				}
 			}
 			nc.vendor = catalog.vendor;
@@ -768,6 +779,12 @@ class ContractAdmin extends Controller
 			view.distributions = c.getDistribs(true);
 		}
 		
+	}
+
+	@tpl("contractadmin/tmpBaskets.mtt")
+	function doTmpBaskets(md:db.MultiDistrib){
+		view.md = md;
+		view.tmpBaskets = db.TmpBasket.manager.search($multiDistrib == md,false);
 	}
 	
 }

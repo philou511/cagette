@@ -6,7 +6,7 @@ import tink.core.Error;
 class CatalogService{
 
 
-    public static function getForm(catalog:db.Catalog) : sugoi.form.Form {
+    public static function getForm( catalog : db.Catalog ) : sugoi.form.Form {
 
 		if ( catalog.group == null || catalog.type == null || catalog.vendor == null ) {
 
@@ -14,6 +14,8 @@ class CatalogService{
 		}
 
 		var t = sugoi.i18n.Locale.texts;
+
+		var hasPayments = catalog.group.hasPayments();
 
 		var customMap = new form.CagetteForm.FieldTypeToElementMap();
 		customMap["DDate"] = form.CagetteForm.renderDDate;
@@ -52,9 +54,14 @@ class CatalogService{
 
 				form.getElement("orderStartDaysBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#ouverture_et_fermeture_de_commande";
 				form.getElement("orderEndHoursBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#ouverture_et_fermeture_de_commande";
-				
+
+				if( !hasPayments ) {
+
+					form.getElement("catalogMinOrdersTotal").label = "Minimum de commandes sur la durée du contrat (en €)";
+				}
 				form.getElement("catalogMinOrdersTotal").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#minimum_de_commandes_sur_la_duree_du_contrat";
 				form.getElement("allowedOverspend").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#depassement_autorise";
+				
 			}
 			else { 
 				//CONST
@@ -70,29 +77,44 @@ class CatalogService{
 				absencesIndex = 9;
 			}
 			
+			var html = "<h4>Gestion des absences</h4><div class='alert alert-warning'>";
+
 			//if catalog is new
 			if ( catalog.id == null ) {
 
 				if ( catalog.type == Catalog.TYPE_VARORDER ) {
 
 					form.getElement("orderStartDaysBeforeDistrib").value = 365;
-					form.getElement("allowedOverspend").value = 500;
+
+					if ( hasPayments ) {
+
+						form.getElement("allowedOverspend").value = 10;
+					}
+					else {
+
+						form.getElement("allowedOverspend").value = 500;
+					}
 				}
 				form.getElement("orderEndHoursBeforeDistrib").value = 24;
 
 				form.removeElement(form.getElement("absentDistribsMaxNb"));
 				form.removeElement(form.getElement("absencesStartDate"));
 				form.removeElement(form.getElement("absencesEndDate"));
+
+				html += "<p><i class='icon icon-info'></i> 
+					Vous pourrez définir une période pendant laquelle les membres pourront choisir d'être absent après avoir enregistré ce nouveau contrat et avoir ajouté des distributions.<br/>
+					<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
+				</p></div>";
 			}
 			else {
 
-				var html = "<h4>Gestion des absences</h4><div class='alert alert-warning'>
-				<p><i class='icon icon-info'></i> 
+				html += "<p><i class='icon icon-info'></i> 
 					Vous pouvez définir une période pendant laquelle les membres pourront choisir d'être absent.<br/>
 					<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
 				</p></div>";
-				form.addElement( new sugoi.form.elements.Html( 'absences', html, '' ), absencesIndex );
 			}
+
+			form.addElement( new sugoi.form.elements.Html( 'absences', html, '' ), absencesIndex );
 		}
 		
 		//For all types and modes
@@ -243,9 +265,12 @@ class CatalogService{
 		}
 	}
 
+	/**
+		update future distribs start/end Order Dates
+	**/
 	public static function updateFutureDistribsStartEndOrdersDates( catalog : db.Catalog, newOrderStartDays : Int, newOrderEndHours : Int ) : String {
 
-		if ( catalog.group.hasShopMode() ) return '';
+		if ( catalog.group.hasShopMode() ) return null;
 
 		if ( newOrderStartDays != null || newOrderEndHours != null ) {
 
@@ -254,44 +279,33 @@ class CatalogService{
 
 				distrib.lock();
 
-				if ( newOrderStartDays != null ) {
-	
+				if ( newOrderStartDays != null ) {	
 					distrib.orderStartDate = DateTools.delta( distrib.date, -1000.0 * 60 * 60 * 24 * newOrderStartDays );
 				}
 	
-				if ( newOrderEndHours != null ) {
-	
+				if ( newOrderEndHours != null ) {	
 					distrib.orderEndDate = DateTools.delta( distrib.date, -1000.0 * 60 * 60 * newOrderEndHours );
 				}
 
-				distrib.update();
-				
+				distrib.update();				
 			}
 
 			var message = '<br/>Attention ! ';
 			
 			if ( newOrderStartDays != null && newOrderEndHours != null ) {
-
 				message += 'Les nouveaux délais d\'ouverture et de fermeture de commande ont été appliqués à toutes les distributions à venir. 
-						   Si vous aviez personnalisé des dates d\'ouverture ou de fermeture, ces personnalisations ont été écrasées.';
-			}
-			else if ( newOrderStartDays != null ) {
-
+				Si vous aviez personnalisé des dates d\'ouverture ou de fermeture, ces personnalisations ont été écrasées.';
+			} else if ( newOrderStartDays != null ) {
 				message += 'Le nouveau délai d\'ouverture de commande a été appliqué à toutes les distributions à venir. 
-						   Si vous aviez personnalisé des dates d\'ouverture, ces personnalisations ont été écrasées.';
-			}
-			else {
-
+				Si vous aviez personnalisé des dates d\'ouverture, ces personnalisations ont été écrasées.';
+			} else {
 				message += 'Le nouveau délai de fermeture de commande a été appliqué à toutes les distributions à venir. 
-						   Si vous aviez personnalisé des dates de fermeture, ces personnalisations ont été écrasées.';
+				Si vous aviez personnalisé des dates de fermeture, ces personnalisations ont été écrasées.';
 			}
 
 			return message;
-
 		}
-
-		return '';
-
+		return null;
 	}
 
 }

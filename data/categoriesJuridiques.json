@@ -1,5 +1,9 @@
 [
     {
+      "id": "-1",
+      "name": "Particulier"
+    },
+    {
       "id": "0000",
       "name": "Organisme de placement collectif en valeurs mobilières sans personnalité morale"
     },

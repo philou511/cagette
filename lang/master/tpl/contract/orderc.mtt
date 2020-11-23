@@ -1,6 +1,8 @@
 ::use 'design.mtt'::
 <div id="content" class="col-md-12">
 
+	::set hasPayments = catalog._group.hasPayments()::
+
 	<h2>::catalog.name::</h2>
 
 	<!-- Nav tabs -->
@@ -179,7 +181,7 @@
 								Si vous souhaitez souscrire à ce contrat, saisissez votre commande sur cette page.
 								Votre souscription débutera le <strong>::dDate( subscriptionService.getNewSubscriptionStartDate(catalog) )::</strong>
 								car il faut s'inscrire au plus tard <strong>::catalog.orderEndHoursBeforeDistrib:: heures</strong> avant une distribution pour qu'elle soit prise en compte.
-							::elseif currentOrComingSubscription.isValidated::
+							::elseif currentOrComingSubscription.paid()::
 								Votre souscription a été validée, vous ne pouvez plus la modifier.
 							::else::
 								Tant que votre souscription n'a pas encore été validée, vous pouvez revenir sur cette page et modifier votre commande. 				
@@ -283,7 +285,6 @@
 								</tr>
 							::end::
 							
-							<!--TOTAL-->
 							<tr>
 								<th colspan="3" class="text-right">Total</th>
 								::foreach d userOrders::
@@ -373,7 +374,7 @@
 					::foreach subscription subscriptions::
 
 						<table class="table table-condensed table-bordered">
-							::set orderName = subscriptionService.getDescription(subscription, catalog)::
+							::set orderName = subscriptionService.getDescription(subscription, catalog, false)::
 							::if orderName == null::
 								::set class="danger text-danger"::
 							::else::
@@ -388,11 +389,15 @@
 								<th class="text-center col-md-1" ::cond absencesNb != 0::>Nombre d'absences</th>
 								<th class="text-center col-md-2">Nombre de distributions</th>
 								<th class="text-center col-md-1">Total</th>
-								<th class="text-center col-md-1">Payé</th>
+								::if hasPayments::
+									<th class="text-center col-md-1">Solde</th>
+								::else::
+									<th class="text-center col-md-1">Payé</th>
+								::end::
 							</tr>					
 							<tr style="text-align: center;">
 								<td ::cond subscription._user2 != null::>
-									<i ::cond !subscription.isValidated:: class="icon icon-alert" style="color: #a94442;"></i>  
+									<i ::cond !subscription.paid():: class="icon icon-alert" style="color: #a94442;"></i>  
 									<a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
 									<br/> ( alterné avec <a href="/member/view/::subscription._user2.id::" target="_blank">::subscription._user2.getName()::</a> )
 								</td>
@@ -416,12 +421,26 @@
 								<td style="vertical-align: middle;">
 									::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
 								</td>
+								::set subscriptionTotal = subscription.getTotalPrice()::
 								<td style="vertical-align: middle;">
-									::subscription.getTotalPrice()::&nbsp;::currency()::
+									::subscriptionTotal::&nbsp;::currency()::
 								</td>
-								<td style="vertical-align: middle;">
-									$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
-								</td>
+								::if hasPayments::
+									::set balance = subscription.getPaymentsTotal() - subscriptionTotal::
+									::set background = ""::
+									::if balance < 0::
+										::set background = "background-color: #d9534f;"::
+									::else::
+									::set background = "background-color: #84bd55;"::
+									::end::
+									<td style="vertical-align: middle;color: white;font-weight:bold; ::background::">
+										::formatNum(balance)::&nbsp;::currency()::
+									</td>
+								::else::
+									<td style="vertical-align: middle;">
+										$$check(::subscription.paid()::)
+									</td>
+								::end::
 							</tr>
 							<tr class="greyhead text-center" ::cond  catalog.hasAbsencesManagement() && absencesNb != 0::>
 								<th class="text-center col-md-12" colspan="7" >Mes absences (modifiables jusqu'au ::dDate( subscriptionService.getLastDistribBeforeAbsences( catalog ).date )::)</th>

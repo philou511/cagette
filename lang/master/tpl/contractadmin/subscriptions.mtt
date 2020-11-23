@@ -4,11 +4,17 @@
 
         <h3>Souscriptions</h3>
         
-        <div class="row" ::cond validationsCount != 0:: >
+        ::set hasPayments = catalog._group.hasPayments()::
+        <div class="row" ::cond negativeBalanceCount != 0:: >
 
 			<div id="content" class="col-md-12">
 				<div class="alert  alert-danger ">
-					<i class="icon icon-alert"></i> Vous avez ::validationsCount:: souscription(s) à valider.
+                    <i class="icon icon-alert"></i>
+                    ::if hasPayments::
+                        Il y a ::negativeBalanceCount:: souscription(s) avec un solde négatif.
+                    ::else::
+                        Il y a ::negativeBalanceCount:: souscription(s) non payée(s).
+                    ::end::
 				</div>
 			</div>
 
@@ -65,8 +71,8 @@
         $$insert( Nouvelle souscription, /contractAdmin/subscriptions/insert/::catalog.id:: )
 
         ::if(user.isAdmin())::
-        <a href="/contractAdmin/subscriptions/unvalidateAll/::catalog.id::" class="btn btn-default btn-sm">
-            <i class="icon icon-square"></i> Admin : Dévalider toutes les souscriptions
+        <a href="/contractAdmin/subscriptions/unmarkAll/::catalog.id::" class="btn btn-default btn-sm">
+            <i class="icon icon-square"></i> Admin : Marquer toutes les souscriptions comme non payées
         </a>
         ::end::
         
@@ -80,10 +86,14 @@
                             <th>Période d'engagement</th>
                             <th>Nombre de distributions</th>
                             <th>Total</th>
-                            <th ::cond catalog.type == TYPE_CONSTORDERS::>Payé</th>
+                            ::if hasPayments::
+                                <th>Solde</th>
+                            ::else::
+                                <th>Payé</th>
+                            ::end::
                         </tr>
                         ::foreach subscription subscriptions::
-                            ::set orderName = subscriptionService.getDescription(subscription, catalog)::
+                            ::set orderName = subscriptionService.getDescription(subscription, catalog, false)::
                             ::if orderName == null::
                                 ::set class="danger text-danger"::
                             ::else::
@@ -92,26 +102,27 @@
                             <tr style="text-align: center;">
                                 <td style="vertical-align: middle;">
                                     <div style="overflow-wrap: break-word;">
-                                        <i ::cond !subscription.isValidated:: class="icon icon-alert" style="color: #a94442;"></i>  
+                                        <i ::cond !hasPayments && !subscription.paid():: class="icon icon-alert" style="color: #a94442;"></i>  
                                         
                                         <a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
                                         ::if(subscription._user2!=null)::
                                         <br/> ( alterné avec <a href="/member/view/::subscription._user2.id::" target="_blank">::subscription._user2.getName()::</a> )
                                         ::end::
                                     </div>
-                                    <div ::cond !subscription.isValidated:: >
-                                        <br/>
-                                        ::if(catalog.type == TYPE_CONSTORDERS)::                                        
-                                        ::set confirmTxt = "Vous confirmez avoir reçu le contrat signé de cet adhérent avec le paiement. La commande saisie dans Cagette correspond bien à ce qui est inscrit sur le contrat."::
-                                        ::else::
-                                        ::set confirmTxt = "Vous confirmez avoir reçu le contrat signé de cet adhérent avec le chèque d'acompte. Si il y a un minimum de commande sur la durée du contrat, le chèque doit correspondre à ce minimum."::
-                                        ::end::
+                                    ::if !hasPayments::
+                                        <div ::cond !subscription.paid():: >
+                                            <br/>
+                                            ::if(catalog.type == TYPE_CONSTORDERS)::                                        
+                                            ::set confirmTxt = "Vous confirmez avoir reçu le contrat signé de cet adhérent avec le paiement. La commande saisie dans Cagette correspond bien à ce qui est inscrit sur le contrat."::
+                                            ::else::
+                                            ::set confirmTxt = "Vous confirmez avoir reçu le contrat signé de cet adhérent avec le chèque d'acompte. Si il y a un minimum de commande sur la durée du contrat, le chèque doit correspondre à ce minimum."::
+                                            ::end::
 
-
-                                        <a href="/contractAdmin/subscriptions/validate/::subscription.id::" class="btn btn-md btn-primary" $$confirm(::confirmTxt::) >
-                                            <i class="icon icon-check"></i> Valider
-                                        </a>          
-                                    </div>               
+                                            <a href="/contractAdmin/subscriptions/markAsPaid/::subscription.id::" class="btn btn-md btn-primary" $$confirm(::confirmTxt::) >
+                                                <i class="icon icon-check"></i> Marquer Payé
+                                            </a>
+                                        </div>
+                                    ::end::               
                                 </td>
                                 <td  ::cond catalog.type == TYPE_CONSTORDERS:: class="::class::" style="vertical-align: middle;">
                                     ::if orderName == null::
@@ -125,14 +136,27 @@
                                     au ::dateToString(subscription.endDate)::
                                 </td>
                                 <td style="vertical-align: middle;">
-                                    ::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
+                                    <a title="Voir les commandes" target="_blank" href="/member/orders/::subscription._user.id::/::catalog.id::">::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::</a>
                                 </td>
                                 <td style="vertical-align: middle;">
                                     ::subscription.getTotalPrice()::&nbsp;::currency()::
                                 </td>
-                                <td  ::cond catalog.type == TYPE_CONSTORDERS:: style="vertical-align: middle;">
-                                    $$check(::subscriptionService.isSubscriptionPaid(subscription)::)
-                                </td>
+                                ::if hasPayments::
+                                    ::set balance = subscription.getPaymentsTotal() - subscription.getTotalPrice()::
+                                    ::set background = ""::
+                                    ::if balance < 0::
+                                        ::set background = "background-color: #d9534f;"::
+                                    ::else::
+                                    ::set background = "background-color: #84bd55;"::
+                                    ::end::
+                                    <td style="vertical-align: middle;color: white;font-weight:bold; ::background::">
+                                        ::formatNum(balance)::&nbsp;::currency()::
+                                    </td>
+                                ::else::
+                                    <td style="vertical-align: middle;">
+                                        $$check(::subscription.paid()::)
+                                    </td>
+                                ::end::
                                 <td style="vertical-align: middle;">
                                     <div class="dropdown" style="display:inline-block;">
                                         <button class="btn btn-default btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu::subscription._user.id::" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -150,10 +174,16 @@
                                                 </a>
                                             </li>	
 
-                                            ::if(user.isAdmin())::
+                                            ::if(subscription._catalog._group.hasPayments())::
                                             <li>
-                                                <a href="/contractAdmin/subscriptions/unvalidate/::subscription.id::?token=::token::">
-                                                    <i class="icon icon-square"></i> Admin : Dévalider
+                                                <a href="/contractAdmin/subscriptions/payments/::subscription.id::">
+                                                    <i class="icon icon-euro"></i> ::_("Payments")::
+                                                </a>
+                                            </li>
+                                            ::elseif(user.isAdmin())::
+                                            <li>
+                                                <a href="/contractAdmin/subscriptions/unmarkAsPaid/::subscription.id::?token=::token::">
+                                                    <i class="icon icon-square"></i> Admin : Marquer comme non payé
                                                 </a>
                                             </li>	
                                             ::end::

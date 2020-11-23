@@ -1,4 +1,5 @@
 package controller;
+import service.SubscriptionService;
 import sugoi.form.elements.Html;
 import sugoi.form.elements.StringInput;
 import sugoi.form.elements.Checkbox;
@@ -50,11 +51,22 @@ class Amap extends Controller
 			}
 			
 			var shopMode = group.hasShopMode();
+			var hasPayments = group.hasPayments();
 
 			form.toSpod(group);
 
 			//keep shop mode
 			if(shopMode) group.flags.set(db.Group.GroupFlags.ShopMode);
+
+			//switch to payment enabled in CSA mode
+			if(!shopMode && !hasPayments && group.hasPayments()){
+				for ( c in group.getActiveContracts(true)){
+					for ( sub in SubscriptionService.getCatalogSubscriptions(c)){
+						//create operation
+						SubscriptionService.createOrUpdateTotalOperation( sub );
+					}
+				}				
+			}
 
 			if(group.betaFlags.has(db.Group.BetaFlags.ShopV2) && group.flags.has(db.Group.GroupFlags.CustomizedCategories)){
 				App.current.session.addMessage("Vous ne pouvez pas activer les catégories personnalisées et la nouvelle boutique. La nouvelle boutique ne fonctionne pas avec les catégories personnalisées.",true);
@@ -62,14 +74,6 @@ class Amap extends Controller
 				group.update();
 			}
 
-			//warning AMAP+payments
-			if( !group.flags.has(db.Group.GroupFlags.ShopMode) &&  group.hasPayments() ){
-				//App.current.session.addMessage("ATTENTION : nous ne vous recommandons pas d'activer la gestion des paiements si vous êtes une AMAP. Ce cas de figure n'est pas bien géré par Cagette.net.",true);
-				App.current.session.addMessage("L'activation de la gestion des paiements n'est pas autorisée si vous êtes une AMAP. Ce cas de figure n'est pas bien géré par Cagette.net.",true);
-				group.flags.unset(db.Group.GroupFlags.HasPayments);
-				group.update();
-			}
-			
 			if (group.extUrl != null){
 				if ( group.extUrl.indexOf("http://") ==-1 &&  group.extUrl.indexOf("https://") ==-1 ){
 					group.extUrl = "http://" + group.extUrl;
@@ -81,6 +85,48 @@ class Amap extends Controller
 		}
 		
 		view.form = form;
+	}
+
+	@tpl('amap/subscriptionspayments.mtt')
+	function doPayments( user : db.User, ?args: { account: Bool } ) {
+
+		if ( args != null && args.account == true ) {
+			
+			app.breadcrumb = [ { id : 'account', name : 'Mon compte', link : '/account' }, { id : 'account', name : 'Mon compte', link : '/account' } ];
+		}
+		else {
+
+			app.breadcrumb = [ { id : 'member', name : 'Membres', link : '/member' }, { id : 'member', name : 'Membres', link : '/member' } ];
+		}
+	
+		var subscriptionsByCatalog = service.SubscriptionService.getActiveSubscriptionsByCatalog( app.user, app.user.getGroup() );
+		var operationsBySubscription = new Map< db.Subscription, Array< db.Operation > >();
+		for ( catalog in subscriptionsByCatalog.keys() ) {
+
+			for ( subscription in subscriptionsByCatalog[catalog] ) {
+
+				if ( operationsBySubscription[subscription] == null ) {
+					operationsBySubscription[subscription] = [];
+				}
+
+				var operations = db.Operation.manager.search( $user == user && $subscription == subscription, { orderBy : -date }, false ).array();
+				operationsBySubscription[subscription] = operationsBySubscription[subscription].concat( operations );
+			}
+		}
+
+
+		var activeSubscriptions = service.SubscriptionService.getActiveSubscriptions( app.user, app.user.getGroup() );
+		activeSubscriptions.sort( function( b, a ) {
+
+			return  (a.getPaymentsTotal() - a.getTotalPrice()) < (b.getPaymentsTotal() - b.getTotalPrice()) ? 1 : -1;
+		} );
+
+		view.globalbalance = db.UserGroup.get( user, app.user.getGroup() ).balance;
+		view.member = user;
+		view.subscriptions = activeSubscriptions;
+		view.operationsBySubscription = operationsBySubscription;
+		
+		checkToken();
 	}
 	
 }

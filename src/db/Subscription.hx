@@ -1,4 +1,5 @@
 package db;
+import db.Operation.OperationType;
 import sys.db.Object;
 import sys.db.Types;
 import Common;
@@ -11,7 +12,6 @@ class Subscription extends Object {
 	@:relation(catalogId) public var catalog : db.Catalog;
 	public var startDate : SDateTime;
 	public var endDate : SDateTime;
-	@hideInForms public var isValidated : SBool;
 	@hideInForms public var isPaid : SBool;
 	var defaultOrders : SNull<SText>;
 	var absentDistribIds : SNull<SText>;
@@ -19,6 +19,21 @@ class Subscription extends Object {
 	public function populate() {
 		
 		return App.current.user.getGroup().getMembersFormElementData();
+	}
+
+	public function paid() : Bool {
+
+		if( this.id == null ) return false;
+
+		if ( this.catalog.group.hasPayments() ) {
+
+			var totalPrice = getTotalPrice();
+			return 0 < totalPrice && totalPrice <= getPaymentsTotal();
+		}
+		else {
+
+			return this.isPaid;
+		}
 	}
 
 	public function getTotalPrice() : Float {
@@ -35,6 +50,37 @@ class Subscription extends Object {
 		return Formatting.roundTo( totalPrice, 2 );
 	}
 
+	public function getTotalOperation() : db.Operation {
+
+		if( this.id == null ) return null;
+
+		return db.Operation.manager.select( $user == this.user && $subscription == this && $type == SubscriptionTotal, true );
+	}
+
+	public function getPaymentsTotal() : Float {
+
+		if( this.id == null ) return 0;
+
+		var paymentsTotal : Float = 0;
+		var operations = db.Operation.manager.search( $user == user && $subscription == this && $type == Payment, null, false );
+		for ( operation in operations ) {
+
+			paymentsTotal += Formatting.roundTo( operation.amount, 2 );
+		}
+
+		return Formatting.roundTo( paymentsTotal, 2 );
+	}
+
+	public function getBalance() : Float {
+
+		if( this.id == null ) return 0;
+
+		var total : Float = 0;
+		var totalOperation = getTotalOperation();
+		if ( totalOperation != null ) total = totalOperation.amount;
+
+		return Formatting.roundTo( getPaymentsTotal() + total, 2 );
+	}
 
 	public function setDefaultOrders( defaultOrders : Array< { productId : Int, quantity : Float } > ) {
 

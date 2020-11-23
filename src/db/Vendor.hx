@@ -1,4 +1,5 @@
 package db;
+import sugoi.form.validators.EmailValidator;
 import sys.db.Object;
 import sys.db.Types;
 import Common;
@@ -211,7 +212,7 @@ class Vendor extends Object
 			"linkText" 			=> t._("Link text"),			
 			"linkUrl" 			=> t._("Link URL"),			
 			"companyNumber" 	=> "Numéro SIRET (14 chiffres)",	
-			"vendorPolicy"		=> "Je m'engage à respecter la <a href=\"https://www.cagette.net/charte-producteurs\" target=\"_blank\">Charte Producteurs Cagette.net</a>"
+			"vendorPolicy"		=> "Ce producteur est conforme à la <a href=\"https://www.cagette.net/charte-producteurs\" target=\"_blank\">Charte Producteurs Cagette.net</a>"
 		];
 	}
 
@@ -276,12 +277,12 @@ class Vendor extends Object
 
 		//legal status
 		for ( c in service.VendorService.getLegalStatuses()){
-			if(c.id == this.legalStatus) {
+			if(Std.string(c.id) == Std.string(this.legalStatus)) {
 				str += c.name;
 				break;
 			}
 		}
-		if(str=="") str = "???";
+		if(str=="") str = "Statut juridique inconnu";
 
 		if(full){
 			//capital
@@ -297,5 +298,36 @@ class Vendor extends Object
 		
 		return str;
 	}
+
+	function check(){
+		if(this.email==null){
+			throw new tink.core.Error("Vous devez obligatoirement saisir un email pour ce producteur.");
+		}
+
+		if(!EmailValidator.check(this.email) ) {
+			throw new tink.core.Error("Email invalide.");
+		}
+
+		//disable if missing legal infos
+		#if plugins
+		var cpro = pro.db.CagettePro.getFromVendor(this);
+		if(companyNumber==null){
+			if(cpro!=null && cpro.training){
+				//do not disable training accounts
+			}else{
+				disabled = DisabledReason.IncompleteLegalInfos;
+			}			
+		}
+		#end
+	}
+
+	override function insert(){
+		check();
+		super.insert();
+	}
 	
+	override function update(){
+		check();
+		super.update();
+	}
 }
