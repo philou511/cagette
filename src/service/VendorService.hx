@@ -257,14 +257,14 @@ class VendorService{
 				if( !App.config.DEBUG && sameSiret.length>0 && sameSiret[0].id!=vendor.id && coopStatuses.find(s-> Std.string(s)==Std.string(vendor.legalStatus))==null ){
 					throw new Error("Il y a déjà un producteur enregistré avec ce numéro SIRET");			
 				}
-
-				//unban if banned
-				if(vendor.disabled==db.Vendor.DisabledReason.IncompleteLegalInfos){
-					vendor.disabled = null;
-					App.current.session.addMessage("Merci d'avoir saisi vos informations légales. Votre compte a été débloqué.",false);
-				}
 			}
 		}		
+
+		//unban if banned
+		if(vendor.companyNumber!=null && vendor.disabled==db.Vendor.DisabledReason.IncompleteLegalInfos){
+			vendor.disabled = null;
+			App.current.session.addMessage("Merci d'avoir saisi vos informations légales. Votre compte a été débloqué.",false);
+		}
 
 		return vendor;
 	}
