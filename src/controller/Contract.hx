@@ -303,6 +303,7 @@ class Contract extends Controller
 			app.setTemplate( 'contract/orderv.mtt' );
 		}
 
+		var subscriptionService = new SubscriptionService();
 		var currentOrComingSubscription = SubscriptionService.getCurrentOrComingSubscription( app.user, catalog );
 		var userOrders = new Array< { distrib : db.Distribution, ordersProducts : Array< { order : db.UserOrder, product : db.Product }> } >();
 		var products = catalog.getProducts();
@@ -520,34 +521,25 @@ class Contract extends Controller
 					if ( catalog.requiresOrdering ) {
 
 						if ( firstDistrib == null && quantity != null && quantity != 0 ) {
-
 							firstDistrib = distribution;
 						}
 	
 						if ( firstDistrib != null && distribution.date.getTime() < firstDistrib.date.getTime() ) {
-	
 							firstDistrib = distribution;
 							varDefaultOrders = new Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
 						}
 	
 						if( firstDistrib != null && distribution.id == firstDistrib.id ) {
-	
 							if ( orderProduct.order != null && orderProduct.order.id != null ) {
-	
 								varDefaultOrders.push( { productId : orderProduct.order.product.id, quantity : quantity } );
-							}
-							else {
-	
+							} else {
 								varDefaultOrders.push( { productId : orderProduct.product.id, quantity : quantity } );
 							}
 						}
 					}
 
-				}
-				else {
-
+				} else {
 					constOrders.push( { productId : orderProduct.product.id, quantity : quantity, userId2 : null, invertSharedOrder : false } );					
-
 				}
 
 			}
@@ -556,7 +548,6 @@ class Contract extends Controller
 			if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 
 				if( varOrdersToEdit.length == 0  && varOrdersToMake.length == 0 ) {
-
 					throw Error( sugoi.Web.getURI(), "Merci de choisir quelle quantité de produits vous désirez" );
 				}
 
@@ -570,22 +561,17 @@ class Contract extends Controller
 						var subscriptionIsNew = false;
 
 						if ( currentOrComingSubscription == null ) {
-
 							subscriptionIsNew = true;
-							currentOrComingSubscription = SubscriptionService.createSubscription( app.user, catalog, varDefaultOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
-						}
-						else {
-							
-							SubscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, varDefaultOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
+							currentOrComingSubscription = subscriptionService.createSubscription( app.user, catalog, varDefaultOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
+						} else {							
+							subscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, varDefaultOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
 							if ( catalog.requiresOrdering && currentOrComingSubscription.getDefaultOrders().length == 0 ) {
-
 								SubscriptionService.updateDefaultOrders( currentOrComingSubscription, varDefaultOrders );
 							}
 						}
 						
 						var newSubscriptionAbsentDistribs : Array<db.Distribution> = new Array<db.Distribution>();
 						if( subscriptionIsNew ) {
-
 							newSubscriptionAbsentDistribs = currentOrComingSubscription.getAbsentDistribs();
 						}
 
@@ -594,11 +580,8 @@ class Contract extends Controller
 							if( newSubscriptionAbsentDistribs.length == 0 || newSubscriptionAbsentDistribs.find( d -> d.id == orderToEdit.order.distribution.id ) == null ) {
 								
 								if( !orderToEdit.order.product.multiWeight ) {
-
 									varOrders.push( OrderService.edit( orderToEdit.order, orderToEdit.quantity ) );
-								}
-								else {
-
+								} else {
 									varOrders.push( OrderService.editMultiWeight( orderToEdit.order, orderToEdit.quantity ) );
 								}
 							}
@@ -606,24 +589,19 @@ class Contract extends Controller
 						}
 
 						for ( orderToMake in varOrdersToMake ) {
-
 							if( newSubscriptionAbsentDistribs.length == 0 || newSubscriptionAbsentDistribs.find( d -> d.id == orderToMake.distribId ) == null ) {
-								
 								varOrders.push( OrderService.make( app.user, orderToMake.quantity, orderToMake.product, orderToMake.distribId, null, currentOrComingSubscription ) );
 							}
 						}
 
 					}
-				}
-				catch ( e : Error ) {
+				} catch ( e : Error ) {
 
 					if( e.data == SubscriptionServiceError.CatalogRequirementsNotMet ) {
 
 						hasRequirementsError = true;
 						App.current.session.addMessage( e.message, true );
-					}
-					else {
-
+					} else { 
 						throw Error( "/contract/order/" + catalog.id, e.message );
 					}
 				}
@@ -633,24 +611,16 @@ class Contract extends Controller
 				
 				//Create or edit an existing subscription for the coming distribution
 				if( constOrders == null || constOrders.length == 0 ){
-
 					throw Error( sugoi.Web.getURI(), 'Merci de choisir quelle quantité de produits vous désirez' );
 				}
 
 				try {
-
-					if ( currentOrComingSubscription == null ) {
-						
-						SubscriptionService.createSubscription( app.user, catalog, constOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
+					if ( currentOrComingSubscription == null ) {						
+						subscriptionService.createSubscription( app.user, catalog, constOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
+					} else if ( !currentOrComingSubscription.paid() ) {						
+						subscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, constOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
 					}
-					else if ( !currentOrComingSubscription.paid() ) {
-						
-						SubscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, constOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
-					}
-				
-				}
-				catch ( e : Error ) {
-
+				} catch ( e : Error ) {
 					throw Error( "/contract/order/" + catalog.id, e.message );
 				}
 			}

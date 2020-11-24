@@ -459,14 +459,14 @@ class DistributionService
 			}
 
 			//extends subscriptions ?
-			if( !d.catalog.group.hasShopMode() ) { //When a group is in csa mode all catalogs have subscriptions management
-
+			if( !d.catalog.group.hasShopMode() ) { //When a group is in csa mode all catalogs have subscription management
+				var subscriptionService = new SubscriptionService();
 				//get subscriptions that were concerned by this distribution
 				var subscriptions = Subscription.manager.search($catalog==d.catalog && $startDate <= d.date && $endDate >= d.date , true );
 				for ( sub in subscriptions ){
 					//if the subscription is closing before the new date, extends it
 					if(sub.endDate.getTime() < newMd.getDate().getTime()){
-						SubscriptionService.updateSubscription( sub, sub.startDate, newMd.getDate(), null );
+						subscriptionService.updateSubscription( sub, sub.startDate, newMd.getDate(), null );
 					}					
 				}
 				/**

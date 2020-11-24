@@ -169,7 +169,7 @@
                                                 </a>
                                             </li>                                    
                                             <li>
-                                                <a href="/contractAdmin/subscriptions/delete/::subscription.id::?token=::token::">
+                                                <a href="/contractAdmin/subscriptions/delete/::subscription.id::?token=::token::" $$confirm(Voulez vous vraiment supprimer cette souscription et toutes les commandes rattachées ?)>
                                                     <i class="icon icon-delete"></i> ::_("Delete")::
                                                 </a>
                                             </li>	
