@@ -322,23 +322,22 @@ class App {
 		return false;
 	}
 
-	public function membershipBox(userId:Int,groupId:Int,?callbackUrl:String,?distributionId:Int){
+	public function membershipBox(userId:Int,userName:String,groupId:Int,?callbackUrl:String,?distributionId:Int){
         //initSentry();
 
 		var node = js.Browser.document.createDivElement();
 		node.id = "membershipBox-container";
 		js.Browser.document.body.appendChild(node);
 		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
-	
-		ReactDOM.render(jsx('
-			<MuiThemeProvider theme=${CagetteTheme.get()}>
-				<>
-					<CssBaseline />
-					<MembershipDialog userId=$userId groupId=$groupId callbackUrl=$callbackUrl distributionId=$distributionId />							
-				</>
-			</MuiThemeProvider>
-		'), node );
-
+    
+        var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+        neo.createNeoModule(node.id, "membershipDialog", {
+            groupId: groupId,
+            userId: userId,
+            userName: userName,
+            callbackUrl: callbackUrl,
+            distributionId: distributionId
+        });
 	}
 
 	private function createReactStore() {
