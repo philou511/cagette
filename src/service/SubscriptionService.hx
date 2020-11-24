@@ -25,6 +25,10 @@ enum SubscriptionServiceError {
 class SubscriptionService
 {
 
+	public var adminMode:Bool;
+
+	public function new(){}
+
 	/**
 		get subscriptions of a catalog
 	**/
@@ -289,13 +293,11 @@ class SubscriptionService
 		var label : String = '';
 		if ( subscription == null || catalog.type == db.Catalog.TYPE_VARORDER ) {
 
-			if ( catalog.requiresOrdering ) {
-				
+			if ( catalog.requiresOrdering ) {				
 				label += 'Commande obligatoire à chaque distribution';
 			}
 
-			if ( catalog.distribMinOrdersTotal != null && catalog.distribMinOrdersTotal != 0 ) {
-				
+			if ( catalog.distribMinOrdersTotal != null && catalog.distribMinOrdersTotal != 0 ) {				
 				label += ' d\'au moins : ' + catalog.distribMinOrdersTotal + ' €';
 			}
 
@@ -309,14 +311,11 @@ class SubscriptionService
 				}
 			}
 
-		}
-		else {
+		} else {
 
 			var subscriptionOrders = getCSARecurrentOrders( subscription, null );
-
 			if( subscriptionOrders.length == 0 ) return null;
 			for ( order in subscriptionOrders ) {
-
 				label += tools.FloatTool.clean( order.quantity ) + ' x ' + order.product.name + '<br />';
 			}
 
@@ -335,11 +334,12 @@ class SubscriptionService
 			   du ' + DateTools.format( catalog.absencesStartDate, "%d/%m/%Y" ) + ' au ' + DateTools.format( catalog.absencesEndDate, "%d/%m/%Y" );
 	}
 
+
 	/**
 	 * Checks if dates are correct and if there is no other subscription for this user in that same time range
 	 * @param subscription
 	 */
-	public static function isSubscriptionValid( subscription : db.Subscription, ?previousStartDate : Date ) : Bool {
+	public function isSubscriptionValid( subscription : db.Subscription, ?previousStartDate : Date ) : Bool {
 
 		//catalog should have distribs
 		if(subscription.catalog.getDistribs().length==0){
@@ -351,26 +351,28 @@ class SubscriptionService
 			throw TypedError.typed( 'La date de début de la souscription doit être antérieure à la date de fin.', InvalidParameters );
 		}
 
-		//start date should be next unclosed distrib, or later, but not before.
-		var newSubscriptionStartDate = getNewSubscriptionStartDate( subscription.catalog );
-		if ( newSubscriptionStartDate==null ) {
-			throw TypedError.typed( "Toutes les distributions futures sont déjà fermées, ou il n'existe aucune distribution dans le futur.", InvalidParameters );
-		}
-		if( subscription.id == null ) {
-			if ( subscription.startDate.getTime() < newSubscriptionStartDate.getTime() ) {
-				throw TypedError.typed( 'La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : ' + Formatting.dDate( newSubscriptionStartDate ), InvalidParameters );
+		//If not admin : start date should be next unclosed distrib, or later, but not before.
+		if(!adminMode){
+			var newSubscriptionStartDate = getNewSubscriptionStartDate( subscription.catalog );
+			if ( newSubscriptionStartDate == null ) {
+				throw TypedError.typed( "Toutes les distributions futures sont déjà fermées, ou il n'existe aucune distribution dans le futur.", InvalidParameters );
 			}
-		} else {			
-			if ( previousStartDate.toString() != subscription.startDate.toString() ) {
-
-				if ( Date.now().getTime() <= subscription.startDate.getTime() && subscription.startDate.getTime() < newSubscriptionStartDate.getTime() ) {
-
-					throw TypedError.typed( 'La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : '
-										+ Formatting.dDate( newSubscriptionStartDate ), InvalidParameters );
+			if( subscription.id == null ) {
+				//new sub
+				if ( subscription.startDate.getTime() < newSubscriptionStartDate.getTime() ) {
+					throw TypedError.typed( 'La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : ' + Formatting.dDate( newSubscriptionStartDate ), InvalidParameters );
+				}
+			} else {	
+				//existing sub		
+				if ( previousStartDate.toString() != subscription.startDate.toString() ) {
+					if ( Date.now().getTime() <= subscription.startDate.getTime() && subscription.startDate.getTime() < newSubscriptionStartDate.getTime() ) {
+						throw TypedError.typed( 'La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : '
+											+ Formatting.dDate( newSubscriptionStartDate ), InvalidParameters );
+					}
 				}
 			}
 		}
-
+		
 		var subName = ' (souscription de ${subscription.user.getName()})';
 
 		//dates should be inside catalog dates
@@ -422,8 +424,8 @@ class SubscriptionService
 				PastOrders
 			);
 		}
-
-		if ( hasPastDistribsWithoutOrders( subscription ) ) {
+		
+		if ( !adminMode && hasPastDistribsWithoutOrders( subscription ) ) {
 			throw TypedError.typed(
 				'La nouvelle période sélectionnée inclue des distributions déjà passées auxquelles le membre n\'a pas participé, Il faut choisir une date ultérieure $subName.',
 				PastDistributionsWithoutOrders
@@ -651,7 +653,7 @@ class SubscriptionService
 	  *  Creates a new subscription and prevents subscription overlapping and other checks
 	  *  @return db.Subscription
 	  */
-	 public static function createSubscription( user : db.User, catalog : db.Catalog,
+	 public function createSubscription( user : db.User, catalog : db.Catalog,
 		?ordersData : Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >,
 		?absencesNb : Int, ?startDate : Date, ?endDate : Date ) : db.Subscription {
 
@@ -687,20 +689,19 @@ class SubscriptionService
 			subscription.user2 = db.User.manager.get( user2, false );
 		}
 		
-		updateAbsencesNb( subscription, absencesNb );
+		SubscriptionService.updateAbsencesNb( subscription, absencesNb );
 		
 		if ( isSubscriptionValid( subscription ) ) {
 
 			subscription.insert();
 
 			if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
-
-				createCSARecurrentOrders( subscription, ordersData );
+				SubscriptionService.createCSARecurrentOrders( subscription, ordersData );
 			}
 			
 		}
 
-		updateDefaultOrders( subscription, ordersData );
+		SubscriptionService.updateDefaultOrders( subscription, ordersData );
 
 		return subscription;
 	}
@@ -721,7 +722,7 @@ class SubscriptionService
 	}
 
 
-	public static function updateSubscription( subscription : db.Subscription, startDate : Date, endDate : Date, 
+	public function updateSubscription( subscription : db.Subscription, startDate : Date, endDate : Date, 
 	 ?ordersData : Array<{ productId:Int, quantity:Float, userId2:Int, invertSharedOrder:Bool }>, ?absentDistribIds : Array<Int>, ?absencesNb : Int ) {
 
 		if ( startDate == null || endDate == null ) {
@@ -735,11 +736,10 @@ class SubscriptionService
 		subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
 
-		if ( absentDistribIds != null ) {
-			
+		if ( absentDistribIds != null ) {			
 			subscription.setAbsentDistribIds( absentDistribIds );
 		}
-		updateAbsencesNb( subscription, absencesNb );
+		SubscriptionService.updateAbsencesNb( subscription, absencesNb );
 		
 		//check secondary user
 		if(ordersData!=null){
@@ -749,12 +749,9 @@ class SubscriptionService
 			}
 		}
 		
-
-		if ( isSubscriptionValid( subscription, previousStartDate ) ) {
-
+		if ( this.isSubscriptionValid( subscription, previousStartDate ) ) {
 			subscription.update();
 			if( subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
-
 				createCSARecurrentOrders( subscription, ordersData );
 			}
 		}
@@ -865,7 +862,6 @@ class SubscriptionService
 
 
 	public static function markAsPaid( subscription : Subscription, ?paid : Bool = true ){
-
 		subscription.lock();
 		subscription.isPaid = paid;
 		subscription.update();
@@ -873,48 +869,37 @@ class SubscriptionService
 
 	 /**
 	  *  Deletes a subscription if there is no orders that occurred in the past
-	  *  @return db.Subscription
 	  */
 	 public static function deleteSubscription( subscription : db.Subscription ) {
+		
+		subscription.lock();
 
 		if ( hasPastDistribOrders( subscription ) && !subscription.catalog.isDemoCatalog() ) {
-
 			throw TypedError.typed( 'Impossible de supprimer cette souscription car il y a des distributions passées avec des commandes.', PastOrders );
 		}
 
-		var hasPayments = subscription.catalog.group.hasPayments();
+		//pourquoi faire ça ?
+		/*var hasPayments = subscription.catalog.group.hasPayments();
 		var balance = subscription.getBalance();
 		if ( hasPayments && balance != 0.0 ) {
-
 			throw new Error( 'Impossible de supprimer cette souscription car le solde n\'est pas à zéro. Veuillez d\'abord régulariser les paiements.' );
-		}
+		}*/
 
 		//Delete all the orders for this subscription
 		var subscriptionOrders = db.UserOrder.manager.search( $subscription == subscription, false );
 		for ( order in subscriptionOrders ) {
-
 			OrderService.delete(order,true);
 		}
 
 		//Delete all the operations for this subscription
-		var subscriptionOperations = db.Operation.manager.search( $subscription == subscription, false );
-		for ( operation in subscriptionOperations ) {
-
-			operation.lock();
-			operation.delete();
-		}
+		var subscriptionOperations = db.Operation.manager.search( $subscription == subscription, true );
+		for ( operation in subscriptionOperations ) operation.delete();
 		
-		if( hasPayments ) {
-
-			//Update user balance
+		if( subscription.catalog.group.hasPayments() ) {
 			service.PaymentService.updateUserBalance( subscription.user, subscription.catalog.group );
 		}
-		
 
-		//Delete the subscription
-		subscription.lock();
 		subscription.delete();
-
 	}
 
 	
@@ -1001,11 +986,9 @@ class SubscriptionService
 		ordersData : Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool } >, ?oldAbsentDistribIds : Array<Int> ) : Array<db.UserOrder> {
 
 		if ( ordersData == null || ordersData.length == 0 ) {
-
 			ordersData = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool } >();
 			var subscriptionOrders = getCSARecurrentOrders( subscription, oldAbsentDistribIds );
 			for ( order in subscriptionOrders ) {
-
 				ordersData.push( { productId : order.product.id, quantity : order.quantity, userId2 : order.user2 != null ? order.user2.id : null, invertSharedOrder : order.hasInvertSharedOrder() } );
 			}
 		} else if ( hasPastDistribOrders( subscription ) ) {
@@ -1019,8 +1002,7 @@ class SubscriptionService
 			OrderService.delete(order,true);
 		}
 
-		var subscriptionDistributions = getSubscriptionDistribs( subscription );
-
+		var subscriptionDistributions = getSubscriptionDistribs( subscription );		
 		var t = sugoi.i18n.Locale.texts;
 	
 		var orders : Array<db.UserOrder> = [];
