@@ -272,9 +272,11 @@
 		</span>
 		
 		<span style="margin-left:30px;">
-			::set link = "/account/payments"::
+			
 			::if !hasShopMode::
-				::set link = "/amap/payments/" + user.id + "?account=true"::
+				::set link = "/amap/payments"::
+			::else::
+				::set link = "/account/payments"::
 			::end::
 			<a href="::link::" class="btn btn-default btn-small">
 				<i class="fa fa-credit-card" aria-hidden="true"></i>

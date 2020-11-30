@@ -1181,7 +1181,7 @@ class SubscriptionService
 			if( totalOperation == null ) {
 	
 				totalOperation = new db.Operation();
-				totalOperation.name = "Total Commmandes";
+				totalOperation.name = "Total Commandes";
 				totalOperation.type = SubscriptionTotal;
 				totalOperation.user = subscription.user;
 				totalOperation.subscription = subscription;
