@@ -878,12 +878,12 @@ class SubscriptionService
 			throw TypedError.typed( 'Impossible de supprimer cette souscription car il y a des distributions passées avec des commandes.', PastOrders );
 		}
 
-		//pourquoi faire ça ?
-		/*var hasPayments = subscription.catalog.group.hasPayments();
-		var balance = subscription.getBalance();
-		if ( hasPayments && balance != 0.0 ) {
-			throw new Error( 'Impossible de supprimer cette souscription car le solde n\'est pas à zéro. Veuillez d\'abord régulariser les paiements.' );
-		}*/
+		//cant delete if some payment has been recorded
+		var hasPayments = subscription.catalog.group.hasPayments();
+		var subscriptionOperations = db.Operation.manager.count( $subscription == subscription && $type==Payment );
+		if ( hasPayments && subscriptionOperations > 0 ) {
+			throw new Error( 'Impossible de supprimer cette souscription car il y a des paiements enregistrés.' );
+		}
 
 		//Delete all the orders for this subscription
 		var subscriptionOrders = db.UserOrder.manager.search( $subscription == subscription, false );

@@ -188,9 +188,8 @@ class CatalogService{
 
 				var catalogMinOrdersTotal = form.getValueOf("catalogMinOrdersTotal");
 				var allowedOverspend = form.getValueOf("allowedOverspend");
-				if( ( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 ) && ( allowedOverspend == null || allowedOverspend == 0 ) ) {
-
-					throw new tink.core.Error( 'Vous devez obligatoirement définir un dépassement autorisé car vous avez rentré un minimum de commandes sur la durée du contrat.');
+				if( ( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 ) && ( allowedOverspend == null /*|| allowedOverspend == 0*/ ) ) {
+					throw new tink.core.Error( 'Vous devez obligatoirement définir un dépassement autorisé car vous avez rentré un minimum de commandes/provision minimale sur la durée du contrat.');
 				}
 			}
 
