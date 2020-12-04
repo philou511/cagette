@@ -347,7 +347,6 @@ Called from controller/Main.hx line 117
 	function doDebug(d:Dispatch) {
 		d.dispatch(new controller.Debug());
 	}
-
 	
 	//CGU
 	public function doCgu() {

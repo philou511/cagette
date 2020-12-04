@@ -82,7 +82,6 @@ class User extends Controller
 		var vendors = service.VendorService.getVendorsFromUser(app.user);
 		view.vendors = vendors;
 
-		
 		view.isBlocked = pro.db.PUserCompany.getUserCompanies(app.user).find(uc -> return uc.disabled) != null;
 		#end
 
