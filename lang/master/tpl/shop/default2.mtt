@@ -19,7 +19,7 @@
                 });
             ::end::
 
-            neo.createNeoModule("shop", "store", {
+            neo.createNeoModule("shop", "shop", {
                 multiDistribId: ::md.id::
             });
 
