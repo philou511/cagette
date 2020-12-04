@@ -347,16 +347,15 @@ Called from controller/Main.hx line 117
 	function doDebug(d:Dispatch) {
 		d.dispatch(new controller.Debug());
 	}
-
 	
 	//CGU
 	public function doCgu() {
-		throw Redirect("https://www.cagette.net/wp-content/uploads/2020/10/cgu.pdf");
+		throw Redirect("https://www.cagette.net/wp-content/uploads/2020/11/cgu-.pdf");
 	}
 
 	//CGV
 	public function doCgv() {
-		throw Redirect("https://www.cagette.net/wp-content/uploads/2020/10/cgv.pdf");
+		throw Redirect("https://www.cagette.net/wp-content/uploads/2020/11/cgv.pdf");
 	}
 
 	//CGU MGP
