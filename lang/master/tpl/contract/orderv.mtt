@@ -140,10 +140,14 @@
 								<td style="vertical-align: middle;">
 									::if catalog.distribMinOrdersTotal != null || catalog.catalogMinOrdersTotal != null::
 										::if catalog.distribMinOrdersTotal != null::
-											Commande obligatoire à chaque distribution d'au moins : :: catalog.distribMinOrdersTotal:: €
+											Commande obligatoire à chaque distribution d'au moins : ::catalog.distribMinOrdersTotal:: €
 										::end::
 										::if catalog.catalogMinOrdersTotal != null::
-											<br/>Minimum de commandes sur la durée du contrat : :: catalog.catalogMinOrdersTotal:: €
+											::if(hasPayments)::
+											<br/>Provision minimale de ::catalog.catalogMinOrdersTotal:: €
+											::else::
+											<br/>Minimum de commandes sur la durée du contrat : ::catalog.catalogMinOrdersTotal:: €
+											::end::
 										::end::
 										::if catalog.catalogMinOrdersTotal != null && catalog.allowedOverspend != null::
 											<br/>Maximum de commandes sur la durée du contrat : ::catalog.catalogMinOrdersTotal + catalog.allowedOverspend:: €
