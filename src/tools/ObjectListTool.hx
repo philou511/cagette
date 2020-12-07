@@ -139,6 +139,17 @@ class ObjectListTool
 		
 		return out2;		
 	}
+
+	/**
+		deduplicate ints
+	**/
+	public static function deduplicateInts(ints:Iterable<Int>):Array<Int>{
+		var out = [];
+		for( i in ints){
+			if(!out.has(i)) out.push(i);
+		}
+		return out;
+	}
 	
 
 

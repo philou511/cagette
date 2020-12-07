@@ -23,7 +23,7 @@ class Mapbox {
 
   static private function request(service: String, ?options: Map<String, Dynamic>): Array<GeoPoint> {
     var curl = new sugoi.apis.linux.Curl();
-    var token = App.config.get("mapbox_token");
+    var token = App.config.get("mapbox_server_token");
     var url = "https://api.mapbox.com/geocoding/v5/" + service + "?access_token=" + token;
 
     if (options != null) {
