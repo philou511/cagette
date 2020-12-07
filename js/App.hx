@@ -25,7 +25,6 @@ import redux.react.Provider as ReduxProvider;
 import react.file.ImageUploaderDialog;
 import react.order.OrdersDialog;
 import react.product.*;
-import react.store.CagetteStore;
 import react.map.*;
 import react.user.*;
 import react.vendor.*;
@@ -338,17 +337,6 @@ class App {
             callbackUrl: callbackUrl,
             distributionId: distributionId
         });
-	}
-
-	private function createReactStore() {
-		// Store creation
-		var rootReducer = Redux.combineReducers({
-			cart: mapReducer(react.store.redux.action.CartAction, new react.store.redux.state.CartState.CartRdcr()),
-		});
-		// create middleware normally, excepted you must use
-		// 'StoreBuilder.mapMiddleware' to wrap the Enum-based middleware
-		var middleWare = Redux.applyMiddleware( mapMiddleware( Thunk, new ThunkMiddleware() ) );
-		return createStore(rootReducer, null, middleWare);
 	}
 
 	public function browser(){
