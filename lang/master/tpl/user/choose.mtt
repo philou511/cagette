@@ -2,7 +2,7 @@
 
 	
 <!--<div class="col-md-8 col-md-offset-2" ::cond isCovid==true::>-->
-	::if(vendors!=null && vendors.length>0 && !isBlocked)::
+	::if(vendors!=null && vendors.length>0)::
 	<div class="col-md-12" >
 		<div class="alert alert-warning">
 			
@@ -39,8 +39,8 @@
 				<div class="col-md-3 text-center">
 					<p>
 											
-						<b>Visio-conférence <br/>Aide aux Producteurs - point technique :</b><br/>
-						<a href="https://us02web.zoom.us/webinar/register/WN_Ittwe4BmSuWYCCNqnd1w5A" target="_blank" >Lundi 9 novembre à 18h</a>							
+						<b>Visio-conférence <br/>Aide technique aux Producteurs - inscriptions :</b><br/>
+						<a href="https://us02web.zoom.us/meeting/register/tZ0sceusrzwvGtEqaIdPdD1FwOegGmfywnHy" target="_blank" >Lundi 7 décembre à 18h</a>							
 
 					</p>
 				</div>
@@ -85,8 +85,9 @@
 				</div>
 				<div class="col-md-3 text-center">
 					<p>
-						<b>Visio-conférence <br/>Mise en conformités des comptes producteurs :</b><br/>
+						<!--<b>Visio-conférence <br/>Mise en conformités des comptes producteurs :</b><br/>
 						<a href="https://us02web.zoom.us/webinar/register/WN_6SWa4UcUSyOVRkuHRH-b8w" target="_blank" >Mardi 10 Nov. à 19h</a>										
+						-->
 					</p>				
 				</div>
 			</div>
