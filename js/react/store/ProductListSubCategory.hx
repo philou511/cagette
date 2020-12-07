@@ -104,7 +104,7 @@ class ProductListSubCategory extends react.ReactComponentOf<ProductListSubCatego
 		');
 	}
 
-	public static var LIMIT_TO_DISPLAY = 16;
+	public static var LIMIT_TO_DISPLAY = 32;
 	
 	function renderProducts(products:Array<ProductInfo>) {
 		var numberToDisplay = state.displayAll ? products.length : LIMIT_TO_DISPLAY;

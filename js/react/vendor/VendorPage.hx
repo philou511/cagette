@@ -39,7 +39,12 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 			var desc = props.vendorInfo.desc==null ? "" : props.vendorInfo.desc;
 			props.vendorInfo.longDesc = desc.split("\n").join("<br/>");
 		}
-	}
+    }
+
+    function getAddress(vendor:VendorInfos){
+        return jsx('<>${props.vendorInfo.address1} ${props.vendorInfo.address2}<br/>
+        ${props.vendorInfo.zipCode} ${props.vendorInfo.city}</>');
+    }
 
 	override public function render(){
 
@@ -58,10 +63,12 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 				${getProfession()}
 
 				<Typography component="p" style=${{fontSize:"1.1rem",color:CGColors.MediumGrey}}>
-					${CagetteTheme.getIcon("map-marker")} ${props.vendorInfo.city} (${props.vendorInfo.zipCode})
+                    ${CagetteTheme.getIcon("map-marker")} &nbsp;
+                   ${getAddress(props.vendorInfo)}<br/>
+                   Email : ${props.vendorInfo.email}
                 </Typography>
                 
-                <Typography component="p" style=${{fontSize:"0.8rem",color:CGColors.MediumGrey}}>
+                <Typography component="p" style=${{fontSize:"0.8rem",color:CGColors.MediumGrey,marginTop:12}}>
                     SIRET : ${props.vendorInfo.companyNumber}<br/>
                     ${props.vendorInfo.legalStatus}
 				</Typography>
