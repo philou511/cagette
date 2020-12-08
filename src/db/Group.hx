@@ -210,6 +210,10 @@ class Group extends Object
 	public function hasPhoneRequired(){
 		return flags != null && flags.has(PhoneRequired);
 	}
+
+	public function hasShopV2(){		
+		return betaFlags != null && betaFlags.has(ShopV2);
+	}
 	
 	public function getCategoryGroups() {
 		
