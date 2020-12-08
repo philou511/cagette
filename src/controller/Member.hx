@@ -780,9 +780,13 @@ class Member extends Controller
 	 */
 	@tpl('member/payments.mtt')
 	function doPayments(m:db.User){
+
+		if(!app.user.getGroup().hasShopMode()){
+			throw Redirect("/amap/payments/"+m.id);
+		}
 		
 		service.PaymentService.updateUserBalance(m, app.user.getGroup());		
-       var browse:Int->Int->List<Dynamic>;
+    	var browse:Int->Int->List<Dynamic>;
 		
 		//default display
 		browse = function(index:Int, limit:Int) {

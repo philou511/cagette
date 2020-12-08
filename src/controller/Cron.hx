@@ -187,7 +187,8 @@ class Cron extends Controller
 				ON Subscription.catalogId = Catalog.id
 				INNER JOIN Distribution
 				ON Distribution.catalogId = Catalog.id
-				WHERE Subscription.isValidated = false 
+				WHERE Subscription.isPaid = false 
+				AND Catalog.type = ${db.Catalog.TYPE_CONSTORDERS} 
 				AND Distribution.date >= DATE_ADD(\'${fromNow}\', INTERVAL 3 DAY)
 				AND Distribution.date < DATE_ADD(\'${toNow}\', INTERVAL 3 DAY);', false ) );
 			
@@ -276,7 +277,7 @@ class Cron extends Controller
 		});
 		task.execute(!App.config.DEBUG);
 
-		var task = new TransactionWrappedTask( 'default automated orders for CSA variable contracts with compulsory ordering' );
+		var task = new TransactionWrappedTask( 'Default automated orders for CSA variable contracts with compulsory ordering' );
 		task.setTask( function() {
 
 			var range = tools.DateTool.getLastHourRange( now );
