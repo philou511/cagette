@@ -37,10 +37,11 @@ class Distribution extends Controller
 		var from = new Date(now.getFullYear(), now.getMonth(), now.getDate()-1, 0, 0, 0);
 		var to = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * 28 * 3);
 		var timeframe = new tools.Timeframe(from,to);
+		var group = app.user.getGroup();
 
 		var distribs = db.MultiDistrib.getFromTimeRange(app.user.getGroup(),timeframe.from,timeframe.to);
 
-		if( app.user.getGroup().hasPayments() && app.params.get("_from")==null){
+		if( group.hasPayments() && group.hasShopMode() && app.params.get("_from")==null){
 
 			//include unvalidated distribs in the past
 			var unvalidated = db.MultiDistrib.getFromTimeRange(app.user.getGroup() , tools.DateTool.deltaDays(from,-60) , tools.DateTool.deltaDays(from,-1) );

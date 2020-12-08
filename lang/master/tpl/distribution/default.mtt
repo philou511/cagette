@@ -179,7 +179,7 @@
 										<div class="status">::_("Distribution done")::</div>
 										<br/>
 									</span>
-									::if(d.getGroup().hasPayments())::
+									::if(d.getGroup().hasPayments() && d.getGroup().hasShopMode())::
 									<a href="/distribution/validate/::d.id::" class="btn btn-primary">
 										<i class="icon icon-check"></i> Valider cette distribution
 									</a>
@@ -194,7 +194,7 @@
 										
 										::if user.isAdmin()::
 										<br/>
-										<a href="/distribution/unmarkAsPaid/::d.id::" class="btn btn-danger btn-sm">
+										<a href="/distribution/unvalidate/::d.id::" class="btn btn-danger btn-sm">
 											<i class="icon icon-check"></i> Dévalider
 										</a>
 										::end::
