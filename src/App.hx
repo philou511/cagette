@@ -197,7 +197,6 @@ class App extends sugoi.BaseApp {
 		
 
 		out.set("ShopV2", "Nouvelle boutique");
-		out.set("MessagesV2", "Nouvelle messagerie");
 
 		out.set("ref", "Référence");
 		out.set("linkText", "Intitulé du lien");
