@@ -342,12 +342,6 @@ class App {
 	public function browser(){
 		return bowser.Bowser.getParser(js.Browser.window.navigator.userAgent);
 	}
-	
-	public function groupMap(lat:Float,lng:Float,address:String) {
-        //initSentry();
-
-		ReactDOM.render(jsx('<$GroupMapRoot lat=$lat lng=$lng address=$address />'),  js.Browser.document.querySelector('#map'));
-	}
 
 	/**
 	 * Helper to get values of a bunch of checked checkboxes
