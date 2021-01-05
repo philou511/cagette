@@ -25,7 +25,6 @@ import redux.react.Provider as ReduxProvider;
 import react.file.ImageUploaderDialog;
 import react.order.OrdersDialog;
 import react.product.*;
-import react.store.CagetteStore;
 import react.map.*;
 import react.user.*;
 import react.vendor.*;
@@ -340,63 +339,8 @@ class App {
         });
 	}
 
-	private function createReactStore() {
-		// Store creation
-		var rootReducer = Redux.combineReducers({
-			cart: mapReducer(react.store.redux.action.CartAction, new react.store.redux.state.CartState.CartRdcr()),
-		});
-		// create middleware normally, excepted you must use
-		// 'StoreBuilder.mapMiddleware' to wrap the Enum-based middleware
-		var middleWare = Redux.applyMiddleware( mapMiddleware( Thunk, new ThunkMiddleware() ) );
-		return createStore(rootReducer, null, middleWare);
-	}
-
 	public function browser(){
 		return bowser.Bowser.getParser(js.Browser.window.navigator.userAgent);
-	}
-
-	/**
-		instanciates shop2
-	**/
-	public function shop(multiDistribId:Int) {
-        //initSentry();
-
-		var elements = js.Browser.window.document.querySelectorAll('.sticky');
-		sticky.Stickyfill.add(elements);
-
-		// Will be merged with default values from mui
-		
-
-		var store = createReactStore();
-		ReactDOM.render(jsx('
-			<ReduxProvider store=${store}>
-				<MuiThemeProvider theme=${CagetteTheme.get()}>
-					<>
-						<CssBaseline />
-						<CagetteStore multiDistribId=$multiDistribId />
-					</>
-				</MuiThemeProvider>
-			</ReduxProvider>
-		'), js.Browser.document.querySelector('#shop'));
-	}
-
-	/**
-		init react page header
-	**/
-	public function pageHeader(groupName:String,_rights:String,userName:String,userId:Int)
-	{
-		groupName = StringTools.urlDecode(groupName);
-		/*var rights : Rights = null;
-		if(_rights!=null) rights = haxe.Unserializer.run(_rights);*/
-		//ReactDOM.render(jsx('<$PageHeader userRights=$rights groupName=$groupName userName=$userName userId=$userId />'), js.Browser.document.querySelector('#header'));
-		ReactDOM.render(jsx('<$PageHeader groupName=$groupName userName=$userName userId=$userId />'), js.Browser.document.querySelector('#header'));
-	}
-
-	
-	public function groupMap(lat:Float,lng:Float,address:String) {
-        //initSentry();
-
-		ReactDOM.render(jsx('<$GroupMapRoot lat=$lat lng=$lng address=$address />'),  js.Browser.document.querySelector('#map'));
 	}
 
 	/**

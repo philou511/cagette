@@ -270,10 +270,7 @@ Called from controller/Main.hx line 117
 		}
 		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
 		view.category = 'shop';
-		view.place = md.getPlace();
-		view.date = md.getDate();
 		view.md = md;
-		view.rights = app.user!=null ? haxe.Serializer.run(app.user.getRights()) : null;
 	}
 	
 	@logged

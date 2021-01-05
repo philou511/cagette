@@ -3,11 +3,16 @@
 	$$browserDetection()
 
 	<div  id="map"></div>
-	
+
 	<script>
 	document.addEventListener("DOMContentLoaded", function(event) {
-		var map = _.groupMap(::lat::,::lng::,"::escapeJS(address)::");
+        neo.createNeoModule("map", "groupMap", {
+                initLat: ::lat::,
+                initLng: ::lng::,
+                initAddress: "::escapeJS(address)::"
+            });
 	});
+
 	</script>
 	
 ::end::
