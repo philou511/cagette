@@ -223,7 +223,8 @@
 		  		<div class="col-md-12">
 				<p>
 					::if catalog.isUserOrderAvailable()::
-						Tant que les commandes sont ouvertes, vous pouvez revenir sur cette page et modifier votre commande.
+						Tant que les commandes sont ouvertes, vous pouvez revenir sur cette page et modifier votre commande.<br/>
+						Note: pour effacer une commande, saisissez une quantité égale à 0
 					::end::
 				</p>
 					
