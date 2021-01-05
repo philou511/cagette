@@ -191,6 +191,7 @@ class Subscriptions extends controller.Controller
 		var endDateDP = new form.CagetteDatePicker("endDate","Date de fin",subscription.endDate);
 		view.endDate = endDateDP;
 		view.startDate = startDateDP;
+
 		var subscriptionService = new service.SubscriptionService();
 		subscriptionService.adminMode = true;
 
@@ -398,6 +399,8 @@ class Subscriptions extends controller.Controller
 
 		if( subscription.catalog.group.hasShopMode() ) throw Redirect( "/contract/view/" + subscription.catalog.id );
 
+		var subService = new SubscriptionService();
+
 		if ( args != null && args.returnUrl != null ) {
 
 			App.current.session.data.absencesReturnUrl = args.returnUrl;
@@ -419,7 +422,6 @@ class Subscriptions extends controller.Controller
 		var absencesDistribs = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
 		var absentDistribIds = subscription.getAbsentDistribIds();
 		for ( i in 0...absencesNb ) {
-
 			form.addElement(new sugoi.form.elements.IntSelect( "absentDistrib" + i, "Je ne pourrai pas venir le :", absencesDistribs.array(), absentDistribIds[i], true ));
 		}
 		view.form = form;
@@ -429,16 +431,11 @@ class Subscriptions extends controller.Controller
 			try {
 
 				var absentDistribIds = new Array<Int>();
-				for ( i in 0...absencesNb ) {
-				
+				for ( i in 0...absencesNb ) {				
 					absentDistribIds.push( Std.parseInt( form.getValueOf( 'absentDistrib' + i ) ) );
 				}
-				SubscriptionService.updateAbsencesDates( subscription, absentDistribIds );
-				
-			
-			}
-			catch( error : Error ) {
-			
+				subService.updateAbsencesDates( subscription, absentDistribIds );				
+			} catch( error : Error ) {
 				throw Error( '/subscriptions/absences/' + subscription.id, error.message );
 			}
 

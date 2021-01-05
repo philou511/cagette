@@ -560,7 +560,7 @@ class User extends Object {
 			throw new tink.core.Error("Le mail "+email+" est déjà utilisé par un autre compte.");
 		}
 		if ( email2!=null && db.User.manager.count( ($email==this.email2 || $email2==this.email2) && $id!=this.id) > 0 ){
-			throw new tink.core.Error("Le mail "+email2+" est déjà utilisé par un autre compte.");
+			throw new tink.core.Error("Le mail secondaire "+email2+" est déjà utilisé par un autre compte.");
 		}
 
 

@@ -315,18 +315,18 @@ class Install extends controller.Controller
 
 		// 2020-11-23
 		// MAJ gestion des paiements pour les AMAPs
-		// db.Distribution.orderStartDate ne peut plus être nul
+		// db.Distribution.orderEndDate ne peut plus être nul
 
-		for(d in db.Distribution.manager.search($orderEndDate==null,true).array() ){
+		// for(d in db.Distribution.manager.search($orderEndDate==null,{limit:1000},true).array() ){
 
-			var c = d.catalog;
-			if(c.orderEndHoursBeforeDistrib==null) c.orderEndHoursBeforeDistrib = 24;
+		// 	var c = d.catalog;
+		// 	if(c.orderEndHoursBeforeDistrib==null) c.orderEndHoursBeforeDistrib = 24;
 
-			d.orderEndDate = DateTools.delta( d.date, -1000.0 * 60 * 60 * c.orderEndHoursBeforeDistrib );
-			d.update();
-			trace("update distrib "+d.id+"<br/>");
+		// 	d.orderEndDate = DateTools.delta( d.date, -1000.0 * 60 * 60 * c.orderEndHoursBeforeDistrib );
+		// 	d.update();
+		// 	trace("update distrib "+d.id+"<br/>");
 
-		}
+		// }
 	}
 
 	/**
