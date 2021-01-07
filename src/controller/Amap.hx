@@ -75,6 +75,12 @@ class Amap extends Controller
 				group.update();
 			}
 
+			if(!group.betaFlags.has(db.Group.BetaFlags.ShopV2) && group.flags.has(db.Group.GroupFlags.Show3rdCategoryLevel)){
+				App.current.session.addMessage("Vous ne pouvez classer la boutique par catégorie de troisième niveau seulement avec la nouvelle boutique.",true);
+				group.flags.unset(db.Group.GroupFlags.Show3rdCategoryLevel);
+				group.update();
+			}
+
 			if (group.extUrl != null){
 				if ( group.extUrl.indexOf("http://") ==-1 &&  group.extUrl.indexOf("https://") ==-1 ){
 					group.extUrl = "http://" + group.extUrl;

@@ -16,7 +16,7 @@ enum GroupFlags {
 	PhoneRequired;	//phone number of members is required for this group	
 	AddressRequired;//address required for delivery at home
 	UnUsed;
-	
+	Show3rdCategoryLevel; //Show the third category level in the shop (Only for shop V2)
 }
 
 enum BetaFlags{
