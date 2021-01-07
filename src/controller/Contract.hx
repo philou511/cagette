@@ -440,7 +440,7 @@ class Contract extends Controller
 			var varOrders = []; 
 			var varOrdersToEdit = [];
 			var varOrdersToMake = [];
-			var pricesQuantitiesByDistrib = new Map< db.Distribution, Array< { productQuantity : Float, productPrice : Float } > >();
+			var pricesQuantitiesByDistrib = new Map< db.Distribution, Array< { productQuantity:Float, productPrice:Float } > >();
 			//For const catalogs
 			var constOrders = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }> (); 
 
@@ -645,7 +645,7 @@ class Contract extends Controller
 
 		}
 		
-		App.current.breadcrumb = [ { link : "/home", name : "Commandes", id : "home" }, { link : "/home", name : "Commandes", id : "home" } ]; 
+		App.current.breadcrumb = [ { link : "/home", name : "Commandes", id : "home" } ]; 
 		view.subscriptionService = SubscriptionService;
 		view.catalog = catalog;
 		if ( currentOrComingSubscription != null && catalog.type == db.Catalog.TYPE_VARORDER && catalog.group.hasPayments() ) {
