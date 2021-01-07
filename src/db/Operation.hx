@@ -158,15 +158,16 @@ class Operation extends sys.db.Object
 	function check() {
 
 		if ( type == Payment && getPaymentType() == null ) {
-
 			throw new tink.core.Error("Payment operation should have a type");
-		}
-		else if ( type == VOrder && this.basket == null ) {
-
+		} else if ( type == VOrder && this.basket == null ) {
 			throw new tink.core.Error("Variable Order operation should have a basket");
 		}
 		
-		if ( !this.group.hasShopMode() && this.subscription == null ) throw new tink.core.Error("Aucune souscription n\'est associée à cette opération.");
+		if ( !this.group.hasShopMode() && this.subscription == null ) {
+			if(this.type==SubscriptionTotal /*|| this.type==Payment*/){ //there can be a payment for a membership
+				throw new tink.core.Error("Aucune souscription n\'est associée à cette opération.");
+			}
+		}
 
 		amount = Formatting.roundTo( amount, 2 );
 	}

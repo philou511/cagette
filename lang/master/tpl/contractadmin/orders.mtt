@@ -1,4 +1,6 @@
 ::use 'contractadmin/design.mtt'::
+
+::set isCSAPayment = !distribution._catalog._group.hasShopMode() && distribution._catalog._group.hasPayments()::
 	
 		<h3>::_("Orders")::</h3>
 		
@@ -111,7 +113,11 @@
 						<th>::_("Sub-total")::</th>
 						<th>::_("Fees")::</th>
 						<th>::_("Total")::</th>
-						<th>::_("Paid")::</th>
+						<th>
+							::if(!isCSAPayment)::
+							::_("Paid")::
+							::end::
+						</th>
 					</tr>
 				::end::
 				
@@ -156,7 +162,7 @@
 						::set total = total + m.total::
 					</td>
 					<td>
-						::if !m.canceled && m.quantity!=0::
+						::if !m.canceled && m.quantity!=0 && !isCSAPayment::
 							$$check(::m.paid::)
 						::end::
 

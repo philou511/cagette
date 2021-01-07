@@ -346,7 +346,13 @@
 		</span>
 		
 		<span style="margin-left:30px;">
-			<a href="/amap/payments/::member.id::" class="btn btn-default btn-small">
+			::if hasShopMode::
+				::set paymentsUrl = "/member/payments/"+member.id::
+			::else::
+				::set paymentsUrl = "/amap/payments/"+member.id::
+			::end::
+
+			<a href="::paymentsUrl::" class="btn btn-default btn-small">
 				<i class="fa fa-credit-card" aria-hidden="true"></i>
 				::_("Payments details")::
 			</a>

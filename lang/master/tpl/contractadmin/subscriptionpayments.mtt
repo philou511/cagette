@@ -78,7 +78,7 @@
 				</td>
 
 				<td style="vertical-align: middle;padding-top:15px;padding-bottom:15px;">
-					Total Commmandes
+					Total Commandes
 				</td>
 
 				<td style="vertical-align: middle;">
@@ -93,7 +93,7 @@
 		
 		</table>
 		
-		$$insert(::_("Insert a payement")::,/transaction/insertPayment/::member.id::/::subscription.id::)
+		$$insert(Saisir un paiement,/transaction/insertPayment/::member.id::/::subscription.id::)
 		
 </div>
 

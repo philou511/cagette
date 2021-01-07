@@ -39,13 +39,12 @@ class Transaction extends controller.Controller
 			form.addElement( new sugoi.form.elements.Html( "subscription", '<div class="control-label" style="text-align:left;"> ${ subscription.catalog.name } - ${ subscription.catalog.vendor.name } </div>', 'Souscription' ) );
 		}
 
-		form.addElement(new sugoi.form.elements.StringInput("name", t._("Label||label or name for a payment"), null, true));
+		form.addElement(new sugoi.form.elements.StringInput("name", t._("Label||label or name for a payment"), "Paiement", false));
 		form.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
 		form.addElement(new form.CagetteDatePicker("date", t._("Date"), Date.now(), NativeDatePickerType.date, true));
 		var paymentTypes = service.PaymentService.getPaymentTypes(PCManualEntry, group);
 		var out = [];
-		for (paymentType in paymentTypes)
-		{
+		for (paymentType in paymentTypes){
 			out.push({label: paymentType.name, value: paymentType.type});
 		}
 		form.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), out, null, true));

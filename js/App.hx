@@ -342,12 +342,6 @@ class App {
 	public function browser(){
 		return bowser.Bowser.getParser(js.Browser.window.navigator.userAgent);
 	}
-	
-	public function groupMap(lat:Float,lng:Float,address:String) {
-        //initSentry();
-
-		ReactDOM.render(jsx('<$GroupMapRoot lat=$lat lng=$lng address=$address />'),  js.Browser.document.querySelector('#map'));
-	}
 
 	/**
 	 * Helper to get values of a bunch of checked checkboxes
@@ -425,34 +419,34 @@ class App {
 	/**
 		Display a notif about new features 3 times
 	**/
-	// public function newFeature(selector:String,title:String,message:String,placement:String){
-	// 	var element = js.Browser.document.querySelector(selector);
-	// 	if(element==null) return;
+	/*public function newFeature(selector:String,title:String,message:String,placement:String){
+		var element = js.Browser.document.querySelector(selector);
+		if(element==null) return;
 
-	// 	//do not show after 3 times
-	// 	var storage = js.Browser.getLocalStorage();
-	// 	if (storage.getItem("newFeature."+selector) == "3") return;
+		//do not show after 3 times
+		var storage = js.Browser.getLocalStorage();
+		if (storage.getItem("newFeature."+selector) == "3") return;
 
-	// 	//prepare Bootstrap "popover"
-	// 	var x = jq(element).first().attr("title",title);
-	// 	var text = "<p>" + message + "</p>";
+		//prepare Bootstrap "popover"
+		var x = jq(element).first().attr("title",title);
+		var text = "<p>" + message + "</p>";
 		
-	// 	var options = { container:"body", content:text, html:true , placement:placement};
-	// 	untyped  x.popover(options).popover('show');
-	// 	//click anywhere to hide
-	// 	App.jq("html").click(function(_) {
-	// 		untyped x.popover('hide');				
-	// 	});
+		var options = { container:"body", content:text, html:true , placement:placement};
+		untyped  x.popover(options).popover('show');
+		//click anywhere to hide
+		App.jq("html").click(function(_) {
+			untyped x.popover('hide');				
+		});
 		
 
-	// 	var storage = js.Browser.getLocalStorage();
-	// 	var i = storage.getItem("newFeature."+selector);
-	// 	if(i==null) i = "0";
-	// 	storage.setItem("newFeature."+selector, Std.string( Std.parseInt(i)+1 ) );
+		var storage = js.Browser.getLocalStorage();
+		var i = storage.getItem("newFeature."+selector);
+		if(i==null) i = "0";
+		storage.setItem("newFeature."+selector, Std.string( Std.parseInt(i)+1 ) );
 		
-	// 	//highlight
-	// 	App.jq(element).first().addClass("highlight");	
-	// }
+		//highlight
+		App.jq(element).first().addClass("highlight");	
+	}*/
 
 	public function toggle(selector:String){
 		for ( el in js.Browser.document.querySelectorAll(selector)){
