@@ -273,6 +273,7 @@ Called from controller/Main.hx line 117
 		}
 		view.category = 'shop';
 		view.md = md;
+		view.tmpBasketId = app.session.data.tmpBasketId;
 	}
 	
 	@logged
