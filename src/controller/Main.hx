@@ -245,7 +245,6 @@ Called from controller/Main.hx line 117
 		d.dispatch(new controller.Place());
 	}
 	
-	@logged
 	function doTransaction(d:Dispatch) {
 		addBc("shop","Boutique","/shop");
 		d.dispatch(new controller.Transaction());
