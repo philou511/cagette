@@ -76,7 +76,7 @@ class App {
 	 */
 	public static function main() {
 		
-		var app = new App();
+        var app = new App();
         untyped js.Browser.window._Cagette = app;
         untyped js.Browser.window._ = app;
         
@@ -308,14 +308,19 @@ class App {
 	/**
 	 *  Displays a sign up box
 	 */
-	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {
+	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false,?tmpBasketId:Int) {
         //initSentry();
 
 		var modalElement = Browser.document.getElementById("myModal");
 		modalElement.querySelector(".modal-title").innerHTML = "S'inscrire";
 		modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
 		var modal = new bootstrap.Modal(modalElement);
-		modal.show();
+        modal.show();
+        modalElement.addEventListener('hide.bs.modal', function() {
+            if (tmpBasketId!=null){
+                js.Browser.window.location.href = "/transaction/tmpBasket/"+tmpBasketId;
+            }
+        });
 		ReactDOM.render(
 			jsx('<$RegisterBox redirectUrl=$redirectUrl message=$message phoneRequired=$phoneRequired addressRequired=$addressRequired/>'),
 			js.Browser.document.querySelector('#myModal .modal-body')
