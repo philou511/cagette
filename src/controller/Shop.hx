@@ -350,5 +350,8 @@ class Shop extends Controller
 		
 	}
 
-	
+	public function doAddTmpBasketId(tmpBasketId:Int) {
+		app.session.data.tmpBasketId = tmpBasketId;
+	}
+
 }
