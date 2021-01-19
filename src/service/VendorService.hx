@@ -203,6 +203,9 @@ class VendorService{
 		if( vendor.email==null ) throw new Error("Vous devez définir un email pour ce producteur.");
 		if( !EmailValidator.check(vendor.email) ) throw new Error("Email invalide.");
 
+		//desc
+		if( vendor.desc.length>1000) throw  new Error("Merci de saisir une description de moins de 1000 caractères");
+
 		//asssociation
 		if(legalInfos && data.legalStatus==2){
 
