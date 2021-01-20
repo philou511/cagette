@@ -200,7 +200,8 @@ class Group extends Object
  	}
 	
 	public function hasPayments(){		
-		return flags != null && flags.has(HasPayments);
+		//CSA group cannot have global payment option enabled
+		return flags != null && flags.has(HasPayments) && flags.has(ShopMode);
 	}
 	
 	public function hasTaxonomy(){

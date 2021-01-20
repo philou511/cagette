@@ -45,20 +45,20 @@ class Catalog extends Object
 	public var absencesStartDate : SNull<SDateTime>;
 	public var absencesEndDate : SNull<SDateTime>;
 
+	public var hasPayments : SBool; //hasPayments , only for CSA groups
+
 	@:skip inline public static var TYPE_CONSTORDERS = 0; 	//CSA catalog 
 	@:skip inline public static var TYPE_VARORDER = 1;		//variable orders catalog
+	@:skip inline public static var CATALOG_ID_HASPAYMENTS = 53442;		//payments is mandatory when id > CATALOG_ID_HASPAYMENTS
 	@:skip var cache_hasActiveDistribs : Bool;
 
-
-	
 	public function new() 
 	{
 		super();
 		flags = cast 0;
 		distributorNum = 0;	
 		orderEndHoursBeforeDistrib = 24;	
-		flags.set(UsersCanOrder);
-	
+		flags.set(UsersCanOrder);		
 	}	
 	
 	/**
@@ -349,7 +349,23 @@ class Catalog extends Object
 	override public function update(){
 		startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate()	, 0, 0, 0 );
 		endDate 	= new Date( endDate.getFullYear(),   endDate.getMonth(),   endDate.getDate()	, 23, 59, 59 );
+
+		if(this.id > CATALOG_ID_HASPAYMENTS){
+			this.hasPayments = true;
+		} 
+
 		super.update();
+	}
+
+	override public function insert(){
+		startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate()	, 0, 0, 0 );
+		endDate 	= new Date( endDate.getFullYear(),   endDate.getMonth(),   endDate.getDate()	, 23, 59, 59 );
+
+		if(this.id > CATALOG_ID_HASPAYMENTS){
+			this.hasPayments = true;
+		} 
+
+		super.insert();
 	}
 	
 	/**
@@ -390,6 +406,7 @@ class Catalog extends Object
 			"absentDistribsMaxNb" => "Nombre maximum d'absences",
 			"absencesStartDate" => "Date de début de la période d'absences",
 			"absencesEndDate" => "Date de fin de la période d'absences",
+			"hasPayements" => "Gestion des paiements",
 		];
 	}
 	
