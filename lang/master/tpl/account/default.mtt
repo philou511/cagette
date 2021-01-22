@@ -113,7 +113,7 @@
 							::catalog._vendor.name::
 						</a>
 						
-						<div class="text-right" style="float:right;margin-bottom:10px;">							
+						<div class="text-right" style="float:right;margin-bottom:10px;" ::cond isAdmin::>							
 							<a href="/account/orders/::catalog.id::" class="btn btn-default btn-sm">
 								Admin : Toutes les commandes du contrat
 							</a>	
