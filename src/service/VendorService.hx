@@ -204,7 +204,7 @@ class VendorService{
 		if( !EmailValidator.check(vendor.email) ) throw new Error("Email invalide.");
 
 		//desc
-		if( vendor.desc.length>1000) throw  new Error("Merci de saisir une description de moins de 1000 caractères");
+		if( vendor.desc!=null && vendor.desc.length>1000) throw  new Error("Merci de saisir une description de moins de 1000 caractères");
 
 		//asssociation
 		if(legalInfos && data.legalStatus==2){

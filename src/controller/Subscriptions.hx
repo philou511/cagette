@@ -203,7 +203,7 @@ class Subscriptions extends controller.Controller
 					throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous devez sélectionner une date de début et de fin pour la souscription." );
 				}
 
-				var ordersData = new Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
+				var ordersData = new Array<{ productId:Int, quantity:Float, ?userId2:Int, ?invertSharedOrder:Bool }>();
 				
 				// if ( canOrdersBeEdited ) {
 
@@ -236,7 +236,7 @@ class Subscriptions extends controller.Controller
 							invert = app.params.get( 'invert' + product.id ) == "true";
 						}
 
-						if ( quantity != 0 ) {
+						if ( quantity!=null && quantity > 0 ) {
 							if( subscription.catalog.type == Catalog.TYPE_CONSTORDERS ) {
 								ordersData.push( { productId : product.id, quantity : quantity, userId2 : userId2, invertSharedOrder : invert } );
 							} else {
