@@ -125,21 +125,19 @@ class Subscription extends Object {
 		if ( this.defaultOrders == null ) return 'Aucune commande par défaut définie';
 		
 		var label : String = '';
-		var defaultOrders : Array< { productId : Int, quantity : Float } > = haxe.Json.parse( this.defaultOrders );
+		var defaultOrders : Array<{ productId:Int, quantity:Float }> = haxe.Json.parse( this.defaultOrders );
 		var totalPrice = 0.0;
 		for ( order in defaultOrders ) {
+			if(order.quantity == null || order.quantity == 0) continue;
 
 			var product = db.Product.manager.get( order.productId, false );
-			if ( product != null && order.quantity != 0 ) {
-
+			if ( product != null ) {
 				label += tools.FloatTool.clean( order.quantity ) + ' x ' + product.name + '<br />';
 				totalPrice += Formatting.roundTo( order.quantity * product.price, 2 );
-			}
-			
+			}			
 		}
 
 		label += 'Total : ' + Formatting.roundTo( totalPrice, 2 ) + ' €';
-
 		return label;
 	}
 
