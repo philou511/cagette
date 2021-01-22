@@ -61,10 +61,6 @@ class Api extends Controller
 	}	
 	#end
 	
-	public function doShop(d:haxe.web.Dispatch) {
-		d.dispatch(new controller.api.ShopApi());
-	}	
-	
 	public function doOrder(d:haxe.web.Dispatch) {
 		d.dispatch(new controller.api.Order());
 	}	

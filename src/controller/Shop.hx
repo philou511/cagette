@@ -304,7 +304,6 @@ class Shop extends Controller
 	**/
 	function doConfirm(tmpBasket:db.TmpBasket){
 		if(tmpBasket!=null){
-			trace(tmpBasket.getData());
 			OrderService.confirmTmpBasket(tmpBasket);
 			throw Ok("/contract", t._("Your order has been confirmed") );
 		}else{
@@ -327,7 +326,7 @@ class Shop extends Controller
 			view.group = tmpBasket.multiDistrib.getGroup();
 			view.register = true;
 			view.message =  t._("In order to confirm your order, You need to authenticate.");
-			
+			view.tmpBasketId = tmpBasket.id;
 
 		}else{
 			tmpBasket.lock();
@@ -351,5 +350,8 @@ class Shop extends Controller
 		
 	}
 
-	
+	public function doAddTmpBasketId(tmpBasketId:Int) {
+		app.session.data.tmpBasketId = tmpBasketId;
+	}
+
 }

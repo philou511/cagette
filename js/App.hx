@@ -75,8 +75,10 @@ class App {
 	 * The JS App will be available as "_" in the document.
 	 */
 	public static function main() {
-        
-        untyped js.Browser.window._ = new App();
+		
+        var app = new App();
+        untyped js.Browser.window._Cagette = app;
+        untyped js.Browser.window._ = app;
         
         NeolithicViewsGenerator.setApiUrl("/api");
         // NeolithicViewsGenerator.setGraphUrl(sugoi.db.Variable.get("cagette_api") + "/graphql");
@@ -306,14 +308,19 @@ class App {
 	/**
 	 *  Displays a sign up box
 	 */
-	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {
+	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false,?tmpBasketId:Int) {
         //initSentry();
 
 		var modalElement = Browser.document.getElementById("myModal");
 		modalElement.querySelector(".modal-title").innerHTML = "S'inscrire";
 		modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
 		var modal = new bootstrap.Modal(modalElement);
-		modal.show();
+        modal.show();
+        modalElement.addEventListener('hide.bs.modal', function() {
+            if (tmpBasketId!=null){
+                js.Browser.window.location.href = "/transaction/tmpBasket/"+tmpBasketId;
+            }
+        });
 		ReactDOM.render(
 			jsx('<$RegisterBox redirectUrl=$redirectUrl message=$message phoneRequired=$phoneRequired addressRequired=$addressRequired/>'),
 			js.Browser.document.querySelector('#myModal .modal-body')
@@ -510,6 +517,12 @@ class App {
     //     m.show();
 
     // }
+
+    public function addTmpBasketIdToSession(tmpBasketId:Int) {
+        var req = new haxe.Http("/shop/addTmpBasketId/"+tmpBasketId);
+        req.request();
+    }
+
 }
 
 

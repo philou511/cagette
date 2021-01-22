@@ -20,7 +20,8 @@
             ::end::
 
             neo.createNeoModule("shop", "shop", {
-                multiDistribId: ::md.id::
+                multiDistribId: ::md.id::,
+                tmpBasketId: ::tmpBasketId::
             });
 
         });

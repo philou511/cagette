@@ -477,13 +477,6 @@ class PaymentService {
 		ua.update();
 	}
 
-	public static function getPaymentInfosString(group:db.Group):String {
-		var out = "";
-		var allowedPaymentTypes = getPaymentTypes(PCPayment, group);
-		out = Lambda.map(allowedPaymentTypes, function(m) return m.name).join(", ");
-		return out;
-	}
-
 	/**
 		Get multidistrib turnover by payment type
 	**/
