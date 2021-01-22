@@ -855,6 +855,10 @@ class SubscriptionService
 		subscription.update();
 	}
 
+	public static function getOperations( subscription : db.Subscription, ?lock=false):Array<db.Operation>{
+		return db.Operation.manager.search( $subscription == subscription, { orderBy : -date }, lock ).array();
+	}
+
 	 /**
 	  *  Deletes a subscription if there is no orders that occurred in the past
 	  */
@@ -867,7 +871,7 @@ class SubscriptionService
 		}
 
 		//cant delete if some payment has been recorded
-		var hasPayments = subscription.catalog.group.hasPayments();
+		var hasPayments = subscription.catalog.hasPayments;
 		var subscriptionOperations = db.Operation.manager.count( $subscription == subscription && $type==Payment );
 		if ( hasPayments && subscriptionOperations > 0 ) {
 			throw new Error( 'Impossible de supprimer cette souscription car il y a des paiements enregistrés.' );
@@ -880,10 +884,9 @@ class SubscriptionService
 		}
 
 		//Delete all the operations for this subscription
-		var subscriptionOperations = db.Operation.manager.search( $subscription == subscription, true );
-		for ( operation in subscriptionOperations ) operation.delete();
+		for ( operation in getOperations(subscription,true) ) operation.delete();
 		
-		if( subscription.catalog.group.hasPayments() ) {
+		if( subscription.catalog.hasPayments ) {
 			service.PaymentService.updateUserBalance( subscription.user, subscription.catalog.group );
 		}
 
@@ -946,20 +949,16 @@ class SubscriptionService
 		if ( !hasPastDistributions( subscription ) ) {
 
 			return false;
-		}
-		else if ( ( subscription.catalog.type == db.Catalog.TYPE_VARORDER && subscription.catalog.requiresOrdering ) || subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
 
+		} else if ( /*( subscription.catalog.type == db.Catalog.TYPE_VARORDER && subscription.catalog.requiresOrdering ) ||*/ subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+			//fbarbut 2021-01-13 : on ne veut pas bloquer les commandes si le contrat est variable avec commande obligatoires, et qu'il y a des distributions sans commandes.
 			var pastDistributions = getSubscriptionDistribs( subscription, 'past' );
 			for ( distribution in pastDistributions ) {
-
 				if ( db.UserOrder.manager.count( $distribution == distribution && $subscription == subscription ) == 0 ) {
-					
 					return true;
 				}
-
 			}
 		}
-		
 		return false;
 	}
 
@@ -1158,7 +1157,7 @@ class SubscriptionService
 
 		var totalOperation : db.Operation = null;
 
-		if ( subscription.catalog.group.hasPayments() ) {
+		if ( subscription.catalog.hasPayments ) {
 
 			totalOperation = db.Operation.manager.select ( $user == subscription.user && $subscription == subscription && $type == SubscriptionTotal, true );
 	

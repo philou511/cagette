@@ -176,7 +176,7 @@ class Contract extends Controller
 
 
 	/**
-	 * Edit a contract 
+	 * Edit a contract/catalog
 	 */
 	 @logged @tpl("form.mtt")
 	 function doEdit( catalog : db.Catalog ) {
@@ -206,11 +206,18 @@ class Contract extends Controller
 				catalog.update();
 
 				if(!catalog.group.hasShopMode()){
+					
 					//Update future distribs start and end orders dates
 					var newOrderStartDays = catalog.orderStartDaysBeforeDistrib != previousOrderStartDays ? catalog.orderStartDaysBeforeDistrib : null;
 					var newOrderEndHours = catalog.orderEndHoursBeforeDistrib != previousOrderEndHours ? catalog.orderEndHoursBeforeDistrib : null;
 					var msg = CatalogService.updateFutureDistribsStartEndOrdersDates( catalog, newOrderStartDays, newOrderEndHours );
 					if(msg!=null) messages.push ( msg );  
+
+					//payements : update or create operations
+					for ( sub in SubscriptionService.getCatalogSubscriptions(catalog)){
+						SubscriptionService.createOrUpdateTotalOperation( sub );
+					}
+
 				}
 				
 				//update rights
@@ -440,7 +447,7 @@ class Contract extends Controller
 			var varOrders = []; 
 			var varOrdersToEdit = [];
 			var varOrdersToMake = [];
-			var pricesQuantitiesByDistrib = new Map< db.Distribution, Array< { productQuantity : Float, productPrice : Float } > >();
+			var pricesQuantitiesByDistrib = new Map< db.Distribution, Array< { productQuantity:Float, productPrice:Float } > >();
 			//For const catalogs
 			var constOrders = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }> (); 
 
@@ -645,7 +652,7 @@ class Contract extends Controller
 
 		}
 		
-		App.current.breadcrumb = [ { link : "/home", name : "Commandes", id : "home" }, { link : "/home", name : "Commandes", id : "home" } ]; 
+		App.current.breadcrumb = [ { link : "/home", name : "Commandes", id : "home" } ]; 
 		view.subscriptionService = SubscriptionService;
 		view.catalog = catalog;
 		if ( currentOrComingSubscription != null && catalog.type == db.Catalog.TYPE_VARORDER && catalog.group.hasPayments() ) {

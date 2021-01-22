@@ -195,90 +195,91 @@ $$browserDetection()
 				::end::
 			
 				<!-- === AMAP order block === -->
-				::if d.userHasOrders(user,0)::
-					
+				::if(!hasShopMode)::
 					<div class="content myorder" style="border-top:2px solid #EEE;">
 						Mes contrats AMAP classiques :
 					</div>
-					<div class="content orders">
-						::foreach dist d.getDistributions(0)::
-							::set orders = prepare(dist.getUserOrders(user))::
-							::if orders.length>0::
-								<h4>
-								<!--::set s = getDate(dist.date) ::
-									::set e = getDate(dist.end)::
-									<span style="color:#999;"><i class="icon icon-clock"></i> ::s.h+":"+s.i:: - ::e.h+":"+e.i::</span>
-								-->
-									&nbsp;::_("Distribution"):: <a href="/contract/view/::dist._catalog.id::">::dist._catalog.name::</a>
-								</h4>
-								
-								<div class="row">
-									::foreach c orders::										
-										<div class="col-xs-12 col-sm-6 col-lg-4" ::cond orders.length>0:: >
-											<table>
-												<tr>
-													<td>
-														<div style="background-image:url('::c.productImage::')" class="productImg" /> 
-													</td>
-													<td class="name">
-														<span ::cond c.quantity >1:: ><b>::raw c.smartQt::</b></span>
-														<span style="background-color: #B00;color:white;padding: 2px;border-radius: 3px;margin-right:3px;" ::cond c.quantity ==0:: >
-															::_("Canceled")::
-														</span>
-														::c.productName::
-														
-														::if c.userId2!=null::
-															::if user.id==c.userId::
-																::set you = c.userName::
-																::set mate = c.userName2::
-															::else::
-																::set mate = c.userName::
-																::set you = c.userName2::
-															::end::
-													
-															<br/>( 
-															
-															::raw __("alternated with ::mate::",{mate:mate})::, 
-															
-															::if getWhosTurn(c.id,dist)==false::
-													
-																::if c.userName == you::
-																	<span style="color:#080">::_("It's your turn")::</span>
-																::else::
-																	::_("It's his/her turn")::
-																::end::
-															::else::
-																::if c.userName2 == you::
-																	<span style="color:#080">::_("It's your turn")::</span>
-																::else::
-																	::_("It's his/her turn")::
-																::end::
-															::end::
-															)
-														::end::
-													</td>
-												</tr>
-											</table>
-										</div>
-										
-									::end::
-								</div>
-						
-								<div class="footer">
-									::if user.isContractManager(dist._catalog) || d.getVolunteerForUser(user).length>0:: 
-										<a href="/distribution/list/::dist.id::"><i class="icon icon-print"></i>  ::_("Distribution list")::</a>
-									::end::
-								</div>
-
-							::end::
-						
-						::end::
-					</div>
-				::elseif(!hasShopMode)::
-					<div class="content">
-						<span class="disabled">Vous n'avez rien à récupérer ce jour là.</span>
-					</div>
 					
+					::if d.userHasOrders(user,0)::
+						<div class="content orders">
+							::foreach dist d.getDistributions(0)::
+								::set orders = prepare(dist.getUserOrders(user))::
+								::if orders.length>0::
+									<h4>
+									<!--::set s = getDate(dist.date) ::
+										::set e = getDate(dist.end)::
+										<span style="color:#999;"><i class="icon icon-clock"></i> ::s.h+":"+s.i:: - ::e.h+":"+e.i::</span>
+									-->
+										&nbsp;::_("Distribution"):: <a href="/contract/view/::dist._catalog.id::">::dist._catalog.name::</a>
+									</h4>
+									
+									<div class="row">
+										::foreach c orders::										
+											<div class="col-xs-12 col-sm-6 col-lg-4" ::cond orders.length>0:: >
+												<table>
+													<tr>
+														<td>
+															<div style="background-image:url('::c.productImage::')" class="productImg" /> 
+														</td>
+														<td class="name">
+															<span ::cond c.quantity >1:: ><b>::raw c.smartQt::</b></span>
+															<span style="background-color: #B00;color:white;padding: 2px;border-radius: 3px;margin-right:3px;" ::cond c.quantity ==0:: >
+																::_("Canceled")::
+															</span>
+															::c.productName::
+															
+															::if c.userId2!=null::
+																::if user.id==c.userId::
+																	::set you = c.userName::
+																	::set mate = c.userName2::
+																::else::
+																	::set mate = c.userName::
+																	::set you = c.userName2::
+																::end::
+														
+																<br/>( 
+																
+																::raw __("alternated with ::mate::",{mate:mate})::, 
+																
+																::if getWhosTurn(c.id,dist)==false::
+														
+																	::if c.userName == you::
+																		<span style="color:#080">::_("It's your turn")::</span>
+																	::else::
+																		::_("It's his/her turn")::
+																	::end::
+																::else::
+																	::if c.userName2 == you::
+																		<span style="color:#080">::_("It's your turn")::</span>
+																	::else::
+																		::_("It's his/her turn")::
+																	::end::
+																::end::
+																)
+															::end::
+														</td>
+													</tr>
+												</table>
+											</div>
+											
+										::end::
+									</div>
+							
+									<div class="footer">
+										::if user.isContractManager(dist._catalog) || d.getVolunteerForUser(user).length>0:: 
+											<a href="/distribution/list/::dist.id::"><i class="icon icon-print"></i>  ::_("Distribution list")::</a>
+										::end::
+									</div>
+
+								::end::
+							
+							::end::
+						</div>
+					::else::
+						<div class="content">
+							<span class="disabled">Vous n'avez rien à récupérer ce jour là.</span>
+						</div>					
+					::end::
 				::end::
 				<!-- === END AMAP BLOCK === -->	
 				
