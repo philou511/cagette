@@ -372,8 +372,7 @@ class Distribution extends Controller
 		var form = new sugoi.form.Form("distribShifting");
 		
 		//date
-		var from = DateTools.delta(d.multiDistrib.distribStartDate ,-1000.0*60*60*24*30.5*3); 
-		if(from.getTime()<Date.now().getTime()) from = Date.now();//$from cannot be in the past
+		var from = Date.now(); 		
 		var to  = DateTools.delta(d.catalog.endDate ,1000.0*60*60*24*30.5*6); //$to is 6 month after the end of catalog
 		var mds = db.MultiDistrib.getFromTimeRange(d.catalog.group,from,to);
 		//remove validated distribs, and the current one

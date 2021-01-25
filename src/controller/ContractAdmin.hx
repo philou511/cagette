@@ -419,10 +419,7 @@ class ContractAdmin extends Controller
 		if ( checkToken() && args != null && args.delete != null ) {
 
 			try {
-
 				service.OrderService.delete(args.delete);
-				
-
 			}	catch( e : tink.core.Error ) {
 				throw Error( "/contractAdmin/orders/" + catalog.id, e.message );
 			}
@@ -435,7 +432,6 @@ class ContractAdmin extends Controller
 		}
 
 		if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
-
 			app.setTemplate('contractadmin/csaorders.mtt');
 		}
 		

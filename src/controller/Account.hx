@@ -183,33 +183,19 @@ class Account extends Controller
 
 	
 	@tpl("account/csaorders.mtt")
-	function doOrders( catalog : db.Catalog, ?args : { old : Bool } ) {
+	function doOrders( catalog : db.Catalog ) {
 		
-		var user = db.UserGroup.get(app.user, app.user.getGroup());
-		if (user == null) throw Error("/", t._("You are not a member of this group"));
+		var ug = db.UserGroup.get(app.user, app.user.getGroup());
+		if (ug == null) throw Error("/", t._("You are not a member of this group"));
 	
-		var catalogDistribs = new Array<db.Distribution>();
-		var title : String = "";
-		if ( args == null || !args.old ) {
-
-			catalogDistribs = db.Distribution.manager.search( $catalog == catalog && $date >= Date.now(), { orderBy : date }, false ).array();
-			title = "Mes commandes à venir";
-			view.old = false;
-		}
-		else {
-
-			catalogDistribs = db.Distribution.manager.search( $catalog == catalog && $date < Date.now(), { orderBy : -date }, false ).array();
-			title = "Mes commandes passées";
-			view.old = true;
-		}
-
-
+		
+		var	catalogDistribs = db.Distribution.manager.search( $catalog == catalog , { orderBy : date }, false ).array();
 		view.distribs = catalogDistribs;
 		view.prepare = OrderService.prepare;
 		view.catalog = catalog;
-		view.title = title;
 		view.account = true;
-		view.member = user.user;
+		view.now = Date.now();
+		view.member = app.user;
 		
 		checkToken();
 	}

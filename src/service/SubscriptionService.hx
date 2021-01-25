@@ -336,10 +336,9 @@ class SubscriptionService
 
 
 	/**
-	 * Checks if dates are correct and if there is no other subscription for this user in that same time range
-	 * @param subscription
+	 * Checks validity of this subscription
 	 */
-	public function isSubscriptionValid( subscription : db.Subscription, ?previousStartDate : Date ) : Bool {
+	public function check( subscription : db.Subscription, ?previousStartDate : Date ) : Bool {
 
 		//catalog should have distribs
 		if(subscription.catalog.getDistribs().length==0){
@@ -418,7 +417,7 @@ class SubscriptionService
 			throw TypedError.typed( 'Il y a déjà une souscription pour ce membre pendant la période choisie.'+"("+subs.join(',')+")", OverlappingSubscription );
 		}
 	
-		if ( subscription.id != null && hasPastDistribOrdersOutsideSubscription( subscription ) ) {
+		if ( subscription.id != null && hasPastDistribOrdersOutsideSubscription(subscription) && !subscription.catalog.isConstantOrders() ) {
 			throw TypedError.typed( 
 				'La nouvelle période sélectionnée exclue des commandes déjà passées, Il faut élargir la période sélectionnée $subName.',
 				PastOrders
@@ -691,12 +690,12 @@ class SubscriptionService
 		
 		SubscriptionService.updateAbsencesNb( subscription, absencesNb );
 		
-		if ( isSubscriptionValid( subscription ) ) {
+		if ( check(subscription) ) {
 
 			subscription.insert();
 
 			if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
-				SubscriptionService.createCSARecurrentOrders( subscription, ordersData );
+				this.createCSARecurrentOrders( subscription, ordersData );
 			}
 			
 		}
@@ -749,7 +748,7 @@ class SubscriptionService
 			}
 		}
 		
-		if ( this.isSubscriptionValid( subscription, previousStartDate ) ) {
+		if ( this.check(subscription,previousStartDate) ) {
 			subscription.update();
 			if( subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
 				createCSARecurrentOrders( subscription, ordersData );
@@ -766,34 +765,23 @@ class SubscriptionService
 
 		if ( subscription == null || subscription.startDate == null || subscription.endDate == null ||
 			( subscription.startDate.getTime() <= catalog.absencesStartDate.getTime() && subscription.endDate.getTime() >= catalog.absencesEndDate.getTime() ) ) {
-
 			return catalog.absentDistribsMaxNb;
-		}
-		else {
+		} else {
 
 			var absencesDistribsNbDuringSubscription = 0;
 			if ( subscription.startDate.getTime() > catalog.absencesStartDate.getTime() && subscription.endDate.getTime() < catalog.absencesEndDate.getTime() ) {
-
 				absencesDistribsNbDuringSubscription = db.Distribution.manager.count( $catalog == catalog && $date >= subscription.startDate && $end <= subscription.endDate );
-			}
-			else if ( subscription.startDate.getTime() > catalog.absencesStartDate.getTime() ) {
-
+			} else if ( subscription.startDate.getTime() > catalog.absencesStartDate.getTime() ) {
 				absencesDistribsNbDuringSubscription = db.Distribution.manager.count( $catalog == catalog && $date >= subscription.startDate && $end <= catalog.absencesEndDate );
-			}
-			else {
-
+			} else {
 				absencesDistribsNbDuringSubscription = db.Distribution.manager.count( $catalog == catalog && $date >= catalog.absencesStartDate && $end <= subscription.endDate );
 			}
 
 			if ( absencesDistribsNbDuringSubscription <= catalog.absentDistribsMaxNb ) {
-
 				return absencesDistribsNbDuringSubscription;
-			}
-			else {
-
+			} else {
 				return catalog.absentDistribsMaxNb;
 			}
-
 		}
 	
 	}
@@ -958,20 +946,16 @@ class SubscriptionService
 		if ( !hasPastDistributions( subscription ) ) {
 
 			return false;
-		}
-		else if ( ( subscription.catalog.type == db.Catalog.TYPE_VARORDER && subscription.catalog.requiresOrdering ) || subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
 
+		} else if ( /*( subscription.catalog.type == db.Catalog.TYPE_VARORDER && subscription.catalog.requiresOrdering ) ||*/ subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+			//fbarbut 2021-01-13 : on ne veut pas bloquer les commandes si le contrat est variable avec commande obligatoires, et qu'il y a des distributions sans commandes.
 			var pastDistributions = getSubscriptionDistribs( subscription, 'past' );
 			for ( distribution in pastDistributions ) {
-
 				if ( db.UserOrder.manager.count( $distribution == distribution && $subscription == subscription ) == 0 ) {
-					
 					return true;
 				}
-
 			}
 		}
-		
 		return false;
 	}
 
@@ -981,9 +965,10 @@ class SubscriptionService
 		return getSubscriptionDistribsNb( subscription, 'past' ) != 0;
 	}
 
-
-	public static function createCSARecurrentOrders( subscription : db.Subscription,
-		ordersData : Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool } >, ?oldAbsentDistribIds : Array<Int> ) : Array<db.UserOrder> {
+	/**
+		Create CSA recurrent orders
+	**/
+	public function createCSARecurrentOrders(subscription:db.Subscription, ordersData:Array<{productId:Int,quantity:Float,userId2:Int,invertSharedOrder:Bool}>, ?oldAbsentDistribIds:Array<Int> ) : Array<db.UserOrder> {
 
 		if ( ordersData == null || ordersData.length == 0 ) {
 			ordersData = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool } >();
@@ -991,9 +976,9 @@ class SubscriptionService
 			for ( order in subscriptionOrders ) {
 				ordersData.push( { productId : order.product.id, quantity : order.quantity, userId2 : order.user2 != null ? order.user2.id : null, invertSharedOrder : order.hasInvertSharedOrder() } );
 			}
-		} else if ( hasPastDistribOrders( subscription ) ) {
+		} else if ( hasPastDistribOrders( subscription ) && !adminMode ) {
 
-			throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées il faut modifier la date de fin de
+			throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées, il faut modifier la date de fin de
 			la souscription et en recréer une nouvelle pour la nouvelle période. Vous pourrez ensuite définir une nouvelle commande pour cette nouvelle souscription.', SubscriptionServiceError.PastOrders );
 		}
 
@@ -1084,7 +1069,7 @@ class SubscriptionService
 		return catalog.hasAbsencesManagement() && Date.now().getTime() < getLastDistribBeforeAbsences( catalog ).date.getTime();
 	}
 
-	public static function updateAbsencesDates( subscription : db.Subscription, newAbsentDistribIds : Array<Int> ) {
+	public function updateAbsencesDates( subscription : db.Subscription, newAbsentDistribIds : Array<Int> ) {
    
 		var oldAbsentDistribIds = subscription.getAbsentDistribIds();
 
@@ -1107,18 +1092,13 @@ class SubscriptionService
 		subscription.update();
 
 		if ( subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
-
-			createCSARecurrentOrders( subscription, null, oldAbsentDistribIds );
-		}
-		else {
-
+			this.createCSARecurrentOrders( subscription, null, oldAbsentDistribIds );
+		} else {
 			var absentDistribsOrders = db.UserOrder.manager.search( $subscription == subscription && $distributionId in newAbsentDistribIds, false );
 			for ( order in absentDistribsOrders ) {
-
 				order.lock();
 				order.delete();
 			}
-
 		}
 
 	}

@@ -292,31 +292,17 @@ class Member extends Controller
 	}
 
 	@tpl("account/csaorders.mtt")
-	function doOrders( member : db.User, catalog : db.Catalog, ?args : { old : Bool } ) {
+	function doOrders( member : db.User, catalog : db.Catalog ) {
 		
 		var user = db.UserGroup.get(app.user, app.user.getGroup());
 		if (user == null) throw Error("/", t._("You are not a member of this group"));
 		
-		var catalogDistribs = new Array<db.Distribution>();
-		var title : String = "";
-		if ( args == null || !args.old ) {
-
-			catalogDistribs = db.Distribution.manager.search( $catalog == catalog && $date >= Date.now(), { orderBy : date }, false ).array();
-			title = "Commandes à venir de " + member.getName();
-			view.old = false;
-		}
-		else {
-
-			catalogDistribs = db.Distribution.manager.search( $catalog == catalog && $date < Date.now(), { orderBy : -date }, false ).array();
-			title = "Commandes passées de " + member.getName();
-			view.old = true;
-		}
-		
+		var	catalogDistribs = db.Distribution.manager.search( $catalog == catalog , { orderBy : date }, false ).array();
 		view.distribs = catalogDistribs;
 		view.prepare = OrderService.prepare;
 		view.catalog = catalog;
-		view.title = title;
-		view.account = false;
+		view.account = true;
+		view.now = Date.now();
 		view.member = member;
 		
 		checkToken();

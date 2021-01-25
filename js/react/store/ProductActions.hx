@@ -199,7 +199,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
     function renderVAT(product:ProductInfo){
         if(props.displayVAT && product.vat!=null && product.vat!=0 ){
             return jsx('<Typography className=${props.classes.cagProductPriceRate}>                        
-                ${Formatting.formatNum(product.vat)} % de TVA inclue
+                ${Formatting.formatNum(product.vat)} % de TVA inclus
             </Typography>');
         }else{
             return null;

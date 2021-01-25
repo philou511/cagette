@@ -393,13 +393,6 @@ class App {
 		ReactDOM.render(jsx('<$PageHeader groupName=$groupName userName=$userName userId=$userId />'), js.Browser.document.querySelector('#header'));
 	}
 
-	
-	public function groupMap(lat:Float,lng:Float,address:String) {
-        //initSentry();
-
-		ReactDOM.render(jsx('<$GroupMapRoot lat=$lat lng=$lng address=$address />'),  js.Browser.document.querySelector('#map'));
-	}
-
 	/**
 	 * Helper to get values of a bunch of checked checkboxes
 	 * @param	formSelector
