@@ -3,9 +3,9 @@
 <div id="members-neo-container" style="margin-right: 15px; margin-left: 15px;"></div>
 
 <script>
-	document.addEventListener("DOMContentLoaded", function(event) {
+	document.addEventListener("DOMContentLoaded", function() {
 		setTimeout(function() {
-			_NeolithicViewsGenerator.membersModule("members-neo-container", {
+			neo.createNeoModule("members-neo-container", "members", {
 				groupId: parseInt("::user.getGroup().id::", 10),
 				token: "::token::"
 			});
