@@ -125,16 +125,16 @@ class Member extends Controller
 			if ( db.UserGroup.manager.count($userId == member.id) > 1 ) return;			
 		}
 
-		var res:{token:String} = service.BridgeService.call("/auth/tokens/"+member.id);		
+		var token = service.BridgeService.getAuthToken(member);		
 				
 		App.current.session.setUser(member);
 		App.current.session.data.amapId = null;
-		if(res==null || res.token==null){
+		if(token==null){
 			
-			throw Error("/member/view/" + member.id , "Erreur Bridge "+res );
+			throw Error("/" , "Erreur Bridge "+token );
 		}else{
 			App.current.session.addMessage("Vous êtes connecté sur le compte de "+member.getName());
-			Sys.println('<html><body>Connexion au compte de ${member.getName()}...<script>localStorage.token = "${res.token}";document.location.href="/"</script></body></html>');
+			Sys.println('<html><body>Connexion au compte de ${member.getName()}...<script>localStorage.token = "${token}";document.location.href="/"</script></body></html>');
 		}
 		
 	}
