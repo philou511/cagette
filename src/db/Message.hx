@@ -16,7 +16,7 @@ class Message extends Object
 	@:relation(amapId) public var amap : SNull<db.Group>;
 	@:relation(senderId) public var sender : SNull<User>;
 	
-	public var recipientListId : SNull<SString<12>>;
+	public var recipientListId : SNull<SString<64>>;
 	public var recipients : SNull<SData<Array<String>>>;
 	
 	public var title : SString<128>;
