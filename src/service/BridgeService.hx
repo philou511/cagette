@@ -41,7 +41,26 @@ class BridgeService {
 
 		var curl = new sugoi.apis.linux.Curl();
 		var res = curl.call("GET", baseUrl + uri, headers);
+		try{
+			return haxe.Json.parse(res);
+		}catch(e:Dynamic){
+			throw "Bridge Error :"+Std.string(e)+", raw : "+Std.string(res);
+			
+		}		
+	}
 
-		return haxe.Json.parse(res);
+	public static function getAuthToken(user:db.User) {
+		var baseUrl = App.config.get("cagette_bridge_api") + "/bridge";
+		var headers = [
+			"Authorization" => "Bearer " + App.config.get("key"),
+			"Content-type" => "application/json;charset=utf-8",
+			"Accept" => "application/json",
+			"Cache-Control" => "no-cache",
+			"Pragma" => "no-cache",
+		];
+
+		var curl = new sugoi.apis.linux.Curl();
+		//no json
+		return curl.call("GET", baseUrl + "/auth/tokens/"+user.id, headers);
 	}
 }

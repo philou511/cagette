@@ -641,7 +641,7 @@ class Cron extends Controller
 		distribs.map(  (d) -> task.log("Distrib : "+d.date+" de "+d.catalog.name+", groupe : "+d.catalog.group.name) );
 				
 		/*
-		 * Group distribs by group
+		 * Group distribs by group.
 		 * Map key is $groupId
 		*/
 		var data = new Map <Int,{distributions:Array<db.Distribution>,vendors:Array<db.Vendor>}>();
