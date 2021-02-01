@@ -22,11 +22,11 @@ RUN a2ensite cagette
 
 RUN npm install -g lix
 
-COPY . /srv/
+COPY --chown=www-data:www-data . /srv/
 
-COPY config.xml.dist config.xml
+RUN chown www-data:www-data /srv /var/www
 
-RUN npm install -g lix
+USER www-data
 
 WORKDIR /srv/backend
 
@@ -37,9 +37,14 @@ RUN lix download
 
 RUN haxe cagetteAllPlugins.hxml
 
+USER root
+
 RUN haxelib setup /usr/share/haxelib
 RUN haxelib install templo
 RUN cd /usr/bin && haxelib run templo
+
+# holds connexion config
+COPY config.xml.dist config.xml
 
 EXPOSE 3009
 
