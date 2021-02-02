@@ -140,7 +140,7 @@ class CatalogService{
     /**
         Check input data when updating a catalog
     **/
-    public static function checkFormData( catalog:db.Catalog, form : sugoi.form.Form ) {
+    public static function checkFormData( catalog:db.Catalog, form:sugoi.form.Form ) {
 
         //distributions should always happen between catalog dates
         if(form.getElement("startDate")!=null){
@@ -166,21 +166,26 @@ class CatalogService{
 
 				var orderStartDaysBeforeDistrib = form.getValueOf("orderStartDaysBeforeDistrib");
 				if( orderStartDaysBeforeDistrib == 0 ) {
-
-					throw new tink.core.Error( 'L\'ouverture des commandes ne peut pas être à zéro.
+					throw new Error( 'L\'ouverture des commandes ne peut pas être à zéro.
 					Si vous voulez utiliser l\'ouverture par défaut des distributions laissez le champ vide.');
 				}
 				
-				var distribMinOrdersTotal = form.getValueOf("distribMinOrdersTotal");
-				if( distribMinOrdersTotal != null && distribMinOrdersTotal != 0 ) {
-
+				if( form.getValueOf("distribMinOrdersTotal") > 0 ) {
 					catalog.requiresOrdering = true;
+				}
+
+				if( form.getValueOf("requiresOrdering")!=null && form.getValueOf("distribMinOrdersTotal")==null  ){
+					throw new Error("Si vous activez la commande obligatoire, vous devez définir le montant minimum de commande par distribution.");
+				}
+
+				if( form.getValueOf("requiresOrdering")!=null && form.getValueOf('absentDistribsMaxNb')!=null){
+					throw new Error("Si vous n'activez pas la commande obligatoire, la gestion des absences n'est pas nécéssaire, laissez le champs 'Nombre maximum d'absences' vide.");
 				}
 
 				var catalogMinOrdersTotal = form.getValueOf("catalogMinOrdersTotal");
 				var allowedOverspend = form.getValueOf("allowedOverspend");
-				if( ( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 ) && ( allowedOverspend == null /*|| allowedOverspend == 0*/ ) ) {
-					throw new tink.core.Error( 'Vous devez obligatoirement définir un dépassement autorisé car vous avez rentré un minimum de commandes/provision minimale sur la durée du contrat.');
+				if( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 && allowedOverspend == null ) {
+					throw new Error( 'Vous devez obligatoirement définir un dépassement autorisé car vous avez rentré un minimum de commandes/provision minimale sur la durée du contrat.');
 				}
 			}
 
@@ -188,8 +193,7 @@ class CatalogService{
 				
 				var orderEndHoursBeforeDistrib = form.getValueOf("orderEndHoursBeforeDistrib");
 				if( orderEndHoursBeforeDistrib == null || orderEndHoursBeforeDistrib == 0 ) {
-
-					throw new tink.core.Error( 'Vous devez obligatoirement définir un nombre d\'heures avant distribution pour la fermeture des commandes.');
+					throw new Error( 'Vous devez obligatoirement définir un nombre d\'heures avant distribution pour la fermeture des commandes.');
 				}
 			}
 
@@ -200,33 +204,28 @@ class CatalogService{
 				var absencesEndDate : Date = form.getValueOf('absencesEndDate');
 
 				if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && ( absencesStartDate == null || absencesEndDate == null ) ) {
-
-					throw new tink.core.Error( 'Vous avez défini un nombre maximum d\'absences alors vous devez sélectionner des dates pour la période d\'absences.' );
+					throw new Error( 'Vous avez défini un nombre maximum d\'absences alors vous devez sélectionner des dates pour la période d\'absences.' );
 				}
 
 				if ( ( absencesStartDate != null || absencesEndDate != null ) && ( absentDistribsMaxNb == null || absentDistribsMaxNb == 0 ) ) {
-
-					throw new tink.core.Error( 'Vous avez défini des dates pour la période d\'absences alors vous devez entrer un nombre maximum d\'absences.' );
+					throw new Error( 'Vous avez défini des dates pour la période d\'absences alors vous devez entrer un nombre maximum d\'absences.' );
 				}
 			
 				if ( absencesStartDate != null && absencesEndDate != null ) {
-
 					if ( absencesStartDate.getTime() >= absencesEndDate.getTime() ) {
-
-						throw new tink.core.Error( 'La date de début des absences doit être avant la date de fin des absences.' );
+						throw new Error( 'La date de début des absences doit être avant la date de fin des absences.' );
 					}
 
 					var absencesDistribsNb = service.SubscriptionService.getCatalogAbsencesDistribsNb( catalog, absencesStartDate, absencesEndDate );
 					if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && absentDistribsMaxNb > absencesDistribsNb ) {
 
-						throw new tink.core.Error( 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
+						throw new Error( 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
 						Il doit être inférieur ou égal au nombre de distributions dans la période d\'absences : ' + absencesDistribsNb );
 						
 					}
 
 					if ( absencesStartDate.getTime() < catalog.startDate.getTime() || absencesEndDate.getTime() > catalog.endDate.getTime() ) {
-
-						throw new tink.core.Error( 'Les dates d\'absences doivent être comprises entre le début et la fin du contrat.' );
+						throw new Error( 'Les dates d\'absences doivent être comprises entre le début et la fin du contrat.' );
 					}
 
 					catalog.absencesStartDate = new Date( absencesStartDate.getFullYear(), absencesStartDate.getMonth(), absencesStartDate.getDate(), 0, 0, 0 );
@@ -234,16 +233,13 @@ class CatalogService{
 				}
 			
 				if ( catalog.hasPercentageOnOrders() && catalog.percentageValue == null ) {
-
-					throw new tink.core.Error( t._("If you would like to add fees to the order, define a rate (%) and a label.") );
+					throw new Error( t._("If you would like to add fees to the order, define a rate (%) and a label.") );
 				}
 				
 				if ( catalog.hasStockManagement()) {
 
 					for ( p in catalog.getProducts()) {
-
 						if ( p.stock == null ) {
-
 							App.current.session.addMessage(t._("Warning about management of stock. Please fill the field \"stock\" for all your products"), true );
 							break;
 						}

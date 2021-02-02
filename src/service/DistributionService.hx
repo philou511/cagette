@@ -526,12 +526,10 @@ class DistributionService
 		var t = sugoi.i18n.Locale.texts;
 		
 		var shopMode = d.catalog.group.hasShopMode();
-		if( !shopMode ) {
-
+		if( !shopMode && (d.catalog.type==db.Catalog.TYPE_CONSTORDERS || d.catalog.requiresOrdering) ) {
 			//if there is at least one validated subscription, cancelation is not possible
 			var subscriptions = db.Subscription.manager.search( $catalog == d.catalog );
 			if( subscriptions.count( s -> s.paid() ) > 0) {
-
 				throw new Error("Vous ne pouvez pas annuler cette distribution car il y a déjà des souscriptions payées. Vous pouvez cependant décaler cette distribution en fin de contrat afin de maintenir le même nombre dans les souscriptions des adhérents. Pour décaler une distribution, cliquez sur le bouton \"Dates\".");
 			} else if( subscriptions.length > 0 ) {
 				App.current.session.addMessage( "Attention, vous avez déjà des souscriptions enregistrées pour ce contrat. Si vous supprimez des distributions, le montant à payer va varier." , true);
