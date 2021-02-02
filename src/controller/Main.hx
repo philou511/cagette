@@ -200,7 +200,6 @@ Called from controller/Main.hx line 117
 		d.dispatch(new controller.Member());
 	}
 	
-	@logged
 	function doAccount(d:Dispatch) {
 		addBc("account","Mon compte","/account");
 		d.dispatch(new controller.Account());
