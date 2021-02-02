@@ -41,7 +41,7 @@ class ContractAdmin extends Controller
 	function doDefault(?args:{old:Bool}) {
 		
 		view.nav.push("default");
-		
+
 		var now = Date.now();
 		
 		var contracts;
@@ -63,6 +63,7 @@ class ContractAdmin extends Controller
 		view.vendors = vendors;
 		// view.noSiret = vendors.filter(v -> v.companyNumber==null);
 		view.places = app.user.getGroup().getPlaces();
+		view.group = app.user.getGroup();
 		checkToken();
 
 		//Multidistribs to validate

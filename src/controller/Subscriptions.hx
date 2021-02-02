@@ -356,7 +356,7 @@ class Subscriptions extends controller.Controller
 	public function doBalanceTransfer( subscription : db.Subscription ) {
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
-		if ( !subscription.catalog.group.hasPayments() ) throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La gestion des paiements n\'est pas activée.' );
+		if ( !subscription.catalog.hasPayments ) throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La gestion des paiements n\'est pas activée.' );
 
 		if ( subscription.getBalance() <= 0 ) throw Error( '/contractAdmin/subscriptions/payments/' + subscription.id, 'Le solde doit être positif pour pouvoir le transférer sur une autre souscription.' );
 		var subscriptionsChoices = SubscriptionService.getUserVendorNotClosedSubscriptions( subscription );
