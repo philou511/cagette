@@ -248,7 +248,7 @@ class Account extends Controller
 	function doEditNotif(user:db.User,key:String){
 
 		if (haxe.crypto.Sha1.encode(App.config.KEY+user.id) != key){
-			throw Error("/","Lien invalide"+haxe.crypto.Sha1.encode(App.config.KEY+user.id)+"___"+key);
+			throw Error("/","Lien invalide");
 		}
 
 		view.member = user;
