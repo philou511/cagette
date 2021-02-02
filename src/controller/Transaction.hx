@@ -21,7 +21,9 @@ class Transaction extends controller.Controller
 	 */
 	@tpl('form.mtt')
 	public function doInsertPayment( user : db.User, ?subscription : db.Subscription ) {
-		
+		if(app.user==null){
+			throw Redirect("/");
+		}
 		if (!app.user.isContractManager()) throw Error("/", t._("Action forbidden"));	
 		var t = sugoi.i18n.Locale.texts;
 
@@ -102,7 +104,9 @@ class Transaction extends controller.Controller
 	
 	@tpl('form.mtt')
 	public function doEdit( operation : db.Operation ) {
-
+		if(app.user==null){
+			throw Redirect("/");
+		}
 		var hasShopMode = operation.group.hasShopMode();
 		var returnUrl = '/member/payments/' + operation.user.id;
 
@@ -174,7 +178,9 @@ class Transaction extends controller.Controller
 	 * Delete an operation
 	 */
 	public function doDelete( operation : db.Operation ) {
-
+		if(app.user==null){
+			throw Redirect("/");
+		}
 		var hasShopMode = operation.group.hasShopMode();
 
 		var returnUrl = '/member/payments/' + operation.user.id;
@@ -217,11 +223,15 @@ class Transaction extends controller.Controller
 	@tpl("transaction/pay.mtt")
 	public function doPay(tmpBasket:db.TmpBasket) {
 
+		if(app.user==null){
+			throw Redirect("/");
+		}
+
 		view.category = 'home';
 		
 		if (tmpBasket == null) throw Error("Basket is null");
 		tmpBasket.lock();
-		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		if (tmpBasket.getData().products.length == 0) throw Error("/", t._("Your cart is empty"));
 
 		//case where the user just logged in
 		if(tmpBasket.user==null){
@@ -238,7 +248,11 @@ class Transaction extends controller.Controller
 	}
 
 	@tpl("transaction/tmpBasket.mtt")
-	public function doTmpBasket(tmpBasket:db.TmpBasket,?args:{cancel:Bool,confirm:Bool}){
+	public function doTmpBasket(tmpBasket:db.TmpBasket,?args:{cancel:Bool,confirm:Bool,continueShopping:Bool}){
+
+		if(app.getCurrentGroup()==null){
+			throw Redirect("/");
+		}
 
 		if(args!=null){
 			if(args.cancel){
@@ -246,7 +260,9 @@ class Transaction extends controller.Controller
 				tmpBasket.delete();
 				throw Ok("/",t._("You basket has been canceled"));
 			}else if(args.confirm){				
-				throw Redirect("/shop/validate/"+tmpBasket.id);				
+				throw Redirect("/shop/validate/"+tmpBasket.id);
+			}else if(args.continueShopping){
+				throw Redirect("/shop2/"+tmpBasket.multiDistrib.id+"?continueShopping=1");
 			}
 		}
 
@@ -266,9 +282,11 @@ class Transaction extends controller.Controller
 	 */
 	@tpl("transaction/moneypot.mtt")
 	public function doMoneypot(tmpBasket:db.TmpBasket){
-
+		if(app.user==null){
+			throw Redirect("/");
+		}
 		if (tmpBasket == null) throw Redirect("/contract");
-		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		if (tmpBasket.getData().products.length == 0) throw Error("/", t._("Your cart is empty"));
 		var total = tmpBasket.getTotal();
 		var futureBalance = db.UserGroup.get(app.user, app.user.getGroup()).balance - total;
 		if (!app.user.getGroup().allowMoneyPotWithNegativeBalance && futureBalance < 0) {
@@ -296,8 +314,11 @@ class Transaction extends controller.Controller
 	@tpl("transaction/onthespot.mtt")
 	public function doOnthespot(tmpBasket:db.TmpBasket)
 	{
+		if(app.user==null){
+			throw Redirect("/");
+		}
 		if (tmpBasket == null) throw Redirect("/contract");
-		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		if (tmpBasket.getData().products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
 		try{
 			//record order
@@ -328,9 +349,11 @@ class Transaction extends controller.Controller
 	 */
 	@tpl("transaction/transfer.mtt")
 	public function doTransfer(tmpBasket:db.TmpBasket){
-		
+		if(app.user==null){
+			throw Redirect("/");
+		}
 		if (tmpBasket == null) throw Redirect("/contract");
-		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		if (tmpBasket.getData().products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
 		var md = tmpBasket.multiDistrib;
 		var date = md.getDate();	

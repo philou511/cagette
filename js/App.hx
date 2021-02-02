@@ -25,7 +25,6 @@ import redux.react.Provider as ReduxProvider;
 import react.file.ImageUploaderDialog;
 import react.order.OrdersDialog;
 import react.product.*;
-import react.store.CagetteStore;
 import react.map.*;
 import react.user.*;
 import react.vendor.*;
@@ -76,8 +75,10 @@ class App {
 	 * The JS App will be available as "_" in the document.
 	 */
 	public static function main() {
-        
-        untyped js.Browser.window._ = new App();
+		
+        var app = new App();
+        untyped js.Browser.window._Cagette = app;
+        untyped js.Browser.window._ = app;
         
         NeolithicViewsGenerator.setApiUrl("/api");
         // NeolithicViewsGenerator.setGraphUrl(sugoi.db.Variable.get("cagette_api") + "/graphql");
@@ -307,14 +308,19 @@ class App {
 	/**
 	 *  Displays a sign up box
 	 */
-	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {
+	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false,?tmpBasketId:Int) {
         //initSentry();
 
 		var modalElement = Browser.document.getElementById("myModal");
 		modalElement.querySelector(".modal-title").innerHTML = "S'inscrire";
 		modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
 		var modal = new bootstrap.Modal(modalElement);
-		modal.show();
+        modal.show();
+        modalElement.addEventListener('hide.bs.modal', function() {
+            if (tmpBasketId!=null){
+                js.Browser.window.location.href = "/transaction/tmpBasket/"+tmpBasketId;
+            }
+        });
 		ReactDOM.render(
 			jsx('<$RegisterBox redirectUrl=$redirectUrl message=$message phoneRequired=$phoneRequired addressRequired=$addressRequired/>'),
 			js.Browser.document.querySelector('#myModal .modal-body')
@@ -322,75 +328,26 @@ class App {
 		return false;
 	}
 
-	public function membershipBox(userId:Int,groupId:Int,?callbackUrl:String,?distributionId:Int){
+	public function membershipBox(userId:Int,userName:String,groupId:Int,?callbackUrl:String,?distributionId:Int){
         //initSentry();
 
 		var node = js.Browser.document.createDivElement();
 		node.id = "membershipBox-container";
 		js.Browser.document.body.appendChild(node);
 		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
-	
-		ReactDOM.render(jsx('
-			<MuiThemeProvider theme=${CagetteTheme.get()}>
-				<>
-					<CssBaseline />
-					<MembershipDialog userId=$userId groupId=$groupId callbackUrl=$callbackUrl distributionId=$distributionId />							
-				</>
-			</MuiThemeProvider>
-		'), node );
-
-	}
-
-	private function createReactStore() {
-		// Store creation
-		var rootReducer = Redux.combineReducers({
-			cart: mapReducer(react.store.redux.action.CartAction, new react.store.redux.state.CartState.CartRdcr()),
-		});
-		// create middleware normally, excepted you must use
-		// 'StoreBuilder.mapMiddleware' to wrap the Enum-based middleware
-		var middleWare = Redux.applyMiddleware( mapMiddleware( Thunk, new ThunkMiddleware() ) );
-		return createStore(rootReducer, null, middleWare);
+    
+        var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+        neo.createNeoModule(node.id, "membershipDialog", {
+            groupId: groupId,
+            userId: userId,
+            userName: userName,
+            callbackUrl: callbackUrl,
+            distributionId: distributionId
+        });
 	}
 
 	public function browser(){
 		return bowser.Bowser.getParser(js.Browser.window.navigator.userAgent);
-	}
-
-	/**
-		instanciates shop2
-	**/
-	public function shop(multiDistribId:Int) {
-        //initSentry();
-
-		var elements = js.Browser.window.document.querySelectorAll('.sticky');
-		sticky.Stickyfill.add(elements);
-
-		// Will be merged with default values from mui
-		
-
-		var store = createReactStore();
-		ReactDOM.render(jsx('
-			<ReduxProvider store=${store}>
-				<MuiThemeProvider theme=${CagetteTheme.get()}>
-					<>
-						<CssBaseline />
-						<CagetteStore multiDistribId=$multiDistribId />
-					</>
-				</MuiThemeProvider>
-			</ReduxProvider>
-		'), js.Browser.document.querySelector('#shop'));
-	}
-
-	/**
-		init react page header
-	**/
-	public function pageHeader(groupName:String,_rights:String,userName:String,userId:Int)
-	{
-		groupName = StringTools.urlDecode(groupName);
-		/*var rights : Rights = null;
-		if(_rights!=null) rights = haxe.Unserializer.run(_rights);*/
-		//ReactDOM.render(jsx('<$PageHeader userRights=$rights groupName=$groupName userName=$userName userId=$userId />'), js.Browser.document.querySelector('#header'));
-		ReactDOM.render(jsx('<$PageHeader groupName=$groupName userName=$userName userId=$userId />'), js.Browser.document.querySelector('#header'));
 	}
 
 	/**
@@ -560,6 +517,12 @@ class App {
     //     m.show();
 
     // }
+
+    public function addTmpBasketIdToSession(tmpBasketId:Int) {
+        var req = new haxe.Http("/shop/addTmpBasketId/"+tmpBasketId);
+        req.request();
+    }
+
 }
 
 
