@@ -620,8 +620,7 @@ class Contract extends Controller
 					}
 				}
 
-			}
-			else {
+			} else {
 				
 				//Create or edit an existing subscription for the coming distribution
 				if( constOrders == null || constOrders.length == 0 ){
@@ -641,12 +640,10 @@ class Contract extends Controller
 
 			//Create or update a single order operation for the subscription total orders price
 			if ( currentOrComingSubscription != null && catalog.group.hasPayments() ) {
-
 				service.SubscriptionService.createOrUpdateTotalOperation( currentOrComingSubscription );
 			}
 
 			if ( !hasRequirementsError ) {
-
 				throw Ok( "/contract/order/" + catalog.id, "Votre souscription a bien été mise à jour");
 			}
 
@@ -675,12 +672,10 @@ class Contract extends Controller
 		view.catalogDistribsNb = db.Distribution.manager.count( $catalog == catalog );
 		view.newSubscriptionDistribsNb = db.Distribution.manager.count( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
 		view.canOrder = if( currentOrComingSubscription == null || !currentOrComingSubscription.paid() ) {
-				
-							catalog.isUserOrderAvailable();
-						} else {
-							
-							false;
-						};
+			catalog.isUserOrderAvailable();
+		} else {
+			false;
+		};
 		view.userOrders = userOrders;
 		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( catalog, currentOrComingSubscription ), function( distrib ) return StringTools.replace( StringTools.replace( Formatting.dDate( distrib.date ), "Vendredi", "Ven." ), "Mercredi", "Mer." ) );
 		var subscriptions = SubscriptionService.getUserCatalogSubscriptions( app.user, catalog );

@@ -11,7 +11,7 @@
 			<a href="#pres" aria-controls="home" role="tab" data-toggle="tab">Présentation</a>
 		</li>
 		<li role="presentation">
-			<a href="#sub" aria-controls="profile" role="tab" data-toggle="tab">Ma souscription</a>
+			<a href="#sub" aria-controls="profile" role="tab" data-toggle="tab">Commander</a>
 		</li>		  
 	</ul>
   

@@ -5,6 +5,7 @@ import db.MultiDistrib;
 import service.SubscriptionService;
 import sugoi.form.Form;
 import sugoi.form.elements.StringSelect;
+import db.Operation;
 import Common;
 using Std;
 import plugin.Tutorial;
@@ -222,18 +223,18 @@ class Account extends Controller
 	}
 
 	@tpl("account/subscriptionpayments.mtt")
-	function doSubscriptionPayments( sub : Subscription ) {
+	function doSubscriptionPayments( subscription : db.Subscription ) {
 		
 		var ug = db.UserGroup.get(app.user, app.user.getGroup());
 		if (ug == null) throw Error("/", t._("You are not a member of this group"));
-	
+
+		var user = subscription.user;
+		var payments = db.Operation.manager.search( $subscription == subscription && $type == OperationType.Payment, { orderBy : -date }, false );
+		view.subscriptionTotal = SubscriptionService.createOrUpdateTotalOperation( subscription );		
+		view.payments = payments;
+		view.member = user;
+		view.subscription = subscription;
 		
-		
-		var operations = SubscriptionService.getOperations(sub);
-		
-		view.member = sub.user;
-		view.subscription = sub;
-		view.operations = operations;
 	}
 	
 }
