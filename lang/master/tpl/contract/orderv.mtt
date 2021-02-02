@@ -5,16 +5,14 @@
 
 	<h2>::catalog.name::</h2>
 
-	<div class="alert alert-danger" ::cond smallBalance != null::>
-					
+	<!--<div class="alert alert-danger" ::cond smallBalance != null::>					
 		<i class="icon icon-alert"></i>
 		::if smallBalance > 0::
-			Il vous reste seulement ::smallBalance:: € à dépenser. Si vous envisagez de commander plus, pensez à faire un paiement complémentaire.
+			Il vous reste seulement ::smallBalance::€ à dépenser. Si vous envisagez de commander plus, pensez à faire un paiement complémentaire.
 		::else::
 			Pensez à faire un paiement complémentaire pour réapprovisionner votre souscription.
-		::end::
-		
-	</div>
+		::end::		
+	</div>-->
 			  
 	<!-- Nav tabs -->
 	<ul class="nav nav-tabs" role="tablist" id="subscriptionTabs">

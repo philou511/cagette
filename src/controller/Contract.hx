@@ -639,12 +639,19 @@ class Contract extends Controller
 			}
 
 			//Create or update a single order operation for the subscription total orders price
-			if ( currentOrComingSubscription != null && catalog.group.hasPayments() ) {
+			if ( currentOrComingSubscription != null && catalog.hasPayments ) {
 				service.SubscriptionService.createOrUpdateTotalOperation( currentOrComingSubscription );
 			}
 
 			if ( !hasRequirementsError ) {
-				throw Ok( "/contract/order/" + catalog.id, "Votre souscription a bien été mise à jour");
+				var msg = "Votre souscription a bien été mise à jour.";
+				//message if no payments has been made and there is a catalogMinOrdersTotal
+				if(catalog.hasPayments && catalog.catalogMinOrdersTotal!=0){
+					if(currentOrComingSubscription.getPaymentsTotal()==0){
+						msg += " <b>Pensez à payer votre provision initiale de "+SubscriptionService.getCatalogMinOrdersTotal(catalog,currentOrComingSubscription)+"€</b>";
+					}					
+				}
+				throw Ok( "/contract/order/" + catalog.id, msg );
 			}
 
 		}
@@ -652,7 +659,8 @@ class Contract extends Controller
 		App.current.breadcrumb = [ { link : "/home", name : "Commandes", id : "home" } ]; 
 		view.subscriptionService = SubscriptionService;
 		view.catalog = catalog;
-		if ( currentOrComingSubscription != null && catalog.type == db.Catalog.TYPE_VARORDER && catalog.group.hasPayments() ) {
+		//small balance warning
+		/*if ( currentOrComingSubscription != null && catalog.type == db.Catalog.TYPE_VARORDER && catalog.hasPayments ) {
 
 			var balance = currentOrComingSubscription.getBalance();
 			var remainingDistribsNb = SubscriptionService.getSubscriptionRemainingDistribsNb( currentOrComingSubscription );
@@ -660,12 +668,17 @@ class Contract extends Controller
 			if( averageSpentPerDistrib != 0 && remainingDistribsNb != 0 ) {
 
 				var remainingDistribsToZero = Math.floor( balance / averageSpentPerDistrib );
-				if( remainingDistribsToZero <= 4  && remainingDistribsToZero < remainingDistribsNb && 3 <= SubscriptionService.getSubscriptionDistribsNb( currentOrComingSubscription ) ) {
+			
+					// si j'ai de la réserve pour moins de 4 distribs,
+					// et que ce que j'ai en réserve fait moins que les distribs qu'ils reste à faire
+					// et que la souscription a plus de 4 distribs.
+			
+				if( remainingDistribsToZero < 4  && remainingDistribsToZero < remainingDistribsNb && SubscriptionService.getSubscriptionDistribsNb( currentOrComingSubscription )>4 ) {
 
 					view.smallBalance = balance < ( remainingDistribsNb * averageSpentPerDistrib ) ? balance : null;
 				}
 			}
-		}
+		}*/
 
 		view.currentOrComingSubscription = currentOrComingSubscription;
 		view.hasComingOpenDistrib = hasComingOpenDistrib;
