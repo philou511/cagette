@@ -1,7 +1,7 @@
 ::use 'design.mtt'::
 <div id="content" class="col-md-12">
 
-	::set hasPayments = catalog._group.hasPayments()::
+	::set hasPayments = catalog.hasPayments::
 
 	<h2>::catalog.name::</h2>
 
@@ -522,6 +522,8 @@
 									</td>
 								::end::
 							</tr>
+
+							<!-- commande par défaut + absences -->
 							<tr class="greyhead text-center">
 								<th class="text-center col-md-7" colspan="2" ::cond catalog.requiresOrdering::>Ma commande par défaut</th>
 								<th class="text-center col-md-5" colspan="3" ::cond catalog.hasAbsencesManagement() && absencesNb != 0::>Mes absences (modifiables jusqu'au ::dDate( subscriptionService.getLastDistribBeforeAbsences( catalog ).date )::)</th>
@@ -555,15 +557,29 @@
 									</div>
 								</td>
 							</tr>
+
+							<!-- buttons -->
+							<tr>
+								<td colspan="5">
+									<a href="/account/subscriptionOrders/::subscription.id::" class="btn btn-default btn-sm">
+										<i class="icon icon-basket"></i> Commandes
+									</a>
+
+									::if hasPayments::
+									<a href="/account/subscriptionPayments/::subscription.id::" class="btn btn-default btn-sm">
+										<i class="icon icon-euro"></i> Paiements
+									</a>
+									::end::
+									
+									<a href="/contract/deleteSubscription/::subscription.id::" class="btn btn-default btn-sm" onclick="return confirm('Voulez vous vraiment annuler votre souscription ?')">
+										<i class="icon icon-delete"></i>
+										&nbsp;Annuler la souscription
+									</a>
+								</td>
+							</tr>
+
 						</table>
 			
-						
-						
-						<a href="/contract/deleteSubscription/::subscription.id::" class="btn btn-danger btn-sm" onclick="return confirm('Effacer ?')">
-							<i class="icon icon-delete"></i>
-							&nbsp;Annuler la souscription
-						</a>
-						
 					::end::
 				
 				</div>
