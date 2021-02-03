@@ -253,7 +253,7 @@ class Account extends Controller
 
 		view.member = user;
 
-		var form = db.User.getForm(app.user);
+		var form = db.User.getForm(user);
 		form.removeElement(form.getElement("firstName"));
 		form.removeElement(form.getElement("lastName"));
 		form.removeElement(form.getElement("email"));
@@ -272,8 +272,8 @@ class Account extends Controller
 		
 		if (form.isValid()) {
 			var url = app.user==null ? "/user/" : "/user/choose?show=1";
-			form.toSpod(app.user); 
-			app.user.update();
+			form.toSpod(user); 
+			user.update();
 			throw Ok(url, t._("Your account has been updated"));
 		}
 		
