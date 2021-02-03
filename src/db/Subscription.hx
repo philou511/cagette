@@ -57,17 +57,16 @@ class Subscription extends Object {
 		return db.Operation.manager.select( $user == this.user && $subscription == this && $type == SubscriptionTotal, true );
 	}
 
+	/**
+		get total of payment operations linked to this subscription
+	**/
 	public function getPaymentsTotal() : Float {
-
 		if( this.id == null ) return 0;
-
 		var paymentsTotal : Float = 0;
 		var operations = db.Operation.manager.search( $user == user && $subscription == this && $type == Payment, null, false );
 		for ( operation in operations ) {
-
 			paymentsTotal += Formatting.roundTo( operation.amount, 2 );
 		}
-
 		return Formatting.roundTo( paymentsTotal, 2 );
 	}
 
