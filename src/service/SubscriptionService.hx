@@ -855,10 +855,6 @@ class SubscriptionService
 		subscription.update();
 	}
 
-	public static function getOperations( subscription : db.Subscription, ?lock=false):Array<db.Operation>{
-		return db.Operation.manager.search( $subscription == subscription, { orderBy : -date }, lock ).array();
-	}
-
 	 /**
 	  *  Deletes a subscription if there is no orders that occurred in the past
 	  */
@@ -871,7 +867,7 @@ class SubscriptionService
 		}
 
 		//cant delete if some payment has been recorded
-		var hasPayments = subscription.catalog.hasPayments;
+		var hasPayments = subscription.catalog.group.hasPayments();
 		var subscriptionOperations = db.Operation.manager.count( $subscription == subscription && $type==Payment );
 		if ( hasPayments && subscriptionOperations > 0 ) {
 			throw new Error( 'Impossible de supprimer cette souscription car il y a des paiements enregistrés.' );
@@ -884,9 +880,10 @@ class SubscriptionService
 		}
 
 		//Delete all the operations for this subscription
-		for ( operation in getOperations(subscription,true) ) operation.delete();
+		var subscriptionOperations = db.Operation.manager.search( $subscription == subscription, true );
+		for ( operation in subscriptionOperations ) operation.delete();
 		
-		if( subscription.catalog.hasPayments ) {
+		if( subscription.catalog.group.hasPayments() ) {
 			service.PaymentService.updateUserBalance( subscription.user, subscription.catalog.group );
 		}
 
@@ -1157,7 +1154,7 @@ class SubscriptionService
 
 		var totalOperation : db.Operation = null;
 
-		if ( subscription.catalog.hasPayments ) {
+		if ( subscription.catalog.group.hasPayments() ) {
 
 			totalOperation = db.Operation.manager.select ( $user == subscription.user && $subscription == subscription && $type == SubscriptionTotal, true );
 	

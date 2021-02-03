@@ -9,11 +9,13 @@ class CatalogService{
     public static function getForm( catalog : db.Catalog ) : sugoi.form.Form {
 
 		if ( catalog.group == null || catalog.type == null || catalog.vendor == null ) {
+
 			throw new tink.core.Error( "Un des éléments suivants est manquant : le groupe, le type, ou le producteur." );
 		}
 
 		var t = sugoi.i18n.Locale.texts;
-		var hasPayments = catalog.hasPayments;
+
+		var hasPayments = catalog.group.hasPayments();
 
 		var customMap = new form.CagetteForm.FieldTypeToElementMap();
 		customMap["DDate"] = form.CagetteForm.renderDDate;
@@ -25,7 +27,6 @@ class CatalogService{
 		form.removeElement(form.getElement("groupId") );
 		form.removeElement(form.getElement("type"));
 		form.removeElement(form.getElement("vendorId"));
-		form.removeElement(form.getElement("hasPayments"));
 		
 		if ( catalog.group.hasShopMode() ) {
 
@@ -38,7 +39,6 @@ class CatalogService{
 			form.removeElement(form.getElement("absentDistribsMaxNb"));
 			form.removeElement(form.getElement("absencesStartDate"));
 			form.removeElement(form.getElement("absencesEndDate"));
-			
 		}
 		else {
 			//CSA MODE
@@ -54,11 +54,16 @@ class CatalogService{
 
 				form.getElement("orderStartDaysBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#ouverture_et_fermeture_de_commande";
 				form.getElement("orderEndHoursBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#ouverture_et_fermeture_de_commande";
-				if( !catalog.hasPayments ) form.getElement("catalogMinOrdersTotal").label = "Minimum de commandes sur la durée du contrat (en €)";
+
+				if( !hasPayments ) {
+
+					form.getElement("catalogMinOrdersTotal").label = "Minimum de commandes sur la durée du contrat (en €)";
+				}
 				form.getElement("catalogMinOrdersTotal").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#minimum_de_commandes_sur_la_duree_du_contrat";
 				form.getElement("allowedOverspend").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#depassement_autorise";
 				
-			} else { 
+			}
+			else { 
 				//CONST
 				form.removeElement(form.getElement("orderStartDaysBeforeDistrib"));
 				form.removeElement(form.getElement("requiresOrdering"));
@@ -74,14 +79,19 @@ class CatalogService{
 			
 			var html = "<h4>Gestion des absences</h4><div class='alert alert-warning'>";
 
-			
+			//if catalog is new
 			if ( catalog.id == null ) {
-				//if catalog is new
+
 				if ( catalog.type == Catalog.TYPE_VARORDER ) {
+
 					form.getElement("orderStartDaysBeforeDistrib").value = 365;
+
 					if ( hasPayments ) {
+
 						form.getElement("allowedOverspend").value = 10;
-					} else {
+					}
+					else {
+
 						form.getElement("allowedOverspend").value = 500;
 					}
 				}
@@ -95,8 +105,9 @@ class CatalogService{
 					Vous pourrez définir une période pendant laquelle les membres pourront choisir d'être absent après avoir enregistré ce nouveau contrat et avoir ajouté des distributions.<br/>
 					<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
 				</p></div>";
-			} else {
-				//existing catalog
+			}
+			else {
+
 				html += "<p><i class='icon icon-info'></i> 
 					Vous pouvez définir une période pendant laquelle les membres pourront choisir d'être absent.<br/>
 					<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
@@ -108,12 +119,17 @@ class CatalogService{
 		
 		//For all types and modes
 		if ( catalog.id != null ) {
+
 			form.removeElement(form.getElement("distributorNum"));
-		} else {
+		}
+		else {
 
 			if ( catalog.group.hasShopMode() ) {
+
 				form.getElement("name").value = "Commande " + catalog.vendor.name;
-			} else {
+			}
+			else {
+
 				form.getElement("name").value = "Contrat AMAP " + ( catalog.type == Catalog.TYPE_VARORDER ? "variable" : "classique" ) + " - " + catalog.vendor.name;
 			}
 			form.getElement("startDate").value = Date.now();
@@ -126,13 +142,6 @@ class CatalogService{
 		form.removeElement( contact );
 		form.addElement( contact, 4 );
 		contact.required = true;
-
-
-		//payments management
-		if(catalog.id < db.Catalog.CATALOG_ID_HASPAYMENTS){
-			form.addElement( new sugoi.form.elements.Html( "payementsHtml", '<h4>Gestion des paiements</h4>' ) );
-			form.addElement( new sugoi.form.elements.Checkbox('hasPayments',"Gérer les paiements liés aux souscriptions à ce contrat",catalog.hasPayments));
-		}
 			
 		return form;
     }

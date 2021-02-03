@@ -14,16 +14,12 @@
             
             
         </div>
-        ::if(getCurrentGroup().hasShopV2())::
+
         <p class="text-center" style="margin-bottom:32px;">
-            <a href="?continueShopping=1" class="btn btn-primary btn-lg"><i class="icon icon-chevron-right"></i> Continuer mes achats</a>
-        </p>
-        ::end::
-        <p class="text-center" style="margin-bottom:32px;">
-            ::if(getCurrentGroup().hasPayments())::
+            ::if(user.getGroup().hasPayments())::
             <a href="?confirm=1" class="btn btn-primary btn-lg"><i class="icon icon-check"></i> Confirmer et payer</a>
             ::else::
-            <a href="?confirm=1" class="btn btn-primary btn-lg"><i class="icon icon-check"></i> Confirmer mon panier</a>
+            <a href="?confirm=1" class="btn btn-primary btn-lg"><i class="icon icon-check"></i> Confirmer</a>
             ::end::
             &nbsp;&nbsp;
             <a href="?cancel=1" class="btn btn-danger btn-lg"><i class="icon icon-delete"></i> Abandonner</a>

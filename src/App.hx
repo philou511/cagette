@@ -243,9 +243,6 @@ class App extends sugoi.BaseApp {
 				
 		out.set("variablePrice", "Prix variable selon pesée");		
 		
-		//shop options
-		out.set("Show3rdCategoryLevel", "Classer par catégorie de troisième niveau");
-
 		return out;
 	}
 	

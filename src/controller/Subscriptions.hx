@@ -32,13 +32,17 @@ class Subscriptions extends controller.Controller
 		view.catalog = catalog;
 		view.c = catalog;
 		view.subscriptions = catalogSubscriptions;
-		if ( catalog.hasPayments ) {
+		if ( catalog.group.hasPayments() ) {
+
 			view.negativeBalanceCount = catalogSubscriptions.count( function( subscription ) { return  subscription.getBalance() < 0; } );
-		} else {
+		}
+		else {
+
 			view.negativeBalanceCount = catalogSubscriptions.count( function( subscription ) { return  !subscription.paid(); } );
 		}
 		
 		view.dateToString = function( date : Date ) {
+
 			return DateTools.format( date, "%d/%m/%Y");
 		}
 		view.subscriptionService = SubscriptionService;
@@ -54,6 +58,7 @@ class Subscriptions extends controller.Controller
 		
 		var subscriptionUser = subscription.user;
 		if ( checkToken() ) {
+
 			try {
 				SubscriptionService.deleteSubscription( subscription );
 			} catch( error : Error ) {
@@ -334,7 +339,7 @@ class Subscriptions extends controller.Controller
 	public function doPayments( subscription : db.Subscription ) {
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
-		if ( !subscription.catalog.hasPayments ) throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La gestion des paiements n\'est pas activée.' );
+		if ( !subscription.catalog.group.hasPayments() ) throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La gestion des paiements n\'est pas activée.' );
 
 		//Let's do an update just in case the total operation is not coherent
 		view.subscriptionTotal = SubscriptionService.createOrUpdateTotalOperation( subscription );

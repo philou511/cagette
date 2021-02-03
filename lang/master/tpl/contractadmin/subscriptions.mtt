@@ -4,8 +4,7 @@
 
         <h3>Souscriptions</h3>
         
-        ::set hasPayments = catalog.hasPayments::
-
+        ::set hasPayments = catalog._group.hasPayments()::
         <div class="row" ::cond negativeBalanceCount != 0:: >
 
 			<div id="content" class="col-md-12">
@@ -169,8 +168,13 @@
                                                     <i class="icon icon-edit"></i> ::_("Edit")::
                                                 </a>
                                             </li>                                    
-                                            
-                                            ::if(hasPayments)::
+                                            <li>
+                                                <a href="/contractAdmin/subscriptions/delete/::subscription.id::?token=::token::" $$confirm(Voulez vous vraiment supprimer cette souscription et toutes les commandes rattachées ?)>
+                                                    <i class="icon icon-delete"></i> ::_("Delete")::
+                                                </a>
+                                            </li>	
+
+                                            ::if(subscription._catalog._group.hasPayments())::
                                             <li>
                                                 <a href="/contractAdmin/subscriptions/payments/::subscription.id::">
                                                     <i class="icon icon-euro"></i> ::_("Payments")::
@@ -183,12 +187,6 @@
                                                 </a>
                                             </li>	
                                             ::end::
-
-                                            <li>
-                                                <a href="/contractAdmin/subscriptions/delete/::subscription.id::?token=::token::" $$confirm(Voulez vous vraiment supprimer cette souscription et toutes les commandes rattachées ?)>
-                                                    <i class="icon icon-delete"></i> ::_("Delete")::
-                                                </a>
-                                            </li>	
                                         </ul>
                                     </div>
                                 </td>

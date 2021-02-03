@@ -1,0 +1,159 @@
+::use 'design.mtt'::
+
+<div class="col-md-3">
+	<h2>::_("Contact informations")::</h2>
+	<div class="article">
+		
+		<div style="font-weight:bold;font-size:120%;">::member.firstName:: ::member.lastName::
+		::if member.firstName2!=null && member.lastName2!=null::
+			& ::member.firstName2:: ::member.lastName2::
+			
+		::end::</div>
+		
+		$$nullSafe(::member.address1::)<br/>
+		$$nullSafe(::member.address2::)<br/>
+		$$nullSafe(::member.zipCode::) 
+		$$nullSafe(::member.city::)<br/>
+		<br/>
+		
+		::if member.phone!=null::
+			::_("Phone"):: : ::member.phone::<br/>
+		::end::
+
+		::if member.email!=null::
+			::_("Email"):: : <a href="mailto: ::member.email::">::member.email::</a><br/>
+		::end::
+		
+		::if member.email2!=null::
+			::_("Email"):: : <a href="mailto: ::member.email2::">::member.email2::</a><br/>
+		::end::
+		
+		
+	</div>
+	
+</div>
+
+<div class="col-md-9">
+	<h2>::_("Payments")::</h2>
+	<div class="article">
+
+		::foreach subscription subscriptions::
+
+			::set subscriptionTotal = subscription.getTotalPrice()::
+			::set subscriptionPayments = subscription.getPaymentsTotal()::
+			::set subscriptionOperationDate = null::
+			::set subscriptionOperationAmount = null::
+
+			<table class="table table-condensed table-bordered text-center" style="margin-top: 50px;">
+
+				<tr style="font-size:1.1em;font-weight:bold;background-color:#EEE;">
+
+					<td colspan="3" style="vertical-align: middle;">
+						::subscription._catalog.name::<br/>
+						<a href="::subscription._catalog._vendor.getLink()::" target="_blank" style="font-size:0.9em;">::subscription._catalog._vendor.name::</a>
+					</td>
+
+					<td style="vertical-align: middle;">
+						::_("Balance")::&nbsp;&nbsp;
+						::set balance = subscriptionPayments - subscriptionTotal::
+						::if balance < 0::
+							::set background = "background-color: #d9534f;"::
+						::else::
+							::set background = "background-color: #84bd55;"::
+						::end::
+						<span style="color: white;font-weight:bold;::background::; padding:10px;">
+							::formatNum(balance)::&nbsp;::currency()::
+						</span>
+					</td>
+
+				</tr>
+
+				::foreach operation operationsBySubscription.get(subscription)::
+
+					::set x = operation.getTypeIndex()::
+					<tr ::cond x != 1::>
+
+						<td style="vertical-align: middle;">
+							::sDate(operation.date)::
+						</td>
+
+						<td style="vertical-align: middle;">
+							::if x==0::
+								<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::_("Order")::
+							::elseif x==1::
+								<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::raw _("CSA&nbsp;contract")::
+							::elseif x==2::
+								<i class="icon icon-euro" aria-hidden="true"></i> ::operation.getPaymentTypeName()::
+							::else::
+								<i class="fa fa-user" aria-hidden="true"></i> Souscription
+							::end::
+						</td>
+						
+						<td style="font-size:1em;width:300px;vertical-align: middle;padding:10px 0;">
+							::operation.name::
+						</td>
+
+						<td style="vertical-align: middle;">
+							&nbsp;&nbsp;::formatNum(operation.amount)::&nbsp;::currency()::
+						</td>
+
+					</tr>
+
+					::if x == 1::
+						::set subscriptionOperationDate = sDate(operation.date)::
+						::set subscriptionOperationAmount = operation.amount::
+					::end::
+					
+				::end::
+
+				<tr>
+
+					<td style="vertical-align: middle;">
+						::if subscriptionOperationDate != null::
+							::subscriptionOperationDate::
+						::end::
+					</td>
+
+					<td style="vertical-align: middle;">
+						<i class="fa fa-user" aria-hidden="true"></i> Souscription
+					</td>
+
+					<td style="font-size:1em;width:300px;vertical-align: middle;padding: 10px 0;">
+						Total Commandes
+					</td>
+
+					<td style="vertical-align: middle;">
+						::if subscriptionOperationAmount != null::
+							-&nbsp;::-subscriptionOperationAmount::&nbsp;::currency()::
+						::else::
+							0&nbsp;::currency()::
+						::end::
+					</td>
+
+				</tr>
+
+			</table>
+
+		::end::
+	
+		<div style="font-size:1.3em;top: 10px;position: absolute;left: 20px;">
+
+			Solde global :
+			::if globalbalance < 0::
+				::set background = "background-color: #d9534f;"::
+			::else::
+				::set background = "background-color: #84bd55;"::
+			::end::
+			<span style="color: white;font-weight:bold;::background::; padding:10px;">
+				::formatNum(globalbalance)::&nbsp;::currency()::
+			</span>
+
+		</div>
+		
+	</div>
+</div>
+
+
+
+
+::end::

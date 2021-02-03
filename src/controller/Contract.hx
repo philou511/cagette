@@ -176,7 +176,7 @@ class Contract extends Controller
 
 
 	/**
-	 * Edit a contract/catalog
+	 * Edit a contract 
 	 */
 	 @logged @tpl("form.mtt")
 	 function doEdit( catalog : db.Catalog ) {
@@ -206,18 +206,11 @@ class Contract extends Controller
 				catalog.update();
 
 				if(!catalog.group.hasShopMode()){
-					
 					//Update future distribs start and end orders dates
 					var newOrderStartDays = catalog.orderStartDaysBeforeDistrib != previousOrderStartDays ? catalog.orderStartDaysBeforeDistrib : null;
 					var newOrderEndHours = catalog.orderEndHoursBeforeDistrib != previousOrderEndHours ? catalog.orderEndHoursBeforeDistrib : null;
 					var msg = CatalogService.updateFutureDistribsStartEndOrdersDates( catalog, newOrderStartDays, newOrderEndHours );
 					if(msg!=null) messages.push ( msg );  
-
-					//payements : update or create operations
-					for ( sub in SubscriptionService.getCatalogSubscriptions(catalog)){
-						SubscriptionService.createOrUpdateTotalOperation( sub );
-					}
-
 				}
 				
 				//update rights

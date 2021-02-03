@@ -97,7 +97,23 @@ class Member extends Controller
 	
 	}
 
-
+	@tpl("account/csaorders.mtt")
+	function doOrders( member : db.User, catalog : db.Catalog ) {
+		
+		var user = db.UserGroup.get(app.user, app.user.getGroup());
+		if (user == null) throw Error("/", t._("You are not a member of this group"));
+		
+		var	catalogDistribs = db.Distribution.manager.search( $catalog == catalog , { orderBy : date }, false ).array();
+		view.distribs = catalogDistribs;
+		view.prepare = OrderService.prepare;
+		view.catalog = catalog;
+		view.account = true;
+		view.now = Date.now();
+		view.member = member;
+		
+		checkToken();
+	}	
+	
 	/**
 	 * Admin : Log in as this user for debugging purpose
 	 */	

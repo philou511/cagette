@@ -465,7 +465,7 @@ class OrderService
 		var tmp = new db.TmpBasket();
 		tmp.user = user;
 		tmp.multiDistrib = multiDistrib;
-		tmp.setData(tmpBasketData);
+		tmp.data = tmpBasketData;
 		tmp.ref = ref;
 		tmp.insert();
 		return tmp;
@@ -480,7 +480,7 @@ class OrderService
 		var orders = [];
 		var user = tmpBasket.user;
 		var distributions = tmpBasket.multiDistrib.getDistributions();
-		for (o in tmpBasket.getData().products){
+		for (o in tmpBasket.data.products){
 			var p = db.Product.manager.get(o.productId,false);
 
 			//find related distrib
@@ -657,7 +657,7 @@ class OrderService
 		}
 		
 		if(tmpBasket!=null){
-			if(tmpBasket.getData().products.length==0){
+			if(tmpBasket.data.products.length==0){
 				tmpBasket.lock();
 				tmpBasket.delete();
 			}else{
