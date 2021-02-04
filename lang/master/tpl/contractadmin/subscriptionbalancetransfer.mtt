@@ -28,7 +28,7 @@
 					<select name="subscription" id="subscription" class="form-control" required="required">
 						<option value="0">-</option>
 						::foreach subscription subscriptions::
-							<option value="::subscription.id::">::subscription._catalog.name:: | ::sDate(subscription.startDate):: - ::sDate(subscription.endDate):: | Solde : ::subscription.getBalance():: ::currency()::</option>
+							<option value="::subscription.id::">Souscription au ::subscription._catalog.name:: du ::sDate(subscription.startDate):: au ::sDate(subscription.endDate):: - Solde : ::subscription.getBalance():: ::currency()::</option>
 						::end::
 					</select>
 				</div>

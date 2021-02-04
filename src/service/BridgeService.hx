@@ -25,8 +25,12 @@ class BridgeService {
 	}
 
 	public static function getNeoModuleScripts() {
-		var manifest = BridgeService.getNeoWebpackManifest();
-		return [manifest.get("runtime.js"), manifest.get("reactlibs.js"), manifest.get("vendors.js"), manifest.get("neo.js")];
+		try{
+			var manifest = BridgeService.getNeoWebpackManifest();
+			return [manifest.get("runtime.js"), manifest.get("reactlibs.js"), manifest.get("vendors.js"), manifest.get("neo.js")];
+		}catch(e:Dynamic){
+			throw "Unable to load NeoModuleScripts from Nest backend.";
+		}
 	}
 
 	public static function call(uri:String) {

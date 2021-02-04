@@ -84,8 +84,8 @@
                             <th>Membre</th>
                             <th ::cond catalog.type == TYPE_CONSTORDERS::>Engagement</th>
                             <th>Période d'engagement</th>
-                            <th>Nombre de distributions</th>
-                            <th>Total</th>
+                            <th>Nbre de distributions</th>
+                            <th>Total commandé</th>
                             ::if hasPayments::
                                 <th>Solde</th>
                             ::else::
@@ -93,7 +93,7 @@
                             ::end::
                         </tr>
                         ::foreach subscription subscriptions::
-                            ::set orderName = subscriptionService.getDescription(subscription, catalog, false)::
+                            ::set orderName = subscriptionService.getSubDescription(subscription)::
                             ::if orderName == null::
                                 ::set class="danger text-danger"::
                             ::else::
