@@ -24,5 +24,6 @@ class Message extends Object
 	public var date : SDateTime;
 	
 	public var attachments : SNull<SText>; // Array<String>
+	public var slateContent : SNull<SText>; // JSON stringified message readable by Slate editor
 	
 }
