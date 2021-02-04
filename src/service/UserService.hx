@@ -209,30 +209,6 @@ class UserService
 		view.loginBoxOptions = loginBoxOptions;
 	}
 
-	public static function getUserLists(group:db.Group):Array<UserList>{
-		var membersNum = group.getMembersNum();
-		
-		var lists = [
-			{id:"all",			name:"Membres du groupe", 			count:membersNum	},
-			{id:"hasOrders",	name:"Avec commande",				count:null		},
-			{id:"hasNoOrders",	name:"Sans commande",				count:null		},
-			{id:"newUsers",		name:"Ne s'est jamais connecté",	count:null		},
-		];
-
-		if(group.hasMembership){
-			var ms = new service.MembershipService(group);
-			var upToDateMemberships = ms.countUpToDateMemberships();
-			lists.push({id:"noMembership",	name:"Adhésion à renouveler",	count:membersNum-upToDateMemberships});
-			lists.push({id:"membership",	name:"Adhésion à jour",			count:upToDateMemberships	});
-		}
-		
-		//if(group.regOption == RegOption.WaitingList){
-			lists.push({id:"waitingList",	name:"Liste d'attente",			count:service.WaitingListService.countUsersInWl(group)	});
-		//}
-
-		return lists;
-	}
-
 	/*public static function getListBrowseFunction(listId:String){
 		switch(listId){
 			case "allUsers" : 

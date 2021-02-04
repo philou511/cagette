@@ -167,7 +167,12 @@ class VendorService{
 			if(vendor.legalStatus!=null){
 				form.addElement(new sugoi.form.elements.Html("html",vendor.getLegalStatus(false),"Statut juridique"));
 			}else{
-				form.addElement(new sugoi.form.elements.IntSelect('legalStatus',"Forme juridique",[{label:"Société",value:0},{label:"Entreprise individuelle",value:1},{label:"Association",value:2}],null,true));
+				var data = [
+					{label:"Société",value:0},
+					{label:"Entreprise individuelle",value:1},
+					{label:"Association",value:2},
+					{label:"Particulier (mettez 0 comme numéro SIRET)",value:3}];
+				form.addElement(new sugoi.form.elements.IntSelect('legalStatus',"Forme juridique",data,null,true));
 			}
 
 			form.addElement(new sugoi.form.elements.StringInput("companyNumber","Numéro SIRET (14 chiffres) ou numéro RNA pour les associations.",vendor.companyNumber,true));
@@ -198,6 +203,9 @@ class VendorService{
 		if( vendor.email==null ) throw new Error("Vous devez définir un email pour ce producteur.");
 		if( !EmailValidator.check(vendor.email) ) throw new Error("Email invalide.");
 
+		//desc
+		if( vendor.desc!=null && vendor.desc.length>1000) throw  new Error("Merci de saisir une description de moins de 1000 caractères");
+
 		//asssociation
 		if(legalInfos && data.legalStatus==2){
 
@@ -211,16 +219,19 @@ class VendorService{
 			vendor.legalStatus = 9220;//association déclarée
 		}
 
+		//particulier
+		if(legalInfos && data.legalStatus==3){
+
+			vendor.legalStatus = -1;//particulier
+		}
+
 		//check SIRET if french and not association
-		if(legalInfos && data.country=="FR" && data.legalStatus!=2){
+		if(legalInfos && data.country=="FR" && data.legalStatus!=2 && data.legalStatus!=3){
 			//https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/82902831500010
 			var c = new sugoi.apis.linux.Curl();
 			var siret = ~/[^\d]/g.replace(data.companyNumber,"");//remove non numbers
 			if(siret=="" || siret==null) throw new Error("Le numéro SIRET est requis.");
 			var sameSiret = db.Vendor.manager.search($companyNumber==siret).array();
-			if( !App.config.DEBUG && sameSiret.length>0 && sameSiret[0].id!=vendor.id){
-				throw new Error("Il y a déjà un producteur enregistré avec ce numéro SIRET");			
-			}
 			
 			var raw = c.call("GET","https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/"+siret);
 			var res = haxe.Json.parse(raw);
@@ -241,26 +252,25 @@ class VendorService{
 					}
 				}
 				
-				// if(vendor.activityCode==null){
-					vendor.activityCode = res.etablissement.activite_principale;
-				// }
-				// if(vendor.legalStatus==null){
-					vendor.legalStatus = res.etablissement.unite_legale.categorie_juridique;
-				// }
-
-				//unban if banned
-				if(vendor.disabled==db.Vendor.DisabledReason.IncompleteLegalInfos){
-					vendor.disabled = null;
-					App.current.session.addMessage("Merci d'avoir saisi vos informations légales. Votre compte a été débloqué.",false);
+				vendor.activityCode = res.etablissement.activite_principale;
+				vendor.legalStatus = res.etablissement.unite_legale.categorie_juridique;
+				
+				//do not authorize duplicate companyNumber if not Coop legalStatus
+				var coopStatuses = [5560,5460,5558];
+				if( !App.config.DEBUG && sameSiret.length>0 && sameSiret[0].id!=vendor.id && coopStatuses.find(s-> Std.string(s)==Std.string(vendor.legalStatus))==null ){
+					throw new Error("Il y a déjà un producteur enregistré avec ce numéro SIRET");			
 				}
 			}
+		}		
 
+		//unban if banned
+		if(vendor.companyNumber!=null && vendor.disabled==db.Vendor.DisabledReason.IncompleteLegalInfos){
+			vendor.disabled = null;
+			App.current.session.addMessage("Merci d'avoir saisi vos informations légales. Votre compte a été débloqué.",false);
 		}
-		
 
 		return vendor;
 	}
-
 
 	/**
 		Loads vendors professions from json

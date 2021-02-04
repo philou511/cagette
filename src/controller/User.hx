@@ -81,6 +81,8 @@ class User extends Controller
 		//vendor accounts
 		var vendors = service.VendorService.getVendorsFromUser(app.user);
 		view.vendors = vendors;
+
+		view.isBlocked = pro.db.PUserCompany.getUserCompanies(app.user).find(uc -> return uc.disabled) != null;
 		#end
 
 		view.isGroupAdmin = app.user.getUserGroups().find(ug -> return ug.isGroupManager()) != null;

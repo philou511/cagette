@@ -346,7 +346,6 @@ class Admin extends Controller {
 		pro.db.CagettePro.manager.delete($training==true);	
 		#end
 
-
 		//delete unlinked vendors
 		for ( v in db.Vendor.manager.all(true)	){
 			if(db.Catalog.manager.select($vendor==v,false)==null){
@@ -354,34 +353,7 @@ class Admin extends Controller {
 			}
 		}
 		
-		//clean files
-		for( f in sugoi.db.File.manager.all(true)){
-			//product file
-			if(db.Product.manager.select($image==f)!=null) continue;
-
-			//entity file 
-			if(sugoi.db.EntityFile.manager.select($file==f)!=null) continue;			
-			
-			//vendor logo
-			if(db.Group.manager.select($image==f)!=null) continue;
-
-			//group logo
-			if(db.Vendor.manager.select($image==f)!=null) continue;
-
-			#if plugins
-			if(pro.db.PProduct.manager.select($image==f)!=null) continue;
-			if(pro.db.POffer.manager.select($image==f)!=null) continue;
-
-			#end
-
-			f.delete();
-		}
-
-
-		
-
 	}
-
 
 	/**
 		clean files that are not linked to anything
@@ -395,7 +367,9 @@ class Admin extends Controller {
 			if(db.Product.manager.select($image==f)!=null) continue;
 
 			//entity file 
-			if(sugoi.db.EntityFile.manager.select($file==f)!=null) continue;			
+			if(sugoi.db.EntityFile.manager.select($file==f)!=null) continue;	
+			
+			//TODO : remove entityFiles related to unexisting entities
 			
 			//vendor logo
 			if(db.Group.manager.select($image==f)!=null) continue;
@@ -416,7 +390,7 @@ class Admin extends Controller {
 	/**
 		clean old product files.
 		NE PAS FAIRE ca : car quand on copie un catalogue, ça réutilise d'anciennes images
-	**/
+	
 	function doCleanOldFiles() {
 		var max = new Date(2018,6,30,0,0,0);
 		for( c in Catalog.manager.search($endDate < max,false)){
@@ -430,7 +404,7 @@ class Admin extends Controller {
 			
 		}
 		
-	}
+	}**/
 
 }
 

@@ -1,33 +1,41 @@
 ::use 'base.mtt'::
+
 <div style="margin-top: 32px; padding: 16px">
-    <h1>Neo Modules</h1>
+    <div style="margin-top: 24px; margin-bottom: 48px;">
+        <div id="to-boot"></div>
+    </div>
 
+    <div style="margin-top: 48px; margin-bottom: 48px;">
+        <div id="debug-module"></div>
+    </div>
 
-    <code>
-        ::foreach script getNeoModuleScripts()::
-        <p>&#60;script src="::script::" /&#62;</p>
-        ::end::
-    </code>
-
-
-    <h4>Mangopay User Module</h4>
-    <div id="mangopay-user-module"></div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            neo.createNeoModule("mangopay-user-module", "mangopay", { userId: 1 });
+
+            neo.createNeoModule("debug-module", "debug", {
+
+                onLoadModule: function (data, hash) {
+                    const urlSearch = new URLSearchParams(window.location.search);
+                    const currentHash = urlSearch.get("hash");
+                    if (currentHash !== hash) {
+                        urlSearch.set("hash", hash);
+                        window.location.href = `${window.location.origin}${window.location.pathname}?${urlSearch.toString()}`;
+                    } else {
+                        neo.unmountComponentAtNode("to-boot");
+                        neo.createNeoModule("to-boot", data.moduleName, data.props);
+                    }
+                },
+                onUnloadModule: function () {
+                    neo.unmountComponentAtNode("to-boot");
+                },
+                scriptsList: [
+                    :: foreach script getNeoModuleScripts()::
+                    "::script::",
+                    :: end::
+                ]
+            });
         });
     </script>
-
-    <hr/>
-
-    <h4>Messaging Service Module</h4>
-    <div id="messaging-service-module"></div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            neo.createNeoModule("messaging-service-module", "messages", { groupId: 3386, whichUser: 0 });
-        });
-    </script>
-
 
 </div>
 ::end::

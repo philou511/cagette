@@ -37,10 +37,11 @@ class Distribution extends Controller
 		var from = new Date(now.getFullYear(), now.getMonth(), now.getDate()-1, 0, 0, 0);
 		var to = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * 28 * 3);
 		var timeframe = new tools.Timeframe(from,to);
+		var group = app.user.getGroup();
 
 		var distribs = db.MultiDistrib.getFromTimeRange(app.user.getGroup(),timeframe.from,timeframe.to);
 
-		if( app.user.getGroup().hasPayments() && app.params.get("_from")==null){
+		if( group.hasPayments() && group.hasShopMode() && app.params.get("_from")==null){
 
 			//include unvalidated distribs in the past
 			var unvalidated = db.MultiDistrib.getFromTimeRange(app.user.getGroup() , tools.DateTool.deltaDays(from,-60) , tools.DateTool.deltaDays(from,-1) );
@@ -57,6 +58,10 @@ class Distribution extends Controller
 		
 		view.cycles = DistributionCycle.getFromTimeFrame(app.user.getGroup(), timeframe);
 		view.timeframe = timeframe;
+
+		//legal infos alert
+		// var vendors = app.user.getGroup().getActiveVendors();
+		// view.noSiret = vendors.filter(v -> v.companyNumber==null);
 
 		checkToken();
 	}
@@ -146,7 +151,7 @@ class Distribution extends Controller
 	@tpl('distribution/listByDate.mtt')
 	function doListByDate(date:Date,place:db.Place, ?type:String, ?fontSize:String) {
 		
-		if (!app.user.isContractManager()) throw Error('/', t._("Forbidden action"));
+		checkHasDistributionSectionAccess();
 		
 		view.place = place;		
 		view.onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(app.user.getGroup());
@@ -367,8 +372,7 @@ class Distribution extends Controller
 		var form = new sugoi.form.Form("distribShifting");
 		
 		//date
-		var from = DateTools.delta(d.multiDistrib.distribStartDate ,-1000.0*60*60*24*30.5*3); 
-		if(from.getTime()<Date.now().getTime()) from = Date.now();//$from cannot be in the past
+		var from = Date.now(); 		
 		var to  = DateTools.delta(d.catalog.endDate ,1000.0*60*60*24*30.5*6); //$to is 6 month after the end of catalog
 		var mds = db.MultiDistrib.getFromTimeRange(d.catalog.group,from,to);
 		//remove validated distribs, and the current one

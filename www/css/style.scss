@@ -2,7 +2,7 @@
 	Cagette.net SASS stylesheet
 	Use it with with bootstrap 3
 */
-@import url('https://fonts.googleapis.com/css?family=Cabin:400,400i,700');
+@import url('https://fonts.googleapis.com/css?family=Cabin:400,700');
 @import '_map';
 @import '_iconfont';
 
@@ -11,24 +11,24 @@ $lightGreen 	: #84bd55; //primary buttons color
 $lightBrown 	: #f8f4e5; //background
 $darkGrey 		: #333;
 $mediumGrey		: #666;
-$lightGrey		:#AAA;
-
+$lightGrey		: #AAA;
 
 html{
 	//for rem units
 	font-size: 16px !important;
 }
+
 body{
 	//usefull when BS is not here
 	font-family: Cabin, Arial, Helvetica, sans-serif;   
 	color:$darkGrey; 
 }
 
-h1,h2,h3,h4{
-	//margin-top: 4px !important;
-	//margin-bottom: 8px !important;
-	font-style: italic;
-}
+// h1,h2,h3,h4{
+// 	//margin-top: 4px !important;
+// 	//margin-bottom: 8px !important;
+// 	// font-style: italic;
+// }
 
 h1{
 	margin-bottom: 8px !important;
@@ -154,9 +154,6 @@ ul.nav{
 }
 
 
- 
-
-
 .noSelect {
 	-webkit-touch-callout: none; /* iOS Safari */
 	-webkit-user-select: none; /* Safari */
@@ -173,6 +170,8 @@ ul.nav{
 	background: #84BD55;
 	border-radius: 8px;
 	padding: 20px;
+	min-height: 200px;
+
 	ul>li>a {
 		color: #333;
 		text-decoration: none; 

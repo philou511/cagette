@@ -1,4 +1,5 @@
 package controller;
+import service.SubscriptionService;
 import sugoi.form.elements.StringInput;
 import service.OrderService;
 import service.WaitingListService;
@@ -225,6 +226,7 @@ class Group extends controller.Controller
 
 			case Amap : 
 				g.flags.unset(ShopMode);
+				g.flags.set(HasPayments);
 				g.hasMembership=true;
 				g.regOption = WaitingList;
 				
@@ -310,7 +312,8 @@ class Group extends controller.Controller
 				);	
 				var ordersData = new Array< { productId : Int, quantity : Float, invertSharedOrder : Bool, userId2 : Int } >();
 				ordersData.push( { productId : product.id, quantity : 1, invertSharedOrder : false, userId2 : null } );
-				service.SubscriptionService.createSubscription( user, contract, ordersData, null );
+				var ss = new SubscriptionService();
+				ss.createSubscription( user, contract, ordersData, null );
 			}
 			
 			//contrat variable
@@ -366,7 +369,8 @@ class Group extends controller.Controller
 			var ordersData = new Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
 			ordersData.push( { productId : egg.id, quantity : 2 } );
 			ordersData.push( { productId : p.id, quantity : 1 } );
-			var subscription = service.SubscriptionService.createSubscription( user, contract, ordersData, null );
+			var ss = new SubscriptionService();
+			var subscription = ss.createSubscription( user, contract, ordersData, null );
 			
 			OrderService.make(user, 2, egg, d.id, false, subscription );
 			OrderService.make(user, 1, p, d.id, false, subscription );

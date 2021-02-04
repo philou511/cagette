@@ -104,43 +104,6 @@ class UserOrder extends Object
 		return can && !this.paid;
 	}
 	
-	
-	
-	/**
-	 * Get the orders (varying orders) of a user for a multidistrib ( distribs with same day + same place )
-	 * 
-	 * @param	distribKey "$date|$placeId"
-	 */
-	/*public static function getUserOrdersByMultiDistrib(distribKey:String, user:db.User,group:db.Group):Array<db.UserOrder>{	
-		//var contracts = db.Catalog.getActiveContracts(group);
-		var contracts = db.Catalog.manager.search($amap == group, false); //should be able to edit a contract which is closed
-		for ( c in Lambda.array(contracts)){
-			if (c.type == db.Catalog.TYPE_CONSTORDERS){
-				contracts.remove(c); //only varying orders
-			}
-		}
-		
-		var cids = Lambda.map(contracts, function(x) return x.id);
-		var start = Date.fromString(distribKey.split("|")[0] + " 00:00:00");
-		var end = Date.fromString(distribKey.split("|")[0] + " 23:59:00");
-		var ds = db.Distribution.manager.search($date > start && $date < end && ($catalogId in cids), false);
-		var out = [];
-		for (d in ds) {
-			out = out.concat(Lambda.array(user.getOrdersFromDistrib(d)));
-		}
-		
-		return out;
-	}*/
-	
-	/*public static function getTotalPrice(tmpOrder:OrderInSession){
-		var t = 0.0;
-		for ( o in tmpOrder.products){				
-			var p = db.Product.manager.get(o.productId, false);
-			t += o.quantity * p.getPrice();				
-		}
-		return t;
-	}*/
-
 	function check(){
 		if(quantity==null) quantity == 1;
 	}

@@ -31,6 +31,7 @@ class OrderService
 		if( quantity < 0 ) throw new Error( "Quantity is negative" );
 		var vendor = product.catalog.vendor;
 		if( vendor.isDisabled()) throw new Error(vendor.name+" est désactivé. Raison : "+vendor.getDisabledReason());
+		var shopMode = product.catalog.group.hasShopMode();
 
 		//quantity
 		if ( !canHaveFloatQt(product) ){
@@ -40,14 +41,25 @@ class OrderService
 		}
 		
 		//multiweight : make one row per product
-		if (product.multiWeight && quantity > 1.0){
-			if (product.multiWeight && quantity != Math.abs(quantity)) throw new Error( t._("multi-weighing products should be ordered only with integer quantities") );
+		if ( product.multiWeight && quantity > 1.0 ) {
+
+			if ( !tools.FloatTool.isInt( quantity ) ) throw new Error( t._("multi-weighing products should be ordered only with integer quantities") );
 			
-			var o = null;
-			for ( i in 0...Math.round(quantity)){
-				o = make(user, 1, product, distribId, paid, /*subscription,*/ user2,  invert);
-			}			
-			return o;
+			var newOrder = null;
+
+			for ( i in 0...Math.round(quantity) ) {
+
+				if( shopMode ) {
+
+					newOrder = make( user, 1, product, distribId, paid, null, user2, invert );
+				}
+				else {
+
+					newOrder = make( user, 1, product, distribId, paid, subscription );
+				}
+			}
+
+			return newOrder;
 		}
 		
 		//checks
@@ -90,7 +102,7 @@ class OrderService
 		//checks
 		if(order.distribution==null) throw new Error( "cant record an order for a variable catalog without a distribution linked" );
 		if(order.basket==null) throw new Error( "this order should have a basket" );
-		if( !order.distribution.catalog.group.hasShopMode() ) {
+		if( !shopMode ) {
 
 			if( subscription != null && subscription.id == null ) throw new Error( "La souscription a un id null." );
 			if( subscription == null ) throw new Error( "Impossible d'enregistrer une commande sans souscription." );
@@ -162,7 +174,7 @@ class OrderService
 				throw new Error( t._( "Error : product \"::product::\" quantity should be integer",{ product:order.product.name } ) );
 			}
 		}
-		
+
 		//paid
 		if (paid != null) {
 			order.paid = paid;
@@ -218,8 +230,8 @@ class OrderService
 						
 						e = StockMove({ product:order.product, move: 0 - addedquantity });
 					}					
-				}				
-				order.product.update();					
+				}
+				order.product.update();
 			}	
 		}
 
@@ -244,10 +256,62 @@ class OrderService
 	}
 
 
+	public static function editMultiWeight( order : db.UserOrder, newquantity : Float ) : db.UserOrder {
+
+		if( !tools.FloatTool.isInt(newquantity) ) {
+
+			throw new Error( "Erreur : la quantité du produit" + order.product.name + " devrait être un entier." );
+		}
+	
+		var shopMode = order.product.catalog.group.hasShopMode();
+
+		if( !shopMode && order.product.multiWeight ) {
+
+			var currentOrdersNb = db.UserOrder.manager.count( $subscription == order.subscription && $distribution == order.distribution && $product == order.product && $quantity > 0 );
+			if ( newquantity == currentOrdersNb ) { return order; }
+			
+			var orders = db.UserOrder.manager.search( $subscription == order.subscription && $distribution == order.distribution && $product == order.product && $quantity > 0, false).array();
+			if ( newquantity != 0 ) {
+
+				var quantityDiff : Int = Std.int(newquantity) - currentOrdersNb;
+				if ( quantityDiff < 0 ) {
+
+					for ( i in 0...-quantityDiff ) {
+
+						edit( orders[i], 0 );
+						orders.remove( orders[i] );
+					}
+				}
+				else if ( quantityDiff > 0 ) {
+
+					for ( i in 0...quantityDiff ) {
+
+						orders.push( make( order.user, 1, order.product, order.distribution.id, null, order.subscription ) );
+					}
+				}
+
+				for ( orderToEdit in orders ) {
+
+					edit( orderToEdit, 1 );
+				}
+			}
+			else {
+
+				for ( orderToEdit in orders ) {
+
+					edit( orderToEdit, 0 );
+				}
+			}
+			
+		}
+		
+		return order;
+	}
+
 	/**
 	 *  Delete an order
 	 */
-	public static function delete(order:db.UserOrder,?force=false) {
+	public static function delete( order : db.UserOrder, ?force = false ) {
 		var t = sugoi.i18n.Locale.texts;
 
 		if(order==null) throw new Error( t._( "This order has already been deleted." ) );
@@ -269,26 +333,14 @@ class OrderService
 				// e = StockMove({product:product, move:0-order.quantity });
 			}
 
-			if ( contract.type == db.Catalog.TYPE_CONSTORDERS ) {
+			var hasPayments = contract.group.hasPayments();
 
-				order.delete();
+			if ( contract.group.hasShopMode() ) {
 
-				//delete related operation
-				if( contract.group.hasPayments() ){
-					var orders = contract.getUserOrders(user);
-					if( orders.length == 0 ){
-						var operation = service.PaymentService.findCOrderOperation(contract, user);
-						if(operation!=null) operation.delete();
-					}
-				}
+				if( hasPayments ) {
 
-			} else {
-
-				//Get the basket for this user
-				var place = order.distribution.place;
-				var basket = db.Basket.get(user, order.distribution.multiDistrib);
-				
-				if( contract.group.hasPayments() ){
+					//Get the basket for this user
+					var basket = db.Basket.get(user, order.distribution.multiDistrib);
 					var orders = basket.getOrders();
 					//Check if it is the last order, if yes then delete the related operation
 					if( orders.length == 1 && orders[0].id==order.id ){
@@ -299,8 +351,19 @@ class OrderService
 
 				order.delete();
 			}
-			
-		} else {
+			else {
+
+				order.delete();
+
+				if( hasPayments ) {
+
+					service.SubscriptionService.createOrUpdateTotalOperation( order.subscription );
+				}
+			}
+	
+		}
+		else {
+
 			throw new Error( t._( "Deletion not possible: quantity is not zero." ) );
 		}
 
@@ -443,6 +506,13 @@ class OrderService
 			if(order!=null) orders.push( order );
 		}
 		
+		//store total price
+		if(orders.length>0){
+			var basket = orders[0].basket;
+			basket.total = basket.getOrdersTotal();
+			basket.update();
+		}
+
 		App.current.event(MakeOrder(orders));
 		
 		//delete tmpBasket
@@ -668,22 +738,17 @@ class OrderService
 
 			//We edit a whole multidistrib, edit only var orders.
 			orders = multiDistrib.getUserOrders(user , db.Catalog.TYPE_VARORDER);
-		}
-		else {
+		} else {
 			
 			//Edit a single catalog, may be CSA or variable
 			var distrib = null;
 			if( multiDistrib != null ) {
-
 				distrib = multiDistrib.getDistributionForContract(catalog);
 			}
 
 			if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
-
 				orders = catalog.getUserOrders( user, distrib, false );
-			}
-			else {
-
+			} else {
 				orders = SubscriptionService.getCSARecurrentOrders( subscription, null );
 			}
 				
@@ -726,7 +791,19 @@ class OrderService
 			}
 			existingOrders = catalog.getUserOrders( user, distrib );			
 		}
-				
+
+		var group : db.Group = multiDistrib != null ? multiDistrib.group : catalog.group;
+		if ( group == null ) { throw new Error('Impossible de déterminer le groupe.'); }
+		var shopMode = group.hasShopMode();
+		var subscriptions = new Array< db.Subscription >();
+		if( !shopMode && catalog != null ) {
+
+			var subscription = db.Subscription.manager.select( $user == user && $catalog == catalog && $startDate <= multiDistrib.distribStartDate && multiDistrib.distribEndDate <= $endDate );
+			if ( subscription == null ) { throw new Error('Il n\'y a pas de souscription pour cette personne. Vous devez d\'abord créer une souscription avant de commander.'); }
+			
+			subscriptions.push( subscription );
+		}
+		
 		for ( order in ordersData ) {
 			
 			// Get product
@@ -751,21 +828,30 @@ class OrderService
 					distrib = multiDistrib.getDistributionFromProduct( product );
 				}
 
-				var group : db.Group  = catalog != null ? catalog.group : distrib.catalog.group;
 				var newOrder : db.UserOrder = null;
-				if ( group.hasShopMode() ) {
+				if ( shopMode ) {
 
 					newOrder =  OrderService.make( user, order.qt , product, distrib == null ? null : distrib.id, order.paid );
 				}
 				else {
 
 					//Let's find the subscription for that user, catalog and distrib
-					var subscription = db.Subscription.manager.select( $user == user && $catalog == distrib.catalog && $startDate <= distrib.date && distrib.date <= $endDate );
+					var subscription : db.Subscription = null;
+					if ( catalog != null ) {
+
+						subscription = subscriptions[0];
+					}
+					else {
+
+						subscription = db.Subscription.manager.select( $user == user && $catalog == distrib.catalog && $startDate <= distrib.date && distrib.date <= $endDate );
+					}
 					if ( subscription == null ) { throw new Error('Il n\'y a pas de souscription pour cette personne. Vous devez d\'abord créer une souscription avant de commander.'); }
 
-					if ( subscription != null ) {
+					newOrder =  OrderService.make( user, order.qt , product, distrib == null ? null : distrib.id, order.paid, subscription );
 
-						newOrder =  OrderService.make( user, order.qt , product, distrib == null ? null : distrib.id, order.paid, subscription );
+					if ( catalog == null && subscriptions.find( x -> x.id == subscription.id ) == null ) {
+
+						subscriptions.push( subscription );
 					}
 				}
 				
@@ -776,7 +862,18 @@ class OrderService
 		}
 
 		App.current.event( MakeOrder( orders ) );
-		service.PaymentService.onOrderConfirm( orders );
+
+		if ( shopMode ) {
+
+			service.PaymentService.onOrderConfirm( orders );
+		}
+		else if ( group.hasPayments() ) {
+
+			for( subscription in subscriptions ) {
+
+				service.SubscriptionService.createOrUpdateTotalOperation( subscription );
+			}
+		}
 
 		return orders;
 		

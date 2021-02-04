@@ -66,7 +66,7 @@ class User extends Object {
 		rights = sys.db.Types.SFlags.ofInt(0);
 		flags = sys.db.Types.SFlags.ofInt(0);
 		flags.set(HasEmailNotif24h);
-		flags.set(HasEmailNotifOuverture);
+		// flags.set(HasEmailNotifOuverture);
 		lang = "fr";
 		pass = "";
 		
@@ -530,11 +530,13 @@ class User extends Object {
 	 */
 	override public function insert() {
 		clean();
+		check();
 		super.insert();
 	}
 	
 	override public function update() {
 		clean();
+		check();
 		super.update();
 	}
 	
@@ -551,12 +553,33 @@ class User extends Object {
 		if(pass==null) pass="";
 	}
 
+	function check(){
+
+		//primary and secondary email cannot be used in another account.
+		if ( db.User.manager.count( ($email==this.email || $email2==this.email) && $id!=this.id) > 0 ){
+			throw new tink.core.Error("Le mail "+email+" est déjà utilisé par un autre compte.");
+		}
+		if ( email2!=null && db.User.manager.count( ($email==this.email2 || $email2==this.email2) && $id!=this.id) > 0 ){
+			throw new tink.core.Error("Le mail secondaire "+email2+" est déjà utilisé par un autre compte.");
+		}
+
+
+	}
+
 	/**
 		get "quit group" link for emails footer
 	**/
 	public function getQuitGroupLink(group:db.Group){
 		var protocol = App.config.DEBUG ? "http://" : "https://";
 		return protocol+App.config.HOST+"/user/quitGroup/"+group.id+"/"+this.id+"/"+haxe.crypto.Md5.encode(App.config.KEY+group.id+this.id);
+	}
+
+	/**
+	    get "edit notifications" link for emails footer
+	**/
+	public function getEditNotificationsLink(group:db.Group){
+		var protocol = App.config.DEBUG ? "http://" : "https://";
+		return protocol+App.config.HOST+"/account/editNotif/"+this.id+"/"+haxe.crypto.Sha1.encode(App.config.KEY+this.id);
 	}
 	
 	public function infos():UserInfo{

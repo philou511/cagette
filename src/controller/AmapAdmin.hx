@@ -1,4 +1,5 @@
 package controller;
+import datetime.DateTime;
 import payment.MoneyPot;
 import sugoi.form.elements.Input.InputType;
 import sugoi.form.elements.IntInput;
@@ -11,6 +12,7 @@ import Common;
 import sugoi.form.elements.IntSelect;
 import sugoi.form.elements.StringInput;
 import sugoi.form.elements.FloatInput;
+using tools.DateTool;
 
 
 class AmapAdmin extends Controller
@@ -358,6 +360,43 @@ class AmapAdmin extends Controller
 		
 		view.title = t._("Means of payment");
 		view.form = f;
+	}
+
+
+
+	@tpl("form.mtt")
+	function doStats(){
+		var form = new sugoi.form.Form("stats");
+			
+
+		var now = DateTime.now();	
+		// last month timeframe
+		var to = now.snap(Month(Down)).add(Day(-1));
+		var from = to.snap(Month(Down));
+		form.addElement( new form.CagetteDatePicker("startDate","Date de début", from.getDate() ) );
+		form.addElement( new form.CagetteDatePicker("endDate","Date de fin", to.getDate() ) );
+		
+		if(form.isValid()){
+			app.setTemplate('amapadmin/stats.mtt');
+			var startDate : Date = form.getValueOf("startDate");
+			var endDate : Date = form.getValueOf("endDate");
+			
+			var s = new service.GroupStatsService(app.getCurrentGroup(),startDate,endDate);
+			view.from = startDate;
+			view.to = endDate;
+			view.baskets = s.getBasketNumber();
+			view.sales = s.getSalesAmount();
+			view.memberships = s.getMembershipNumber();
+			view.membershipsAmount = s.getMembershipAmount();
+			view.productNumber = s.getProductNumber();
+			view.memberNumber = s.getMembersNumber();
+			view.activeMembershipWithOrderNumber = s.getActiveMembershipWithOrderNumber();
+			view.activeMembershipMembers = s.getActiveMembershipMembers().length;		
+			view.membersWithOrderNumber = s.getMembersWithOrderNumber();
+		}
+
+		view.form = form;
+		view.title = "Statistiques";
 	}
 	
 }

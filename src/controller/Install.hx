@@ -290,7 +290,6 @@ class Install extends controller.Controller
 					subscription.catalog = catalog;
 					subscription.startDate = new Date( catalog.startDate.getFullYear(), catalog.startDate.getMonth(), catalog.startDate.getDate(), 0, 0, 0 );
 					subscription.endDate = new Date( catalog.endDate.getFullYear(), catalog.endDate.getMonth(), catalog.endDate.getDate(), 23, 59, 59 );
-					subscription.isValidated = true;
 					subscription.isPaid = true;
 					subscription.insert();
 					SubscriptionService.createCSARecurrentOrders( subscription, ordersData );
@@ -311,12 +310,31 @@ class Install extends controller.Controller
 
 	}
 
+
+	public function doFillOrderEndDateInAllDistribs(){
+
+		// 2020-11-23
+		// MAJ gestion des paiements pour les AMAPs
+		// db.Distribution.orderEndDate ne peut plus être nul
+
+		// for(d in db.Distribution.manager.search($orderEndDate==null,{limit:1000},true).array() ){
+
+		// 	var c = d.catalog;
+		// 	if(c.orderEndHoursBeforeDistrib==null) c.orderEndHoursBeforeDistrib = 24;
+
+		// 	d.orderEndDate = DateTools.delta( d.date, -1000.0 * 60 * 60 * c.orderEndHoursBeforeDistrib );
+		// 	d.update();
+		// 	trace("update distrib "+d.id+"<br/>");
+
+		// }
+	}
+
 	/**
 		add suscriptions for CSA variable orders
 	**/
 	public function doAddSubscriptionsForCSAVariableOrders(key:String) {
 
-		if(key!=App.config.KEY) throw "admins only";
+		/*if(key!=App.config.KEY) throw "admins only";
 		var print = function(str:String) Sys.println(str);
 
 		var activeCSAVariableCatalogs : List< db.Catalog > = db.Catalog.manager.unsafeObjects(
@@ -363,7 +381,6 @@ class Install extends controller.Controller
 					subscription.catalog = catalog;
 					subscription.startDate 	= new Date( catalog.startDate.getFullYear(), catalog.startDate.getMonth(), catalog.startDate.getDate(), 0, 0, 0 );
 					subscription.endDate 	= new Date( catalog.endDate.getFullYear(), catalog.endDate.getMonth(), catalog.endDate.getDate(), 23, 59, 59 );
-					subscription.isValidated = false;
 					subscription.isPaid = false;
 					subscription.insert();
 				
@@ -379,7 +396,7 @@ class Install extends controller.Controller
 
 			}
 		
-		}
+		}*/
 
 	}
 	

@@ -187,7 +187,8 @@ class Cron extends Controller
 				ON Subscription.catalogId = Catalog.id
 				INNER JOIN Distribution
 				ON Distribution.catalogId = Catalog.id
-				WHERE Subscription.isValidated = false 
+				WHERE Subscription.isPaid = false 
+				AND Catalog.type = ${db.Catalog.TYPE_CONSTORDERS} 
 				AND Distribution.date >= DATE_ADD(\'${fromNow}\', INTERVAL 3 DAY)
 				AND Distribution.date < DATE_ADD(\'${toNow}\', INTERVAL 3 DAY);', false ) );
 			
@@ -276,7 +277,7 @@ class Cron extends Controller
 		});
 		task.execute(!App.config.DEBUG);
 
-		var task = new TransactionWrappedTask( 'default automated orders for CSA variable contracts with compulsory ordering' );
+		var task = new TransactionWrappedTask( 'Default automated orders for CSA variable contracts with compulsory ordering' );
 		task.setTask( function() {
 
 			var range = tools.DateTool.getLastHourRange( now );
@@ -323,7 +324,7 @@ class Cron extends Controller
 										à la distribution du ${view.hDate( distrib.date )} du contrat "${subscription.catalog.name}".
 										<br /><br />
 										Votre commande par défaut : <br /><br />${subscription.getDefaultOrdersToString()}
-										<br/>br/>
+										<br /><br />
 										La commande à chaque distribution est obligatoire dans le contrat "${subscription.catalog.name}". 
 										Vous pouvez modifier votre commande par défaut en accédant à votre souscription à ce contrat depuis la page "commandes" sur Cagette.net';
 
@@ -333,7 +334,7 @@ class Cron extends Controller
 									//Create order operation only
 									if ( distrib.catalog.group.hasPayments() ) {
 			
-										service.PaymentService.onOrderConfirm( automatedOrders );
+										service.SubscriptionService.createOrUpdateTotalOperation( subscription );
 									}
 
 								}
@@ -382,7 +383,7 @@ class Cron extends Controller
 					var m = new Mail();
 					m.setSender(App.config.get("default_email"), "Cagette.net");
 					if(c.contact!=null) m.setReplyTo(c.contact.email, c.contact.getName());
-					for( sub in service.SubscriptionService.getSubscriptions(c)){
+					for( sub in service.SubscriptionService.getCatalogSubscriptions(c)){
 						if(sub.getAbsentDistribIds().length>0){
 							m.addRecipient(sub.user.email);
 							if(sub.user.email2!=null) m.addRecipient(sub.user.email2);
@@ -640,7 +641,7 @@ class Cron extends Controller
 		distribs.map(  (d) -> task.log("Distrib : "+d.date+" de "+d.catalog.name+", groupe : "+d.catalog.group.name) );
 				
 		/*
-		 * Group distribs by group
+		 * Group distribs by group.
 		 * Map key is $groupId
 		*/
 		var data = new Map <Int,{distributions:Array<db.Distribution>,vendors:Array<db.Vendor>}>();

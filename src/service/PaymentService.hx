@@ -78,14 +78,13 @@ class PaymentService {
 	/**
 	 * Create a new order operation
 	 */
-	public static function makeOrderOperation(orders:Array<db.UserOrder>, ?basket:db.Basket, ?csaContract:Catalog) {
-		if (orders == null)
-			throw "orders are null";
-		if (orders.length == 0)
-			throw "no orders";
-		if (orders[0].user == null)
-			throw "no user in order";
-		// check that we dont have a mix of variable and CSA
+	 public static function makeOrderOperation( orders : Array<db.UserOrder>, basket : db.Basket ) {
+		
+		if (orders == null) throw "orders are null";
+		if (orders.length == 0) throw "no orders";
+		if (orders[0].user == null ) throw "no user in order";
+
+		//check that we dont have a mix of variable and CSA
 		var catalog = orders[0].product.catalog;
 		for (o in orders) {
 			if (o.product.catalog.type != catalog.type)
@@ -103,43 +102,22 @@ class PaymentService {
 		var op = new db.Operation();
 		var user = orders[0].user;
 		var group = catalog.group;
+		
+		if (basket == null)
+			throw new Error("variable orders should have a basket");
+		if (basket.user.id != user.id)
+			throw new Error("user and basket mismatch");
 
-		if (catalog.type == db.Catalog.TYPE_CONSTORDERS) {
-			// Constant orders
-			if (csaContract == null || csaContract.type != db.Catalog.TYPE_CONSTORDERS)
-				throw new Error("A CSA contract should be provided");
-			// check orders are from the same contract
-			for (o in orders) {
-				if (o.product.catalog.id != csaContract.id)
-					throw new Error("CSA Orders should be from the same contract");
-			}
-
-			var dNum = csaContract.getDistribs(false).length;
-			op.name = "" + csaContract.name + " (" + csaContract.vendor.name + ") " + dNum + " " + t._("deliveries");
-			op.amount = dNum * (0 - _amount);
-			op.date = Date.now();
-			op.type = COrder;
-			op.contract = csaContract;
-			op.user = user;
-			op.group = group;
-			op.pending = true;
-		} else {
-			if (basket == null)
-				throw new Error("variable orders should have a basket");
-			if (basket.user.id != user.id)
-				throw new Error("user and basket mismatch");
-
-			// varying orders
-			var date = App.current.view.dDate(orders[0].distribution.date);
-			op.name = t._("Order for ::date::", {date: date});
-			op.amount = 0 - _amount;
-			op.date = Date.now();
-			op.type = VOrder;
-			op.basket = basket;
-			op.user = user;
-			op.group = group;
-			op.pending = true;
-		}
+		// varying orders
+		var date = App.current.view.dDate(orders[0].distribution.date);
+		op.name = t._("Order for ::date::", {date: date});
+		op.amount = 0 - _amount;
+		op.date = Date.now();
+		op.type = VOrder;
+		op.basket = basket;
+		op.user = user;
+		op.group = group;
+		op.pending = true;
 
 		op.insert();
 		updateUserBalance(op.user, op.group);
@@ -177,6 +155,7 @@ class PaymentService {
 		return op;
 	}
 	
+	
 	/**
 	 * when updating a (varying) order , we need to update the existing pending transaction
 	 */
@@ -198,98 +177,77 @@ class PaymentService {
 	}
 
 	/**
-	 * when updating a constant order, we need to update the existing operation.
-	 */
-	public static function findCOrderOperation(contract:db.Catalog, user:db.User):db.Operation {
-		if (contract.type != db.Catalog.TYPE_CONSTORDERS)
-			throw new Error("catalog type should be TYPE_CONSTORDERS");
-		return db.Operation.manager.select($user == user && $contract == contract && $type == COrder, true);
-	}
-
-	/**
 		Create/update the needed order operations and returns the related operations.
 		Can handle orders happening on different multidistribs.
 			 	Orders are supposed to be from the same user.
 	 */
-	public static function onOrderConfirm(orders:Array<db.UserOrder>):Array<db.Operation> {
-		// make sure we dont have null orders in the array
-		orders = orders.filter(o -> return o != null);
-		if (orders.length == 0)
-			return null;
+	public static function onOrderConfirm( orders : Array<db.UserOrder> ) : Array<db.Operation> { 
 
-		for (o in orders) {
-			if (o.user == null) {
-				throw new Error("order " + o.id + " has no user");
-			}
-
-			if (o.user.id != orders[0].user.id) {
+		var out = [];
+	
+		//make sure we dont have null orders in the array
+		orders = orders.filter( o -> return o!=null );
+		if (orders.length == 0) return null;
+		
+		for( o in orders){
+			if(o.user==null){
+				throw new Error("order "+o.id+" has no user");
+			} 
+			
+			if(o.user.id!=orders[0].user.id){
 				throw new Error("Those orders are from different users");
 			}
 		}
 
-		var out = [];
 		var user = orders[0].user;
 		var group = orders[0].product.catalog.group;
-
-		// we consider that ALL orders are from the same contract type : varying or constant
-		if (orders[0].product.catalog.type == db.Catalog.TYPE_VARORDER) {
-			// varying contract :
-			// manage separatly orders which occur at different dates
-			var ordersGroup = null;
-			try {
-				ordersGroup = tools.ObjectListTool.groupOrdersByKey(orders);
-			} catch (e:Dynamic) {
-				App.current.logError(service.OrderService.prepare(orders));
-				neko.Lib.rethrow(e);
-			}
-
-			for (orders in ordersGroup) {
-				// find basket
-				var basket = null;
-				for (o in orders) {
-					if (o.basket != null) {
-						basket = o.basket;
-						break;
-					}
-				}
-
-				var distrib = basket.multiDistrib;
-
-				// get all orders for the same multidistrib, in order to update related operation.
-				var allOrders = distrib.getUserOrders(user, db.Catalog.TYPE_VARORDER);
-
-				// existing transaction
-				var existing = findVOrderOperation(distrib, user, false);
-
-				var op;
-				if (existing != null) {
-					op = updateOrderOperation(existing, allOrders, basket);
-				} else {
-					op = makeOrderOperation(allOrders, basket);
-				}
-				out.push(op);
-
-				// delete order and payment operations if sum of orders qt is 0
-				/*var sum = 0.0;
-					for ( o in allOrders) sum += o.quantity;
-					if ( sum == 0 ) {
-						existing.delete();
-						op.delete();
-				}*/
-			}
-		} else {
-			// constant contract
-			// create/update a transaction computed like $distribNumber * $price.
-			var contract = orders[0].product.catalog;
-
-			var existing = findCOrderOperation(contract, user);
-			if (existing != null) {
-				out.push(updateOrderOperation(existing, contract.getUserOrders(user)));
-			} else {
-				out.push(makeOrderOperation(contract.getUserOrders(user)));
-			}
+		
+		// varying contract :
+		// manage separatly orders which occur at different dates
+		var ordersGroup = null;
+		try {
+			ordersGroup = tools.ObjectListTool.groupOrdersByKey(orders);
+		} catch (e:Dynamic) {
+			App.current.logError(service.OrderService.prepare(orders));
+			neko.Lib.rethrow(e);
 		}
+		
+		for ( orders in ordersGroup ) {
+			
+			//find basket
+			var basket = null;
+			for (o in orders) {
+				if (o.basket != null) {
+					basket = o.basket;
+					break;
+				}
+			}
 
+			var distrib = basket.multiDistrib;
+
+			// get all orders for the same multidistrib, in order to update related operation.
+			var allOrders = distrib.getUserOrders(user, db.Catalog.TYPE_VARORDER);
+
+			// existing transaction
+			var existing = findVOrderOperation(distrib, user, false);
+
+			var op;
+			if (existing != null) {
+				op = updateOrderOperation(existing, allOrders, basket);
+			} else {
+				op = makeOrderOperation(allOrders, basket);
+			}
+			out.push(op);
+
+			// delete order and payment operations if sum of orders qt is 0
+			/*var sum = 0.0;
+				for ( o in allOrders) sum += o.quantity;
+				if ( sum == 0 ) {
+					existing.delete();
+					op.delete();
+			}*/
+		}
+			
 		return out;
 	}
 

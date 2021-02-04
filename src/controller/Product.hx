@@ -61,17 +61,20 @@ class Product extends Controller
 		}
 		
 		if (f.isValid()) {
+
 			f.toSpod(product);
 
 			//manage stocks by distributions for CSA contracts
-			if(!product.catalog.group.hasShopMode() && product.stock!=null){
+			if(!product.catalog.group.hasShopMode() && product.catalog.hasStockManagement()){
 				product.stock = (f.getValueOf("stock"):Float) * product.catalog.getDistribs(false).length;
 			}
 
 			app.event(EditProduct(product));
 			product.update();
 			throw Ok('/contractAdmin/products/'+product.catalog.id, t._("The product has been updated"));
-		}else{
+		}
+		else {
+
 			app.event(PreEditProduct(product));
 		}
 		
@@ -84,8 +87,8 @@ class Product extends Controller
 		
 		if (!app.user.isContractManager(contract)) throw Error("/", t._("Forbidden action")); 
 		
-		var d = new db.Product();
-		var f = form.CagetteForm.fromSpod(d);
+		var product = new db.Product();
+		var f = form.CagetteForm.fromSpod(product);
 		
 		f.removeElementByName("catalogId");
 		
@@ -98,19 +101,23 @@ class Product extends Controller
 		for (k in app.user.getGroup().vatRates.keys()) {
 			data.push( { value:app.user.getGroup().vatRates[k], label:k } );
 		}
-		f.addElement( new FloatSelect("vat", "TVA", data, d.vat ) );
+		f.addElement( new FloatSelect("vat", "TVA", data, product.vat ) );
 		
 		var formName = f.name;
 		var html = service.ProductService.getCategorizerHtml("",null,formName);
 		f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
 		
 		if (f.isValid()) {
-			f.toSpod(d);
-			d.catalog = contract;
-			app.event(NewProduct(d));
-			d.insert();
-			throw Ok('/contractAdmin/products/'+d.catalog.id, t._("The product has been saved"));
-		}else{
+
+			f.toSpod(product);
+			product.catalog = contract;
+
+			app.event(NewProduct(product));
+			product.insert();
+			throw Ok('/contractAdmin/products/'+product.catalog.id, t._("The product has been saved"));
+		}
+		else {
+
 			app.event(PreNewProduct(contract));
 		}
 		

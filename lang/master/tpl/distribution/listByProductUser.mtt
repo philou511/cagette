@@ -42,8 +42,11 @@
 			<th></th>
 			::foreach p products::
 				<th>
-					::p.name::<br/>
-					::p.ref::
+					::p.name::
+					::if(p.ref!=null)::
+						<br/>
+						::p.ref::
+					::end::
 				</th>
 			::end::
 			<th>TOTAL</th>

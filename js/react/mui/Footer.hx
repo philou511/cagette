@@ -20,18 +20,35 @@ class Footer extends react.ReactComponent
 				</Grid>
 
 				<Grid item md={3} xs={12} style=${{textAlign:"left"}}>
-					AIDE
-					<ul>
-						<li> 
-							<a href="http://www.cagette.net/wiki" target="_blank">Documentation</a> 
-						</li>
-						<li>
-							<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank">Groupe Facebook</a> 
-						</li>
-						<li>
-							<a href="http://www.cagette.pro" target="_blank">Formations pour producteurs</a> 
-						</li>
-					</ul>					
+					AIDE										
+                    
+                    <ul>
+                        <li>								
+                            <a href="https://www.cagette.net/comment-ca-marche/" target="_blank">Comment ça marche ?</a> 
+                        </li>
+                        <li> 
+                            <a href="/charte/" target="_blank">Charte producteurs</a> 
+                        </li>
+                        <li> 
+                            <a href="http://www.cagette.net/wiki" target="_blank">Documentation</a> 
+                        </li>
+                        <li>
+                            <a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank">Groupe Facebook</a> 
+                        </li>
+                        <li>
+                            <a href="http://www.cagette.pro" target="_blank">Formations pour producteurs</a> 
+                        </li>												
+                        <li>
+                            <a href="/cgu" target="_blank">Conditions générales d\'utilisation</a> 
+                        </li>
+                        <li>
+                            <a href="/cgv" target="_blank">Conditions générales de vente</a> 
+                        </li>	
+                        <li>
+                            <a href="/mgp" target="_blank">C.G.U Mangopay</a> 
+                        </li>
+                    </ul>
+
 				</Grid>
 
 				<Grid item md={3} xs={12} style=${{textAlign:"left"}}>

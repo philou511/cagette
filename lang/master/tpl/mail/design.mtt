@@ -35,6 +35,8 @@ table.table td{
 		::if list!=null:: ( ::list:: ) ::end::
 		<br/>
 		::if (user!=null)::
+		<a href="::user.getEditNotificationsLink(group)::">Cliquez-ici si vous ne voulez plus recevoir cette notification.</a>
+		<br/>
 		<a href="::user.getQuitGroupLink(group)::">Cliquez ici si vous souhaitez quitter ce groupe.</a>
 		::end::
 	::end::

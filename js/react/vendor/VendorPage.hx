@@ -41,6 +41,11 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 		}
 	}
 
+	function getAddress(vendor:VendorInfos){
+		return jsx('<>${props.vendorInfo.address1} ${props.vendorInfo.address2}<br/>
+		${props.vendorInfo.zipCode} ${props.vendorInfo.city}</>');
+	}
+
 	override public function render(){
 
 		return jsx('<>
@@ -58,17 +63,19 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 				${getProfession()}
 
 				<Typography component="p" style=${{fontSize:"1.1rem",color:CGColors.MediumGrey}}>
-					${CagetteTheme.getIcon("map-marker")} ${props.vendorInfo.city} (${props.vendorInfo.zipCode})
-                </Typography>
-                
-                <Typography component="p" style=${{fontSize:"0.8rem",color:CGColors.MediumGrey}}>
-                    SIRET : ${props.vendorInfo.companyNumber}<br/>
-                    ${props.vendorInfo.legalStatus}
+					${CagetteTheme.getIcon("map-marker")} &nbsp;
+				   ${getAddress(props.vendorInfo)}<br/>
+				   Email : ${props.vendorInfo.email}
+				</Typography>
+				
+				<Typography component="p" style=${{fontSize:"0.8rem",color:CGColors.MediumGrey,marginTop:12}}>
+					SIRET : ${props.vendorInfo.companyNumber}<br/>
+					${props.vendorInfo.legalStatus}
 				</Typography>
 
 				${getHomepage()}
 			
-        	</Grid>
+			</Grid>
 
 			<Typography component="div" style=${{fontSize:"1rem",margin:24}}>
 				<ExpandableText text=${props.vendorInfo.longDesc} height=${280} />
@@ -121,9 +128,9 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 			key: Std.string(distrib.id),
 			latitude: distrib.place.latitude,
 			longitude: distrib.place.longitude,
-            // content: '<div><a href=${"/group/" + distrib.groupId} target="_blank">${distrib.groupName}</a></div>'
-            groupId: distrib.groupId,
-            groupName:  distrib.groupName
+			// content: '<div><a href=${"/group/" + distrib.groupId} target="_blank">${distrib.groupName}</a></div>'
+			groupId: distrib.groupId,
+			groupName:  distrib.groupName
 		} ));
 
 		return jsx('<>
@@ -230,25 +237,28 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 	}
 
 	function getPhotos(){
-		if(props.vendorInfo.images.farm1==null) return null;
+		var photos = props.vendorInfo.images;
+		var farmPhotos = [];
+		if (photos.farm1!=null) farmPhotos.push(photos.farm1);
+		if (photos.farm2!=null) farmPhotos.push(photos.farm2);
+		if (photos.farm3!=null) farmPhotos.push(photos.farm3);
+		if (photos.farm4!=null) farmPhotos.push(photos.farm4);
+		
+		if(farmPhotos.length==0) return null;
+
+		var farmPhotosComponent = farmPhotos.map(function( farmPhoto ){
+			return jsx('<GridListTile key={${farmPhoto}}>
+							<img src=${farmPhoto} />
+						</GridListTile>');
+		});
+		
 		return jsx('<>
 		<Grid item xs={12}>
 			${CagetteTheme.h2("L'exploitation")}
 		</Grid>
 
-		<GridList cellHeight={250} cols={4}>
-			<GridListTile key={1}>
-				<img src=${props.vendorInfo.images.farm1} />
-			</GridListTile>
-			<GridListTile key={2}>
-				<img src=${props.vendorInfo.images.farm2} />
-			</GridListTile>
-			<GridListTile key={3}>
-				<img src=${props.vendorInfo.images.farm3} />
-			</GridListTile>
-			<GridListTile key={4}>
-				<img src=${props.vendorInfo.images.farm4} />
-			</GridListTile>
+		<GridList cellHeight={250} cols={${farmPhotos.length}}>
+			${farmPhotosComponent}
 		</GridList></>');
 
 	}

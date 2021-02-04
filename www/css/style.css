@@ -2,7 +2,7 @@
 	Cagette.net SASS stylesheet
 	Use it with with bootstrap 3
 */
-@import url("https://fonts.googleapis.com/css?family=Cabin:400,400i,700");
+@import url("https://fonts.googleapis.com/css?family=Cabin:400,700");
 /*
   Group map on /group/map
 */
@@ -122,10 +122,6 @@ html {
 body {
   font-family: Cabin, Arial, Helvetica, sans-serif;
   color: #333;
-}
-
-h1, h2, h3, h4 {
-  font-style: italic;
 }
 
 h1 {
@@ -251,6 +247,7 @@ ul.nav li.active > a {
   background: #84BD55;
   border-radius: 8px;
   padding: 20px;
+  min-height: 200px;
 }
 #footer ul > li > a {
   color: #333;

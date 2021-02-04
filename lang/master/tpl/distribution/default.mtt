@@ -1,5 +1,20 @@
 ::use 'design.mtt'::
 
+<!--
+::if(noSiret.length>0)::
+	<div class="alert alert-danger"><i class="icon icon-alert"></i> Attention, les producteurs <b>
+		::foreach v noSiret::
+		<a href="/vendor/edit/::v.id::">::v.name::</a>, 
+		::end::
+	</b> n'ont pas défini leurs informations légales obligatoires. 
+	<br/><b>Cliquez sur leur nom pour mettre à jour leur fiche</b> sinon ils seront bloqués à partir du 16 Novembre 2020.
+	<br/>( Plus d'explications dans <a href="http://r.sib.cagette.net/mk/mr/3ec6isWJSaecmldXKXB6lxfdyAyunnfxt2-PnkMb3ILG5Z4tOOp9aC69DiRV3OT6pspWN96jlWMRgmPteVSqQVJ-_zqr40kua1nR" target="_blank">notre email du 22 Octobre</a> envoyé à tous les coordinateurs de groupes. )
+	<br/> Contactez-nous sur support@cagette.net si vous avez des questions.
+	</div>
+::end::
+-->
+
+
 <h2 style="margin:12px">::_("Distributions")::</h2>
 <div class="row" style="margin-bottom:24px;">
 
@@ -134,8 +149,8 @@
 								<span style="color:#AAA;">
 									<div class="number"><i class="icon icon-products"></i></div>
 									<div class="status" style="font-size:0.9em;">
-										Cette distribution contient uniquement des contrats AMAP.<br/>
-										Pas de dates de commande à gérer.
+										Aucune commande variable<br/>
+										dans cette distribution.
 									</div>
 								</span>
 
@@ -164,7 +179,7 @@
 										<div class="status">::_("Distribution done")::</div>
 										<br/>
 									</span>
-									::if(d.getGroup().hasPayments())::
+									::if(d.getGroup().hasPayments() && d.getGroup().hasShopMode())::
 									<a href="/distribution/validate/::d.id::" class="btn btn-primary">
 										<i class="icon icon-check"></i> Valider cette distribution
 									</a>
@@ -246,20 +261,25 @@
                         </div>
                     </div>
 
+					<!-- ORDERS -->
                     <div class="col-md-3">
                         <div class="dashBoardBlock">
                             <div class="title"><i class="icon icon-basket"></i> ::_("Orders")::</div>
                             <div class="number">::d.getBaskets().length::</div>
                             <div>
                                 Commande(s)<br/>
-                                pour un total de <b>::formatNum(d.getTotalIncome()):: ::currency()::</b>
-                                <br/>
-                                
+                                pour un total de <b>::formatNum(d.getTotalIncome()):: ::currency()::</b>								
                             </div>
                             <div class="actions">
                                     <a href="/contractAdmin/ordersByDate/::d.getDate().toString().substr(0,10)::/::d._place.id::" class="btn btn-default btn-sm">
                                         <i class="icon icon-basket"></i> ::_("Orders")::
 									</a>                        
+
+									::if(status=="open" && d.getGroup().hasShopMode())::
+									<a href="/contractAdmin/tmpBaskets/::d.id::" class="btn btn-default btn-sm">
+                                        Commandes en cours
+									</a>                        
+									::end::
 									
 									
                             </div>
