@@ -2,7 +2,11 @@
   "all": "Tous les membres du groupe",
   "test": "TEST : moi + conjoint·e",
   "admins": "Les administrateurs",
-  "noOrders": "Membres sans commande",
-  "membershipToBeRenewed": "Adhésions à renouveler",
-  "contractSubscribers": "{{name}} du {{startDate}} au {{endDate}}"
+  "hasNoOrders": "Membres sans commande",
+  "hasOrders": "Membres avec commande",
+  "noMembership": "Adhésions à renouveler",
+  "membership": "Adhésions à jour",
+  "contractSubscribers": "{{name}} du {{startDate}} au {{endDate}}",
+  "newUsers": "Ne s'est jamais connecté",
+  "waitingList": "Liste d'attente"
 }
