@@ -68,22 +68,18 @@
 					<td>::c._vendor.name::</td>
 					
 					<td>
-						<b>::c.name::</b>
+						<a href="/contractAdmin/view/::c.id::">
+							::c.name::
+						</a>							
 					</td>
 					<td style="font-size:0.9em;">
 						du ::hDate(c.startDate)::<br/>
 						au ::hDate(c.endDate)::
 					</td>
 					<td>
-						
 						<div class="btn-group" role="group">
 						$$edit(::_("Manage")::,/contractAdmin/view/::c.id::)
-						
-						::if user.canManageAllContracts()::
-						$$delete(::_("Del.||short version of delete")::,/contract/delete/::c.id::?token=::token::)
-						::end::
 						</div>
-						
 					</td>
 				</tr>
 			::end::

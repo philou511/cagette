@@ -250,10 +250,10 @@ class Cron extends Controller
 		var task = new TransactionWrappedTask("Time slots assignement");
 		task.setTask(function(){
 			var range = tools.DateTool.getLastHourRange( now );
-			task.log('get distribs whith order ending between ${range.from} and ${range.to}');
+			task.log('Get distribs whith order ending between ${range.from} and ${range.to}');
 			var distribs = MultiDistrib.manager.search($orderEndDate >= range.from && $orderEndDate < range.to && $slots!=null ,true);
 			for( d in distribs){
-				
+				if(d.slots==null) continue; //d.slots can be a 'serialized null'
 				var s = new service.TimeSlotsService(d);
 				var slots = s.resolveSlots();
 				var group = d.getGroup();

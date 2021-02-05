@@ -301,7 +301,7 @@ class SubscriptionService
 				}
 			}
 
-			if(catalog.distribMinOrdersTotal != null){
+			if(catalog.catalogMinOrdersTotal != null){
 				var catalogMinOrdersTotal = getCatalogMinOrdersTotal(catalog);
 				label += '<br />Minimum de commandes sur la durée du contrat : ${catalogMinOrdersTotal} €';
 				if(catalogMinOrdersTotal != catalog.catalogMinOrdersTotal){
@@ -337,6 +337,7 @@ class SubscriptionService
 		var catalog = subscription.catalog;
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 
+			//requires ordering + distribMinOrdersTotal
 			if ( catalog.requiresOrdering ) {				
 				label += 'Commande obligatoire à chaque distribution';
 				if ( catalog.distribMinOrdersTotal != null && catalog.distribMinOrdersTotal != 0 ) {				
@@ -344,7 +345,8 @@ class SubscriptionService
 				}
 			}
 
-			if(catalog.distribMinOrdersTotal != null){
+			// catalogMinOrdersTotal + allowedOverspend
+			if(catalog.catalogMinOrdersTotal != null){
 
 				var subscriptionDistribsNb = getSubscriptionDistribsNb( subscription, null, true );
 				var catalogAllDistribsNb = db.Distribution.manager.count( $catalog == catalog );

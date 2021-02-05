@@ -39,8 +39,7 @@ class CatalogService{
 			form.removeElement(form.getElement("absencesStartDate"));
 			form.removeElement(form.getElement("absencesEndDate"));
 			
-		}
-		else {
+		} else {
 			//CSA MODE
 			form.removeElementByName("percentageValue");
 			form.removeElementByName("percentageName");
@@ -127,11 +126,10 @@ class CatalogService{
 		form.addElement( contact, 4 );
 		contact.required = true;
 
-
 		//payments management
-		if(catalog.id < db.Catalog.CATALOG_ID_HASPAYMENTS){
+		if( !catalog.group.hasShopMode() && catalog.id < db.Catalog.CATALOG_ID_HASPAYMENTS ){
 			form.addElement( new sugoi.form.elements.Html( "payementsHtml", '<h4>Gestion des paiements</h4>' ) );
-			form.addElement( new sugoi.form.elements.Checkbox('hasPayments',"Gérer les paiements liés aux souscriptions à ce contrat",catalog.hasPayments));
+			form.addElement( new sugoi.form.elements.Checkbox('hasPayments',"Gérer les paiements liés aux souscriptions à ce contrat", catalog.hasPayments ));
 		}
 			
 		return form;

@@ -40,6 +40,18 @@
 		<div>
 			$$edit(::_("Edit")::,/contract/edit/::c.id::)			
 			$$edit(::_("Duplicate")::,/contractAdmin/duplicate/::c.id::)
+			::if user.canManageAllContracts()::
+			<div style="margin-top:8px">
+
+				$$delete(Supprimer,/contract/delete/::c.id::?token=::token::)
+
+				<div class="alert alert-warning">
+					<i class="icon icon-info"></i>					
+					Vous ne pourrez pas supprimer ce catalogue si il contient des commandes, afin de ne pas perdre l'historique des commandes.<br/>
+					Si vous souhaitez simplement le faire disparaitre, il suffit de changer sa date de fin. Si la date de fin est plus ancienne qu'un mois avant aujourd'hui, le catalogue sera masqué. Vous pourrez le retrouver si besoin en cliquant sur "anciens catalogues".
+				</div>
+			</div>
+			::end::
 		</div>
 
 		<hr/>
