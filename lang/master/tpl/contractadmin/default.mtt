@@ -20,6 +20,14 @@
 	</div>
 	::end::-->
 
+	::if (!group.hasShopMode())::
+	<div class="alert alert-warning"> 
+		<i class="icon icon-alert"></i> Il est maintenant possible d'activer la <b>gestion des paiements</b> en AMAP <b>contrats par contrats</b> ( bouton "Gérer", puis "modifier" sur le contrat concerné ).<br/>
+		Cela permet aux coordinateurs de contrats de tester à leur rythme cette nouvelle fonctionnalité.<br/>
+		Attention, tous les <b>nouveaux contrats</b> sont obligatoirement <b>avec</b> gestion des paiements.
+	</div>
+	::end::
+
 	
 	<div class="article" id="contracts">
 		<h2>

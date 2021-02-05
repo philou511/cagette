@@ -38,9 +38,7 @@
 				<th>Actions</th>
 			</tr>
 			::foreach payment payments::
-
 				<tr>
-
 					<td style="vertical-align: middle;">
 						::sDate(payment.date)::
 					</td>
@@ -74,11 +72,11 @@
 				</td>
 
 				<td style="vertical-align: middle;">
-					<i class="icon icon-calendar-check"></i> Souscription
+					<i class="icon icon-calendar-check"></i> Souscription à un <br/>contrat AMAP
 				</td>
 
 				<td style="vertical-align: middle;padding-top:15px;padding-bottom:15px;">
-					Total Commandes
+					Total commandé
 				</td>
 
 				<td style="vertical-align: middle;">

@@ -140,7 +140,14 @@ class CagetteTheme{
 						minHeight: 'initial',
 						minWidth: 'initial',
 					},
-				},
+                },
+                MuiCssBaseline: {
+                    "@global": {
+                        body: {
+                            backgroundColor: CGColors.Bg2
+                        }
+                    }
+                  },
 			},
 		});
 	}

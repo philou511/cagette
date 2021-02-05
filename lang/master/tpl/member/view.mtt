@@ -224,15 +224,15 @@
 										<th class="text-center col-md-1">Nombre max de distributions</th>
 										<th class="text-center col-md-1">Nombre d'absences</th>
 									::end::
-									<th class="text-center col-md-2">Nombre de distributions</th>
-									<th class="text-center col-md-1">Total</th>
-									::if hasPayments::
+									<th class="text-center col-md-2">Nbre de distributions</th>
+									<th class="text-center col-md-1">Total commandé</th>
+									::if catalog.hasPayments::
 										<th class="text-center col-md-1">Solde</th>
 									::elseif i == 1::
 										<th class="text-center col-md-1">Payé</th>
 									::end::
 								</tr>
-								::set orderName = subscriptionService.getDescription(subscription, catalog, true)::
+								::set orderName = subscriptionService.getSubDescription(subscription)::
 								::if i == 1 && orderName == null::
 									::set class="danger text-danger"::
 								::else::
@@ -297,9 +297,7 @@
 									::end::
 								</tr>
 							</table>
-							::if catalog.catalogMinOrdersTotal != null::
-								<b>NB : </b>Les seuils de commandes sur la durée du contrat sont au prorata du nombre de vos distributions.
-							::end::
+							
 						::end::
 					::end::
 				::end::
