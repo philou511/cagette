@@ -1,7 +1,8 @@
 FROM node:15.7-buster-slim
 
 # apache setup copied from https://github.com/codeurs/dockerfiles/blob/master/mod-neko/Dockerfile
-RUN apt-get update && apt-get install -y git curl imagemagick apache2 haxe libapache2-mod-neko && apt-get clean
+RUN apt-get update && apt-get install -y git curl imagemagick apache2 haxe libapache2-mod-neko \
+    libxml-twig-perl libutf8-all-perl && apt-get clean
 
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
@@ -22,9 +23,22 @@ RUN a2ensite cagette
 
 RUN npm install -g lix
 
-COPY --chown=www-data:www-data . /srv/
-
 RUN chown www-data:www-data /srv /var/www
+
+# WHY: src/App.hx:20: characters 58-84 : Cannot execute `git log -1 --format=%h`. fatal: not a git repository (or any of the parent directories): .git
+# TODO: remove
+COPY --chown=www-data:www-data .git /srv/.git
+
+COPY --chown=www-data:www-data index.html /srv/
+COPY --chown=www-data:www-data backend/ /srv/backend/
+COPY --chown=www-data:www-data common/ /srv/common/
+COPY --chown=www-data:www-data data/ /srv/data/
+COPY --chown=www-data:www-data devLibs/ /srv/devLibs/
+COPY --chown=www-data:www-data frontend/ /srv/frontend/
+COPY --chown=www-data:www-data js/ /srv/js/
+COPY --chown=www-data:www-data lang/ /srv/lang/
+COPY --chown=www-data:www-data src/ /srv/src/
+COPY --chown=www-data:www-data www/ /srv/www/
 
 USER www-data
 
@@ -43,11 +57,12 @@ RUN haxelib setup /usr/share/haxelib
 RUN haxelib install templo
 RUN cd /usr/bin && haxelib run templo
 
-# holds connexion config
-COPY config.xml.dist config.xml
-
 EXPOSE 3009
 
 WORKDIR /srv
 
-CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+# holds connexion config
+COPY --chown=www-data:www-data scripts/ /srv/scripts/
+COPY config.xml.dist config-raw.xml
+
+CMD ["bash", "scripts/start.sh", "config-raw.xml", "config.xml" ]
