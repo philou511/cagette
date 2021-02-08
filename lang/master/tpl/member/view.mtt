@@ -202,15 +202,16 @@
 
 						::set subscriptionsFound = true::
 
-						<h5 style="margin-top:50px;margin-bottom:0px;">::catalog.name::</h5>
-						<a href="::catalog._vendor.getLink()::" target="_blank">
-							::catalog._vendor.name::
-						</a>
-						<div class="text-right" style="float:right;margin-bottom:10px;">
+						<h5 style="margin-top:50px;margin-bottom:0px;">::catalog.name:: - <a href="::catalog._vendor.getLink()::" target="_blank">
+								::catalog._vendor.name::
+							</a>
+						</h5>
+						
+						<!--<div class="text-right" style="float:right;margin-bottom:10px;">
 							<a href="/member/orders/::member.id::/::catalog.id::" class="btn btn-default btn-sm">
 								<i class="icon icon-basket"></i> Détails commandes
 							</a>
-						</div>
+						</div>-->
 
 						::set subscriptions = subscriptionsByCatalog.get(catalog)::
 						::foreach subscription subscriptions::
@@ -279,7 +280,7 @@
 									<td style="vertical-align: middle;">
 										::formatNum(subscriptionTotal)::&nbsp;::currency()::
 									</td>
-									::if hasPayments::
+									::if catalog.hasPayments::
 										::set balance = subscription.getPaymentsTotal() - subscription.getTotalPrice()::
 										::set background = ""::
 										::if balance < 0::
@@ -314,43 +315,23 @@
 
 
 <div  class="col-md-8">
-	<div ::cond hasPayments:: class="article">
+	<div ::cond hasPayments && hasShopMode:: class="article">
 		
 		<span style="font-size:1.3em;">
-			
-			::if hasShopMode::
-				::_("Balance"):: :
-				::if userGroup.balance<0:: 
-				::set color = "C00"::
-				::else::
-					::set color = "0C0"::
-				::end::
-				<span style="color:#::color::;">
-					::formatNum(userGroup.balance):: ::currency()::
-				</span>
+			::_("Balance"):: :
+			::if userGroup.balance<0:: 
+			::set color = "C00"::
 			::else::
-				Solde global :
-				::set background = ""::
-				::if userGroup.balance < 0::
-					::set background = "background-color: #d9534f;"::
-				::else::
-				::set background = "background-color: #84bd55;"::
-				::end::
-				<span style="color: white;font-weight:bold; ::background::">
-					::formatNum(userGroup.balance)::&nbsp;::currency()::
-				</span>
+				::set color = "0C0"::
 			::end::
-
+			<span style="color:#::color::;">
+				::formatNum(userGroup.balance):: ::currency()::
+			</span>
 		</span>
 		
 		<span style="margin-left:30px;">
-			::if hasShopMode::
-				::set paymentsUrl = "/member/payments/"+member.id::
-			::else::
-				::set paymentsUrl = "/amap/payments/"+member.id::
-			::end::
 
-			<a href="::paymentsUrl::" class="btn btn-default btn-small">
+			<a href="/member/payments/::member.id::" class="btn btn-default btn-small">
 				<i class="fa fa-credit-card" aria-hidden="true"></i>
 				::_("Payments details")::
 			</a>
