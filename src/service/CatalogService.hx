@@ -172,11 +172,11 @@ class CatalogService{
 					catalog.requiresOrdering = true;
 				}
 
-				if( form.getValueOf("requiresOrdering")!=null && form.getValueOf("distribMinOrdersTotal")==null  ){
+				if( form.getValueOf("requiresOrdering")==true && form.getValueOf("distribMinOrdersTotal")==null  ){
 					throw new Error("Si vous activez la commande obligatoire, vous devez définir le montant minimum de commande par distribution.");
 				}
 
-				if( form.getValueOf("requiresOrdering")!=null && form.getValueOf('absentDistribsMaxNb')!=null){
+				if( form.getValueOf("requiresOrdering")==true && form.getValueOf('absentDistribsMaxNb')!=null){
 					throw new Error("Si vous n'activez pas la commande obligatoire, la gestion des absences n'est pas nécéssaire, laissez le champs 'Nombre maximum d'absences' vide.");
 				}
 

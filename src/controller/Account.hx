@@ -1,4 +1,5 @@
 package controller;
+import db.Subscription;
 import service.OrderService;
 import db.MultiDistrib;
 import service.SubscriptionService;
@@ -20,7 +21,6 @@ class Account extends Controller
 	/**
 	 * "my account" page
 	 */
-	@logged
 	@tpl("account/default.mtt")
 	function doDefault() {
 		
@@ -107,7 +107,6 @@ class Account extends Controller
 		view.userGroup = ua;
 	}
 	
-	@logged
 	@tpl('form.mtt')
 	function doEdit() {
 		
@@ -157,7 +156,6 @@ class Account extends Controller
 	/**
 		View a basket in a popup
 	**/
-	@logged
 	@tpl('account/basket.mtt')
 	function doBasket(basket : db.Basket, ?type:Int){
 		view.basket = basket;
@@ -168,7 +166,6 @@ class Account extends Controller
 	/**
 	 * user payments history
 	 */
-	@logged
 	@tpl('account/payments.mtt')
 	function doPayments(){
 		var m = app.user;
@@ -186,23 +183,24 @@ class Account extends Controller
 		view.balance = db.UserGroup.get(m,app.user.getGroup()).balance;
 	}
 
-	@logged
+	/**
+		view orders in a CSA contract
+	**/
 	@tpl("account/csaorders.mtt")
 	function doOrders( catalog : db.Catalog ) {
 		
 		var ug = db.UserGroup.get(app.user, app.user.getGroup());
 		if (ug == null) throw Error("/", t._("You are not a member of this group"));
 	
-		
 		var	catalogDistribs = db.Distribution.manager.search( $catalog == catalog , { orderBy : date }, false ).array();
 		view.distribs = catalogDistribs;
 		view.prepare = OrderService.prepare;
 		view.catalog = catalog;
-		view.account = true;
+		// view.account = true;
 		view.now = Date.now();
 		view.member = app.user;
 		
-		checkToken();
+		// checkToken();
 	}
 
 	/**
@@ -244,7 +242,24 @@ class Account extends Controller
 		view.form = form;
 	}
 
-
+	/**
+		view orders of a subscription
+	**/
+	@tpl("account/csaorders.mtt")
+	function doSubscriptionOrders( sub : Subscription ) {
+		
+		var ug = db.UserGroup.get(app.user, app.user.getGroup());
+		if (ug == null) throw Error("/", t._("You are not a member of this group"));
+	
+		view.distribs = SubscriptionService.getSubscriptionDistribs(sub);
+		view.prepare = OrderService.prepare;
+		view.catalog = sub.catalog;
+		// view.account = true;
+		view.now = Date.now();
+		view.member = app.user;
+		
+		// checkToken();
+	}
 
 	@tpl("account/subscriptionpayments.mtt")
 	function doSubscriptionPayments( subscription : db.Subscription ) {
@@ -260,5 +275,5 @@ class Account extends Controller
 		view.subscription = subscription;
 		
 	}
-
+	
 }

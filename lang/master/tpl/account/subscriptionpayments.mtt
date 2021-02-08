@@ -9,8 +9,6 @@
 				::subscription._catalog.name::
 			</h3>
 
-			
-			
 			<table class="table table-condensed table-bordered text-center">
 	
 				<tr style="font-size:1.1em;font-weight:bold;background-color:#EEE;">
@@ -60,9 +58,6 @@
 						<td style="vertical-align: middle;">
 							&nbsp;&nbsp;::payment.amount::&nbsp;::currency()::
 						</td>
-	
-					
-	
 					</tr>
 				::end::
 			
@@ -87,6 +82,7 @@
 							0&nbsp;::currency()::
 						::end::
 					</td>
+					
 				</tr>
 			
 			</table>

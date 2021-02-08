@@ -336,7 +336,6 @@ class SubscriptionService
 		var label = '';
 		var catalog = subscription.catalog;
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
-
 			//requires ordering + distribMinOrdersTotal
 			if ( catalog.requiresOrdering ) {				
 				label += 'Commande obligatoire à chaque distribution';
@@ -347,7 +346,6 @@ class SubscriptionService
 
 			// catalogMinOrdersTotal + allowedOverspend
 			if(catalog.catalogMinOrdersTotal != null){
-
 				var subscriptionDistribsNb = getSubscriptionDistribsNb( subscription, null, true );
 				var catalogAllDistribsNb = db.Distribution.manager.count( $catalog == catalog );
 				var ratio = subscriptionDistribsNb / catalogAllDistribsNb;
@@ -906,6 +904,10 @@ class SubscriptionService
 		subscription.update();
 	}
 
+	public static function getOperations( subscription : db.Subscription, ?lock=false):Array<db.Operation>{
+		return db.Operation.manager.search( $subscription == subscription, { orderBy : -date }, lock ).array();
+	}
+
 	 /**
 	  *  Deletes a subscription if there is no orders that occurred in the past
 	  */
@@ -918,7 +920,7 @@ class SubscriptionService
 		}
 
 		//cant delete if some payment has been recorded
-		var hasPayments = subscription.catalog.group.hasPayments();
+		var hasPayments = subscription.catalog.hasPayments;
 		var subscriptionOperations = db.Operation.manager.count( $subscription == subscription && $type==Payment );
 		if ( hasPayments && subscriptionOperations > 0 ) {
 			throw new Error( 'Impossible de supprimer cette souscription car il y a des paiements enregistrés.' );
@@ -931,10 +933,9 @@ class SubscriptionService
 		}
 
 		//Delete all the operations for this subscription
-		var subscriptionOperations = db.Operation.manager.search( $subscription == subscription, true );
-		for ( operation in subscriptionOperations ) operation.delete();
+		for ( operation in getOperations(subscription,true) ) operation.delete();
 		
-		if( subscription.catalog.group.hasPayments() ) {
+		if( subscription.catalog.hasPayments ) {
 			service.PaymentService.updateUserBalance( subscription.user, subscription.catalog.group );
 		}
 
@@ -1205,7 +1206,7 @@ class SubscriptionService
 
 		var totalOperation : db.Operation = null;
 
-		if ( subscription.catalog.group.hasPayments() ) {
+		if ( subscription.catalog.hasPayments ) {
 
 			totalOperation = db.Operation.manager.select ( $user == subscription.user && $subscription == subscription && $type == SubscriptionTotal, true );
 	
