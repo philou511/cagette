@@ -1,4 +1,5 @@
 package controller;
+import payment.Check;
 import sugoi.db.Cache;
 import db.Catalog;
 import db.Operation.OperationType;
@@ -373,9 +374,7 @@ class Subscriptions extends controller.Controller
 		if ( subscriptionsChoices.length == 0  ) throw Error( '/contractAdmin/subscriptions/payments/' + subscription.id, 'Ce membre n\'a pas d\'autre souscription. Veuillez en créer une nouvelle avec le même producteur.' );
 
 		if ( checkToken() ) {
-
 			try {
-
 				var subscriptionId = Std.parseInt( app.params.get( 'subscription' ) );
 				if ( subscriptionId == null ) throw Error( '/contractAdmin/subscriptions/balanceTransfer/' + subscription.id, "Vous devez sélectionner une souscription." );
 
@@ -383,7 +382,6 @@ class Subscriptions extends controller.Controller
 				SubscriptionService.transferBalance( subscription, selectedSubscription );
 				
 			} catch( error : Error ) {
-				
 				throw Error( '/contractAdmin/subscriptions/balanceTransfer/' + subscription.id, error.message );
 			}
 
@@ -391,7 +389,6 @@ class Subscriptions extends controller.Controller
 		}
 
 		view.title = "Report de solde pour " + subscription.user.getName();
-		
 		view.c = subscription.catalog;
 		view.subscriptions = subscriptionsChoices;
 		view.nav.push( 'subscriptions' );
@@ -407,7 +404,6 @@ class Subscriptions extends controller.Controller
 		var subService = new SubscriptionService();
 
 		if ( args != null && args.returnUrl != null ) {
-
 			App.current.session.data.absencesReturnUrl = args.returnUrl;
 		}
 		
@@ -434,7 +430,6 @@ class Subscriptions extends controller.Controller
 		if ( form.checkToken() ) {
 
 			try {
-
 				var absentDistribIds = new Array<Int>();
 				for ( i in 0...absencesNb ) {				
 					absentDistribIds.push( Std.parseInt( form.getValueOf( 'absentDistrib' + i ) ) );
@@ -445,7 +440,6 @@ class Subscriptions extends controller.Controller
 			}
 
 			throw Ok( App.current.session.data.absencesReturnUrl, 'Vos dates d\'absences ont bien été mises à jour.' );
-
 		}
 	}
 	
@@ -453,13 +447,10 @@ class Subscriptions extends controller.Controller
 	public function doUnmarkAll(catalog : db.Catalog){
 
 		for ( subscription in SubscriptionService.getCatalogSubscriptions(catalog) ) {
-
 			SubscriptionService.markAsPaid( subscription, false );
 		}
 		throw Ok("/contractAdmin/subscriptions/"+catalog.id,'Souscriptions dévalidées');
-
 	}
-
 
 	@logged @tpl("form.mtt")
 	function doDefaultOrders( subscription : db.Subscription ) {
@@ -488,25 +479,73 @@ class Subscriptions extends controller.Controller
 		if ( form.checkToken() ) {
 
 			try {
-
 				var defaultOrders = new Array< { productId : Int, quantity : Float } >();
 				for ( product in catalogProducts ) {
-
 					var quantity : Float = form.getValueOf( 'quantity' + product.id );
 					defaultOrders.push( { productId : product.id, quantity : quantity } );
 				}
-
 				SubscriptionService.updateDefaultOrders( subscription, defaultOrders );
-			}
-			catch( error : Error ) {
-			
+			} catch( error : Error ) {
 				throw Error( '/subscriptions/defaultOrders/' + subscription.id, error.message );
 			}
 
 			throw Ok( '/contract/order/' + subscription.catalog.id, 'Votre commande par défaut a bien été mise à jour.' );
-
 		}
 
+	}
+
+	/**
+	 * inserts a payment for a CSA contract
+	 */
+	@tpl('form.mtt')
+	public function doInsertPayment( subscription : db.Subscription ) {
+		
+		if (!app.user.isContractManager()) throw Error("/", t._("Action forbidden"));	
+		var t = sugoi.i18n.Locale.texts;
+
+		var group = subscription.catalog.group;
+		if(group.hasShopMode()){ throw Error("/","accès interdit"); }
+		
+		var returnUrl = '/contractAdmin/subscriptions/payments/${subscription.id}';
+		var form = new sugoi.form.Form("payement");
+
+		form.addElement( new sugoi.form.elements.Html( "subscription", '<div class="control-label" style="text-align:left;"> ${ subscription.catalog.name } - ${ subscription.catalog.vendor.name } </div>', 'Souscription' ) );
+		
+		form.addElement(new sugoi.form.elements.StringInput("name", t._("Label||label or name for a payment"), "Paiement", false));
+		var amount:Float = null;
+		if(subscription.getBalance()<0) amount = Math.abs(subscription.getBalance());
+		form.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), amount, true));
+		form.addElement(new form.CagetteDatePicker("date", t._("Date"), Date.now(), sugoi.form.elements.NativeDatePicker.NativeDatePickerType.date, true));
+		var paymentTypes = service.PaymentService.getPaymentTypes(PCManualEntry, group);
+		var out = [];
+		var selected = null;
+		for (paymentType in paymentTypes){
+			out.push({label: paymentType.name, value: paymentType.type});
+			if(paymentType.type==Check.TYPE) selected=Check.TYPE;
+		}
+		form.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), out, selected, true));
+		
+		if (form.isValid()){
+
+			var operation = new db.Operation();
+
+			form.toSpod(operation);
+
+			operation.type = db.Operation.OperationType.Payment;			
+			operation.setPaymentData({type:form.getValueOf("Mtype")});
+			operation.group = group;
+			operation.user = subscription.user;
+			operation.date = Date.now();
+			operation.subscription = subscription;
+			operation.insert();
+			service.PaymentService.updateUserBalance( subscription.user, group );
+
+			throw Ok( returnUrl, t._("Payment recorded") );
+
+		}
+		
+		view.title = t._("Record a payment for ::user::",{user:subscription.user.getCoupleName()}) ;
+		view.form = form;
 	}
 
 }

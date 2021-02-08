@@ -21,6 +21,7 @@ class Account extends Controller
 	/**
 	 * "my account" page
 	 */
+	@logged
 	@tpl("account/default.mtt")
 	function doDefault() {
 		
@@ -107,6 +108,7 @@ class Account extends Controller
 		view.userGroup = ua;
 	}
 	
+	@logged
 	@tpl('form.mtt')
 	function doEdit() {
 		
@@ -156,6 +158,7 @@ class Account extends Controller
 	/**
 		View a basket in a popup
 	**/
+	@logged
 	@tpl('account/basket.mtt')
 	function doBasket(basket : db.Basket, ?type:Int){
 		view.basket = basket;
@@ -166,6 +169,7 @@ class Account extends Controller
 	/**
 	 * user payments history
 	 */
+	@logged
 	@tpl('account/payments.mtt')
 	function doPayments(){
 		var m = app.user;
@@ -186,6 +190,7 @@ class Account extends Controller
 	/**
 		view orders in a CSA contract
 	**/
+	@logged
 	@tpl("account/csaorders.mtt")
 	function doOrders( catalog : db.Catalog ) {
 		
@@ -245,6 +250,7 @@ class Account extends Controller
 	/**
 		view orders of a subscription
 	**/
+	@logged
 	@tpl("account/csaorders.mtt")
 	function doSubscriptionOrders( sub : Subscription ) {
 		
@@ -260,7 +266,8 @@ class Account extends Controller
 		
 		// checkToken();
 	}
-
+	
+	@logged
 	@tpl("account/subscriptionpayments.mtt")
 	function doSubscriptionPayments( subscription : db.Subscription ) {
 		

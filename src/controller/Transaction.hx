@@ -20,24 +20,16 @@ class Transaction extends controller.Controller
 	 * A manager inserts manually a payment
 	 */
 	@tpl('form.mtt')
-	public function doInsertPayment( user : db.User, ?subscription : db.Subscription ) {
-		
+	public function doInsertPayment( user : db.User ) {
+		var group = app.getCurrentGroup();
 		if (!app.user.isContractManager()) throw Error("/", t._("Action forbidden"));	
+		if ( !group.hasShopMode() ) throw Error("/","Accès interdit à cette page si groupe AMAP");
 		var t = sugoi.i18n.Locale.texts;
 
 		var group = app.user.getGroup();
-		var hasShopMode = group.hasShopMode();
-			var returnUrl = '/member/payments/' + user.id;
+		var returnUrl = '/member/payments/' + user.id;
 	
 		var form = new sugoi.form.Form("payement");
-
-		if ( !hasShopMode ) {
-
-			if ( subscription == null ) throw Error("/member/view/" + user.id, "Pas de souscription fournie." );
-
-			returnUrl = '/contractAdmin/subscriptions/payments/' + subscription.id;
-			form.addElement( new sugoi.form.elements.Html( "subscription", '<div class="control-label" style="text-align:left;"> ${ subscription.catalog.name } - ${ subscription.catalog.vendor.name } </div>', 'Souscription' ) );
-		}
 
 		form.addElement(new sugoi.form.elements.StringInput("name", t._("Label||label or name for a payment"), "Paiement", false));
 		form.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
@@ -50,12 +42,9 @@ class Transaction extends controller.Controller
 		form.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), out, null, true));
 		
 		//related operation
-		if( hasShopMode ) {
-
-			var unpaid = db.Operation.manager.search($user == user && $group == group && $type != Payment ,{limit:20,orderBy:-date});
-			var data = unpaid.map(function(x) return {label:x.name, value:x.id}).array();
-			form.addElement(new sugoi.form.elements.IntSelect("unpaid", t._("As a payment for :"), data, null, false));
-		}
+		var unpaid = db.Operation.manager.search($user == user && $group == group && $type != Payment ,{limit:20,orderBy:-date});
+		var data = unpaid.map(function(x) return {label:x.name, value:x.id}).array();
+		form.addElement(new sugoi.form.elements.IntSelect("unpaid", t._("As a payment for :"), data, null, false));
 	
 		if (form.isValid()){
 
@@ -69,30 +58,21 @@ class Transaction extends controller.Controller
 			operation.setPaymentData({type:form.getValueOf("Mtype")});
 			operation.group = group;
 			operation.user = user;
-			
-			if( hasShopMode ) {
 
-				if (form.getValueOf("unpaid") != null){
-					var t2 = db.Operation.manager.get(form.getValueOf("unpaid"));
-					operation.relation = t2;
-					if (t2.amount + operation.amount == 0) {
-						operation.pending = false;
-						t2.lock();
-						t2.pending = false;
-						t2.update();
-					}
+			if (form.getValueOf("unpaid") != null){
+				var t2 = db.Operation.manager.get(form.getValueOf("unpaid"));
+				operation.relation = t2;
+				if (t2.amount + operation.amount == 0) {
+					operation.pending = false;
+					t2.lock();
+					t2.pending = false;
+					t2.update();
 				}
-			}
-			else {
-				
-				operation.subscription = subscription;
 			}
 			
 			operation.insert();
 			service.PaymentService.updateUserBalance( user, group );
-
 			throw Ok( returnUrl, t._("Payment recorded") );
-
 		}
 		
 		view.title = t._("Record a payment for ::user::",{user:user.getCoupleName()}) ;
