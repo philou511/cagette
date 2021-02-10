@@ -505,9 +505,9 @@
 				</div>
 			</div>
 		</div>
-		<div class="row" id="subfooter">
+		<!--<div class="row" id="subfooter">
 			<span>version ::VERSION::-::getPlatform()::</span>
-		</div>	
+		</div>-->
 	</macro>
 
 	<macro name="ga()">
