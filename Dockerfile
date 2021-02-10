@@ -29,7 +29,6 @@ RUN chown www-data:www-data /srv /var/www
 # TODO: remove
 COPY --chown=www-data:www-data .git /srv/.git
 
-COPY --chown=www-data:www-data index.html /srv/
 COPY --chown=www-data:www-data common/ /srv/common/
 COPY --chown=www-data:www-data data/ /srv/data/
 COPY --chown=www-data:www-data devLibs/ /srv/devLibs/
