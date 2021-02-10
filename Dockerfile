@@ -4,9 +4,12 @@ FROM node:15.7-buster-slim
 RUN apt-get update && apt-get install -y git curl imagemagick apache2 haxe libapache2-mod-neko \
     libxml-twig-perl libutf8-all-perl && apt-get clean
 
-ENV APACHE_RUN_USER www-data
-ENV APACHE_RUN_GROUP www-data
-ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_RUN_USER=www-data
+ENV APACHE_RUN_GROUP=www-data
+ENV APACHE_LOG_DIR=/var/log/apache2
+
+# This value should be overridden by CI/CD
+ENV VERSION=unknown
 
 # redirect all logs to stdtout
 RUN ln -sf /proc/self/fd/1 /var/log/apache2/access.log && \
