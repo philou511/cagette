@@ -25,6 +25,10 @@ RUN npm install -g lix
 
 RUN chown www-data:www-data /srv /var/www
 
+RUN haxelib setup /usr/share/haxelib
+RUN haxelib install templo
+RUN cd /usr/bin && haxelib run templo
+
 # WHY: src/App.hx:20: characters 58-84 : Cannot execute `git log -1 --format=%h`. fatal: not a git repository (or any of the parent directories): .git
 # TODO: remove
 COPY --chown=www-data:www-data .git /srv/.git
@@ -63,12 +67,6 @@ RUN haxe cagetteAllPlugins.hxml
 WORKDIR /srv/frontend
 RUN haxe cagetteJs.hxml
 
-USER root
-
-#RUN haxelib setup /usr/share/haxelib
-#RUN haxelib install templo
-#RUN cd /usr/bin && haxelib run templo
-
 EXPOSE 3009
 
 WORKDIR /srv
@@ -76,5 +74,7 @@ WORKDIR /srv
 # holds connexion config
 COPY --chown=www-data:www-data scripts/ /srv/scripts/
 COPY config.xml.dist config-raw.xml
+
+USER root
 
 CMD ["bash", "scripts/start.sh", "config-raw.xml", "config.xml" ]
