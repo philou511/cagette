@@ -368,4 +368,18 @@ Called from controller/Main.hx line 117
 	}
 
 
+	public function doPing() {
+		Sys.print(haxe.Json.stringify({version:App.VERSION.toString()}));
+	}
+
+	public function doHealth() {
+		var vars = sugoi.db.Variable.manager.search(true);
+		var json = {version:App.VERSION.toString()};
+		for(v in vars){
+			Reflect.setField(json,v.name,v.value);
+		}
+		Sys.print(haxe.Json.stringify(json));
+	}
+
+
 }

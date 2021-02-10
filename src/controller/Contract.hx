@@ -206,11 +206,17 @@ class Contract extends Controller
 				catalog.update();
 
 				if(!catalog.group.hasShopMode()){
+					
 					//Update future distribs start and end orders dates
 					var newOrderStartDays = catalog.orderStartDaysBeforeDistrib != previousOrderStartDays ? catalog.orderStartDaysBeforeDistrib : null;
 					var newOrderEndHours = catalog.orderEndHoursBeforeDistrib != previousOrderEndHours ? catalog.orderEndHoursBeforeDistrib : null;
 					var msg = CatalogService.updateFutureDistribsStartEndOrdersDates( catalog, newOrderStartDays, newOrderEndHours );
 					if(msg!=null) messages.push ( msg );  
+
+					//payements : update or create operations
+					for ( sub in SubscriptionService.getCatalogSubscriptions(catalog)){
+						SubscriptionService.createOrUpdateTotalOperation( sub );
+					}
 				}
 				
 				//update rights
@@ -557,10 +563,8 @@ class Contract extends Controller
 				if( varOrdersToEdit.length == 0  && varOrdersToMake.length == 0 ) {
 					throw Error( sugoi.Web.getURI(), "Merci de choisir quelle quantité de produits vous désirez" );
 				}
-
 				
 				try {
-
 					//Catalog Constraints to respect
 					//We check again that the distrib is not closed to prevent automated orders and actual orders for a given distrib
 					if( SubscriptionService.areVarOrdersValid( currentOrComingSubscription, pricesQuantitiesByDistrib ) ) {
@@ -583,16 +587,13 @@ class Contract extends Controller
 						}
 
 						for ( orderToEdit in varOrdersToEdit ) {
-
-							if( newSubscriptionAbsentDistribs.length == 0 || newSubscriptionAbsentDistribs.find( d -> d.id == orderToEdit.order.distribution.id ) == null ) {
-								
+							if( newSubscriptionAbsentDistribs.length == 0 || newSubscriptionAbsentDistribs.find( d -> d.id == orderToEdit.order.distribution.id ) == null ) {			
 								if( !orderToEdit.order.product.multiWeight ) {
 									varOrders.push( OrderService.edit( orderToEdit.order, orderToEdit.quantity ) );
 								} else {
 									varOrders.push( OrderService.editMultiWeight( orderToEdit.order, orderToEdit.quantity ) );
 								}
 							}
-							
 						}
 
 						for ( orderToMake in varOrdersToMake ) {
@@ -600,12 +601,9 @@ class Contract extends Controller
 								varOrders.push( OrderService.make( app.user, orderToMake.quantity, orderToMake.product, orderToMake.distribId, null, currentOrComingSubscription ) );
 							}
 						}
-
 					}
 				} catch ( e : Error ) {
-
 					if( e.data == SubscriptionServiceError.CatalogRequirementsNotMet ) {
-
 						hasRequirementsError = true;
 						App.current.session.addMessage( e.message, true );
 					} else { 
@@ -622,7 +620,7 @@ class Contract extends Controller
 
 				try {
 					if ( currentOrComingSubscription == null ) {						
-						subscriptionService.createSubscription( app.user, catalog, constOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
+						currentOrComingSubscription = subscriptionService.createSubscription( app.user, catalog, constOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
 					} else if ( !currentOrComingSubscription.paid() ) {						
 						subscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, constOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
 					}

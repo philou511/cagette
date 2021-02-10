@@ -112,10 +112,11 @@
 						<a href="::catalog._vendor.getLink()::" target="_blank">
 							::catalog._vendor.name::
 						</a>
-						<div class="text-right" style="float:right;margin-bottom:10px;">
+						
+						<div class="text-right" style="float:right;margin-bottom:10px;" ::cond isAdmin::>							
 							<a href="/account/orders/::catalog.id::" class="btn btn-default btn-sm">
-								<i class="icon icon-basket"></i> Mes commandes
-							</a>
+								Admin : Toutes les commandes du contrat
+							</a>	
 						</div>
 
 						::set subscriptions = subscriptionsByCatalog.get(catalog)::
@@ -185,7 +186,7 @@
 									<td style="vertical-align: middle;">
 										::subscriptionTotal::&nbsp;::currency()::
 									</td>
-									::if hasPayments::
+									::if subscription._catalog.hasPayments::
 										::set balance = subscription.getPaymentsTotal() - subscription.getTotalPrice()::
 										::set background = ""::
 										::if balance < 0::
@@ -202,6 +203,21 @@
 										</td>
 									::end::
 								</tr>
+
+								<tr>
+									<td colspan="4">
+										<a href="/account/subscriptionOrders/::subscription.id::" class="btn btn-default btn-sm">
+											<i class="icon icon-basket"></i> Commandes
+										</a>
+										::if subscription._catalog.hasPayments::
+										<a href="/account/subscriptionPayments/::subscription.id::" class="btn btn-default btn-sm">
+											<i class="icon icon-euro"></i> Paiements
+										</a>
+										::end::
+									</td>
+								</tr>
+
+
 							</table>
 							
 						::end::
@@ -239,7 +255,7 @@
 		
 	</div>
 	
-	::if hasPayments::
+	::if hasPayments && hasShopMode::
 	<h3>::_("Payments")::</h3>
 	<div  class="article">
 		<span style="font-size:1.3em;">
@@ -270,13 +286,7 @@
 		</span>
 		
 		<span style="margin-left:30px;">
-			
-			::if !hasShopMode::
-				::set link = "/amap/payments"::
-			::else::
-				::set link = "/account/payments"::
-			::end::
-			<a href="::link::" class="btn btn-default btn-small">
+			<a href="/account/payments" class="btn btn-default btn-small">
 				<i class="fa fa-credit-card" aria-hidden="true"></i>
 				::_("Payments details")::
 			</a>
