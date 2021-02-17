@@ -201,7 +201,7 @@ class Transaction extends controller.Controller
 		
 		if (tmpBasket == null) throw Error("Basket is null");
 		tmpBasket.lock();
-		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		if (tmpBasket.getData().products.length == 0) throw Error("/", t._("Your cart is empty"));
 
 		//case where the user just logged in
 		if(tmpBasket.user==null){
@@ -248,7 +248,7 @@ class Transaction extends controller.Controller
 	public function doMoneypot(tmpBasket:db.TmpBasket){
 
 		if (tmpBasket == null) throw Redirect("/contract");
-		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		if (tmpBasket.getData().products.length == 0) throw Error("/", t._("Your cart is empty"));
 		var total = tmpBasket.getTotal();
 		var futureBalance = db.UserGroup.get(app.user, app.user.getGroup()).balance - total;
 		if (!app.user.getGroup().allowMoneyPotWithNegativeBalance && futureBalance < 0) {
@@ -277,7 +277,7 @@ class Transaction extends controller.Controller
 	public function doOnthespot(tmpBasket:db.TmpBasket)
 	{
 		if (tmpBasket == null) throw Redirect("/contract");
-		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		if (tmpBasket.getData().products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
 		try{
 			//record order
@@ -310,7 +310,7 @@ class Transaction extends controller.Controller
 	public function doTransfer(tmpBasket:db.TmpBasket){
 		
 		if (tmpBasket == null) throw Redirect("/contract");
-		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		if (tmpBasket.getData().products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
 		var md = tmpBasket.multiDistrib;
 		var date = md.getDate();	

@@ -162,7 +162,7 @@ class Shop extends Controller
 		var order : TmpBasketData = haxe.Json.parse(app.params.get("data"));
 		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);	
 		tmpBasket.lock();
-		tmpBasket.data = order;
+		tmpBasket.setData(order);
 		tmpBasket.update();
 
 		app.session.data.tmpBasketId = null;
@@ -176,7 +176,7 @@ class Shop extends Controller
 	public function doAdd(md:db.MultiDistrib, productId:Int, quantity:Int) {
 	
 		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);			
-		tmpBasket.data.products.push({ 
+		tmpBasket.getData().products.push({ 
 			productId:productId,
 			quantity:quantity
 		});		
@@ -192,9 +192,9 @@ class Shop extends Controller
 	
 		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);
 		
-		for ( p in tmpBasket.data.products.copy()) {
+		for ( p in tmpBasket.getData().products.copy()) {
 			if (p.productId == pid) {
-				tmpBasket.data.products.remove(p);
+				tmpBasket.getData().products.remove(p);
 			}
 		}
 		tmpBasket.update();
@@ -215,7 +215,7 @@ class Shop extends Controller
 		var md = tmpBasket.multiDistrib;
 		var group = md.getGroup();
 		
-		if (tmpBasket.data.products == null || tmpBasket.data.products.length == 0) {
+		if (tmpBasket.getData().products == null || tmpBasket.getData().products.length == 0) {
 			throw Error("/", t._("Your basket is empty") );
 		}
 		
@@ -225,7 +225,7 @@ class Shop extends Controller
 		//order.total = 0.0;
 		
 		//cleaning
-		var orders = tmpBasket.data.products;
+		var orders = tmpBasket.getData().products;
 		for (o in orders.copy()) {
 			
 			var p = db.Product.manager.get(o.productId, false);
@@ -274,7 +274,7 @@ class Shop extends Controller
 		}
 		
 		//update tmp basket
-		tmpBasket.data = {products:orders};		
+		tmpBasket.setData( {products:orders} );		
 		tmpBasket.update();
 
 

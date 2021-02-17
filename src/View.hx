@@ -207,6 +207,7 @@ class View extends sugoi.BaseView {
 		short date : 30/04/2015
 	**/
 	public function sDate(date:Date) {
+		if(date==null) return "";
 		return DateTools.format(date, "%d/%m/%Y");
 	}
 
