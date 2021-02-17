@@ -204,7 +204,6 @@ Called from controller/Main.hx line 117
 		d.dispatch(new controller.Member());
 	}
 	
-	@logged
 	function doAccount(d:Dispatch) {
 		addBc("account","Mon compte","/account");
 		d.dispatch(new controller.Account());
@@ -249,6 +248,7 @@ Called from controller/Main.hx line 117
 		d.dispatch(new controller.Place());
 	}
 	
+	@logged
 	function doTransaction(d:Dispatch) {
 		addBc("shop","Boutique","/shop");
 		d.dispatch(new controller.Transaction());
@@ -266,18 +266,17 @@ Called from controller/Main.hx line 117
 	}
 
 	@tpl('shop/default2.mtt')
-	function doShop2(md:db.MultiDistrib,?args:{continueShopping:Bool}) {
+	function doShop2(md:db.MultiDistrib) {
+
 		if( app.getCurrentGroup()==null || app.getCurrentGroup().id!=md.getGroup().id){
 			throw  Redirect("/group/"+md.getGroup().id);
 		}
-		if(args!=null){
-			if(!args.continueShopping){
-				service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
-			}
-		}
+		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
 		view.category = 'shop';
+		view.place = md.getPlace();
+		view.date = md.getDate();
 		view.md = md;
-		view.tmpBasketId = app.session.data.tmpBasketId;
+		view.rights = app.user!=null ? haxe.Serializer.run(app.user.getRights()) : null;
 	}
 	
 	@logged
@@ -370,6 +369,20 @@ Called from controller/Main.hx line 117
 	//charte
 	public function doCharte() {
 		throw Redirect("https://www.cagette.net/charte-producteurs/");
+	}
+
+
+	public function doPing() {
+		Sys.print(haxe.Json.stringify({version:App.VERSION.toString()}));
+	}
+
+	public function doHealth() {
+		var vars = sugoi.db.Variable.manager.search(true);
+		var json = {version:App.VERSION.toString()};
+		for(v in vars){
+			Reflect.setField(json,v.name,v.value);
+		}
+		Sys.print(haxe.Json.stringify(json));
 	}
 
 

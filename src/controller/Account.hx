@@ -1,9 +1,11 @@
 package controller;
+import db.Subscription;
 import service.OrderService;
 import db.MultiDistrib;
 import service.SubscriptionService;
 import sugoi.form.Form;
 import sugoi.form.elements.StringSelect;
+import db.Operation;
 import Common;
 using Std;
 import plugin.Tutorial;
@@ -19,6 +21,7 @@ class Account extends Controller
 	/**
 	 * "my account" page
 	 */
+	@logged
 	@tpl("account/default.mtt")
 	function doDefault() {
 		
@@ -105,6 +108,7 @@ class Account extends Controller
 		view.userGroup = ua;
 	}
 	
+	@logged
 	@tpl('form.mtt')
 	function doEdit() {
 		
@@ -154,6 +158,7 @@ class Account extends Controller
 	/**
 		View a basket in a popup
 	**/
+	@logged
 	@tpl('account/basket.mtt')
 	function doBasket(basket : db.Basket, ?type:Int){
 		view.basket = basket;
@@ -164,6 +169,7 @@ class Account extends Controller
 	/**
 	 * user payments history
 	 */
+	@logged
 	@tpl('account/payments.mtt')
 	function doPayments(){
 		var m = app.user;
@@ -181,23 +187,100 @@ class Account extends Controller
 		view.balance = db.UserGroup.get(m,app.user.getGroup()).balance;
 	}
 
-	
+	/**
+		view orders in a CSA contract
+	**/
+	@logged
 	@tpl("account/csaorders.mtt")
 	function doOrders( catalog : db.Catalog ) {
 		
 		var ug = db.UserGroup.get(app.user, app.user.getGroup());
 		if (ug == null) throw Error("/", t._("You are not a member of this group"));
 	
-		
 		var	catalogDistribs = db.Distribution.manager.search( $catalog == catalog , { orderBy : date }, false ).array();
 		view.distribs = catalogDistribs;
 		view.prepare = OrderService.prepare;
 		view.catalog = catalog;
-		view.account = true;
+		// view.account = true;
 		view.now = Date.now();
 		view.member = app.user;
 		
-		checkToken();
+		// checkToken();
+	}
+
+	/**
+		Edit notifications.  Should work even if user is not logged in. ( link in emails footer )
+	**/
+	@tpl('account/editNotif.mtt')
+	function doEditNotif(user:db.User,key:String){
+
+		if (haxe.crypto.Sha1.encode(App.config.KEY+user.id) != key){
+			throw Error("/","Lien invalide");
+		}
+
+		view.member = user;
+
+		var form = db.User.getForm(user);
+		form.removeElement(form.getElement("firstName"));
+		form.removeElement(form.getElement("lastName"));
+		form.removeElement(form.getElement("email"));
+		form.removeElement(form.getElement("phone"));
+		form.removeElement(form.getElement("firstName2"));
+		form.removeElement(form.getElement("lastName2"));
+		form.removeElement(form.getElement("email2"));
+		form.removeElement(form.getElement("phone2"));
+		form.removeElement(form.getElement("address1"));
+		form.removeElement(form.getElement("address2"));
+		form.removeElement(form.getElement("zipCode"));
+		form.removeElement(form.getElement("city"));
+		form.removeElement(form.getElement("birthDate"));
+		form.removeElement(form.getElement("nationality"));
+		form.removeElement(form.getElement("countryOfResidence"));
+		
+		if (form.isValid()) {
+			var url = app.user==null ? "/user/" : "/user/choose?show=1";
+			form.toSpod(user); 
+			user.update();
+			throw Ok(url, t._("Your account has been updated"));
+		}
+		
+		view.form = form;
+	}
+
+	/**
+		view orders of a subscription
+	**/
+	@logged
+	@tpl("account/csaorders.mtt")
+	function doSubscriptionOrders( sub : Subscription ) {
+		
+		var ug = db.UserGroup.get(app.user, app.user.getGroup());
+		if (ug == null) throw Error("/", t._("You are not a member of this group"));
+	
+		view.distribs = SubscriptionService.getSubscriptionDistribs(sub);
+		view.prepare = OrderService.prepare;
+		view.catalog = sub.catalog;
+		// view.account = true;
+		view.now = Date.now();
+		view.member = app.user;
+		
+		// checkToken();
+	}
+	
+	@logged
+	@tpl("account/subscriptionpayments.mtt")
+	function doSubscriptionPayments( subscription : db.Subscription ) {
+		
+		var ug = db.UserGroup.get(app.user, app.user.getGroup());
+		if (ug == null) throw Error("/", t._("You are not a member of this group"));
+
+		var user = subscription.user;
+		var payments = db.Operation.manager.search( $subscription == subscription && $type == OperationType.Payment, { orderBy : -date }, false );
+		view.subscriptionTotal = SubscriptionService.createOrUpdateTotalOperation( subscription );		
+		view.payments = payments;
+		view.member = user;
+		view.subscription = subscription;
+		
 	}
 	
 }

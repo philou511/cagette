@@ -10,9 +10,102 @@ class MembershipService{
     public function new(group:db.Group){
         this.group = group;
 	}
+	
+	/**
+		@migrated
+	**/
+	public function getUserMemberships(user:db.User):Array<db.Membership>{
+		return db.Membership.manager.search($user == user && $group == group,{orderBy:-year}, false).array();
+	}
+
+	//@migrated
+	public function getUserMembership(user:db.User,year:Int):db.Membership{
+		return db.Membership.manager.select($user == user && $group == group && $year==year, false);
+	}
 
 	public function getPeriodName(year:Int):String{
 		return group.getPeriodNameFromYear(year);
+	}
+
+	public function createMembership(user:db.User,year:Int,date:Date,?membershipFee:Float,?paymentType:String,?distribution:db.MultiDistrib):db.Membership{
+		
+		//check if exising
+		if(getUserMembership(user,year)!=null){
+			throw new Error("Membership already exists");
+		}
+
+		//get payment type object
+		var paymentType = PaymentService.getPaymentTypes(PaymentContext.PCManualEntry, group).find(pt -> return paymentType==pt.type);
+
+		
+		var orderOp : db.Operation = null;
+		if(group.hasPayments()){
+
+			if(paymentType==null){
+				throw new Error("missing paymentType");
+			}
+
+			if(membershipFee==null){
+				if(group.membershipFee==null){
+					throw new Error("You should define a membership fee");
+				}else{
+					membershipFee = group.membershipFee;
+				}
+			}
+
+			switch(paymentType.type){
+				case payment.Check.TYPE , payment.Transfer.TYPE , payment.Cash.TYPE, payment.OnTheSpotCardTerminal.TYPE : //ok
+				default : throw new Error("Membership payement can only be transfer, cash or check");
+			}
+
+			//debt operation
+			orderOp = new db.Operation();
+			orderOp.user = user;			
+			orderOp.group = group;
+			orderOp.name = "Adhésion "+getPeriodName(year);
+			orderOp.amount = 0 - membershipFee;
+			orderOp.date = date;
+			orderOp.type = Membership;
+			var data : MembershipInfos = {year:year};
+			orderOp.setData( data );			
+			orderOp.pending = false;				
+			orderOp.insert();	
+			
+			var paymentOp = service.PaymentService.makePaymentOperation(user,group, paymentType.type, membershipFee, "Paiement adhésion "+getPeriodName(year) , orderOp );
+			paymentOp.date = date;
+			paymentOp.pending = false;
+			paymentOp.update();
+
+			service.PaymentService.updateUserBalance(user,group);
+		}
+
+		var cotis = new db.Membership();
+		cotis.group = group;
+		cotis.user = user;
+		cotis.year = year;
+		cotis.date = date;
+		cotis.distribution = distribution;
+		cotis.operation = orderOp;
+		cotis.amount = membershipFee;
+		cotis.insert();
+
+		return cotis;
+
+	}
+
+	public function deleteMembership(membership:db.Membership){
+		membership.lock();
+		if(membership.operation!=null){
+			var op = membership.operation;
+			op.lock();
+			for( p in op.getRelatedPayments() ){
+				p.lock();
+				p.delete();					
+			}					
+			op.delete();
+			service.PaymentService.updateUserBalance(membership.user,membership.group);
+		}
+		membership.delete();
 	}
 
 	public function getMembershipsFromDistrib(distribution:db.MultiDistrib){

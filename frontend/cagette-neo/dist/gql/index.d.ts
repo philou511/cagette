@@ -76,9 +76,8 @@ export declare type CreateMembershipInput = {
     groupId: Scalars['Int'];
     year: Scalars['Int'];
     date: Scalars['Date'];
-    paymentType?: Maybe<Scalars['String']>;
     distributionId?: Maybe<Scalars['Int']>;
-    membershipFee?: Maybe<Scalars['Float']>;
+    membershipFee: Scalars['Float'];
 };
 export declare type CreateMessageInput = {
     title: Scalars['String'];
@@ -124,8 +123,7 @@ export declare type Group = {
     users?: Maybe<Array<User>>;
     user?: Maybe<User>;
     mangopayGroup?: Maybe<MangopayGroup>;
-    hasMembership: Scalars['Boolean'];
-    membershipFee?: Maybe<Scalars['Float']>;
+    hasMembership?: Maybe<Scalars['Boolean']>;
 };
 export declare type GroupPreview = {
     __typename?: 'GroupPreview';
@@ -389,14 +387,10 @@ export declare type Mutation = {
     deactivateMangopayBankAccount: Scalars['Int'];
     selectMangopayBankAccountId: MangopayLegalUser;
     linkMangopayLegalUserToGroup: MangopayLegalUser;
-    removeUserFromGroup: UserGroup;
     login: UserAndToken;
     createMembership: Membership;
     deleteMembership: Array<Membership>;
     createMessage: Message;
-    moveBackToWaitingList: WaitingList;
-    cancelRequest: WaitingList;
-    approveRequest: UserGroup;
 };
 export declare type MutationUpdateUserArgs = {
     input: UpdateUserInput;
@@ -431,10 +425,6 @@ export declare type MutationSelectMangopayBankAccountIdArgs = {
 export declare type MutationLinkMangopayLegalUserToGroupArgs = {
     input: LinkMangopayLegalUserToGroupInput;
 };
-export declare type MutationRemoveUserFromGroupArgs = {
-    groupId: Scalars['Int'];
-    userId: Scalars['Int'];
-};
 export declare type MutationLoginArgs = {
     input: LoginInput;
 };
@@ -448,19 +438,6 @@ export declare type MutationDeleteMembershipArgs = {
 };
 export declare type MutationCreateMessageArgs = {
     input: CreateMessageInput;
-};
-export declare type MutationMoveBackToWaitingListArgs = {
-    message: Scalars['String'];
-    groupId: Scalars['Int'];
-    userId: Scalars['Int'];
-};
-export declare type MutationCancelRequestArgs = {
-    groupId: Scalars['Int'];
-    userId: Scalars['Int'];
-};
-export declare type MutationApproveRequestArgs = {
-    groupId: Scalars['Int'];
-    userId: Scalars['Int'];
 };
 export declare type Query = {
     __typename?: 'Query';
@@ -482,7 +459,6 @@ export declare type Query = {
     getMessagesForGroup: Array<Message>;
     getUserMessagesForGroup: Array<Message>;
     message: Message;
-    getWaitingListsOfGroup: Array<WaitingList>;
 };
 export declare type QueryUserArgs = {
     id: Scalars['Int'];
@@ -532,9 +508,6 @@ export declare type QueryGetUserMessagesForGroupArgs = {
 export declare type QueryMessageArgs = {
     id: Scalars['Int'];
 };
-export declare type QueryGetWaitingListsOfGroupArgs = {
-    groupId: Scalars['Int'];
-};
 export declare type SelectMangopayLegalUserBankAccount = {
     groupId: Scalars['Int'];
     bankAccountId?: Maybe<Scalars['Int']>;
@@ -579,19 +552,11 @@ export declare type User = {
     email2?: Maybe<Scalars['String']>;
     firstName2?: Maybe<Scalars['String']>;
     lastName2?: Maybe<Scalars['String']>;
-    phone?: Maybe<Scalars['String']>;
 };
 export declare type UserAndToken = {
     __typename?: 'UserAndToken';
     user: User;
     token: Scalars['String'];
-};
-export declare type UserGroup = {
-    __typename?: 'UserGroup';
-    id: Scalars['Int'];
-    name: Scalars['String'];
-    groupId: Scalars['Int'];
-    userId: Scalars['Int'];
 };
 export declare type UserList = {
     __typename?: 'UserList';
@@ -610,14 +575,6 @@ export declare type Vendor = {
     address2?: Maybe<Scalars['String']>;
     imageId?: Maybe<Scalars['Int']>;
     image: File;
-};
-export declare type WaitingList = {
-    __typename?: 'WaitingList';
-    amapId: Scalars['Int'];
-    userId: Scalars['Int'];
-    date: Scalars['String'];
-    message: Scalars['String'];
-    user: User;
 };
 export declare type UserFragment = ({
     __typename?: 'User';
@@ -893,97 +850,6 @@ export declare type SelectMangopayBankAccountIdMutation = ({
     selectMangopayBankAccountId: ({
         __typename?: 'MangopayLegalUser';
     } & Pick<MangopayLegalUser, 'mangopayUserId' | 'bankAccountId'>);
-});
-export declare type GetMembersOfGroupByListTypeQueryVariables = {
-    listType: Scalars['String'];
-    groupId: Scalars['Int'];
-    data?: Maybe<Scalars['String']>;
-};
-export declare type GetMembersOfGroupByListTypeQuery = ({
-    __typename?: 'Query';
-} & {
-    getUserListInGroupByListType: Array<({
-        __typename?: 'User';
-    } & Pick<User, 'id' | 'firstName' | 'lastName' | 'firstName2' | 'lastName2' | 'city' | 'zipCode' | 'address1' | 'address2'>)>;
-});
-export declare type GetWaitingListsOfGroupQueryVariables = {
-    groupId: Scalars['Int'];
-};
-export declare type GetWaitingListsOfGroupQuery = ({
-    __typename?: 'Query';
-} & {
-    getWaitingListsOfGroup: Array<({
-        __typename?: 'WaitingList';
-    } & Pick<WaitingList, 'date' | 'message'> & {
-        user: ({
-            __typename?: 'User';
-        } & Pick<User, 'id' | 'firstName' | 'lastName' | 'firstName2' | 'lastName2' | 'email' | 'phone'>);
-    })>;
-});
-export declare type MoveBackToWaitingListMutationVariables = {
-    userId: Scalars['Int'];
-    groupId: Scalars['Int'];
-    message: Scalars['String'];
-};
-export declare type MoveBackToWaitingListMutation = ({
-    __typename?: 'Mutation';
-} & {
-    moveBackToWaitingList: ({
-        __typename?: 'WaitingList';
-    } & Pick<WaitingList, 'amapId' | 'userId'>);
-});
-export declare type RemoveUserFromGroupMutationVariables = {
-    userId: Scalars['Int'];
-    groupId: Scalars['Int'];
-};
-export declare type RemoveUserFromGroupMutation = ({
-    __typename?: 'Mutation';
-} & {
-    removeUserFromGroup: ({
-        __typename?: 'UserGroup';
-    } & Pick<UserGroup, 'groupId' | 'userId'>);
-});
-export declare type ApproveRequestMutationVariables = {
-    userId: Scalars['Int'];
-    groupId: Scalars['Int'];
-};
-export declare type ApproveRequestMutation = ({
-    __typename?: 'Mutation';
-} & {
-    approveRequest: ({
-        __typename?: 'UserGroup';
-    } & Pick<UserGroup, 'userId'>);
-});
-export declare type CancelRequestMutationVariables = {
-    userId: Scalars['Int'];
-    groupId: Scalars['Int'];
-};
-export declare type CancelRequestMutation = ({
-    __typename?: 'Mutation';
-} & {
-    cancelRequest: ({
-        __typename?: 'WaitingList';
-    } & Pick<WaitingList, 'userId'>);
-});
-export declare type CreateMembershipMutationVariables = {
-    input: CreateMembershipInput;
-};
-export declare type CreateMembershipMutation = ({
-    __typename?: 'Mutation';
-} & {
-    createMembership: ({
-        __typename?: 'Membership';
-    } & Pick<Membership, 'date' | 'amount'>);
-});
-export declare type GroupMembershipFeeQueryVariables = {
-    id: Scalars['Int'];
-};
-export declare type GroupMembershipFeeQuery = ({
-    __typename?: 'Query';
-} & {
-    group: ({
-        __typename?: 'Group';
-    } & Pick<Group, 'membershipFee' | 'hasMembership'>);
 });
 export declare type MessagesGroupQueryVariables = {
     id: Scalars['Int'];
@@ -1494,194 +1360,6 @@ export declare function useSelectMangopayBankAccountIdMutation(baseOptions?: Apo
 export declare type SelectMangopayBankAccountIdMutationHookResult = ReturnType<typeof useSelectMangopayBankAccountIdMutation>;
 export declare type SelectMangopayBankAccountIdMutationResult = ApolloReactCommon.MutationResult<SelectMangopayBankAccountIdMutation>;
 export declare type SelectMangopayBankAccountIdMutationOptions = ApolloReactCommon.BaseMutationOptions<SelectMangopayBankAccountIdMutation, SelectMangopayBankAccountIdMutationVariables>;
-export declare const GetMembersOfGroupByListTypeDocument: ApolloReactHooks.DocumentNode;
-/**
- * __useGetMembersOfGroupByListTypeQuery__
- *
- * To run a query within a React component, call `useGetMembersOfGroupByListTypeQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetMembersOfGroupByListTypeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetMembersOfGroupByListTypeQuery({
- *   variables: {
- *      listType: // value for 'listType'
- *      groupId: // value for 'groupId'
- *      data: // value for 'data'
- *   },
- * });
- */
-export declare function useGetMembersOfGroupByListTypeQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetMembersOfGroupByListTypeQuery, GetMembersOfGroupByListTypeQueryVariables>): ApolloReactHooks.QueryResult<GetMembersOfGroupByListTypeQuery, GetMembersOfGroupByListTypeQueryVariables>;
-export declare function useGetMembersOfGroupByListTypeLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetMembersOfGroupByListTypeQuery, GetMembersOfGroupByListTypeQueryVariables>): ApolloReactHooks.QueryTuple<GetMembersOfGroupByListTypeQuery, GetMembersOfGroupByListTypeQueryVariables>;
-export declare type GetMembersOfGroupByListTypeQueryHookResult = ReturnType<typeof useGetMembersOfGroupByListTypeQuery>;
-export declare type GetMembersOfGroupByListTypeLazyQueryHookResult = ReturnType<typeof useGetMembersOfGroupByListTypeLazyQuery>;
-export declare type GetMembersOfGroupByListTypeQueryResult = ApolloReactCommon.QueryResult<GetMembersOfGroupByListTypeQuery, GetMembersOfGroupByListTypeQueryVariables>;
-export declare const GetWaitingListsOfGroupDocument: ApolloReactHooks.DocumentNode;
-/**
- * __useGetWaitingListsOfGroupQuery__
- *
- * To run a query within a React component, call `useGetWaitingListsOfGroupQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetWaitingListsOfGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetWaitingListsOfGroupQuery({
- *   variables: {
- *      groupId: // value for 'groupId'
- *   },
- * });
- */
-export declare function useGetWaitingListsOfGroupQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetWaitingListsOfGroupQuery, GetWaitingListsOfGroupQueryVariables>): ApolloReactHooks.QueryResult<GetWaitingListsOfGroupQuery, GetWaitingListsOfGroupQueryVariables>;
-export declare function useGetWaitingListsOfGroupLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetWaitingListsOfGroupQuery, GetWaitingListsOfGroupQueryVariables>): ApolloReactHooks.QueryTuple<GetWaitingListsOfGroupQuery, GetWaitingListsOfGroupQueryVariables>;
-export declare type GetWaitingListsOfGroupQueryHookResult = ReturnType<typeof useGetWaitingListsOfGroupQuery>;
-export declare type GetWaitingListsOfGroupLazyQueryHookResult = ReturnType<typeof useGetWaitingListsOfGroupLazyQuery>;
-export declare type GetWaitingListsOfGroupQueryResult = ApolloReactCommon.QueryResult<GetWaitingListsOfGroupQuery, GetWaitingListsOfGroupQueryVariables>;
-export declare const MoveBackToWaitingListDocument: ApolloReactHooks.DocumentNode;
-export declare type MoveBackToWaitingListMutationFn = ApolloReactCommon.MutationFunction<MoveBackToWaitingListMutation, MoveBackToWaitingListMutationVariables>;
-/**
- * __useMoveBackToWaitingListMutation__
- *
- * To run a mutation, you first call `useMoveBackToWaitingListMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMoveBackToWaitingListMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [moveBackToWaitingListMutation, { data, loading, error }] = useMoveBackToWaitingListMutation({
- *   variables: {
- *      userId: // value for 'userId'
- *      groupId: // value for 'groupId'
- *      message: // value for 'message'
- *   },
- * });
- */
-export declare function useMoveBackToWaitingListMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<MoveBackToWaitingListMutation, MoveBackToWaitingListMutationVariables>): ApolloReactHooks.MutationTuple<MoveBackToWaitingListMutation, MoveBackToWaitingListMutationVariables>;
-export declare type MoveBackToWaitingListMutationHookResult = ReturnType<typeof useMoveBackToWaitingListMutation>;
-export declare type MoveBackToWaitingListMutationResult = ApolloReactCommon.MutationResult<MoveBackToWaitingListMutation>;
-export declare type MoveBackToWaitingListMutationOptions = ApolloReactCommon.BaseMutationOptions<MoveBackToWaitingListMutation, MoveBackToWaitingListMutationVariables>;
-export declare const RemoveUserFromGroupDocument: ApolloReactHooks.DocumentNode;
-export declare type RemoveUserFromGroupMutationFn = ApolloReactCommon.MutationFunction<RemoveUserFromGroupMutation, RemoveUserFromGroupMutationVariables>;
-/**
- * __useRemoveUserFromGroupMutation__
- *
- * To run a mutation, you first call `useRemoveUserFromGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserFromGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserFromGroupMutation, { data, loading, error }] = useRemoveUserFromGroupMutation({
- *   variables: {
- *      userId: // value for 'userId'
- *      groupId: // value for 'groupId'
- *   },
- * });
- */
-export declare function useRemoveUserFromGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<RemoveUserFromGroupMutation, RemoveUserFromGroupMutationVariables>): ApolloReactHooks.MutationTuple<RemoveUserFromGroupMutation, RemoveUserFromGroupMutationVariables>;
-export declare type RemoveUserFromGroupMutationHookResult = ReturnType<typeof useRemoveUserFromGroupMutation>;
-export declare type RemoveUserFromGroupMutationResult = ApolloReactCommon.MutationResult<RemoveUserFromGroupMutation>;
-export declare type RemoveUserFromGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<RemoveUserFromGroupMutation, RemoveUserFromGroupMutationVariables>;
-export declare const ApproveRequestDocument: ApolloReactHooks.DocumentNode;
-export declare type ApproveRequestMutationFn = ApolloReactCommon.MutationFunction<ApproveRequestMutation, ApproveRequestMutationVariables>;
-/**
- * __useApproveRequestMutation__
- *
- * To run a mutation, you first call `useApproveRequestMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useApproveRequestMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [approveRequestMutation, { data, loading, error }] = useApproveRequestMutation({
- *   variables: {
- *      userId: // value for 'userId'
- *      groupId: // value for 'groupId'
- *   },
- * });
- */
-export declare function useApproveRequestMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<ApproveRequestMutation, ApproveRequestMutationVariables>): ApolloReactHooks.MutationTuple<ApproveRequestMutation, ApproveRequestMutationVariables>;
-export declare type ApproveRequestMutationHookResult = ReturnType<typeof useApproveRequestMutation>;
-export declare type ApproveRequestMutationResult = ApolloReactCommon.MutationResult<ApproveRequestMutation>;
-export declare type ApproveRequestMutationOptions = ApolloReactCommon.BaseMutationOptions<ApproveRequestMutation, ApproveRequestMutationVariables>;
-export declare const CancelRequestDocument: ApolloReactHooks.DocumentNode;
-export declare type CancelRequestMutationFn = ApolloReactCommon.MutationFunction<CancelRequestMutation, CancelRequestMutationVariables>;
-/**
- * __useCancelRequestMutation__
- *
- * To run a mutation, you first call `useCancelRequestMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCancelRequestMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [cancelRequestMutation, { data, loading, error }] = useCancelRequestMutation({
- *   variables: {
- *      userId: // value for 'userId'
- *      groupId: // value for 'groupId'
- *   },
- * });
- */
-export declare function useCancelRequestMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CancelRequestMutation, CancelRequestMutationVariables>): ApolloReactHooks.MutationTuple<CancelRequestMutation, CancelRequestMutationVariables>;
-export declare type CancelRequestMutationHookResult = ReturnType<typeof useCancelRequestMutation>;
-export declare type CancelRequestMutationResult = ApolloReactCommon.MutationResult<CancelRequestMutation>;
-export declare type CancelRequestMutationOptions = ApolloReactCommon.BaseMutationOptions<CancelRequestMutation, CancelRequestMutationVariables>;
-export declare const CreateMembershipDocument: ApolloReactHooks.DocumentNode;
-export declare type CreateMembershipMutationFn = ApolloReactCommon.MutationFunction<CreateMembershipMutation, CreateMembershipMutationVariables>;
-/**
- * __useCreateMembershipMutation__
- *
- * To run a mutation, you first call `useCreateMembershipMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateMembershipMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createMembershipMutation, { data, loading, error }] = useCreateMembershipMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export declare function useCreateMembershipMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateMembershipMutation, CreateMembershipMutationVariables>): ApolloReactHooks.MutationTuple<CreateMembershipMutation, CreateMembershipMutationVariables>;
-export declare type CreateMembershipMutationHookResult = ReturnType<typeof useCreateMembershipMutation>;
-export declare type CreateMembershipMutationResult = ApolloReactCommon.MutationResult<CreateMembershipMutation>;
-export declare type CreateMembershipMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateMembershipMutation, CreateMembershipMutationVariables>;
-export declare const GroupMembershipFeeDocument: ApolloReactHooks.DocumentNode;
-/**
- * __useGroupMembershipFeeQuery__
- *
- * To run a query within a React component, call `useGroupMembershipFeeQuery` and pass it any options that fit your needs.
- * When your component renders, `useGroupMembershipFeeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGroupMembershipFeeQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export declare function useGroupMembershipFeeQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GroupMembershipFeeQuery, GroupMembershipFeeQueryVariables>): ApolloReactHooks.QueryResult<GroupMembershipFeeQuery, GroupMembershipFeeQueryVariables>;
-export declare function useGroupMembershipFeeLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GroupMembershipFeeQuery, GroupMembershipFeeQueryVariables>): ApolloReactHooks.QueryTuple<GroupMembershipFeeQuery, GroupMembershipFeeQueryVariables>;
-export declare type GroupMembershipFeeQueryHookResult = ReturnType<typeof useGroupMembershipFeeQuery>;
-export declare type GroupMembershipFeeLazyQueryHookResult = ReturnType<typeof useGroupMembershipFeeLazyQuery>;
-export declare type GroupMembershipFeeQueryResult = ApolloReactCommon.QueryResult<GroupMembershipFeeQuery, GroupMembershipFeeQueryVariables>;
 export declare const MessagesGroupDocument: ApolloReactHooks.DocumentNode;
 /**
  * __useMessagesGroupQuery__

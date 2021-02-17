@@ -465,7 +465,7 @@ class OrderService
 		var tmp = new db.TmpBasket();
 		tmp.user = user;
 		tmp.multiDistrib = multiDistrib;
-		tmp.setData(tmpBasketData);
+		tmp.data = tmpBasketData;
 		tmp.ref = ref;
 		tmp.insert();
 		return tmp;
@@ -480,7 +480,7 @@ class OrderService
 		var orders = [];
 		var user = tmpBasket.user;
 		var distributions = tmpBasket.multiDistrib.getDistributions();
-		for (o in tmpBasket.getData().products){
+		for (o in tmpBasket.data.products){
 			var p = db.Product.manager.get(o.productId,false);
 
 			//find related distrib
@@ -657,7 +657,7 @@ class OrderService
 		}
 		
 		if(tmpBasket!=null){
-			if(tmpBasket.getData().products.length==0){
+			if(tmpBasket.data.products.length==0){
 				tmpBasket.lock();
 				tmpBasket.delete();
 			}else{
@@ -758,17 +758,16 @@ class OrderService
 		
 	}
 
-	// Create or update orders for variable catalogs
-	public static function createOrUpdateOrders( user : db.User, multiDistrib : db.MultiDistrib, catalog : db.Catalog,
-	ordersData : Array< { id : Int, productId : Int, qt : Float, paid : Bool } > ) : Array<db.UserOrder> {
+	/**
+		Create or update orders for variable catalogs
+	**/ 
+	public static function createOrUpdateOrders( user : db.User, multiDistrib : db.MultiDistrib, catalog : db.Catalog, ordersData:Array<{id:Int, productId:Int, qt:Float, paid:Bool}> ) : Array<db.UserOrder> {
 
 		if ( multiDistrib == null && catalog == null ) {
-
 			throw new Error('You should provide at least a catalog or a multiDistrib');
 		}
 
 		if ( ordersData.length == 0 ) {
-
 			throw new Error('Il n\'y a pas de commandes définies.');
 		}
 
@@ -777,16 +776,13 @@ class OrderService
 		// Find existing orders
 		var existingOrders = [];
 		if ( catalog == null ) {
-
 			// Edit a whole multidistrib
 			existingOrders = multiDistrib.getUserOrders( user );
-		}
-		else {
+		} else {
 
 			// Edit a single catalog
 			var distrib = null;
 			if( multiDistrib != null ) {
-
 				distrib = multiDistrib.getDistributionForContract( catalog );
 			}
 			existingOrders = catalog.getUserOrders( user, distrib );			
@@ -799,8 +795,9 @@ class OrderService
 		if( !shopMode && catalog != null ) {
 
 			var subscription = db.Subscription.manager.select( $user == user && $catalog == catalog && $startDate <= multiDistrib.distribStartDate && multiDistrib.distribEndDate <= $endDate );
-			if ( subscription == null ) { throw new Error('Il n\'y a pas de souscription pour cette personne. Vous devez d\'abord créer une souscription avant de commander.'); }
-			
+			if ( subscription == null ) { 
+				throw new Error('Il n\'y a pas de souscription pour cette personne. Vous devez d\'abord créer une souscription avant de commander.');
+			}			
 			subscriptions.push( subscription );
 		}
 		
@@ -830,19 +827,14 @@ class OrderService
 
 				var newOrder : db.UserOrder = null;
 				if ( shopMode ) {
-
 					newOrder =  OrderService.make( user, order.qt , product, distrib == null ? null : distrib.id, order.paid );
-				}
-				else {
+				} else {
 
 					//Let's find the subscription for that user, catalog and distrib
 					var subscription : db.Subscription = null;
 					if ( catalog != null ) {
-
 						subscription = subscriptions[0];
-					}
-					else {
-
+					} else {
 						subscription = db.Subscription.manager.select( $user == user && $catalog == distrib.catalog && $startDate <= distrib.date && distrib.date <= $endDate );
 					}
 					if ( subscription == null ) { throw new Error('Il n\'y a pas de souscription pour cette personne. Vous devez d\'abord créer une souscription avant de commander.'); }
@@ -850,7 +842,6 @@ class OrderService
 					newOrder =  OrderService.make( user, order.qt , product, distrib == null ? null : distrib.id, order.paid, subscription );
 
 					if ( catalog == null && subscriptions.find( x -> x.id == subscription.id ) == null ) {
-
 						subscriptions.push( subscription );
 					}
 				}
@@ -864,20 +855,14 @@ class OrderService
 		App.current.event( MakeOrder( orders ) );
 
 		if ( shopMode ) {
-
 			service.PaymentService.onOrderConfirm( orders );
-		}
-		else if ( group.hasPayments() ) {
-
+		} else {
 			for( subscription in subscriptions ) {
-
-				service.SubscriptionService.createOrUpdateTotalOperation( subscription );
+				if(subscription.catalog.hasPayments){
+					service.SubscriptionService.createOrUpdateTotalOperation( subscription );
+				}				
 			}
 		}
-
 		return orders;
-		
 	}
-
-	
 }

@@ -20,7 +20,7 @@ class Member extends Controller
 	public function new()
 	{
 		super();
-		if (!app.user.canAccessMembership()) throw Redirect("/");
+		if (!app.user.isAdmin() && !app.user.canAccessMembership()) throw Redirect("/");
 	}
 
 	@logged
@@ -94,6 +94,7 @@ class Member extends Controller
 		view.subscriptionsByCatalog = SubscriptionService.getActiveSubscriptionsByCatalog( member, app.user.getGroup() );
 
 		checkToken(); //to insert a token in tpl
+	
 	}
 
 	@tpl("account/csaorders.mtt")
@@ -115,21 +116,27 @@ class Member extends Controller
 	
 	/**
 	 * Admin : Log in as this user for debugging purpose
-	 * @param	user
-	 * @param	amap
 	 */	
-	function doLoginas(member:db.User, amap:db.Group) {
+	function doLoginas(member:db.User) {
 	
 		if (!app.user.isAdmin()){
 			if (!app.user.isAmapManager()) return;
 			if (member.isAdmin()) return;
-			if ( db.UserGroup.manager.count($userId == member.id) > 1 ) return;
+			if ( db.UserGroup.manager.count($userId == member.id) > 1 ) return;			
+		}
+
+		var token = service.BridgeService.getAuthToken(member);		
+				
+		App.current.session.setUser(member);
+		App.current.session.data.amapId = null;
+		if(token==null){
 			
+			throw Error("/" , "Erreur Bridge "+token );
+		}else{
+			App.current.session.addMessage("Vous êtes connecté sur le compte de "+member.getName());
+			Sys.println('<html><body>Connexion au compte de ${member.getName()}...<script>localStorage.token = "${token}";document.location.href="/"</script></body></html>');
 		}
 		
-		App.current.session.setUser(member);
-		App.current.session.data.amapId = amap.id;
-		throw Redirect("/member/view/" + member.id );
 	}
 	
 	@tpl('member/lastMessages.mtt')

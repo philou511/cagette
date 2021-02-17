@@ -22,13 +22,6 @@ var Popover = _interopDefault(require('@material-ui/core/Popover'));
 var Button = _interopDefault(require('@material-ui/core/Button'));
 var reactLeaflet = require('react-leaflet');
 var TextField = _interopDefault(require('@material-ui/core/TextField'));
-var Table = _interopDefault(require('@material-ui/core/Table'));
-var TableContainer = _interopDefault(require('@material-ui/core/TableContainer'));
-var Link = _interopDefault(require('@material-ui/core/Link'));
-var Toolbar$1 = _interopDefault(require('@material-ui/core/Toolbar'));
-var Typography = _interopDefault(require('@material-ui/core/Typography'));
-var IconButton = _interopDefault(require('@material-ui/core/IconButton'));
-var Tooltip = _interopDefault(require('@material-ui/core/Tooltip'));
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -169,10 +162,7 @@ var theme = core$1.createMuiTheme({
         primary: {
             main: Colors.purple,
         },
-        secondary: {
-            main: Colors.green,
-            contrastText: '#fff',
-        },
+        secondary: { main: Colors.green },
         background: {
             default: Colors.orangeExtraLight,
         },
@@ -184,10 +174,6 @@ var theme = core$1.createMuiTheme({
         fontFamily: 'Cabin',
         button: {
             textTransform: 'none',
-        },
-        h2: {
-            fontSize: '2.5rem',
-            fontStyle: 'normal',
         },
         h3: {
             fontSize: '2rem',
@@ -28004,12 +27990,12 @@ var mangopayUboSchema = es.object().shape({
     UserListsType["test"] = "test";
     UserListsType["admins"] = "admins";
     UserListsType["noOrders"] = "hasNoOrders";
-    UserListsType["orders"] = "hasOrders";
+    // orders = 'hasOrders',
     UserListsType["membershipToBeRenewed"] = "noMembership";
-    UserListsType["validMembership"] = "membership";
+    // validMembership = 'membership',
     UserListsType["contractSubscribers"] = "contractSubscribers";
-    UserListsType["newUsers"] = "newUsers";
-    UserListsType["waitingList"] = "waitingList";
+    // newUsers = 'newUsers',
+    // waitingList = 'waitingList',
     UserListsType["freeList"] = "freeList";
 })(exports.UserListsType || (exports.UserListsType = {}));
 var UserLists = /** @class */ (function () {
@@ -28021,11 +28007,11 @@ var UserLists = /** @class */ (function () {
             UserLists.ALL,
             UserLists.ADMINS,
             UserLists.NO_ORDERS,
-            UserLists.WITH_ORDERS,
-            UserLists.NEW_USERS,
+            // UserLists.WITH_ORDERS,
+            // UserLists.NEW_USERS,
             UserLists.MEMBERSHIP_TO_BE_RENEWED,
-            UserLists.VALID_MEMBERSHIP,
-            UserLists.WAITING_LIST,
+            // UserLists.VALID_MEMBERSHIP,
+            // UserLists.WAITING_LIST,
             UserLists.CONTRACT_SUBSCRIBERS,
         ];
     };
@@ -28039,14 +28025,8 @@ var UserLists = /** @class */ (function () {
                 return UserLists.TEST;
             case exports.UserListsType.noOrders:
                 return UserLists.NO_ORDERS;
-            case exports.UserListsType.orders:
-                return UserLists.WITH_ORDERS;
             case exports.UserListsType.membershipToBeRenewed:
                 return UserLists.MEMBERSHIP_TO_BE_RENEWED;
-            case exports.UserListsType.validMembership:
-                return UserLists.VALID_MEMBERSHIP;
-            case exports.UserListsType.waitingList:
-                return UserLists.WAITING_LIST;
             case exports.UserListsType.contractSubscribers:
                 return UserLists.CONTRACT_SUBSCRIBERS;
             case exports.UserListsType.freeList:
@@ -28065,12 +28045,12 @@ var UserLists = /** @class */ (function () {
     UserLists.TEST = new UserLists(exports.UserListsType.test);
     UserLists.ADMINS = new UserLists(exports.UserListsType.admins);
     UserLists.NO_ORDERS = new UserLists(exports.UserListsType.noOrders);
-    UserLists.WITH_ORDERS = new UserLists(exports.UserListsType.orders);
+    // static readonly WITH_ORDERS = new UserLists(UserListsType.orders);
     UserLists.MEMBERSHIP_TO_BE_RENEWED = new UserLists(exports.UserListsType.membershipToBeRenewed);
-    UserLists.VALID_MEMBERSHIP = new UserLists(exports.UserListsType.validMembership);
+    // static readonly VALID_MEMBERSHIP = new UserLists(UserListsType.validMembership);
     UserLists.CONTRACT_SUBSCRIBERS = new UserLists(exports.UserListsType.contractSubscribers);
-    UserLists.NEW_USERS = new UserLists(exports.UserListsType.newUsers);
-    UserLists.WAITING_LIST = new UserLists(exports.UserListsType.waitingList);
+    // static readonly NEW_USERS = new UserLists(UserListsType.newUsers);
+    // static readonly WAITING_LIST = new UserLists(UserListsType.waitingList);
     UserLists.FREE_LIST = new UserLists(exports.UserListsType.freeList);
     return UserLists;
 }());
@@ -38405,25 +38385,9 @@ var AttachFile = createSvgIcon(React__default.createElement("path", {
   d: "M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"
 }), 'AttachFile');
 
-var Check$1 = createSvgIcon(React__default.createElement("path", {
-  d: "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"
-}), 'Check');
-
-var Close$1 = createSvgIcon(React__default.createElement("path", {
-  d: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-}), 'Close');
-
 var Edit$1 = createSvgIcon(React__default.createElement("path", {
   d: "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
 }), 'Edit');
-
-var ExpandLess = createSvgIcon(React__default.createElement("path", {
-  d: "M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"
-}), 'ExpandLess');
-
-var ExpandMore$1 = createSvgIcon(React__default.createElement("path", {
-  d: "M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-}), 'ExpandMore');
 
 var FormatAlignCenter = createSvgIcon(React__default.createElement("path", {
   d: "M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z"
@@ -40679,161 +40643,7 @@ var SelectMangopayBankAccountIdDocument = src$2(templateObject_26 || (templateOb
 function useSelectMangopayBankAccountIdMutation(baseOptions) {
     return useMutation(SelectMangopayBankAccountIdDocument, baseOptions);
 }
-var GetMembersOfGroupByListTypeDocument = src$2(templateObject_27 || (templateObject_27 = __makeTemplateObject(["\n    query getMembersOfGroupByListType($listType: String!, $groupId: Int!, $data: String) {\n  getUserListInGroupByListType(listType: $listType, groupId: $groupId, data: $data) {\n    id\n    firstName\n    lastName\n    firstName2\n    lastName2\n    city\n    zipCode\n    address1\n    address2\n  }\n}\n    "], ["\n    query getMembersOfGroupByListType($listType: String!, $groupId: Int!, $data: String) {\n  getUserListInGroupByListType(listType: $listType, groupId: $groupId, data: $data) {\n    id\n    firstName\n    lastName\n    firstName2\n    lastName2\n    city\n    zipCode\n    address1\n    address2\n  }\n}\n    "])));
-function useGetMembersOfGroupByListTypeLazyQuery(baseOptions) {
-    return useLazyQuery(GetMembersOfGroupByListTypeDocument, baseOptions);
-}
-var GetWaitingListsOfGroupDocument = src$2(templateObject_28 || (templateObject_28 = __makeTemplateObject(["\n    query getWaitingListsOfGroup($groupId: Int!) {\n  getWaitingListsOfGroup(groupId: $groupId) {\n    user {\n      id\n      firstName\n      lastName\n      firstName2\n      lastName2\n      email\n      phone\n    }\n    date\n    message\n  }\n}\n    "], ["\n    query getWaitingListsOfGroup($groupId: Int!) {\n  getWaitingListsOfGroup(groupId: $groupId) {\n    user {\n      id\n      firstName\n      lastName\n      firstName2\n      lastName2\n      email\n      phone\n    }\n    date\n    message\n  }\n}\n    "])));
-/**
- * __useGetWaitingListsOfGroupQuery__
- *
- * To run a query within a React component, call `useGetWaitingListsOfGroupQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetWaitingListsOfGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetWaitingListsOfGroupQuery({
- *   variables: {
- *      groupId: // value for 'groupId'
- *   },
- * });
- */
-function useGetWaitingListsOfGroupQuery(baseOptions) {
-    return useQuery(GetWaitingListsOfGroupDocument, baseOptions);
-}
-var MoveBackToWaitingListDocument = src$2(templateObject_29 || (templateObject_29 = __makeTemplateObject(["\n    mutation moveBackToWaitingList($userId: Int!, $groupId: Int!, $message: String!) {\n  moveBackToWaitingList(userId: $userId, groupId: $groupId, message: $message) {\n    amapId\n    userId\n  }\n}\n    "], ["\n    mutation moveBackToWaitingList($userId: Int!, $groupId: Int!, $message: String!) {\n  moveBackToWaitingList(userId: $userId, groupId: $groupId, message: $message) {\n    amapId\n    userId\n  }\n}\n    "])));
-/**
- * __useMoveBackToWaitingListMutation__
- *
- * To run a mutation, you first call `useMoveBackToWaitingListMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMoveBackToWaitingListMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [moveBackToWaitingListMutation, { data, loading, error }] = useMoveBackToWaitingListMutation({
- *   variables: {
- *      userId: // value for 'userId'
- *      groupId: // value for 'groupId'
- *      message: // value for 'message'
- *   },
- * });
- */
-function useMoveBackToWaitingListMutation(baseOptions) {
-    return useMutation(MoveBackToWaitingListDocument, baseOptions);
-}
-var RemoveUserFromGroupDocument = src$2(templateObject_30 || (templateObject_30 = __makeTemplateObject(["\n    mutation removeUserFromGroup($userId: Int!, $groupId: Int!) {\n  removeUserFromGroup(userId: $userId, groupId: $groupId) {\n    groupId\n    userId\n  }\n}\n    "], ["\n    mutation removeUserFromGroup($userId: Int!, $groupId: Int!) {\n  removeUserFromGroup(userId: $userId, groupId: $groupId) {\n    groupId\n    userId\n  }\n}\n    "])));
-/**
- * __useRemoveUserFromGroupMutation__
- *
- * To run a mutation, you first call `useRemoveUserFromGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserFromGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserFromGroupMutation, { data, loading, error }] = useRemoveUserFromGroupMutation({
- *   variables: {
- *      userId: // value for 'userId'
- *      groupId: // value for 'groupId'
- *   },
- * });
- */
-function useRemoveUserFromGroupMutation(baseOptions) {
-    return useMutation(RemoveUserFromGroupDocument, baseOptions);
-}
-var ApproveRequestDocument = src$2(templateObject_31 || (templateObject_31 = __makeTemplateObject(["\n    mutation approveRequest($userId: Int!, $groupId: Int!) {\n  approveRequest(userId: $userId, groupId: $groupId) {\n    userId\n  }\n}\n    "], ["\n    mutation approveRequest($userId: Int!, $groupId: Int!) {\n  approveRequest(userId: $userId, groupId: $groupId) {\n    userId\n  }\n}\n    "])));
-/**
- * __useApproveRequestMutation__
- *
- * To run a mutation, you first call `useApproveRequestMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useApproveRequestMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [approveRequestMutation, { data, loading, error }] = useApproveRequestMutation({
- *   variables: {
- *      userId: // value for 'userId'
- *      groupId: // value for 'groupId'
- *   },
- * });
- */
-function useApproveRequestMutation(baseOptions) {
-    return useMutation(ApproveRequestDocument, baseOptions);
-}
-var CancelRequestDocument = src$2(templateObject_32 || (templateObject_32 = __makeTemplateObject(["\n    mutation cancelRequest($userId: Int!, $groupId: Int!) {\n  cancelRequest(userId: $userId, groupId: $groupId) {\n    userId\n  }\n}\n    "], ["\n    mutation cancelRequest($userId: Int!, $groupId: Int!) {\n  cancelRequest(userId: $userId, groupId: $groupId) {\n    userId\n  }\n}\n    "])));
-/**
- * __useCancelRequestMutation__
- *
- * To run a mutation, you first call `useCancelRequestMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCancelRequestMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [cancelRequestMutation, { data, loading, error }] = useCancelRequestMutation({
- *   variables: {
- *      userId: // value for 'userId'
- *      groupId: // value for 'groupId'
- *   },
- * });
- */
-function useCancelRequestMutation(baseOptions) {
-    return useMutation(CancelRequestDocument, baseOptions);
-}
-var CreateMembershipDocument = src$2(templateObject_33 || (templateObject_33 = __makeTemplateObject(["\n    mutation createMembership($input: CreateMembershipInput!) {\n  createMembership(input: $input) {\n    date\n    amount\n  }\n}\n    "], ["\n    mutation createMembership($input: CreateMembershipInput!) {\n  createMembership(input: $input) {\n    date\n    amount\n  }\n}\n    "])));
-/**
- * __useCreateMembershipMutation__
- *
- * To run a mutation, you first call `useCreateMembershipMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateMembershipMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createMembershipMutation, { data, loading, error }] = useCreateMembershipMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-function useCreateMembershipMutation(baseOptions) {
-    return useMutation(CreateMembershipDocument, baseOptions);
-}
-var GroupMembershipFeeDocument = src$2(templateObject_34 || (templateObject_34 = __makeTemplateObject(["\n    query GroupMembershipFee($id: Int!) {\n  group(id: $id) {\n    membershipFee\n    hasMembership\n  }\n}\n    "], ["\n    query GroupMembershipFee($id: Int!) {\n  group(id: $id) {\n    membershipFee\n    hasMembership\n  }\n}\n    "])));
-/**
- * __useGroupMembershipFeeQuery__
- *
- * To run a query within a React component, call `useGroupMembershipFeeQuery` and pass it any options that fit your needs.
- * When your component renders, `useGroupMembershipFeeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGroupMembershipFeeQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-function useGroupMembershipFeeQuery(baseOptions) {
-    return useQuery(GroupMembershipFeeDocument, baseOptions);
-}
-var MessagesGroupDocument = src$2(templateObject_35 || (templateObject_35 = __makeTemplateObject(["\n    query MessagesGroup($id: Int!) {\n  group(id: $id) {\n    id\n    name\n    hasMembership\n  }\n}\n    "], ["\n    query MessagesGroup($id: Int!) {\n  group(id: $id) {\n    id\n    name\n    hasMembership\n  }\n}\n    "])));
+var MessagesGroupDocument = src$2(templateObject_27 || (templateObject_27 = __makeTemplateObject(["\n    query MessagesGroup($id: Int!) {\n  group(id: $id) {\n    id\n    name\n    hasMembership\n  }\n}\n    "], ["\n    query MessagesGroup($id: Int!) {\n  group(id: $id) {\n    id\n    name\n    hasMembership\n  }\n}\n    "])));
 /**
  * __useMessagesGroupQuery__
  *
@@ -40853,7 +40663,7 @@ var MessagesGroupDocument = src$2(templateObject_35 || (templateObject_35 = __ma
 function useMessagesGroupQuery(baseOptions) {
     return useQuery(MessagesGroupDocument, baseOptions);
 }
-var UserListsDocument = src$2(templateObject_36 || (templateObject_36 = __makeTemplateObject(["\n    query UserLists($groupId: Int!) {\n  getUserLists(groupId: $groupId) {\n    type\n    count\n    data\n  }\n}\n    "], ["\n    query UserLists($groupId: Int!) {\n  getUserLists(groupId: $groupId) {\n    type\n    count\n    data\n  }\n}\n    "])));
+var UserListsDocument = src$2(templateObject_28 || (templateObject_28 = __makeTemplateObject(["\n    query UserLists($groupId: Int!) {\n  getUserLists(groupId: $groupId) {\n    type\n    count\n    data\n  }\n}\n    "], ["\n    query UserLists($groupId: Int!) {\n  getUserLists(groupId: $groupId) {\n    type\n    count\n    data\n  }\n}\n    "])));
 /**
  * __useUserListsQuery__
  *
@@ -40873,11 +40683,11 @@ var UserListsDocument = src$2(templateObject_36 || (templateObject_36 = __makeTe
 function useUserListsQuery(baseOptions) {
     return useQuery(UserListsDocument, baseOptions);
 }
-var GetUserListInGroupByListTypeDocument = src$2(templateObject_37 || (templateObject_37 = __makeTemplateObject(["\n    query getUserListInGroupByListType($listType: String!, $groupId: Int!, $data: String) {\n  getUserListInGroupByListType(listType: $listType, groupId: $groupId, data: $data) {\n    id\n    firstName\n    lastName\n    firstName2\n    lastName2\n    email\n    email2\n  }\n}\n    "], ["\n    query getUserListInGroupByListType($listType: String!, $groupId: Int!, $data: String) {\n  getUserListInGroupByListType(listType: $listType, groupId: $groupId, data: $data) {\n    id\n    firstName\n    lastName\n    firstName2\n    lastName2\n    email\n    email2\n  }\n}\n    "])));
+var GetUserListInGroupByListTypeDocument = src$2(templateObject_29 || (templateObject_29 = __makeTemplateObject(["\n    query getUserListInGroupByListType($listType: String!, $groupId: Int!, $data: String) {\n  getUserListInGroupByListType(listType: $listType, groupId: $groupId, data: $data) {\n    id\n    firstName\n    lastName\n    firstName2\n    lastName2\n    email\n    email2\n  }\n}\n    "], ["\n    query getUserListInGroupByListType($listType: String!, $groupId: Int!, $data: String) {\n  getUserListInGroupByListType(listType: $listType, groupId: $groupId, data: $data) {\n    id\n    firstName\n    lastName\n    firstName2\n    lastName2\n    email\n    email2\n  }\n}\n    "])));
 function useGetUserListInGroupByListTypeLazyQuery(baseOptions) {
     return useLazyQuery(GetUserListInGroupByListTypeDocument, baseOptions);
 }
-var CreateMessageDocument = src$2(templateObject_38 || (templateObject_38 = __makeTemplateObject(["\n    mutation createMessage($input: CreateMessageInput!) {\n  createMessage(input: $input) {\n    id\n  }\n}\n    "], ["\n    mutation createMessage($input: CreateMessageInput!) {\n  createMessage(input: $input) {\n    id\n  }\n}\n    "])));
+var CreateMessageDocument = src$2(templateObject_30 || (templateObject_30 = __makeTemplateObject(["\n    mutation createMessage($input: CreateMessageInput!) {\n  createMessage(input: $input) {\n    id\n  }\n}\n    "], ["\n    mutation createMessage($input: CreateMessageInput!) {\n  createMessage(input: $input) {\n    id\n  }\n}\n    "])));
 /**
  * __useCreateMessageMutation__
  *
@@ -40898,19 +40708,19 @@ var CreateMessageDocument = src$2(templateObject_38 || (templateObject_38 = __ma
 function useCreateMessageMutation(baseOptions) {
     return useMutation(CreateMessageDocument, baseOptions);
 }
-var GetMessagesForGroupDocument = src$2(templateObject_39 || (templateObject_39 = __makeTemplateObject(["\n    query GetMessagesForGroup($groupId: Int!) {\n  getMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "], ["\n    query GetMessagesForGroup($groupId: Int!) {\n  getMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "])));
+var GetMessagesForGroupDocument = src$2(templateObject_31 || (templateObject_31 = __makeTemplateObject(["\n    query GetMessagesForGroup($groupId: Int!) {\n  getMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "], ["\n    query GetMessagesForGroup($groupId: Int!) {\n  getMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "])));
 function useGetMessagesForGroupLazyQuery(baseOptions) {
     return useLazyQuery(GetMessagesForGroupDocument, baseOptions);
 }
-var GetUserMessagesForGroupDocument = src$2(templateObject_40 || (templateObject_40 = __makeTemplateObject(["\n    query GetUserMessagesForGroup($groupId: Int!) {\n  getUserMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "], ["\n    query GetUserMessagesForGroup($groupId: Int!) {\n  getUserMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "])));
+var GetUserMessagesForGroupDocument = src$2(templateObject_32 || (templateObject_32 = __makeTemplateObject(["\n    query GetUserMessagesForGroup($groupId: Int!) {\n  getUserMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "], ["\n    query GetUserMessagesForGroup($groupId: Int!) {\n  getUserMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "])));
 function useGetUserMessagesForGroupLazyQuery(baseOptions) {
     return useLazyQuery(GetUserMessagesForGroupDocument, baseOptions);
 }
-var GetMessageByIdDocument = src$2(templateObject_41 || (templateObject_41 = __makeTemplateObject(["\n    query GetMessageById($id: Int!) {\n  message(id: $id) {\n    id\n    title\n    date\n    recipientListId\n    sender {\n      id\n      firstName\n      lastName\n    }\n    body\n    recipients\n    attachments\n  }\n}\n    "], ["\n    query GetMessageById($id: Int!) {\n  message(id: $id) {\n    id\n    title\n    date\n    recipientListId\n    sender {\n      id\n      firstName\n      lastName\n    }\n    body\n    recipients\n    attachments\n  }\n}\n    "])));
+var GetMessageByIdDocument = src$2(templateObject_33 || (templateObject_33 = __makeTemplateObject(["\n    query GetMessageById($id: Int!) {\n  message(id: $id) {\n    id\n    title\n    date\n    recipientListId\n    sender {\n      id\n      firstName\n      lastName\n    }\n    body\n    recipients\n    attachments\n  }\n}\n    "], ["\n    query GetMessageById($id: Int!) {\n  message(id: $id) {\n    id\n    title\n    date\n    recipientListId\n    sender {\n      id\n      firstName\n      lastName\n    }\n    body\n    recipients\n    attachments\n  }\n}\n    "])));
 function useGetMessageByIdLazyQuery(baseOptions) {
     return useLazyQuery(GetMessageByIdDocument, baseOptions);
 }
-var GetActiveContractsDocument = src$2(templateObject_42 || (templateObject_42 = __makeTemplateObject(["\n    query getActiveContracts($groupId: Int!) {\n  getActiveContracts(groupId: $groupId) {\n    vendor {\n      name\n      image {\n        data\n      }\n    }\n  }\n}\n    "], ["\n    query getActiveContracts($groupId: Int!) {\n  getActiveContracts(groupId: $groupId) {\n    vendor {\n      name\n      image {\n        data\n      }\n    }\n  }\n}\n    "])));
+var GetActiveContractsDocument = src$2(templateObject_34 || (templateObject_34 = __makeTemplateObject(["\n    query getActiveContracts($groupId: Int!) {\n  getActiveContracts(groupId: $groupId) {\n    vendor {\n      name\n      image {\n        data\n      }\n    }\n  }\n}\n    "], ["\n    query getActiveContracts($groupId: Int!) {\n  getActiveContracts(groupId: $groupId) {\n    vendor {\n      name\n      image {\n        data\n      }\n    }\n  }\n}\n    "])));
 /**
  * __useGetActiveContractsQuery__
  *
@@ -40930,7 +40740,7 @@ var GetActiveContractsDocument = src$2(templateObject_42 || (templateObject_42 =
 function useGetActiveContractsQuery(baseOptions) {
     return useQuery(GetActiveContractsDocument, baseOptions);
 }
-var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12, templateObject_13, templateObject_14, templateObject_15, templateObject_16, templateObject_17, templateObject_18, templateObject_19, templateObject_20, templateObject_21, templateObject_22, templateObject_23, templateObject_24, templateObject_25, templateObject_26, templateObject_27, templateObject_28, templateObject_29, templateObject_30, templateObject_31, templateObject_32, templateObject_33, templateObject_34, templateObject_35, templateObject_36, templateObject_37, templateObject_38, templateObject_39, templateObject_40, templateObject_41, templateObject_42;
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12, templateObject_13, templateObject_14, templateObject_15, templateObject_16, templateObject_17, templateObject_18, templateObject_19, templateObject_20, templateObject_21, templateObject_22, templateObject_23, templateObject_24, templateObject_25, templateObject_26, templateObject_27, templateObject_28, templateObject_29, templateObject_30, templateObject_31, templateObject_32, templateObject_33, templateObject_34;
 
 var MessagesContext = React__default.createContext({
     groupId: -1,
@@ -42608,7 +42418,7 @@ exports.default = _default;
 
 var BusinessIcon = unwrapExports(Business);
 
-var ExpandLess$1 = createCommonjsModule(function (module, exports) {
+var ExpandLess = createCommonjsModule(function (module, exports) {
 
 
 
@@ -42628,7 +42438,7 @@ var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", 
 exports.default = _default;
 });
 
-var ExpandLessIcon = unwrapExports(ExpandLess$1);
+var ExpandLessIcon = unwrapExports(ExpandLess);
 
 var TwoColumnsGrid = function (_a) {
     var left = _a.left, right = _a.right;
@@ -42994,75 +42804,30 @@ var formatUserName = function (user) {
         .charAt(0)
         .toUpperCase() + user.lastName.slice(1).toLowerCase();
 };
-var formatUserAndPartnerNames = function (user) {
-    var userName = formatUserName(user);
-    if (user.firstName2 && user.lastName2) {
-        var partnerName = "" + user.firstName2.charAt(0).toUpperCase() + user.firstName2
-            .slice(1)
-            .toLowerCase() + " " + user.lastName2.charAt(0).toUpperCase() + user.lastName2.slice(1).toLowerCase();
-        return userName + " & " + partnerName;
-    }
-    return userName;
-};
-var formatUserAddress$1 = function (user) {
-    var res = '';
-    if (!user.city && !user.zipCode)
-        return undefined;
-    if (user.city)
-        res = user.city;
-    if (user.zipCode)
-        res = res + " (" + user.zipCode + ")";
-    var address = '';
-    if (user.address1)
-        address = "" + user.address1;
-    if (user.address2)
-        address = address + " " + user.address2;
-    if (address)
-        res = address + " - " + res;
-    return res;
-};
-var formatAbsoluteDate = function (date, withTime) {
-    if (withTime === void 0) { withTime = false; }
-    if (Number.isNaN(date.getTime()))
-        return '';
-    var pattern = 'EEEE	d MMMM';
-    if (withTime)
-        pattern += "' à' k'h'mm";
-    return firstLetterUpercase(format(date, pattern, {
-        locale: locale,
-    }));
-};
 var formatDate = function (date, withTime) {
     if (withTime === void 0) { withTime = false; }
-    if (Number.isNaN(date.getTime()))
-        return '';
+    var formattedDate = '';
     if (isYesterday(date)) {
         var pattern = withTime ? "'Hier à' k'h'mm" : "'hier'";
-        return firstLetterUpercase(format(date, pattern, {
+        formattedDate = format(date, pattern, {
             locale: locale,
-        }));
+        });
     }
-    if (isToday(date)) {
+    else if (isToday(date)) {
         var pattern = withTime ? "'Aujourd''hui à' k'h'mm" : "'aujourd''hui'";
-        return firstLetterUpercase(format(date, pattern, {
+        formattedDate = format(date, pattern, {
             locale: locale,
-        }));
+        });
     }
-    return formatAbsoluteDate(date, withTime);
-};
-var formatUserList = function (userList, t) {
-    var label = "" + t("" + userList.type);
-    if (userList.type === dist_1.contractSubscribers && userList.data) {
-        var contract = JSON.parse(userList.data);
-        if (contract) {
-            label = t("" + userList.type, {
-                name: contract.name,
-                startDate: new Date(contract.startDate).toLocaleDateString(),
-                endDate: new Date(contract.endDate).toLocaleDateString(),
-            });
-        }
+    else {
+        var pattern = 'EEEE	d MMMM';
+        if (withTime)
+            pattern += "' à' k'h'mm";
+        formattedDate = format(date, pattern, {
+            locale: locale,
+        });
     }
-    return userList.count !== null && userList.count !== undefined ? label + " (" + userList.count + ")" : label;
+    return formattedDate;
 };
 
 var tFile$b = 'pro/mangopay';
@@ -44312,22 +44077,27 @@ var MessageRecipientsSelect$1 = React__default.memo(MessageRecipientsSelect);
 var MessagesForm = function (_a) {
     var user = _a.user, isPartnerConnected = _a.isPartnerConnected, userLists = _a.userLists, onSubmit = _a.onSubmit, isSuccessful = _a.isSuccessful;
     var t = useTranslation(['messages/default']).t;
-    var tLists = useTranslation(['members/lists']).t;
     var recipientsOptions = userLists.map(function (ul) {
+        var label = "" + t("lists." + ul.type);
         var value = ul.type;
         if (ul.type === dist_1.contractSubscribers && ul.data) {
             var contract = JSON.parse(ul.data);
             if (contract) {
+                label = t("lists." + ul.type, {
+                    name: contract.name,
+                    startDate: new Date(contract.startDate).toLocaleDateString(),
+                    endDate: new Date(contract.endDate).toLocaleDateString(),
+                });
                 value += contract.id;
             }
         }
         return {
             value: value,
-            label: formatUserList(ul, tLists),
+            label: ul.count ? label + " (" + ul.count + ")" : label,
         };
     });
     var testLists = dist_5.TEST;
-    recipientsOptions.push({ value: testLists.type, label: tLists(testLists.type) });
+    recipientsOptions.push({ value: testLists.type, label: t("lists." + testLists.type) });
     var senderEmail;
     var senderName;
     if (isPartnerConnected && user.email2 !== null) {
@@ -44697,7 +44467,7 @@ var useStyles$c = core$1.makeStyles(function () { return ({
 }); });
 var MessageTable = function (_a) {
     var messageId = _a.messageId;
-    var t = useTranslation(['messages/default', 'members/lists']).t;
+    var t = useTranslation(['messages/default']).t;
     var cs = useStyles$c();
     var _b = __read(useGetMessageByIdLazyQuery(), 2), getMessageById = _b[0], _c = _b[1], messageData = _c.data, messageLoading = _c.loading, messageError = _c.error;
     React__default.useEffect(function () {
@@ -44728,7 +44498,7 @@ var MessageTable = function (_a) {
                 React__default.createElement(core$1.TableCell, null, message.sender === null ? 'inconnu' : message.sender.firstName + " " + message.sender.lastName)),
             React__default.createElement(core$1.TableRow, null,
                 React__default.createElement(TableTitleCell, { title: t('receiver', { count: message.recipients.length }) + " :" }),
-                listName ? (React__default.createElement(core$1.TableCell, null, t("members/lists:" + listName, { count: 1 }))) : (React__default.createElement(core$1.TableCell, null,
+                listName ? (React__default.createElement(core$1.TableCell, null, t("lists." + listName, { count: 1 }))) : (React__default.createElement(core$1.TableCell, null,
                     React__default.createElement(core$1.Box, { display: "flex", flexWrap: "wrap" }, message.recipients.map(function (a) { return (React__default.createElement(core$1.Box, { m: 0.5, key: a },
                         React__default.createElement(core$1.Chip, { label: a }))); }))))),
             message.attachments && message.attachments.length > 0 && (React__default.createElement(core$1.TableRow, null,
@@ -44778,908 +44548,6 @@ var Messages = function (_a) {
                         React__default.createElement(core$1.Box, { p: 2 }, selectedMessageId ? (React__default.createElement(Message, { messageId: selectedMessageId, onBack: onUnselectMessage })) : (React__default.createElement(React__default.Fragment, null,
                             React__default.createElement(core$1.Typography, { variant: "h3", gutterBottom: true }, t('title')),
                             React__default.createElement(MessagingService, { onMessageSent: onMessageSent }))))))))));
-};
-
-var Search = createCommonjsModule(function (module, exports) {
-
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = interopRequireDefault(React__default);
-
-var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
-
-var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
-  d: "M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-}), 'Search');
-
-exports.default = _default;
-});
-
-var SearchIcon = unwrapExports(Search);
-
-var DEFAULT_NUMBER_OF_ROW_PER_PAGE = 10;
-var MembersTablePagination = function (_a) {
-    var count = _a.count, rowsPerPage = _a.rowsPerPage, handleChangeRowsPerPage = _a.handleChangeRowsPerPage, page = _a.page, handleChangePage = _a.handleChangePage;
-    return (React__default.createElement(core$1.TablePagination, { rowsPerPageOptions: [5, DEFAULT_NUMBER_OF_ROW_PER_PAGE, 25], component: "div", count: count, rowsPerPage: rowsPerPage, page: page * rowsPerPage > count ? 0 : page, onChangePage: handleChangePage, onChangeRowsPerPage: handleChangeRowsPerPage }));
-};
-
-var useStyles$d = core$1.makeStyles(function () {
-    return core$1.createStyles({
-        visuallyHidden: {
-            border: 0,
-            clip: 'rect(0 0 0 0)',
-            height: 1,
-            margin: -1,
-            overflow: 'hidden',
-            padding: 0,
-            position: 'absolute',
-            top: 20,
-            width: 1,
-        },
-        halfWidth: {
-            width: '50%',
-        },
-    });
-});
-var MembersTableHeader = function (_a) {
-    var order = _a.order, orderBy = _a.orderBy, onRequestSort = _a.onRequestSort, headCells = _a.headCells, rowCount = _a.rowCount, numSelected = _a.numSelected, onSelectAllClick = _a.onSelectAllClick;
-    var t = useTranslation(['members/default']).t;
-    var classes = useStyles$d();
-    var createSortHandler = function (property) { return function (event) {
-        onRequestSort(event, property);
-    }; };
-    return (React__default.createElement(core$1.TableHead, null,
-        React__default.createElement(core$1.TableRow, null,
-            numSelected !== undefined && onSelectAllClick !== undefined && rowCount !== undefined && (React__default.createElement(core$1.TableCell, { padding: "checkbox" },
-                React__default.createElement(core$1.Checkbox, { indeterminate: numSelected > 0 && numSelected < rowCount, checked: rowCount > 0 && numSelected === rowCount, onChange: onSelectAllClick, inputProps: { 'aria-label': t('selectAll') } }))),
-            headCells.map(function (headCell) { return (React__default.createElement(core$1.TableCell, { key: headCell.toString(), sortDirection: orderBy === headCell ? order : false, className: headCells.length === 2 ? classes.halfWidth : '' },
-                React__default.createElement(core$1.TableSortLabel, { active: orderBy === headCell, direction: orderBy === headCell ? order : 'asc', onClick: createSortHandler(headCell) },
-                    t(headCell.toString()),
-                    orderBy === headCell ? (React__default.createElement("span", { className: classes.visuallyHidden }, order === 'desc' ? 'sorted descending' : 'sorted ascending')) : null))); }))));
-};
-
-var MembersTableSkeleton = function (_a) {
-    var count = _a.count, nbOfColumn = _a.nbOfColumn, _b = _a.hasCheckbox, hasCheckbox = _b === void 0 ? false : _b;
-    var rows = [];
-    var maxIndex = count ? Math.min(DEFAULT_NUMBER_OF_ROW_PER_PAGE, count) : DEFAULT_NUMBER_OF_ROW_PER_PAGE;
-    for (var i = 0; i < maxIndex; i++) {
-        var columns = [];
-        for (var j = 0; j < nbOfColumn; j++) {
-            columns.push(React__default.createElement(core$1.TableCell, { key: "" + i + j },
-                React__default.createElement(lab.Skeleton, { variant: "text" })));
-        }
-        rows.push(React__default.createElement(core$1.TableRow, { key: i },
-            hasCheckbox && (React__default.createElement(core$1.TableCell, { padding: "checkbox" },
-                React__default.createElement(core$1.Checkbox, { disabled: true }))),
-            columns));
-    }
-    return React__default.createElement(core$1.TableBody, null, rows);
-};
-
-var useStyles$e = core$1.makeStyles(function () {
-    return core$1.createStyles({
-        emptyTableText: {
-            fontStyle: 'italic',
-        },
-    });
-});
-var MembersEmptyTable = function (_a) {
-    var show = _a.show;
-    var t = useTranslation(['members/default']).t;
-    var classes = useStyles$e();
-    if (!show)
-        return null;
-    return (React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
-        React__default.createElement(core$1.Typography, { variant: "caption", align: "center", className: classes.emptyTableText }, t('emptyList'))));
-};
-
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
-function stableSort(array, order, orderBy) {
-    var stabilizedThis = array.map(function (el, index) { return [el, index]; });
-    var comparator = order === 'desc'
-        ? function (a, b) { return descendingComparator(a, b, orderBy); }
-        : function (a, b) { return -descendingComparator(a, b, orderBy); };
-    stabilizedThis.sort(function (a, b) {
-        var o = comparator(a[0], b[0]);
-        if (o !== 0)
-            return o;
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map(function (el) { return el[0]; });
-}
-
-var useStyles$f = core$1.makeStyles(function () {
-    return core$1.createStyles({
-        tableCell: {
-            wordBreak: 'break-word',
-        },
-    });
-});
-var MembersTableBody = function (_a) {
-    var formattedMembers = _a.formattedMembers, order = _a.order, orderBy = _a.orderBy, page = _a.page, rowsPerPage = _a.rowsPerPage, headCells = _a.headCells, _b = _a.isSelected, isSelected = _b === void 0 ? undefined : _b, _c = _a.handleRowClick, handleRowClick = _c === void 0 ? undefined : _c;
-    var classes = useStyles$f();
-    return (React__default.createElement(core$1.TableBody, null, stableSort(formattedMembers, order, orderBy)
-        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-        .map(function (row, index) {
-        var hasCheckbox = isSelected !== undefined;
-        var checkboxLabelId = hasCheckbox ? "members-table-checkbox-" + index : '';
-        var isItemSelected = hasCheckbox && isSelected(row.id);
-        var cells = [];
-        headCells.forEach(function (cell, cellIndex) {
-            var idProp = {};
-            if (hasCheckbox && cellIndex === 0)
-                idProp = { id: checkboxLabelId };
-            cells.push(React__default.createElement(core$1.TableCell, __assign({ key: "" + row.id + cell }, idProp, { className: classes.tableCell }), row[cell]));
-        });
-        var rowProps = {};
-        if (hasCheckbox)
-            rowProps = {
-                role: 'checkbox',
-                'aria-checked': isItemSelected,
-                selected: isItemSelected,
-                onClick: function () { return handleRowClick(row.id); },
-            };
-        return (React__default.createElement(core$1.TableRow, __assign({ hover: true, tabIndex: -1, key: row.id }, rowProps),
-            hasCheckbox && (React__default.createElement(core$1.TableCell, { padding: "checkbox" },
-                React__default.createElement(core$1.Checkbox, { checked: isItemSelected, inputProps: hasCheckbox ? { 'aria-labelledby': checkboxLabelId } : {} }))),
-            cells));
-    })));
-};
-
-function toVal(mix) {
-	var k, y, str='';
-	if (mix) {
-		if (typeof mix === 'object') {
-			if (Array.isArray(mix)) {
-				for (k=0; k < mix.length; k++) {
-					if (mix[k] && (y = toVal(mix[k]))) {
-						str && (str += ' ');
-						str += y;
-					}
-				}
-			} else {
-				for (k in mix) {
-					if (mix[k] && (y = toVal(k))) {
-						str && (str += ' ');
-						str += y;
-					}
-				}
-			}
-		} else if (typeof mix !== 'boolean' && !mix.call) {
-			str && (str += ' ');
-			str += mix;
-		}
-	}
-	return str;
-}
-
-function clsx () {
-	var i=0, x, str='';
-	while (i < arguments.length) {
-		if (x = toVal(arguments[i++])) {
-			str && (str += ' ');
-			str += x;
-		}
-	}
-	return str;
-}
-
-var DEFAULT_USER_LIST = {
-    type: dist_1.all,
-    data: null,
-};
-var MembersContext = React__default.createContext({
-    groupId: -1,
-    errors: [],
-    setErrors: function () { },
-    success: undefined,
-    setSuccess: function () { },
-    toggleRefetch: undefined,
-    setToggleRefetch: function () { },
-    resetAlerts: function () { },
-    selectedUserList: DEFAULT_USER_LIST,
-    onSelectList: function () { },
-});
-var MembersContextProvider = function (_a) {
-    var children = _a.children, groupId = _a.groupId;
-    var _b = __read(React__default.useState([]), 2), errors = _b[0], setErrors = _b[1];
-    var _c = __read(React__default.useState(), 2), success = _c[0], setSuccess = _c[1];
-    var _d = __read(React__default.useState(), 2), toggleRefetch = _d[0], setToggleRefetch = _d[1];
-    var _e = __read(React__default.useState(DEFAULT_USER_LIST), 2), selectedUserList = _e[0], setSelectedUserList = _e[1];
-    var onSelectList = function (userList) { return setSelectedUserList(userList); };
-    var resetAlerts = function () {
-        setErrors([]);
-        setSuccess(undefined);
-    };
-    /** */
-    return (React__default.createElement(MembersContext.Provider, { value: {
-            groupId: groupId,
-            errors: errors,
-            setErrors: setErrors,
-            success: success,
-            setSuccess: setSuccess,
-            toggleRefetch: toggleRefetch,
-            setToggleRefetch: setToggleRefetch,
-            resetAlerts: resetAlerts,
-            selectedUserList: selectedUserList,
-            onSelectList: onSelectList,
-        } }, children));
-};
-
-var MembershipFeeDialog = function (_a) {
-    var open = _a.open, onCancel = _a.onCancel, onConfirm = _a.onConfirm;
-    var tBasics = useTranslation(['translation']).t;
-    var _b = __read(React__default.useState(undefined), 2), amount = _b[0], setAmount = _b[1];
-    var handleChange = function (event) {
-        var value = parseFloat(event.target.value);
-        setAmount(Number.isNaN(value) ? undefined : value);
-    };
-    var isValidFee = React__default.useMemo(function () {
-        if (!amount)
-            return true;
-        if (amount < 0) {
-            return false;
-        }
-        return true;
-    }, [amount]);
-    var handleConfirm = function () {
-        if (amount === undefined)
-            return;
-        onConfirm(amount);
-    };
-    return (React__default.createElement(core$1.Dialog, { open: open },
-        React__default.createElement(core$1.DialogTitle, null, "Veuillez-saisir le montant de la cotisation"),
-        React__default.createElement(core$1.DialogContent, null,
-            React__default.createElement(core$1.TextField, { label: "Montant de la cotisation", type: "number", fullWidth: true, value: amount, onChange: handleChange, InputProps: {
-                    endAdornment: React__default.createElement(core$1.InputAdornment, { position: "end" }, "\u20AC"),
-                }, error: !isValidFee })),
-        React__default.createElement(core$1.DialogActions, null,
-            React__default.createElement(core$1.Button, { onClick: onCancel }, tBasics('cancel')),
-            React__default.createElement(core$1.Button, { disabled: !amount || !isValidFee, autoFocus: true, variant: "outlined", color: "primary", onClick: handleConfirm }, tBasics('confirm')))));
-};
-
-var allSettled = function (promises) {
-    return Promise.all(promises.map(function (p) {
-        return p
-            .then(function (v) { return ({
-            status: 'fulfilled',
-            value: v,
-        }); })
-            .catch(function (e) { return ({
-            status: 'rejected',
-            reason: e,
-        }); });
-    }));
-};
-
-var useToolbarStyles = styles$1.makeStyles(function (theme) {
-    return styles$1.createStyles({
-        root: {
-            paddingLeft: theme.spacing(2),
-            paddingRight: theme.spacing(1),
-        },
-        highlight: {
-            color: theme.palette.secondary.main,
-            backgroundColor: styles$1.lighten(theme.palette.secondary.light, 0.85),
-        },
-        title: {
-            flex: '1 1 100%',
-        },
-        button: {
-            whiteSpace: 'nowrap',
-        },
-    });
-});
-var MembersTableToolbar = function (_a) {
-    var _b;
-    var selectedIds = _a.selectedIds, members = _a.members;
-    var classes = useToolbarStyles();
-    var t = useTranslation(['members/default']).t;
-    var tLists = useTranslation(['members/lists']).t;
-    var tBasics = useTranslation(['translation']).t;
-    var _c = React__default.useContext(MembersContext), setSuccess = _c.setSuccess, setErrors = _c.setErrors, groupId = _c.groupId, setToggleRefetch = _c.setToggleRefetch, toggleRefetch = _c.toggleRefetch, selectedUserList = _c.selectedUserList;
-    var meData = useMeQuery().data;
-    var groupMembershipFeeData = useGroupMembershipFeeQuery({
-        variables: {
-            id: groupId,
-        },
-    }).data;
-    var hasMembershipFee = (groupMembershipFeeData === null || groupMembershipFeeData === void 0 ? void 0 : groupMembershipFeeData.group.membershipFee) && (groupMembershipFeeData === null || groupMembershipFeeData === void 0 ? void 0 : groupMembershipFeeData.group.membershipFee) > 0;
-    var hasMembership = groupMembershipFeeData === null || groupMembershipFeeData === void 0 ? void 0 : groupMembershipFeeData.group.hasMembership;
-    var _d = __read(React__default.useState(false), 2), openMembershipFeeDialog = _d[0], setOpenMembershipFeeDialog = _d[1];
-    var _e = __read(useMoveBackToWaitingListMutation(), 1), moveBackToWaitingListMutation = _e[0];
-    var _f = __read(useRemoveUserFromGroupMutation(), 1), removeUserFromGroupMutation = _f[0];
-    var _g = __read(useCreateMembershipMutation(), 1), createMembershipMutation = _g[0];
-    var numSelected = selectedIds.length;
-    var ToolbarButton = function (_a) {
-        var title = _a.title, onClick = _a.onClick;
-        return (React__default.createElement(core$1.Button, { variant: "contained", disableElevation: true, size: "small", className: classes.button, onClick: onClick }, title));
-    };
-    var cancelButtonLabel = React__default.useMemo(function () { return tBasics('cancel'); }, []);
-    var confirmButtonLabel = React__default.useMemo(function () { return tBasics('confirm'); }, []);
-    var MembershipActionButton = withConfirmDialog(ToolbarButton, {
-        title: t("membershipConfirmDialogTitle"),
-        cancelButtonLabel: cancelButtonLabel,
-        confirmButtonLabel: confirmButtonLabel,
-        message: t("membershipConfirmDialogContent"),
-    });
-    var WaitingListActionButton = withConfirmDialog(ToolbarButton, {
-        title: t("waitingListConfirmDialogTitle", { nbOfMembers: numSelected, count: numSelected }),
-        cancelButtonLabel: cancelButtonLabel,
-        confirmButtonLabel: confirmButtonLabel,
-        message: t("waitingListConfirmDialogContent", { nbOfMembers: numSelected, count: numSelected }),
-    });
-    var ExcludeActionButton = withConfirmDialog(IconButton, {
-        title: t("excludeConfirmDialogTitle", { nbOfMembers: numSelected, count: numSelected }),
-        cancelButtonLabel: cancelButtonLabel,
-        confirmButtonLabel: confirmButtonLabel,
-        message: t("excludeConfirmDialogContent", { nbOfMembers: numSelected, count: numSelected }),
-    });
-    var ExcludeActionButtonForwadedRef = React__default.forwardRef(function (props, ref) { return (React__default.createElement("div", { ref: ref },
-        React__default.createElement(ExcludeActionButton, __assign({}, props)))); });
-    var getMembershipPromises = function (fee) {
-        var promises = [];
-        var date = new Date();
-        selectedIds.forEach(function (selectedId) {
-            promises.push(createMembershipMutation({
-                variables: {
-                    input: {
-                        userId: selectedId,
-                        groupId: groupId,
-                        year: date.getFullYear(),
-                        date: date,
-                        paymentType: 'check',
-                        membershipFee: fee,
-                    },
-                },
-            }));
-        });
-        return promises;
-    };
-    var awaitAllPromises = function (promises, action) {
-        allSettled(promises).then(function (results) {
-            var errored = results.filter(function (r) { return r.status === 'rejected'; });
-            setErrors(errored.map(function (e, i) {
-                var user = members.find(function (m) { return m.id === selectedIds[i]; });
-                return t(e.reason.message, { name: user && formatUserName(user) });
-            }));
-            var count = results.length - errored.length;
-            if (count > 0) {
-                setSuccess(t(action + "SuccessMessage", {
-                    count: count,
-                    nbMembre: count,
-                }));
-                setToggleRefetch(!toggleRefetch);
-            }
-        });
-    };
-    var doBatchAction = function (action) { return __awaiter(void 0, void 0, void 0, function () {
-        var promises;
-        return __generator(this, function (_a) {
-            setSuccess(undefined);
-            setErrors([]);
-            promises = [];
-            if (action === 'waitingList') {
-                selectedIds.forEach(function (selectedId) {
-                    promises.push(moveBackToWaitingListMutation({
-                        variables: {
-                            userId: selectedId,
-                            groupId: groupId,
-                            message: t('waitingListDefaultMessage', {
-                                name: meData && formatUserName(meData.me),
-                                date: formatAbsoluteDate(new Date(), true),
-                            }),
-                        },
-                    }));
-                });
-            }
-            else if (action === 'exclude') {
-                selectedIds.forEach(function (selectedId) {
-                    promises.push(removeUserFromGroupMutation({
-                        variables: {
-                            userId: selectedId,
-                            groupId: groupId,
-                        },
-                    }));
-                });
-            }
-            else if (action === 'membership') {
-                if (!hasMembershipFee) {
-                    setOpenMembershipFeeDialog(true);
-                }
-                else {
-                    promises.push.apply(promises, __spread(getMembershipPromises()));
-                }
-            }
-            awaitAllPromises(promises, action);
-            return [2 /*return*/];
-        });
-    }); };
-    var handleCancelMembershipFeeDialog = function () {
-        setOpenMembershipFeeDialog(false);
-    };
-    var handleConfirmMembershipFeeDialog = function (fee) {
-        var promises = getMembershipPromises(fee);
-        awaitAllPromises(promises, 'membership');
-        setOpenMembershipFeeDialog(false);
-    };
-    return (React__default.createElement(Toolbar$1, { className: clsx(classes.root, (_b = {},
-            _b[classes.highlight] = numSelected > 0,
-            _b)) },
-        numSelected > 0 ? (React__default.createElement(Typography, { className: classes.title, color: "inherit", variant: "subtitle1", component: "div" }, numSelected + " " + t('selected', { count: numSelected }))) : (React__default.createElement(Typography, { className: classes.title, variant: "h6", id: "tableTitle", component: "div" }, formatUserList(selectedUserList, tLists))),
-        numSelected > 0 && (React__default.createElement(React__default.Fragment, null,
-            hasMembership && (React__default.createElement(core$1.Box, { pr: 2 },
-                React__default.createElement(MembershipActionButton, { title: t('enterMembership'), onClick: function () { return doBatchAction('membership'); } }))),
-            React__default.createElement(core$1.Box, { pr: 1 },
-                React__default.createElement(WaitingListActionButton, { title: t('resetInWaitingList'), onClick: function () { return doBatchAction('waitingList'); } })),
-            React__default.createElement(core$1.Box, null,
-                React__default.createElement(Tooltip, { title: "" + t('removeFromGroup') },
-                    React__default.createElement(ExcludeActionButtonForwadedRef, { "aria-label": t('removeFromGroup'), onClick: function () { return doBatchAction('exclude'); } },
-                        React__default.createElement(DeleteIcon, null)))),
-            !hasMembershipFee && (React__default.createElement(MembershipFeeDialog, { open: openMembershipFeeDialog, onCancel: handleCancelMembershipFeeDialog, onConfirm: handleConfirmMembershipFeeDialog }))))));
-};
-
-function formatMember(member) {
-    return {
-        id: member.id,
-        names: (React__default.createElement(Link, { href: "/member/view/" + member.id, color: "secondary" }, formatUserAndPartnerNames(member))),
-        address: formatUserAddress$1(member) || '',
-    };
-}
-var useStyles$g = styles$1.makeStyles(function (theme) {
-    return styles$1.createStyles({
-        root: {
-            width: '100%',
-            marginBottom: theme.spacing(2),
-        },
-        tableContainer: {
-            overflowX: 'initial',
-        },
-    });
-});
-var headCells = ['names', 'address'];
-function MembersTable(_a) {
-    var members = _a.members, loading = _a.loading;
-    var classes = useStyles$g();
-    var _b = React__default.useContext(MembersContext), selectedUserList = _b.selectedUserList, toggleRefetch = _b.toggleRefetch;
-    var _c = __read(React__default.useState('asc'), 2), order = _c[0], setOrder = _c[1];
-    var _d = __read(React__default.useState('names'), 2), orderBy = _d[0], setOrderBy = _d[1];
-    var _e = __read(React__default.useState([]), 2), selected = _e[0], setSelected = _e[1];
-    var _f = __read(React__default.useState(0), 2), page = _f[0], setPage = _f[1];
-    var _g = __read(React__default.useState(DEFAULT_NUMBER_OF_ROW_PER_PAGE), 2), rowsPerPage = _g[0], setRowsPerPage = _g[1];
-    var formattedMembers = React__default.useMemo(function () {
-        return members.map(function (m) { return formatMember(m); });
-    }, [members]);
-    React__default.useEffect(function () {
-        var length = members.length;
-        if (page * rowsPerPage > length) {
-            setPage(0);
-        }
-        setSelected([]);
-    }, [members]);
-    React__default.useEffect(function () {
-        if (toggleRefetch === undefined)
-            return;
-        setSelected([]);
-    }, [toggleRefetch]);
-    var handleRequestSort = function (_event, property) {
-        var isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
-        setOrderBy(property);
-    };
-    var handleSelectAllClick = function (event) {
-        if (event.target.checked) {
-            var newSelecteds = formattedMembers.map(function (m) { return m.id; });
-            setSelected(newSelecteds);
-            return;
-        }
-        setSelected([]);
-    };
-    var handleClick = function (id) {
-        var selectedIndex = selected.indexOf(id);
-        var newSelected = [];
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id);
-        }
-        else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        }
-        else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        }
-        else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-        }
-        setSelected(newSelected);
-    };
-    var handleChangePage = function (_event, newPage) {
-        setPage(newPage);
-    };
-    var handleChangeRowsPerPage = function (event) {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
-    var isSelected = function (id) { return selected.indexOf(id) !== -1; };
-    return (React__default.createElement("div", { className: classes.root },
-        React__default.createElement(MembersTableToolbar, { selectedIds: selected, members: members }),
-        React__default.createElement(TableContainer, { className: classes.tableContainer },
-            React__default.createElement(Table, { "aria-labelledby": "tableTitle", "aria-label": "members table" },
-                React__default.createElement(MembersTableHeader, { numSelected: selected.length, order: order, orderBy: orderBy, onSelectAllClick: handleSelectAllClick, onRequestSort: handleRequestSort, rowCount: formattedMembers.length, headCells: headCells }),
-                loading && selectedUserList.count !== 0 && (React__default.createElement(MembersTableSkeleton, { count: selectedUserList.count || undefined, nbOfColumn: headCells.length, hasCheckbox: true })),
-                !loading && formattedMembers.length > 0 && (React__default.createElement(MembersTableBody, { formattedMembers: formattedMembers, page: page, rowsPerPage: rowsPerPage, order: order, orderBy: orderBy, headCells: headCells, isSelected: isSelected, handleRowClick: handleClick }))),
-            React__default.createElement(MembersEmptyTable, { show: (!loading && formattedMembers.length === 0) || selectedUserList.count === 0 })),
-        React__default.createElement(MembersTablePagination, { count: formattedMembers.length, rowsPerPage: rowsPerPage, page: page * rowsPerPage > formattedMembers.length ? 0 : page, handleChangePage: handleChangePage, handleChangeRowsPerPage: handleChangeRowsPerPage })));
-}
-
-var useStyles$h = core$1.makeStyles(function (theme) {
-    return core$1.createStyles({
-        button: {
-            marginTop: theme.spacing(1),
-        },
-    });
-});
-var WaitingListButtons = function (_a) {
-    var userId = _a.userId;
-    var classes = useStyles$h();
-    var _b = React__default.useContext(MembersContext), groupId = _b.groupId, setErrors = _b.setErrors, setToggleRefetch = _b.setToggleRefetch, toggleRefetch = _b.toggleRefetch;
-    var _c = __read(useCancelRequestMutation(), 2), cancelRequestMutation = _c[0], _d = _c[1], cancelRequestLoading = _d.loading, cancelRequestError = _d.error;
-    var _e = __read(useApproveRequestMutation(), 2), approveRequestMutation = _e[0], _f = _e[1], approveRequestLoading = _f.loading, approveRequestError = _f.error;
-    React__default.useEffect(function () {
-        if (!approveRequestError && !cancelRequestError)
-            return;
-        setErrors([approveRequestError ? approveRequestError.message : cancelRequestError.message]);
-    }, [approveRequestError, cancelRequestError]);
-    var approveRequest = function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, approveRequestMutation({ variables: { userId: userId, groupId: groupId } })];
-                case 1:
-                    _a.sent();
-                    setToggleRefetch(!toggleRefetch);
-                    return [2 /*return*/];
-            }
-        });
-    }); };
-    var cancelRequest = function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, cancelRequestMutation({ variables: { userId: userId, groupId: groupId } })];
-                case 1:
-                    _a.sent();
-                    setToggleRefetch(!toggleRefetch);
-                    return [2 /*return*/];
-            }
-        });
-    }); };
-    return (React__default.createElement(core$1.Box, { display: "flex", flexDirection: "column" },
-        React__default.createElement(ProgressButton, { loading: approveRequestLoading, variant: "contained", color: "secondary", startIcon: React__default.createElement(Check$1, null), size: "small", onClick: approveRequest }, "Accepter"),
-        React__default.createElement(ProgressButton, { loading: cancelRequestLoading, variant: "outlined", startIcon: React__default.createElement(Close$1, null), size: "small", className: classes.button, onClick: cancelRequest }, "Refuser")));
-};
-
-function formatMember$1(waitingList) {
-    var member = waitingList.user;
-    var date = new Date(parseInt(waitingList.date, 10));
-    var formattedDate = formatDate(date, true);
-    return {
-        id: member.id,
-        names: formatUserAndPartnerNames(member),
-        details: member.phone ? member.email + " " + member.phone : member.email,
-        registrationDate: formattedDate,
-        message: waitingList.message,
-        ' ': React__default.createElement(WaitingListButtons, { userId: member.id }),
-    };
-}
-var useStyles$i = styles$1.makeStyles(function (theme) {
-    return styles$1.createStyles({
-        root: {
-            width: '100%',
-            marginBottom: theme.spacing(2),
-        },
-        tableContainer: {
-            overflowX: 'initial',
-        },
-        title: {
-            flex: '1 1 100%',
-        },
-        table: {
-            tableLayout: 'fixed',
-        },
-    });
-});
-var headCells$1 = ['names', 'details', 'registrationDate', 'message', ' '];
-function WaitingListTable() {
-    var t = useTranslation(['members/lists']).t;
-    var _a = React__default.useContext(MembersContext), groupId = _a.groupId, toggleRefetch = _a.toggleRefetch, selectedUserList = _a.selectedUserList;
-    var classes = useStyles$i();
-    var _b = __read(React__default.useState('asc'), 2), order = _b[0], setOrder = _b[1];
-    var _c = __read(React__default.useState('names'), 2), orderBy = _c[0], setOrderBy = _c[1];
-    var _d = __read(React__default.useState(0), 2), page = _d[0], setPage = _d[1];
-    var _e = __read(React__default.useState(DEFAULT_NUMBER_OF_ROW_PER_PAGE), 2), rowsPerPage = _e[0], setRowsPerPage = _e[1];
-    var _f = useGetWaitingListsOfGroupQuery({ variables: { groupId: groupId } }), waitingListData = _f.data, waitingListLoading = _f.loading, waitingListError = _f.error, waitingListRefetch = _f.refetch;
-    React__default.useEffect(function () {
-        if (toggleRefetch === undefined)
-            return;
-        if (waitingListRefetch)
-            waitingListRefetch();
-    }, [toggleRefetch]);
-    var formattedMembers = React__default.useMemo(function () {
-        return waitingListData ? waitingListData.getWaitingListsOfGroup.map(function (wl) { return formatMember$1(wl); }) : [];
-    }, [waitingListData]);
-    var handleRequestSort = function (_event, property) {
-        var isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
-        setOrderBy(property);
-    };
-    var handleChangePage = function (_event, newPage) {
-        setPage(newPage);
-    };
-    var handleChangeRowsPerPage = function (event) {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
-    if (waitingListError)
-        return React__default.createElement(GqlErrorAlert, { error: waitingListError });
-    return (React__default.createElement("div", { className: classes.root },
-        React__default.createElement(Typography, { className: classes.title, variant: "h6", id: "tableTitle", component: "div" }, formatUserList(selectedUserList, t)),
-        React__default.createElement(TableContainer, { className: classes.tableContainer },
-            React__default.createElement(Table, { "aria-labelledby": "tableTitle", "aria-label": "waiting list table", size: "small", className: classes.table },
-                React__default.createElement(MembersTableHeader, { order: order, orderBy: orderBy, onRequestSort: handleRequestSort, headCells: headCells$1 }),
-                waitingListLoading && selectedUserList.count !== 0 && (React__default.createElement(MembersTableSkeleton, { count: selectedUserList.count || undefined, nbOfColumn: headCells$1.length })),
-                !waitingListLoading && formattedMembers.length > 0 && (React__default.createElement(MembersTableBody, { formattedMembers: formattedMembers, page: page, rowsPerPage: rowsPerPage, order: order, orderBy: orderBy, headCells: headCells$1 }))),
-            React__default.createElement(MembersEmptyTable, { show: (!waitingListLoading && formattedMembers.length === 0) || selectedUserList.count === 0 })),
-        React__default.createElement(MembersTablePagination, { count: formattedMembers.length, rowsPerPage: rowsPerPage, page: page * rowsPerPage > formattedMembers.length ? 0 : page, handleChangePage: handleChangePage, handleChangeRowsPerPage: handleChangeRowsPerPage })));
-}
-
-var useSearchInputStyles = core$1.makeStyles(function (theme) {
-    return core$1.createStyles({
-        search: {
-            height: theme.spacing(6),
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginLeft: 'auto',
-            width: '200px',
-        },
-        iconButton: {
-            color: theme.palette.action.active,
-            transform: 'scale(1, 1)',
-            transition: theme.transitions.create(['transform', 'color'], {
-                duration: theme.transitions.duration.shorter,
-                easing: theme.transitions.easing.easeInOut,
-            }),
-        },
-    });
-});
-var SearchInput = function (_a) {
-    var onSearchChange = _a.onSearchChange;
-    var t = useTranslation(['members/default']).t;
-    var classes = useSearchInputStyles();
-    var _b = __read(React__default.useState(''), 2), value = _b[0], setValue = _b[1];
-    var onChange = function (event) {
-        var newValue = event.target.value;
-        setValue(newValue);
-        onSearchChange(newValue);
-    };
-    var resetSearch = function () {
-        setValue('');
-        onSearchChange('');
-    };
-    return (React__default.createElement(core$1.Paper, { className: classes.search },
-        React__default.createElement(core$1.Input, { startAdornment: React__default.createElement(core$1.Box, { p: 1, display: "flex" },
-                React__default.createElement(SearchIcon, { className: classes.iconButton })), endAdornment: value && (React__default.createElement(core$1.Box, { p: 1 },
-                React__default.createElement(core$1.IconButton, { size: "small", onClick: resetSearch },
-                    React__default.createElement(CloseIcon, { className: classes.iconButton })))), placeholder: t('search'), inputProps: { 'aria-label': t('search') }, disableUnderline: true, value: value, onChange: onChange })));
-};
-var MembersTableAndActions = function () {
-    var t = useTranslation(['members/default']).t;
-    var _a = React__default.useContext(MembersContext), groupId = _a.groupId, toggleRefetch = _a.toggleRefetch, selectedUserList = _a.selectedUserList;
-    var _b = __read(useGetMembersOfGroupByListTypeLazyQuery(), 2), getMembersGroupByListType = _b[0], _c = _b[1], membersData = _c.data, membersError = _c.error, membersRefetch = _c.refetch;
-    var _d = __read(React__default.useState(), 2), filteredMembers = _d[0], setFilteredMembers = _d[1];
-    var _e = __read(React__default.useState(false), 2), loading = _e[0], setLoading = _e[1];
-    var previousSelectedUserList = React__default.useRef();
-    var members = membersData && membersData.getUserListInGroupByListType;
-    React__default.useEffect(function () {
-        var _a;
-        if (previousSelectedUserList.current &&
-            previousSelectedUserList.current.type === selectedUserList.type &&
-            previousSelectedUserList.current.data === selectedUserList.data)
-            return;
-        var previousSelectedUserListIsWaitingList = ((_a = previousSelectedUserList.current) === null || _a === void 0 ? void 0 : _a.type) === dist_1.waitingList;
-        previousSelectedUserList.current = selectedUserList;
-        if (selectedUserList.type === dist_1.waitingList || previousSelectedUserListIsWaitingList)
-            return;
-        setLoading(true);
-        var data;
-        if (selectedUserList.type === dist_1.contractSubscribers && selectedUserList.data) {
-            var contract = JSON.parse(selectedUserList.data);
-            if (contract) {
-                data = contract.id.toString();
-            }
-        }
-        getMembersGroupByListType({ variables: { listType: selectedUserList.type, groupId: groupId, data: data } });
-    }, [selectedUserList]);
-    React__default.useEffect(function () {
-        if (toggleRefetch === undefined)
-            return;
-        if (membersRefetch)
-            membersRefetch();
-    }, [toggleRefetch]);
-    React__default.useEffect(function () {
-        if (!membersData)
-            return;
-        setFilteredMembers(membersData.getUserListInGroupByListType);
-    }, [membersData]);
-    React__default.useEffect(function () {
-        if (!filteredMembers)
-            return;
-        setLoading(false);
-    }, [filteredMembers]);
-    function filterMembers(options, inputValue) {
-        var input = inputValue.trim();
-        input = input.toLowerCase();
-        var filteredOptions = options.filter(function (option) {
-            var candidate = option.firstName + " " + option.lastName + " " + option.firstName2 + " " + option.lastName2 + " " + option.zipCode + " " + option.city + " " + option.address1;
-            candidate = candidate.toLowerCase();
-            return candidate.indexOf(input) > -1;
-        });
-        return filteredOptions;
-    }
-    var onSearchChange = function (inputValue) {
-        if (!members)
-            return;
-        setFilteredMembers(filterMembers(members, inputValue));
-    };
-    if (membersError)
-        return React__default.createElement(GqlErrorAlert, { error: membersError });
-    return (React__default.createElement(core$1.Paper, null,
-        React__default.createElement(core$1.Box, { p: 2 },
-            React__default.createElement(core$1.Grid, { container: true, direction: "row" },
-                React__default.createElement(core$1.Typography, { variant: "h2" }, t('title')),
-                React__default.createElement(SearchInput, { onSearchChange: onSearchChange }))),
-        selectedUserList.type !== dist_1.waitingList ? (React__default.createElement(MembersTable, { members: filteredMembers || [], loading: loading })) : (React__default.createElement(WaitingListTable, null)),
-        React__default.createElement(core$1.Box, { p: 2 },
-            React__default.createElement(core$1.Grid, { container: true, spacing: 2 },
-                React__default.createElement(core$1.Grid, { item: true },
-                    React__default.createElement(core$1.Button, { variant: "outlined", href: "/member/insert" }, t('newMember'))),
-                React__default.createElement(core$1.Grid, { item: true },
-                    React__default.createElement(core$1.Button, { variant: "outlined", href: "/member?&csv=1" }, t('export'))),
-                React__default.createElement(core$1.Grid, { item: true },
-                    React__default.createElement(core$1.Button, { variant: "outlined", href: "/member/import" }, t('importMembers')))))));
-};
-
-var useStyles$j = core$1.makeStyles(function (theme) {
-    return core$1.createStyles({
-        listItemText: {
-            '& p:first-letter': {
-                textTransform: 'capitalize',
-            },
-        },
-        container: {
-            maxHeight: '754px',
-            overflowY: 'auto',
-            display: 'flex',
-        },
-        pagination: {
-            '& ul': {
-                justifyContent: 'center',
-                flexWrap: 'initial',
-            },
-            paddingTop: theme.spacing(1),
-        },
-        nestedListItem: {
-            paddingLeft: theme.spacing(4),
-        },
-    });
-});
-var MemberLists = function () {
-    var t = useTranslation(['members/lists', 'members/default']).t;
-    var _a = React__default.useContext(MembersContext), groupId = _a.groupId, toggleRefetch = _a.toggleRefetch, selectedUserList = _a.selectedUserList, onSelectList = _a.onSelectList;
-    var _b = useUserListsQuery({
-        variables: { groupId: groupId },
-    }), data = _b.data, loading = _b.loading, error = _b.error, refetch = _b.refetch;
-    var cs = useStyles$j();
-    var _c = __read(React__default.useState(false), 2), catalogNestedListOpen = _c[0], setCatalogNestedListOpen = _c[1];
-    var catalogLists = React__default.useMemo(function () { return data === null || data === void 0 ? void 0 : data.getUserLists.filter(function (ul) { return ul.type === dist_1.contractSubscribers; }); }, [data]);
-    var otherLists = React__default.useMemo(function () { return data === null || data === void 0 ? void 0 : data.getUserLists.filter(function (ul) { return ul.type !== dist_1.contractSubscribers; }); }, [data]);
-    React__default.useEffect(function () {
-        if (toggleRefetch === undefined)
-            return;
-        if (refetch)
-            refetch();
-    }, [toggleRefetch]);
-    React__default.useEffect(function () {
-        if (!data || data.getUserLists === undefined)
-            return;
-        if (toggleRefetch !== undefined) {
-            var refreshedUserList = data.getUserLists.find(function (ul) { return ul.type === selectedUserList.type; });
-            if (refreshedUserList)
-                onSelectList(refreshedUserList);
-        }
-        else {
-            // First render
-            var allUserList = data.getUserLists.find(function (ul) { return ul.type === dist_1.all; });
-            if (allUserList)
-                onSelectList(allUserList);
-        }
-    }, [data]);
-    var toggleCatalogNestedList = function () {
-        setCatalogNestedListOpen(!catalogNestedListOpen);
-    };
-    if (error)
-        return React__default.createElement(GqlErrorAlert, { error: error });
-    return (React__default.createElement(core$1.Box, null,
-        React__default.createElement(core$1.Box, { className: cs.container, justifyContent: "center" }, loading ? (React__default.createElement(core$1.Box, { p: 1 },
-            React__default.createElement(core$1.CircularProgress, null))) : (React__default.createElement(React__default.Fragment, null,
-            React__default.createElement(core$1.List, null, otherLists === null || otherLists === void 0 ? void 0 :
-                otherLists.map(function (ul) { return (React__default.createElement(core$1.ListItem, { button: true, divider: true, key: "" + ul.type + ul.data, selected: selectedUserList.type === ul.type && selectedUserList.data === ul.data, onClick: function () { return onSelectList(ul); } },
-                    React__default.createElement(core$1.ListItemText, { className: cs.listItemText, primary: formatUserList(ul, t) }))); }),
-                React__default.createElement(core$1.ListItem, { button: true, onClick: toggleCatalogNestedList },
-                    React__default.createElement(core$1.ListItemText, { className: cs.listItemText, primary: t('members/default:catalogs') }),
-                    catalogNestedListOpen ? React__default.createElement(ExpandLess, null) : React__default.createElement(ExpandMore$1, null)),
-                React__default.createElement(core$1.Collapse, { in: catalogNestedListOpen, timeout: "auto", unmountOnExit: true },
-                    React__default.createElement(core$1.List, { component: "div", disablePadding: true }, catalogLists === null || catalogLists === void 0 ? void 0 : catalogLists.map(function (ul) { return (React__default.createElement(core$1.ListItem, { button: true, divider: true, key: "" + ul.type + ul.data, selected: selectedUserList.type === ul.type && selectedUserList.data === ul.data, onClick: function () { return onSelectList(ul); }, className: cs.nestedListItem },
-                        React__default.createElement(core$1.ListItemText, { className: cs.listItemText, primary: formatUserList(ul, t) }))); })))))))));
-};
-
-var MembersAlert = function () {
-    var _a = React__default.useContext(MembersContext), success = _a.success, errors = _a.errors, resetAlerts = _a.resetAlerts, selectedUserList = _a.selectedUserList;
-    var _b = __read(React__default.useState(false), 2), openErrors = _b[0], setOpenErrors = _b[1];
-    var _c = __read(React__default.useState(false), 2), openSuccess = _c[0], setOpenSuccess = _c[1];
-    var previousSelectedUserList = React__default.useRef();
-    React__default.useEffect(function () {
-        if (errors.length === 0)
-            setOpenErrors(false);
-        else
-            setOpenErrors(true);
-    }, [errors]);
-    React__default.useEffect(function () {
-        if (!success)
-            setOpenSuccess(false);
-        else
-            setOpenSuccess(true);
-    }, [success]);
-    React__default.useEffect(function () {
-        if (previousSelectedUserList.current && selectedUserList.type !== previousSelectedUserList.current.type) {
-            resetAlerts();
-        }
-        previousSelectedUserList.current = selectedUserList;
-    }, [selectedUserList]);
-    return (React__default.createElement(core$1.Box, { my: 1 },
-        errors.map(function (error, index) { return (React__default.createElement(core$1.Collapse, { key: error, in: openErrors, timeout: { enter: (index + 1) * 250 }, style: { transitionDelay: index * 250 + "ms" } },
-            React__default.createElement(core$1.Box, { my: 1 },
-                React__default.createElement(lab.Alert, { severity: "error" }, error)))); }),
-        success && (React__default.createElement(core$1.Collapse, { in: openSuccess, timeout: { enter: (errors.length + 1) * 250 }, style: { transitionDelay: errors.length * 500 + "ms" } },
-            React__default.createElement(core$1.Box, { my: 1 },
-                React__default.createElement(lab.Alert, { severity: "success" }, success))))));
-};
-
-var Members = function (_a) {
-    var groupId = _a.groupId;
-    var t = useTranslation(['members/default']).t;
-    /** */
-    return (React__default.createElement(MembersContextProvider, { groupId: groupId },
-        React__default.createElement(core$1.Box, { mb: 2 },
-            React__default.createElement(MembersAlert, null),
-            React__default.createElement(core$1.Grid, { container: true, spacing: 4 },
-                React__default.createElement(core$1.Grid, { item: true, xs: 9 },
-                    React__default.createElement(MembersTableAndActions, null)),
-                React__default.createElement(core$1.Grid, { item: true, xs: 3 },
-                    React__default.createElement(core$1.Paper, null,
-                        React__default.createElement(core$1.Box, { p: 2 },
-                            React__default.createElement(core$1.Typography, { variant: "h6" }, t('lists')),
-                            React__default.createElement(MemberLists, null))))))));
 };
 
 var apolloClient = null;
@@ -45791,10 +44659,6 @@ var NeolithicViewsGenerator = /** @class */ (function () {
     NeolithicViewsGenerator.messagesModule = function (elementId, props) {
         var MessagesModuleWrapped = withApolloProvider(withNeolithicProvider(withi18n(Messages)));
         createApp(elementId, React__default.createElement(MessagesModuleWrapped, { groupId: props.groupId, whichUser: Boolean(props.whichUser) }));
-    };
-    NeolithicViewsGenerator.membersModule = function (elementId, props) {
-        var MembersModuleWrapped = withApolloProvider(withNeolithicProvider(withi18n(Members)));
-        createApp(elementId, React__default.createElement(MembersModuleWrapped, { groupId: props.groupId }));
     };
     return NeolithicViewsGenerator;
 }());

@@ -31,7 +31,7 @@
 <script language="javascript">
 	::if(register==true)::
 	document.addEventListener("DOMContentLoaded", function(event) {
-		_.registerBox('::raw redirect::','::raw message::',::phoneRequired::, false, ::tmpBasketId::);	
+		_.registerBox('::raw redirect::','::raw message::',::phoneRequired::);	
 	});
 	::else::
 	document.addEventListener("DOMContentLoaded", function(event) {

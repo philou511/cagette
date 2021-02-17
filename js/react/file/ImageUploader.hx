@@ -207,7 +207,7 @@ class ImageUploader extends ReactComponentOfPropsAndState<ImageUploaderProps, Im
 						Zoom 
 					</Grid>
 					<Grid item md={8}>
-						<input name="scale" type="range" onChange=$updateScale min="0.1" max="2" step="0.01" defaultValue="1" />
+						<input name="scale" type="range" onChange=$updateScale min="1" max="2" step="0.01" defaultValue="1" />
 					</Grid>
 					<Grid item md={2}>
 						${ Math.round(state.scale * 100) } %

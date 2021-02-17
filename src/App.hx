@@ -17,7 +17,7 @@ class App extends sugoi.BaseApp {
 	 * Version management
 	 * @doc https://github.com/fponticelli/thx.semver
 	 */ 
-	public static var VERSION = ([0,14]  : Version).withPre(GitMacros.getGitShortSHA(), GitMacros.getGitCommitDate());
+	public static var VERSION = ([0,14]  : Version)/*.withPre(GitMacros.getGitShortSHA(), GitMacros.getGitCommitDate())*/;
 	
 	public function new(){
 		super();
@@ -197,7 +197,6 @@ class App extends sugoi.BaseApp {
 		
 
 		out.set("ShopV2", "Nouvelle boutique");
-		out.set("MessagesV2", "Nouvelle messagerie");
 
 		out.set("ref", "Référence");
 		out.set("linkText", "Intitulé du lien");
@@ -244,9 +243,6 @@ class App extends sugoi.BaseApp {
 				
 		out.set("variablePrice", "Prix variable selon pesée");		
 		
-		//shop options
-		out.set("Show3rdCategoryLevel", "Classer par catégorie de troisième niveau");
-
 		return out;
 	}
 	

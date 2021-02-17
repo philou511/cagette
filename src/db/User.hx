@@ -66,7 +66,7 @@ class User extends Object {
 		rights = sys.db.Types.SFlags.ofInt(0);
 		flags = sys.db.Types.SFlags.ofInt(0);
 		flags.set(HasEmailNotif24h);
-		flags.set(HasEmailNotifOuverture);
+		// flags.set(HasEmailNotifOuverture);
 		lang = "fr";
 		pass = "";
 		
@@ -572,6 +572,14 @@ class User extends Object {
 	public function getQuitGroupLink(group:db.Group){
 		var protocol = App.config.DEBUG ? "http://" : "https://";
 		return protocol+App.config.HOST+"/user/quitGroup/"+group.id+"/"+this.id+"/"+haxe.crypto.Md5.encode(App.config.KEY+group.id+this.id);
+	}
+
+	/**
+	    get "edit notifications" link for emails footer
+	**/
+	public function getEditNotificationsLink(group:db.Group){
+		var protocol = App.config.DEBUG ? "http://" : "https://";
+		return protocol+App.config.HOST+"/account/editNotif/"+this.id+"/"+haxe.crypto.Sha1.encode(App.config.KEY+this.id);
 	}
 	
 	public function infos():UserInfo{

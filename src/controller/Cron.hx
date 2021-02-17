@@ -250,10 +250,10 @@ class Cron extends Controller
 		var task = new TransactionWrappedTask("Time slots assignement");
 		task.setTask(function(){
 			var range = tools.DateTool.getLastHourRange( now );
-			task.log('get distribs whith order ending between ${range.from} and ${range.to}');
+			task.log('Get distribs whith order ending between ${range.from} and ${range.to}');
 			var distribs = MultiDistrib.manager.search($orderEndDate >= range.from && $orderEndDate < range.to && $slots!=null ,true);
 			for( d in distribs){
-				
+				if(d.slots==null) continue; //d.slots can be a 'serialized null'
 				var s = new service.TimeSlotsService(d);
 				var slots = s.resolveSlots();
 				var group = d.getGroup();
@@ -324,7 +324,7 @@ class Cron extends Controller
 										à la distribution du ${view.hDate( distrib.date )} du contrat "${subscription.catalog.name}".
 										<br /><br />
 										Votre commande par défaut : <br /><br />${subscription.getDefaultOrdersToString()}
-										<br/>br/>
+										<br /><br />
 										La commande à chaque distribution est obligatoire dans le contrat "${subscription.catalog.name}". 
 										Vous pouvez modifier votre commande par défaut en accédant à votre souscription à ce contrat depuis la page "commandes" sur Cagette.net';
 
@@ -641,7 +641,7 @@ class Cron extends Controller
 		distribs.map(  (d) -> task.log("Distrib : "+d.date+" de "+d.catalog.name+", groupe : "+d.catalog.group.name) );
 				
 		/*
-		 * Group distribs by group
+		 * Group distribs by group.
 		 * Map key is $groupId
 		*/
 		var data = new Map <Int,{distributions:Array<db.Distribution>,vendors:Array<db.Vendor>}>();

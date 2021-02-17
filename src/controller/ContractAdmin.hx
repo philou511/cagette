@@ -41,7 +41,7 @@ class ContractAdmin extends Controller
 	function doDefault(?args:{old:Bool}) {
 		
 		view.nav.push("default");
-		
+
 		var now = Date.now();
 		
 		var contracts;
@@ -63,8 +63,8 @@ class ContractAdmin extends Controller
 		view.vendors = vendors;
 		// view.noSiret = vendors.filter(v -> v.companyNumber==null);
 		view.places = app.user.getGroup().getPlaces();
-		checkToken();
-
+		view.group = app.user.getGroup();
+		
 		//Multidistribs to validate
 		if( (app.user.canManageAllContracts()||app.user.isAmapManager() )  && app.user.getGroup().hasPayments()){
 			var twoMonthAgo = tools.DateTool.deltaDays(now,-60);
@@ -77,6 +77,8 @@ class ContractAdmin extends Controller
 		}else{
 			view.multidistribs = [];
 		}
+
+		checkToken();
 	}
 
 	/**
@@ -686,6 +688,7 @@ class ContractAdmin extends Controller
 
 		view.nav.push("view");
 		sendNav(catalog);
+		checkToken();
 
 		catalog.check();
 		

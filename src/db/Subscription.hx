@@ -57,17 +57,16 @@ class Subscription extends Object {
 		return db.Operation.manager.select( $user == this.user && $subscription == this && $type == SubscriptionTotal, true );
 	}
 
+	/**
+		get total of payment operations linked to this subscription
+	**/
 	public function getPaymentsTotal() : Float {
-
 		if( this.id == null ) return 0;
-
 		var paymentsTotal : Float = 0;
 		var operations = db.Operation.manager.search( $user == user && $subscription == this && $type == Payment, null, false );
 		for ( operation in operations ) {
-
 			paymentsTotal += Formatting.roundTo( operation.amount, 2 );
 		}
-
 		return Formatting.roundTo( paymentsTotal, 2 );
 	}
 
@@ -125,21 +124,19 @@ class Subscription extends Object {
 		if ( this.defaultOrders == null ) return 'Aucune commande par défaut définie';
 		
 		var label : String = '';
-		var defaultOrders : Array< { productId : Int, quantity : Float } > = haxe.Json.parse( this.defaultOrders );
+		var defaultOrders : Array<{ productId:Int, quantity:Float }> = haxe.Json.parse( this.defaultOrders );
 		var totalPrice = 0.0;
 		for ( order in defaultOrders ) {
+			if(order.quantity == null || order.quantity == 0) continue;
 
 			var product = db.Product.manager.get( order.productId, false );
-			if ( product != null && order.quantity != 0 ) {
-
+			if ( product != null ) {
 				label += tools.FloatTool.clean( order.quantity ) + ' x ' + product.name + '<br />';
 				totalPrice += Formatting.roundTo( order.quantity * product.price, 2 );
-			}
-			
+			}			
 		}
 
 		label += 'Total : ' + Formatting.roundTo( totalPrice, 2 ) + ' €';
-
 		return label;
 	}
 

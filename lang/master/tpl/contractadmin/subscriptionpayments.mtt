@@ -38,9 +38,7 @@
 				<th>Actions</th>
 			</tr>
 			::foreach payment payments::
-
 				<tr>
-
 					<td style="vertical-align: middle;">
 						::sDate(payment.date)::
 					</td>
@@ -68,17 +66,17 @@
 			::end::
 		
 			<tr>
-
+				::if(subscriptionTotal!=null)::
 				<td style="vertical-align: middle;">
 					::sDate(subscriptionTotal.date)::
 				</td>
 
 				<td style="vertical-align: middle;">
-					<i class="icon icon-calendar-check"></i> Souscription
+					<i class="icon icon-calendar-check"></i> Souscription à un <br/>contrat AMAP
 				</td>
 
 				<td style="vertical-align: middle;padding-top:15px;padding-bottom:15px;">
-					Total Commandes
+					Total commandé
 				</td>
 
 				<td style="vertical-align: middle;">
@@ -88,12 +86,18 @@
 						0&nbsp;::currency()::
 					::end::
 				</td>
-				<td></td>
+				<td>
+
+				</td>
+				::else::
+				<div class="alert alert-danger">Pas d'opération représentant la souscription au contrat AMAP</div>
+				::end::
+
 			</tr>
 		
 		</table>
 		
-		$$insert(Saisir un paiement,/transaction/insertPayment/::member.id::/::subscription.id::)
+		$$insert(Saisir un paiement,/subscriptions/insertPayment/::subscription.id::)
 		
 </div>
 
