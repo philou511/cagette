@@ -42,12 +42,16 @@ class Main extends Controller {
 	function doHome() {
 
 		addBc("home","Commandes","/home");
-		
+
 		var group = app.getCurrentGroup();		
 		if ( app.user!=null && group == null) {			
 			throw Redirect("/user/choose");
 		}else if (app.user == null && (group==null || group.regOption!=db.Group.RegOption.Open) ) {
 			throw Redirect("/user/login");
+		}
+
+		if(app.user.isGroupManager() && group.hasShopMode()  && !group.hasShopV2()){
+			app.session.addMessage("Attention, l'ancienne boutique et les catégories personnalisées disparaîtront le lundi 5 avril 2021, pensez à vous préparer avant le jour J.<br/><a href='https://wiki.cagette.net/admin:5april' target='_blank'>Cliquez-ici pour plus d'informations</a>",true);
 		}
 
 		view.amap = group;
