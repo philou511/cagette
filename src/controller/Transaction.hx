@@ -218,7 +218,11 @@ class Transaction extends controller.Controller
 	}
 
 	@tpl("transaction/tmpBasket.mtt")
-	public function doTmpBasket(tmpBasket:db.TmpBasket,?args:{cancel:Bool,confirm:Bool}){
+	public function doTmpBasket(tmpBasket:db.TmpBasket,?args:{cancel:Bool,confirm:Bool,continueShopping:Bool}){
+
+		if(app.getCurrentGroup()==null){
+			throw Redirect("/");
+		}
 
 		if(args!=null){
 			if(args.cancel){
@@ -226,10 +230,11 @@ class Transaction extends controller.Controller
 				tmpBasket.delete();
 				throw Ok("/",t._("You basket has been canceled"));
 			}else if(args.confirm){				
-				throw Redirect("/shop/validate/"+tmpBasket.id);				
+				throw Redirect("/shop/validate/"+tmpBasket.id);
+			}else if(args.continueShopping){
+				throw Redirect("/shop2/"+tmpBasket.multiDistrib.id+"?continueShopping=1");
 			}
 		}
-
 		
 		#if plugins
 		//MANGOPAY : search for "unlinked" confirmed payIns on Mangopay

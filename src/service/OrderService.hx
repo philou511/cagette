@@ -657,12 +657,21 @@ class OrderService
 		}
 		
 		if(tmpBasket!=null){
+
+			//basket is empty
 			if(tmpBasket.getData().products.length==0){
 				tmpBasket.lock();
 				tmpBasket.delete();
-			}else{
-				throw sugoi.ControllerAction.ControllerAction.RedirectAction("/transaction/tmpBasket/"+tmpBasket.id);
+				return;
 			}
+
+			//basket is related to a closed distribution
+			if(tmpBasket.multiDistrib.getOrdersEndDate(true).getTime() < Date.now().getTime()){
+				return;
+			}
+			
+			throw sugoi.ControllerAction.ControllerAction.RedirectAction("/transaction/tmpBasket/"+tmpBasket.id);
+			
 		}
 	}
 

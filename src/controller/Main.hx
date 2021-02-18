@@ -266,17 +266,18 @@ Called from controller/Main.hx line 117
 	}
 
 	@tpl('shop/default2.mtt')
-	function doShop2(md:db.MultiDistrib) {
-
+	function doShop2(md:db.MultiDistrib,?args:{continueShopping:Bool}) {
 		if( app.getCurrentGroup()==null || app.getCurrentGroup().id!=md.getGroup().id){
 			throw  Redirect("/group/"+md.getGroup().id);
 		}
-		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
+		if(args!=null){
+			if(!args.continueShopping){
+				service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
+			}
+		}
 		view.category = 'shop';
-		view.place = md.getPlace();
-		view.date = md.getDate();
 		view.md = md;
-		view.rights = app.user!=null ? haxe.Serializer.run(app.user.getRights()) : null;
+		view.tmpBasketId = app.session.data.tmpBasketId;
 	}
 	
 	@logged

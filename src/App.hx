@@ -241,7 +241,8 @@ class App extends sugoi.BaseApp {
 		out.set("ByProduct"	, "Par produit (produits vrac, stockés sans conditionnement)");
 		out.set("ByOffer"	, "Par offre (produits stockés déja conditionnés)");
 				
-		out.set("variablePrice", "Prix variable selon pesée");		
+		out.set("variablePrice", "Prix variable selon pesée");	
+		out.set("Show3rdCategoryLevel", "Classer les produits de la boutique par catégorie de troisième niveau");	
 		
 		return out;
 	}
