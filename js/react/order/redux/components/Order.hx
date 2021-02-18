@@ -171,7 +171,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 
 	function isSmartQtInput() : Bool {
 
-		return props.order.product.hasFloatQt || props.order.product.variablePrice || props.order.product.wholesale;
+		return props.order.product.hasFloatQt || props.order.product.variablePrice || props.order.product.wholesale || props.order.product.bulk;
 	}
 
 	function updateQuantity( e: js.html.Event ) {		

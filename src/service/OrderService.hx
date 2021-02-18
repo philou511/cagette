@@ -13,7 +13,7 @@ class OrderService
 {
 
 	static function canHaveFloatQt(product:db.Product):Bool{
-		return product.hasFloatQt || product.wholesale || product.variablePrice;
+		return product.hasFloatQt || product.wholesale || product.variablePrice || product.bulk;
 	}
 
 	/**
