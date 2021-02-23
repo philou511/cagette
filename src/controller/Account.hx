@@ -30,8 +30,7 @@ class Account extends Controller
 		var langNames = App.config.get("langnames").split(";");
 		var i=0;
 		var langLinks = "";
-		for (lang in langs)
-		{
+		for (lang in langs){
 			langLinks += "<li><a href=\"?lang=" + langs[i] + "\">" + langNames[i] + "</a></li>";
 			i++;
 		}
@@ -51,15 +50,15 @@ class Account extends Controller
 		var varOrders = new Map<String,Array<db.UserOrder>>();
 		
 		var group = App.current.user.getGroup();		
-		var oneMonthAgo = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30);
-		var inOneMonth = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 30);
+		var from  = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30);
+		var to 	  = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 30 * 6);
 		
 		//constant orders
 		view.subscriptionsByCatalog = SubscriptionService.getActiveSubscriptionsByCatalog( app.user, group );
 		view.subscriptionService = SubscriptionService;
 				
 		//variable orders, grouped by date
-		var distribs = MultiDistrib.getFromTimeRange( group , oneMonthAgo , inOneMonth  );
+		var distribs = MultiDistrib.getFromTimeRange( group , from , to  );
 		//sort by date desc
 		distribs.sort(function(a,b){
 			return Math.round(b.distribStartDate.getTime()/1000) - Math.round(a.distribStartDate.getTime()/1000);
