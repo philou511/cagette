@@ -76,8 +76,9 @@ class App {
 	 * The JS App will be available as "_" in the document.
 	 */
 	public static function main() {
-        
-        untyped js.Browser.window._ = new App();
+        var app = new App();
+        untyped js.Browser.window._ = app;
+        untyped js.Browser.window._Cagette = app;//avoid conflicts with lodash
         
         NeolithicViewsGenerator.setApiUrl("/api");
         // NeolithicViewsGenerator.setGraphUrl(sugoi.db.Variable.get("cagette_api") + "/graphql");
@@ -560,6 +561,11 @@ class App {
     //     m.show();
 
     // }
+
+    public function addTmpBasketIdToSession(tmpBasketId:Int) {
+        var req = new haxe.Http("/shop/addTmpBasketId/"+tmpBasketId);
+        req.request();
+    }
 }
 
 

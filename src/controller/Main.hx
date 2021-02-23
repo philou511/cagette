@@ -50,7 +50,7 @@ class Main extends Controller {
 			throw Redirect("/user/login");
 		}
 
-		if(app.user.isGroupManager() && group.hasShopMode()  && !group.betaFlags.has(db.Group.BetaFlags.ShopV2) ){
+		if(app.user!=null && app.user.isGroupManager() && group.hasShopMode()  && !group.betaFlags.has(db.Group.BetaFlags.ShopV2) ){
 			app.session.addMessage("Attention, l'ancienne boutique et les catégories personnalisées disparaîtront le lundi 5 avril 2021, pensez à vous préparer avant le jour J.<br/><a href='https://wiki.cagette.net/admin:5april' target='_blank'>Cliquez-ici pour plus d'informations</a>",true);
 		}
 
@@ -248,7 +248,6 @@ Called from controller/Main.hx line 117
 		d.dispatch(new controller.Place());
 	}
 	
-	@logged
 	function doTransaction(d:Dispatch) {
 		addBc("shop","Boutique","/shop");
 		d.dispatch(new controller.Transaction());

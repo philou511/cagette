@@ -95,7 +95,7 @@
 			})
 
 			//tracking 24x7
-			var rumMOKey='1d36c37d438ba069db210c73cb74308d';
+			/*var rumMOKey='1d36c37d438ba069db210c73cb74308d';
 			(function(){
 				if(window.performance && window.performance.timing && window.performance.navigation) {
 					var site24x7_rum_beacon=document.createElement('script');
@@ -103,9 +103,15 @@
 					site24x7_rum_beacon.setAttribute('src','//static.site24x7rum.com/beacon/site24x7rum-min.js?appKey='+rumMOKey);
 					document.getElementsByTagName('head')[0].appendChild(site24x7_rum_beacon);
 				}
-			})(window)
+			})(window)*/
 
 		</script>
+
+		::foreach script getNeoModuleScripts()::
+		<script src="::script::"></script>
+		::end::
+
+
 		
 	</body>
 </html>

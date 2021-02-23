@@ -20,16 +20,26 @@ class Transaction extends controller.Controller
 	 * A manager inserts manually a payment
 	 */
 	@tpl('form.mtt')
-	public function doInsertPayment( user : db.User ) {
-		var group = app.getCurrentGroup();
+	public function doInsertPayment( user : db.User, ?subscription : db.Subscription ) {
+		if(app.user==null){
+			throw Redirect("/");
+		}
 		if (!app.user.isContractManager()) throw Error("/", t._("Action forbidden"));	
-		if ( !group.hasShopMode() ) throw Error("/","Accès interdit à cette page si groupe AMAP");
 		var t = sugoi.i18n.Locale.texts;
 
 		var group = app.user.getGroup();
-		var returnUrl = '/member/payments/' + user.id;
+		var hasShopMode = group.hasShopMode();
+			var returnUrl = '/member/payments/' + user.id;
 	
 		var form = new sugoi.form.Form("payement");
+
+		if ( !hasShopMode ) {
+
+			if ( subscription == null ) throw Error("/member/view/" + user.id, "Pas de souscription fournie." );
+
+			returnUrl = '/contractAdmin/subscriptions/payments/' + subscription.id;
+			form.addElement( new sugoi.form.elements.Html( "subscription", '<div class="control-label" style="text-align:left;"> ${ subscription.catalog.name } - ${ subscription.catalog.vendor.name } </div>', 'Souscription' ) );
+		}
 
 		form.addElement(new sugoi.form.elements.StringInput("name", t._("Label||label or name for a payment"), "Paiement", false));
 		form.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
@@ -42,9 +52,12 @@ class Transaction extends controller.Controller
 		form.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), out, null, true));
 		
 		//related operation
-		var unpaid = db.Operation.manager.search($user == user && $group == group && $type != Payment ,{limit:20,orderBy:-date});
-		var data = unpaid.map(function(x) return {label:x.name, value:x.id}).array();
-		form.addElement(new sugoi.form.elements.IntSelect("unpaid", t._("As a payment for :"), data, null, false));
+		if( hasShopMode ) {
+
+			var unpaid = db.Operation.manager.search($user == user && $group == group && $type != Payment ,{limit:20,orderBy:-date});
+			var data = unpaid.map(function(x) return {label:x.name, value:x.id}).array();
+			form.addElement(new sugoi.form.elements.IntSelect("unpaid", t._("As a payment for :"), data, null, false));
+		}
 	
 		if (form.isValid()){
 
@@ -58,21 +71,30 @@ class Transaction extends controller.Controller
 			operation.setPaymentData({type:form.getValueOf("Mtype")});
 			operation.group = group;
 			operation.user = user;
+			
+			if( hasShopMode ) {
 
-			if (form.getValueOf("unpaid") != null){
-				var t2 = db.Operation.manager.get(form.getValueOf("unpaid"));
-				operation.relation = t2;
-				if (t2.amount + operation.amount == 0) {
-					operation.pending = false;
-					t2.lock();
-					t2.pending = false;
-					t2.update();
+				if (form.getValueOf("unpaid") != null){
+					var t2 = db.Operation.manager.get(form.getValueOf("unpaid"));
+					operation.relation = t2;
+					if (t2.amount + operation.amount == 0) {
+						operation.pending = false;
+						t2.lock();
+						t2.pending = false;
+						t2.update();
+					}
 				}
+			}
+			else {
+				
+				operation.subscription = subscription;
 			}
 			
 			operation.insert();
 			service.PaymentService.updateUserBalance( user, group );
+
 			throw Ok( returnUrl, t._("Payment recorded") );
+
 		}
 		
 		view.title = t._("Record a payment for ::user::",{user:user.getCoupleName()}) ;
@@ -82,7 +104,9 @@ class Transaction extends controller.Controller
 	
 	@tpl('form.mtt')
 	public function doEdit( operation : db.Operation ) {
-
+		if(app.user==null){
+			throw Redirect("/");
+		}
 		var hasShopMode = operation.group.hasShopMode();
 		var returnUrl = '/member/payments/' + operation.user.id;
 
@@ -154,7 +178,9 @@ class Transaction extends controller.Controller
 	 * Delete an operation
 	 */
 	public function doDelete( operation : db.Operation ) {
-
+		if(app.user==null){
+			throw Redirect("/");
+		}
 		var hasShopMode = operation.group.hasShopMode();
 
 		var returnUrl = '/member/payments/' + operation.user.id;
@@ -197,6 +223,10 @@ class Transaction extends controller.Controller
 	@tpl("transaction/pay.mtt")
 	public function doPay(tmpBasket:db.TmpBasket) {
 
+		if(app.user==null){
+			throw Redirect("/");
+		}
+
 		view.category = 'home';
 		
 		if (tmpBasket == null) throw Error("Basket is null");
@@ -235,6 +265,7 @@ class Transaction extends controller.Controller
 				throw Redirect("/shop2/"+tmpBasket.multiDistrib.id+"?continueShopping=1");
 			}
 		}
+
 		
 		#if plugins
 		//MANGOPAY : search for "unlinked" confirmed payIns on Mangopay
@@ -251,7 +282,9 @@ class Transaction extends controller.Controller
 	 */
 	@tpl("transaction/moneypot.mtt")
 	public function doMoneypot(tmpBasket:db.TmpBasket){
-
+		if(app.user==null){
+			throw Redirect("/");
+		}
 		if (tmpBasket == null) throw Redirect("/contract");
 		if (tmpBasket.getData().products.length == 0) throw Error("/", t._("Your cart is empty"));
 		var total = tmpBasket.getTotal();
@@ -281,6 +314,9 @@ class Transaction extends controller.Controller
 	@tpl("transaction/onthespot.mtt")
 	public function doOnthespot(tmpBasket:db.TmpBasket)
 	{
+		if(app.user==null){
+			throw Redirect("/");
+		}
 		if (tmpBasket == null) throw Redirect("/contract");
 		if (tmpBasket.getData().products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
@@ -313,7 +349,9 @@ class Transaction extends controller.Controller
 	 */
 	@tpl("transaction/transfer.mtt")
 	public function doTransfer(tmpBasket:db.TmpBasket){
-		
+		if(app.user==null){
+			throw Redirect("/");
+		}
 		if (tmpBasket == null) throw Redirect("/contract");
 		if (tmpBasket.getData().products.length == 0) throw Error("/", t._("Your cart is empty"));
 		

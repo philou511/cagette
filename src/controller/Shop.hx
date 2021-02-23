@@ -99,7 +99,7 @@ class Shop extends Controller
 		Sys.print( haxe.Serializer.run( {
 			products:products,
 			categories:categs,
-			order:tmpBasket.data
+			order:tmpBasket.getData()
 		} ) );
 	}
 	
@@ -175,11 +175,13 @@ class Shop extends Controller
 	 */
 	public function doAdd(md:db.MultiDistrib, productId:Int, quantity:Int) {
 	
-		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);			
-		tmpBasket.getData().products.push({ 
+		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);	
+		var data = tmpBasket.getData();		
+		data.products.push({ 
 			productId:productId,
 			quantity:quantity
-		});		
+		});
+		tmpBasket.setData(data);
 		tmpBasket.update();
 		Sys.print( haxe.Json.stringify( {success:true} ) );
 		
@@ -191,12 +193,14 @@ class Shop extends Controller
 	public function doRemove(md:db.MultiDistrib, pid:Int) {
 	
 		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);
-		
-		for ( p in tmpBasket.getData().products.copy()) {
+
+		var data = tmpBasket.getData();	
+		for ( p in data.products.copy()) {
 			if (p.productId == pid) {
-				tmpBasket.getData().products.remove(p);
+				data.products.remove(p);
 			}
 		}
+		tmpBasket.setData(data);
 		tmpBasket.update();
 		Sys.print( haxe.Json.stringify( { success:true } ) );		
 	}
@@ -214,8 +218,8 @@ class Shop extends Controller
 		tmpBasket.lock();
 		var md = tmpBasket.multiDistrib;
 		var group = md.getGroup();
-		
-		if (tmpBasket.getData().products == null || tmpBasket.getData().products.length == 0) {
+		var data = tmpBasket.getData();
+		if (data.products == null || data.products.length == 0) {
 			throw Error("/", t._("Your basket is empty") );
 		}
 		
@@ -225,7 +229,7 @@ class Shop extends Controller
 		//order.total = 0.0;
 		
 		//cleaning
-		var orders = tmpBasket.getData().products;
+		var orders = data.products;
 		for (o in orders.copy()) {
 			
 			var p = db.Product.manager.get(o.productId, false);
@@ -267,6 +271,7 @@ class Shop extends Controller
 			//order.total += p.getPrice() * o.quantity;
 		}
 		
+		
 		//order.userId = app.user.id;
 		
 		if (errors.length > 0) {
@@ -274,7 +279,7 @@ class Shop extends Controller
 		}
 		
 		//update tmp basket
-		tmpBasket.setData( {products:orders} );		
+		tmpBasket.setData({products:orders});
 		tmpBasket.update();
 
 
@@ -321,7 +326,7 @@ class Shop extends Controller
 			view.group = tmpBasket.multiDistrib.getGroup();
 			view.register = true;
 			view.message =  t._("In order to confirm your order, You need to authenticate.");
-			
+			view.tmpBasketId = tmpBasket.id;
 
 		}else{
 			tmpBasket.lock();
@@ -345,5 +350,8 @@ class Shop extends Controller
 		
 	}
 
-	
+	public function doAddTmpBasketId(tmpBasketId:Int) {
+		app.session.data.tmpBasketId = tmpBasketId;
+	}
+
 }
