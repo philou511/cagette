@@ -23,7 +23,6 @@ class Catalog extends Object
 	
 	public var startDate:SDateTime;
 	public var endDate :SDateTime;
-	
 	public var description:SNull<SText>;
 	
 	@hideInForms @:relation(groupId) public var group:db.Group;

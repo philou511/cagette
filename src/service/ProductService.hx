@@ -1,5 +1,6 @@
 package service;
 
+import sugoi.form.elements.Html;
 import controller.Product;
 
 class ProductService{
@@ -135,6 +136,9 @@ class ProductService{
 			var txId = product.txpProduct == null ? null : product.txpProduct.id;
 			var html = service.ProductService.getCategorizerHtml(product.name,txId,f.name);
 			f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
+
+			f.addElement(new sugoi.form.elements.Html("html","<a class='alert alert-warning' href='https://docs.google.com/forms/d/e/1FAIpQLSfFQpIabLSBgLTWZkuiIhQR4tO8tmGO2SZDWPd4OrHcXrM8PA/viewform?fbzx=-2048161261692944588&_hsmi=2&_hsenc=p2ANqtz-_nAqLUeyXe4EKO6PgLsD49ReyvUS-nm0FoXfFBZak_nuM_-3GpRCwdXM4ydo_3oKdGFRQ46l_deWgk4proQVALa3hKCA' target='_blank'>Participez au sondage pour améliorer les catégories.</a><br/>",""),2);
+
 		}else{
 			f.removeElementByName("txpProductId");
 		}
