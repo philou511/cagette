@@ -1,0 +1,13 @@
+**/docs
+**/node_modules
+**/build
+**/.vscode
+**/README.md
+**/Dockerfile
+devLibs/cagette-ts/
+www/index.n
+*~
+**~
+
+
+
