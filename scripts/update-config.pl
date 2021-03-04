@@ -18,8 +18,8 @@ $twig->parsefile( $ARGV[0] );
 my $config = $twig->root;
 $config->set_att(
     database           => $url,
-    # cagette_api        => "http://localhost:3010"
-    cagette_bridge_api => "http://$ENV{NEST_HOST}:3010"
+    cagette_api        => "https://$ENV{NEST_HOST_PUBLIC}",
+    cagette_bridge_api => "http://$ENV{NEST_HOST_INTERNAL}:3010",
 );
 
 $twig->print_to_file( $ARGV[1] ); # output the twig
