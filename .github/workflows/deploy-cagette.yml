@@ -1,0 +1,66 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - feature/*
+
+env:
+  REGISTRY_NAME: alilo
+  CLUSTER_RESOURCE_GROUP: alilo-dev
+  NAMESPACE: dev-playground
+  APP_NAME: neko
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout cagette
+        uses: actions/checkout@v2
+
+      - name: Connect to Azure Container registry (ACR)
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.REGISTRY_NAME }}.azurecr.io
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: build docker image
+        run: |
+          set -e -u
+          PROJ=$(echo "${{ github.ref }}" | perl -F/ -a -e 'print $F[3]')
+          TAG="$PROJ-$GITHUB_RUN_NUMBER"
+          docker build . -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:$TAG
+          docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:$TAG
+
+  deploy-on-k8s:
+    needs: docker-build
+    runs-on: ubuntu-latest
+    steps:
+      # see https://github.com/actions/checkout#checkout-multiple-repos-private
+      - name: Checkout chart
+        uses: actions/checkout@v2
+        with:
+          repository: CagetteNet/kubernetes
+          token: ${{ secrets.GH_PAT }}
+          ref: main
+
+      - name: set azure credentials to access cluster
+        uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+          cluster-name: 'alilo-dev'
+        id: login
+
+      - name: setup db-pw secret
+        run: |
+          PROJ=$(echo "${{ github.ref }}" | perl -F/ -a -e 'print $F[3]')
+          kubectl -n $NAMESPACE get secret ${PROJ}-db-pw || kubectl -n $NAMESPACE create secret generic ${PROJ}-db-pw --from-literal=password="$(openssl rand -hex 10)"
+
+      - name: deploy on cluster
+        run: |
+          set -e -u
+          PROJ=$(echo "${{ github.ref }}" | perl -F/ -a -e 'print $F[3]')
+          TAG="$PROJ-$GITHUB_RUN_NUMBER"
+          helm -n $NAMESPACE upgrade --install --set image.tag.$APP_NAME=$TAG $PROJ cagette-chart/
