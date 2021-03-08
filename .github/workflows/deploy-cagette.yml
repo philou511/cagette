@@ -84,4 +84,4 @@ jobs:
           set -e -u
           PROJ=$(echo "${{ github.ref }}" | perl -F/ -a -e 'print $F[3]')
           TAG="$PROJ-$GITHUB_RUN_NUMBER"
-          helm -n $NAMESPACE upgrade --install --set image.tag.$APP_NAME=$TAG $PROJ cagette-chart/
+          helm -n $NAMESPACE upgrade --install --reuse-values --set image.tag.$APP_NAME=$TAG $PROJ cagette-chart/
