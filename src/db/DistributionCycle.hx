@@ -19,14 +19,14 @@ class DistributionCycle extends Object
 	public var id : SId;	
 	@hideInForms @:relation(groupId) public var group : db.Group;
 	public var cycleType:SEnum<CycleType>;
-	public var startDate : SDate; 	//cycle start date
-	public var endDate : SDate;		//cycle end date
+	public var startDate : SDateTime; 	//cycle start date
+	public var endDate : SDateTime;		//cycle end date
 	public var startHour : SDateTime; 
 	public var endHour : SDateTime;	
 	public var daysBeforeOrderStart : SNull<STinyInt>;
 	public var daysBeforeOrderEnd : SNull<STinyInt>;
-	public var openingHour : SNull<SDate>;
-	public var closingHour : SNull<SDate>;
+	public var openingHour : SNull<SDateTime>;
+	public var closingHour : SNull<SDateTime>;
 	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
 	
 	public function new() {

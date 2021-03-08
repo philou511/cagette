@@ -16,11 +16,6 @@
 	maintain="0"
 	cachetpl="0"
 	key="localdevkey"
-	
-	smtp_host="smtp.mandrillapp.com"
-	smtp_port="587"
-	smtp_user="mon_email@mon_domaine.fr"
-	smtp_pass="blabla"
 
 	cagette_api="http://localhost:3010"
 	cagette_bridge_api="http://nest:3010"

@@ -16,7 +16,7 @@ class Message extends Object
 	@:relation(amapId) public var amap : SNull<db.Group>;
 	@:relation(senderId) public var sender : SNull<User>;
 	
-	public var recipientListId : SNull<SString<64>>;
+	public var recipientListId : SNull<SString<12>>;
 	public var recipients : SNull<SData<Array<String>>>;
 	
 	public var title : SString<128>;
@@ -24,6 +24,6 @@ class Message extends Object
 	public var date : SDateTime;
 	
 	public var attachments : SNull<SText>; // Array<String>
-	public var slateContent : SNull<SText>; // JSON stringified message readable by Slate editor
+	public var slateContent : SText; // JSON stringified message readable by Slate editor
 	
 }

@@ -49,7 +49,7 @@ class Vendor extends Object
 	public var country:SNull<SString<64>>;
 	
 	public var desc : SNull<SText>;
-	@hideInForms public var cdate : SNull<SDate>; // date de création
+	@hideInForms public var cdate : SNull<SDateTime>; // date de création
 
 	//legal infos
 	@hideInForms public var companyNumber : SNull<SString<128>>; //SIRET

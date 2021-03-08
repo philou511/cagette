@@ -917,9 +917,14 @@ class Distribution extends Controller
 		dc.place = app.user.getGroup().getMainPlace();
 		var form = form.CagetteForm.fromSpod(dc);
 		
-		
-		form.getElement("startDate").value = DateTool.now();
-		form.getElement("endDate").value   = DateTool.now().deltaDays(30);
+		form.removeElementByName("startDate");
+		var x = new form.CagetteDatePicker("startDate","Date de début de cycle", DateTool.now().setHourMinute(0,0), NativeDatePickerType.date, true);
+		form.addElement(x, 3);
+
+		form.removeElementByName("endDate");
+		var x = new form.CagetteDatePicker("endDate","Date de fin de cycle", DateTool.now().deltaDays(30).setHourMinute(23,59), NativeDatePickerType.date, true);
+		form.addElement(x, 4);
+
 		
 		//start hour
 		form.removeElementByName("startHour");
