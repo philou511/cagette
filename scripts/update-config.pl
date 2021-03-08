@@ -20,6 +20,7 @@ $config->set_att(
     database           => $url,
     cagette_api        => "https://$ENV{NEST_HOST_PUBLIC}",
     cagette_bridge_api => "http://$ENV{NEST_HOST_INTERNAL}:3010",
+	key                => $ENV{PW_HASH_KEY},
 );
 
 $twig->print_to_file( $ARGV[1] ); # output the twig
