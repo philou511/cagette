@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feature/*
+      - preprod
 
 env:
   REGISTRY_NAME: alilo
@@ -49,7 +50,7 @@ jobs:
       - name: build docker image
         run: |
           set -e -u
-          PROJ=$(echo "${{ github.ref }}" | perl -F/ -a -e 'print $F[3]')
+          PROJ=$(echo "${{ github.ref }}" | perl -F/ -a -e 'print $F[-1]')
           TAG="$PROJ-$GITHUB_RUN_NUMBER"
           docker build . -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:$TAG
           docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:$TAG
@@ -76,12 +77,12 @@ jobs:
 
       - name: setup db-pw secret
         run: |
-          PROJ=$(echo "${{ github.ref }}" | perl -F/ -a -e 'print $F[3]')
+          PROJ=$(echo "${{ github.ref }}" | perl -F/ -a -e 'print $F[-1]')
           kubectl -n $NAMESPACE get secret ${PROJ}-db-pw || kubectl -n $NAMESPACE create secret generic ${PROJ}-db-pw --from-literal=password="$(openssl rand -hex 10)"
 
       - name: deploy on cluster
         run: |
           set -e -u
-          PROJ=$(echo "${{ github.ref }}" | perl -F/ -a -e 'print $F[3]')
+          PROJ=$(echo "${{ github.ref }}" | perl -F/ -a -e 'print $F[-1]')
           TAG="$PROJ-$GITHUB_RUN_NUMBER"
           helm -n $NAMESPACE upgrade --install --reuse-values --set image.tag.$APP_NAME=$TAG $PROJ cagette-chart/
