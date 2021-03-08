@@ -25,6 +25,7 @@ jobs:
         with:
           repository: bablukid/cagette-pro
           path: devLibs/cagette-pro
+          token: ${{ secrets.GH_PAT }}
 
       - name: Checkout record-macros
         uses: actions/checkout@v2
