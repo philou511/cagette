@@ -1,0 +1,67 @@
+name: Destroy
+
+on:
+  delete:
+    branches:
+      - feature/*
+
+env:
+  REGISTRY_NAME: alilo
+  CLUSTER_RESOURCE_GROUP: alilo-dev
+  NAMESPACE: dev-playground
+  APP_NAME: neko
+
+jobs:
+  delete-service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: retrieve project name
+        run: |
+          PROJ=$(echo "${{ github.event.ref }}" | perl -F/ -a -e 'print $F[-1]')
+          # see https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
+          echo "project to delete: $PROJ"
+          echo "project_name=$PROJ" >> $GITHUB_ENV
+
+      - name: set azure credentials to access cluster
+        uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+          cluster-name: 'alilo-dev'
+        id: login
+
+      - name: remove cagette service
+        run: |
+          if [[ ! -z $(helm -n $NAMESPACE list --short --filter ${{ env.project_name }} ) ]]
+          then
+              helm -n $NAMESPACE uninstall ${{ env.project_name }}
+          fi
+
+      - name: remove cagette database
+        run: |
+          # retrieve root DB password from k8s secret
+          DB_ROOT_PW=$(kubectl -n $NAMESPACE get secrets alilo-mysql \
+              --output="jsonpath={.data.mysql-root-password}" | base64 --decode)
+          # remove user and db from mysql instance using a temporary container
+          echo 'drop user if exists "${{ env.project_name }}" ;
+                drop database if exists  `${{ env.project_name }}-db` ; ' \
+          | kubectl run alilo-mysql-client --rm -i --restart='Never' \
+                --namespace $NAMESPACE \
+                --image docker.io/bitnami/mysql:8.0.23-debian-10-r0 \
+                -- mysql -h alilo-mysql.$NAMESPACE.svc.cluster.local \
+                -u root --password=$DB_ROOT_PW
+
+      - name: remove db-pw secret
+        run: |
+          kubectl -n $NAMESPACE delete secret --ignore-not-found=true \
+          ${{ env.project_name }}-db-pw
+
+      - name: remove project images
+        run: |
+          az login --service-principal -u ${{ secrets.REGISTRY_USERNAME }} \
+             -p ${{ secrets.REGISTRY_PASSWORD }} --tenant francoisalilo.onmicrosoft.com
+          for tag in $(az acr repository show-tags -n alilo --repository $APP_NAME --output tsv | grep ^${{ env.project_name }} )
+          do
+              echo "Cleaning image $tag"
+              az acr repository delete -n alilo --yes --image $APP_NAME:$tag
+          done
