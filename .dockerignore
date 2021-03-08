@@ -6,8 +6,7 @@
 **/Dockerfile
 devLibs/cagette-ts/
 www/index.n
-*~
-**~
+**/*~
 
 
 
