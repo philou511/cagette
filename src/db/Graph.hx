@@ -10,7 +10,7 @@ import sys.db.Types;
 class Graph extends Object{
 
 	public var key:SString<128>;
-	public var date:SDate;
+	public var date:SDateTime; //the day for wich the value is computed
 	public var value:SFloat;
 
 	/**

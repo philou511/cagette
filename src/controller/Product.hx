@@ -1,4 +1,5 @@
 package controller;
+import service.ProductService;
 import sys.db.RecordInfos;
 import neko.Utf8;
 import haxe.io.Encoding;
@@ -24,41 +25,7 @@ class Product extends Controller
 		
 		if (!app.user.canManageContract(product.catalog)) throw t._("Forbidden access");
 		
-		var f = form.CagetteForm.fromSpod(product);
-		
-		//stock mgmt ?
-		if (!product.catalog.hasStockManagement()){
-			f.removeElementByName('stock');	
-		} else {
-			if(!product.catalog.group.hasShopMode()){
-				//manage stocks by distributions for CSA contracts
-				var stock = f.getElement("stock");
-				stock.label = "Stock (par distribution)";				 
-				if(product.stock!=null){
-					stock.value = Math.floor( product.stock / product.catalog.getDistribs(false).length );
-				}
-				
-			}
-		}
-		
-		//VAT selector
-		f.removeElement( f.getElement('vat') );		
-		var data :FormData<Float> = [];
-		for (k in app.user.getGroup().getVatRates().keys()) {
-			data.push( { label:k, value:app.user.getGroup().vatRates[k] } );
-		}
-		f.addElement( new FloatSelect("vat", "TVA", data, product.vat ) );
-
-		f.removeElementByName("catalogId");
-		
-		//Product Taxonomy:
-		if(!product.catalog.group.flags.has(CustomizedCategories)){
-			var txId = product.txpProduct == null ? null : product.txpProduct.id;
-			var html = service.ProductService.getCategorizerHtml(product.name,txId,f.name);
-			f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
-		}else{
-			f.removeElementByName("txpProductId");
-		}
+		var f = ProductService.getForm(product);
 		
 		if (f.isValid()) {
 
@@ -72,9 +39,7 @@ class Product extends Controller
 			app.event(EditProduct(product));
 			product.update();
 			throw Ok('/contractAdmin/products/'+product.catalog.id, t._("The product has been updated"));
-		}
-		else {
-
+		} else {
 			app.event(PreEditProduct(product));
 		}
 		
@@ -88,9 +53,9 @@ class Product extends Controller
 		if (!app.user.isContractManager(contract)) throw Error("/", t._("Forbidden action")); 
 		
 		var product = new db.Product();
-		var f = form.CagetteForm.fromSpod(product);
+		var f = ProductService.getForm(null,contract);
 		
-		f.removeElementByName("catalogId");
+		/*f.removeElementByName("catalogId");
 		
 		//stock mgmt ?
 		if (!contract.hasStockManagement()) f.removeElementByName('stock');
@@ -105,7 +70,7 @@ class Product extends Controller
 		
 		var formName = f.name;
 		var html = service.ProductService.getCategorizerHtml("",null,formName);
-		f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
+		f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);*/
 		
 		if (f.isValid()) {
 

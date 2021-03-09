@@ -48,7 +48,7 @@ class User extends Object {
 	
 	//@:skip public var amap(get_amap, null) : Amap;
 	
-	public var cdate : SDate; 				//last creation
+	public var cdate : SDateTime; 			//creation date
 	public var ldate : SNull<SDateTime>;	//last connection
 	
 	public var flags : SFlags<UserFlags>;

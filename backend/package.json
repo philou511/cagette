@@ -7,10 +7,13 @@
   "dependencies": {},
   "devDependencies": {
     "@types/react": "^16.9.55",
-    "npm-run-all": "^4.1.2"
+    "npm-run-all": "^4.1.2",
+    "node-sass": "^4.11.0",
   },
   "scripts": {
-    "build:sass": "sass ../www/css/style.scss ../www/css/style.css"
+    "build2:sass": "sass ../www/css/style.scss ../www/css/style.css",
+    "build:sass": "node-sass ../www/css -o ../www/css",
+    "watch:sass": "npm run build:sass -- --watch",
   },
   "repository": {
     "type": "git",

@@ -1,4 +1,5 @@
 package controller;
+import db.Subscription;
 import service.OrderService;
 import db.MultiDistrib;
 import service.SubscriptionService;
@@ -29,8 +30,7 @@ class Account extends Controller
 		var langNames = App.config.get("langnames").split(";");
 		var i=0;
 		var langLinks = "";
-		for (lang in langs)
-		{
+		for (lang in langs){
 			langLinks += "<li><a href=\"?lang=" + langs[i] + "\">" + langNames[i] + "</a></li>";
 			i++;
 		}
@@ -50,15 +50,15 @@ class Account extends Controller
 		var varOrders = new Map<String,Array<db.UserOrder>>();
 		
 		var group = App.current.user.getGroup();		
-		var oneMonthAgo = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30);
-		var inOneMonth = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 30);
+		var from  = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30);
+		var to 	  = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 30 * 6);
 		
 		//constant orders
 		view.subscriptionsByCatalog = SubscriptionService.getActiveSubscriptionsByCatalog( app.user, group );
 		view.subscriptionService = SubscriptionService;
 				
 		//variable orders, grouped by date
-		var distribs = MultiDistrib.getFromTimeRange( group , oneMonthAgo , inOneMonth  );
+		var distribs = MultiDistrib.getFromTimeRange( group , from , to  );
 		//sort by date desc
 		distribs.sort(function(a,b){
 			return Math.round(b.distribStartDate.getTime()/1000) - Math.round(a.distribStartDate.getTime()/1000);
@@ -186,6 +186,9 @@ class Account extends Controller
 		view.balance = db.UserGroup.get(m,app.user.getGroup()).balance;
 	}
 
+	/**
+		view orders in a CSA contract
+	**/
 	@logged
 	@tpl("account/csaorders.mtt")
 	function doOrders( catalog : db.Catalog ) {
@@ -193,16 +196,15 @@ class Account extends Controller
 		var ug = db.UserGroup.get(app.user, app.user.getGroup());
 		if (ug == null) throw Error("/", t._("You are not a member of this group"));
 	
-		
 		var	catalogDistribs = db.Distribution.manager.search( $catalog == catalog , { orderBy : date }, false ).array();
 		view.distribs = catalogDistribs;
 		view.prepare = OrderService.prepare;
 		view.catalog = catalog;
-		view.account = true;
+		// view.account = true;
 		view.now = Date.now();
 		view.member = app.user;
 		
-		checkToken();
+		// checkToken();
 	}
 
 	/**
@@ -244,8 +246,27 @@ class Account extends Controller
 		view.form = form;
 	}
 
-
-
+	/**
+		view orders of a subscription
+	**/
+	@logged
+	@tpl("account/csaorders.mtt")
+	function doSubscriptionOrders( sub : Subscription ) {
+		
+		var ug = db.UserGroup.get(app.user, app.user.getGroup());
+		if (ug == null) throw Error("/", t._("You are not a member of this group"));
+	
+		view.distribs = SubscriptionService.getSubscriptionDistribs(sub);
+		view.prepare = OrderService.prepare;
+		view.catalog = sub.catalog;
+		// view.account = true;
+		view.now = Date.now();
+		view.member = app.user;
+		
+		// checkToken();
+	}
+	
+	@logged
 	@tpl("account/subscriptionpayments.mtt")
 	function doSubscriptionPayments( subscription : db.Subscription ) {
 		
@@ -260,5 +281,5 @@ class Account extends Controller
 		view.subscription = subscription;
 		
 	}
-
+	
 }

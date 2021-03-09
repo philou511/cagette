@@ -39,8 +39,7 @@ class CatalogService{
 			form.removeElement(form.getElement("absencesStartDate"));
 			form.removeElement(form.getElement("absencesEndDate"));
 			
-		}
-		else {
+		} else {
 			//CSA MODE
 			form.removeElementByName("percentageValue");
 			form.removeElementByName("percentageName");
@@ -127,11 +126,10 @@ class CatalogService{
 		form.addElement( contact, 4 );
 		contact.required = true;
 
-
 		//payments management
-		if(catalog.id < db.Catalog.CATALOG_ID_HASPAYMENTS){
+		if( !catalog.group.hasShopMode() && catalog.id < db.Catalog.CATALOG_ID_HASPAYMENTS ){
 			form.addElement( new sugoi.form.elements.Html( "payementsHtml", '<h4>Gestion des paiements</h4>' ) );
-			form.addElement( new sugoi.form.elements.Checkbox('hasPayments',"Gérer les paiements liés aux souscriptions à ce contrat",catalog.hasPayments));
+			form.addElement( new sugoi.form.elements.Checkbox('hasPayments',"Gérer les paiements liés aux souscriptions à ce contrat", catalog.hasPayments ));
 		}
 			
 		return form;
@@ -174,11 +172,11 @@ class CatalogService{
 					catalog.requiresOrdering = true;
 				}
 
-				if( form.getValueOf("requiresOrdering")!=null && form.getValueOf("distribMinOrdersTotal")==null  ){
+				if( form.getValueOf("requiresOrdering")==true && form.getValueOf("distribMinOrdersTotal")==null  ){
 					throw new Error("Si vous activez la commande obligatoire, vous devez définir le montant minimum de commande par distribution.");
 				}
 
-				if( form.getValueOf("requiresOrdering")!=null && form.getValueOf('absentDistribsMaxNb')!=null){
+				if( form.getValueOf("requiresOrdering")==true && form.getValueOf('absentDistribsMaxNb')!=null){
 					throw new Error("Si vous n'activez pas la commande obligatoire, la gestion des absences n'est pas nécéssaire, laissez le champs 'Nombre maximum d'absences' vide.");
 				}
 

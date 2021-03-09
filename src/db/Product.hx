@@ -32,7 +32,7 @@ class Product extends Object
 	//https://docs.google.com/document/d/1IqHN8THT6zbKrLdHDClKZLWgKWeL0xw6cYOiFofw04I/edit
 	@hideInForms public var wholesale : Bool;	//this product is a wholesale product (crate,bag,pallet)
 	@hideInForms public var retail : Bool;		//this products is a fraction of a wholesale product
-	@hideInForms public var bulk : Bool;		//(vrac) warn the customer this product is not packaged
+	public var bulk : Bool;		//(vrac) warn the customer this product is not packaged
 	public var hasFloatQt:SBool; //deprecated : this product can be ordered in "float" quantity
 	
 	@hideInForms @:relation(imageId) public var image : SNull<sugoi.db.File>;
@@ -229,6 +229,7 @@ class Product extends Object
 			"vat" 				=> t._("VAT Rate"),			
 			"variablePrice"		=> t._("Variable price based on weight"),			
 			"multiWeight" 		=> t._("Multi-weighing"),	
+			"bulk" 				=> "Vrac",
 		];
 	}
 	

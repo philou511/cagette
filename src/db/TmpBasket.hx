@@ -19,8 +19,8 @@ class TmpBasket extends Object
 	public function new(){
 		super();
 		cdate = Date.now();
+		setData({products:[]});
 	}
-
 	
 	/**
 		Get total amount to pay for this basket
@@ -49,12 +49,12 @@ class TmpBasket extends Object
 
 	
 	public function getData():TmpBasketData{
-		try {
+		//try {
 			return haxe.Json.parse(data);
-		} catch(e:Any) {
+		/*} catch(e:Any) {
 			// data is probably of type SData<TmpBasketData>
 			return haxe.Unserializer.run(data);
-		}
+		}*/
 	}
 
 	public function setData(tmpBasketData: TmpBasketData){

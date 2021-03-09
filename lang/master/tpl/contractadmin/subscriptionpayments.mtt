@@ -66,7 +66,7 @@
 			::end::
 		
 			<tr>
-
+				::if(subscriptionTotal!=null)::
 				<td style="vertical-align: middle;">
 					::sDate(subscriptionTotal.date)::
 				</td>
@@ -86,12 +86,18 @@
 						0&nbsp;::currency()::
 					::end::
 				</td>
-				<td></td>
+				<td>
+
+				</td>
+				::else::
+				<div class="alert alert-danger">Pas d'opération représentant la souscription au contrat AMAP</div>
+				::end::
+
 			</tr>
 		
 		</table>
 		
-		$$insert(Saisir un paiement,/transaction/insertPayment/::member.id::/::subscription.id::)
+		$$insert(Saisir un paiement,/subscriptions/insertPayment/::subscription.id::)
 		
 </div>
 

@@ -42,12 +42,16 @@ class Main extends Controller {
 	function doHome() {
 
 		addBc("home","Commandes","/home");
-		
+
 		var group = app.getCurrentGroup();		
 		if ( app.user!=null && group == null) {			
 			throw Redirect("/user/choose");
 		}else if (app.user == null && (group==null || group.regOption!=db.Group.RegOption.Open) ) {
 			throw Redirect("/user/login");
+		}
+
+		if(app.user!=null && app.user.isGroupManager() && group.hasShopMode()  && !group.betaFlags.has(db.Group.BetaFlags.ShopV2) ){
+			app.session.addMessage("Attention, l'ancienne boutique et les catégories personnalisées disparaîtront le lundi 5 avril 2021, pensez à vous préparer avant le jour J.<br/><a href='https://wiki.cagette.net/admin:5april' target='_blank'>Cliquez-ici pour plus d'informations</a>",true);
 		}
 
 		view.amap = group;
@@ -65,7 +69,7 @@ class Main extends Controller {
 		
 		var n = Date.now();
 		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
-		var in1Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 14);
+		var in1Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30);
 		var timeframe = new tools.Timeframe(now,in1Month);
 
 		var distribs = db.MultiDistrib.getFromTimeRange(group,timeframe.from,timeframe.to);
@@ -365,6 +369,20 @@ Called from controller/Main.hx line 117
 	//charte
 	public function doCharte() {
 		throw Redirect("https://www.cagette.net/charte-producteurs/");
+	}
+
+
+	public function doPing() {
+		Sys.print(haxe.Json.stringify({version:App.VERSION.toString()}));
+	}
+
+	public function doHealth() {
+		var vars = sugoi.db.Variable.manager.search(true);
+		var json = {version:App.VERSION.toString()};
+		for(v in vars){
+			Reflect.setField(json,v.name,v.value);
+		}
+		Sys.print(haxe.Json.stringify(json));
 	}
 
 
