@@ -521,10 +521,7 @@ class App {
         var req = new haxe.Http("/shop/addTmpBasketId/"+tmpBasketId);
         req.request();
     }
-<<<<<<< HEAD
 
-=======
->>>>>>> master
 }
 
 
