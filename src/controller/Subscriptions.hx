@@ -532,9 +532,7 @@ class Subscriptions extends controller.Controller
 		if (form.isValid()){
 
 			var operation = new db.Operation();
-
 			form.toSpod(operation);
-
 			operation.type = db.Operation.OperationType.Payment;			
 			operation.setPaymentData({type:form.getValueOf("Mtype")});
 			operation.group = group;
@@ -543,13 +541,47 @@ class Subscriptions extends controller.Controller
 			operation.subscription = subscription;
 			operation.insert();
 			service.PaymentService.updateUserBalance( subscription.user, group );
-
 			throw Ok( returnUrl, t._("Payment recorded") );
-
 		}
 		
 		view.title = t._("Record a payment for ::user::",{user:subscription.user.getCoupleName()}) ;
 		view.form = form;
+	}
+
+	@tpl("contractadmin/masspayments.mtt")
+	function doMassPayments(catalog:db.Catalog){
+
+		if ( !app.user.canManageContract( catalog ) ) throw Error( '/', t._('Access forbidden') );
+		var catalogSubscriptions = SubscriptionService.getCatalogSubscriptions(catalog);
+
+		view.catalog = catalog;
+		view.c = catalog;
+		view.subscriptions = catalogSubscriptions;
+		catalogSubscriptions.sort(function(a,b){
+			if( a.user.lastName > b.user.lastName ){
+				return 1;
+			}else{
+				return -1;
+			}
+		});
+
+		
+		var paymentTypes = service.PaymentService.getPaymentTypes(PCManualEntry, catalog.group);
+		var out = [];
+		var selected = null;
+		for (paymentType in paymentTypes){
+			out.push({label: paymentType.name, value: paymentType.type});
+			if(paymentType.type==Check.TYPE) selected=Check.TYPE;
+		}
+		view.paymentTypes = out;
+		view.selected = selected;
+
+		view.dateToString = function( date : Date ) {
+			return DateTools.format( date, "%d/%m/%Y");
+		}
+		view.subscriptionService = SubscriptionService;
+		view.nav.push( 'subscriptions' );
+
 	}
 
 }

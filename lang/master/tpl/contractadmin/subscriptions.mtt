@@ -71,9 +71,15 @@
 
         $$insert( Nouvelle souscription, /contractAdmin/subscriptions/insert/::catalog.id:: )
 
-        ::if(user.isAdmin())::
+        ::if(user.isAdmin() && !hasPayments)::
         <a href="/contractAdmin/subscriptions/unmarkAll/::catalog.id::" class="btn btn-default btn-sm">
             <i class="icon icon-square"></i> Admin : Marquer toutes les souscriptions comme non payées
+        </a>
+        ::end::
+
+        ::if(hasPayments)::
+        <a href="/contractAdmin/subscriptions/massPayments/::catalog.id::" class="btn btn-default btn-sm">
+            <i class="icon icon-euro"></i> Saisie de paiements en masse
         </a>
         ::end::
         
