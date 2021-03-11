@@ -1072,7 +1072,8 @@ class Distribution extends Controller
 							operation.setPaymentData({type:MangopayECPayment.TYPE});
 							operation.group = distrib.getGroup();
 							operation.user = b.user;
-							operation.relation = o;
+							operation.name = "Remboursement";
+							operation.relation = b.getOrderOperation();
 							operation.amount = 0 - Math.abs(o.amount);
 							operation.insert();
 							
