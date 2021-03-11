@@ -11,6 +11,7 @@ env:
   CLUSTER_RESOURCE_GROUP: alilo-dev
   NAMESPACE: dev-playground
   APP_NAME: neko
+  KEEP_AT_MOST_IMAGES: 3
 
 jobs:
   docker-build:
@@ -91,3 +92,12 @@ jobs:
           TAG="${{ env.project_name }}-$GITHUB_RUN_NUMBER"
           helm -n $NAMESPACE upgrade --install --reuse-values --set image.tag.$APP_NAME=$TAG ${{ env.project_name }} cagette-chart/
 
+      - name: remove old ${{ env.project_name }} images
+        run: |
+          az login --service-principal -u ${{ secrets.REGISTRY_USERNAME }} \
+             -p ${{ secrets.REGISTRY_PASSWORD }} --tenant francoisalilo.onmicrosoft.com
+          for tag in $(az acr repository show-tags -n alilo --repository $APP_NAME --output tsv  --orderby time_desc | grep ^${{ env.project_name }} | tail --lines=+$KEEP_AT_MOST_IMAGES )
+          do
+              echo "Deleting image $APP_NAME:$tag"
+              az acr repository delete -n alilo --yes --image $APP_NAME:$tag
+          done
