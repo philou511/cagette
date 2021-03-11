@@ -59,6 +59,13 @@ jobs:
     needs: docker-build
     runs-on: ubuntu-latest
     steps:
+      - name: retrieve project name
+        run: |
+          PROJ=$(echo "${{ github.ref }}" | perl -F/ -a -e 'print $F[-1]')
+          # see https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
+          echo "project to update: $PROJ"
+          echo "project_name=$PROJ" >> $GITHUB_ENV
+
       # see https://github.com/actions/checkout#checkout-multiple-repos-private
       - name: Checkout chart
         uses: actions/checkout@v2
@@ -77,12 +84,10 @@ jobs:
 
       - name: setup db-pw secret
         run: |
-          PROJ=$(echo "${{ github.ref }}" | perl -F/ -a -e 'print $F[-1]')
-          kubectl -n $NAMESPACE get secret ${PROJ}-db-pw || kubectl -n $NAMESPACE create secret generic ${PROJ}-db-pw --from-literal=password="$(openssl rand -hex 10)"
+          kubectl -n $NAMESPACE get secret ${{ env.project_name }}-db-pw || kubectl -n $NAMESPACE create secret generic ${{ env.project_name }}-db-pw --from-literal=password="$(openssl rand -hex 10)"
 
       - name: deploy on cluster
         run: |
-          set -e -u
-          PROJ=$(echo "${{ github.ref }}" | perl -F/ -a -e 'print $F[-1]')
-          TAG="$PROJ-$GITHUB_RUN_NUMBER"
-          helm -n $NAMESPACE upgrade --install --reuse-values --set image.tag.$APP_NAME=$TAG $PROJ cagette-chart/
+          TAG="${{ env.project_name }}-$GITHUB_RUN_NUMBER"
+          helm -n $NAMESPACE upgrade --install --reuse-values --set image.tag.$APP_NAME=$TAG ${{ env.project_name }} cagette-chart/
+
