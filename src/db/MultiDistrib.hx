@@ -471,15 +471,7 @@ class MultiDistrib extends Object
 		return place.group;
 	}
 
-	/**
-		TODO : refacto with foreign key with multidistrib
-	**/
 	public function getBaskets():Array<db.Basket>{
-		/*var baskets = [];
-		for( o in getOrders()){
-			if(o.basket!=null) baskets.push(o.basket);
-		}
-		return baskets.deduplicate();*/
 		return db.Basket.manager.search($multiDistrib==this,false).array();
 	}
 

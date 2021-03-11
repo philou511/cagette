@@ -52,9 +52,8 @@
     ::end::
 
     ::if (HOST.substr(0,3)=="pp." || HOST.indexOf("preprod.",null)!=-1 || HOST.indexOf("localhost",null)!=-1)::
-    <div style="position: fixed;background: #600;padding: 8px;left:0;bottom:0;color: #FF0;width: 100%;z-index: 99;text-align: center;">
-        Ce site n'est pas le "vrai" site Cagette. C'est un site de test avec des données issues d'une sauvegarde du 1er Février 2021. 
-        <br/><b>Ne l'utilisez surtout pas pour prendre de vraies commandes.</b>
+    <div style="position: fixed;background: #600;padding: 8px;left:0;bottom:0;color: #FA0;width: 100%;z-index: 99;text-align: center;">
+        <i class="icon icon-alert"></i> Ce site n'est pas le "vrai" site Cagette, c'est un site de test. <b>Ne l'utilisez surtout pas pour prendre de vraies commandes.</b>
     </div>
     ::end::
 

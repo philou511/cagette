@@ -1,4 +1,7 @@
 package controller;
+import sugoi.BaseApp;
+import pro.payment.MangopayECPayment;
+import db.Catalog;
 import db.TmpBasket;
 import service.OrderFlowService;
 import tools.ObjectListTool;
@@ -1015,7 +1018,6 @@ class Distribution extends Controller
 		throw Ok("/distribution/" , t._("Recurrent deliveries deleted"));
 	}
 	
-	
 	/**
 	 * Validate a multiDistrib (main page)
 	 * @param	date
@@ -1025,7 +1027,7 @@ class Distribution extends Controller
 	public function doValidate(multiDistrib:db.MultiDistrib){
 		
 		checkHasDistributionSectionAccess();
-			
+		checkToken();	
 		//view.users = multiDistrib.getUsers(db.Catalog.TYPE_VARORDER);
 
 		var baskets = multiDistrib.getBaskets();
@@ -1037,6 +1039,60 @@ class Distribution extends Controller
 
 	}
 
+	/**
+		cancel distrib after OVH fire 2021-03-11
+	**/
+	public function doCancel(distrib:db.MultiDistrib){
+		
+		checkHasDistributionSectionAccess();
+		if(checkToken()){
+
+			//reset orders
+			for ( b in distrib.getBaskets()){
+
+				b.lock();
+				var orders =  b.getOrders(Catalog.TYPE_VARORDER);
+				for( o in orders){
+					o.lock();
+					o.quantity = 0;
+					o.update();
+				}
+
+				//update order ops
+				var orderOps = service.PaymentService.onOrderConfirm(orders);
+
+				//refund mgp
+				for ( o in b.getPaymentsOperations()){
+
+					switch(o.getPaymentType()){
+						case MangopayECPayment.TYPE :
+							//
+							var operation = new db.Operation();
+							operation.type = db.Operation.OperationType.Payment;
+							operation.setPaymentData({type:MangopayECPayment.TYPE});
+							operation.group = distrib.getGroup();
+							operation.user = b.user;
+							operation.relation = o;
+							operation.amount = 0 - Math.abs(o.amount);
+							operation.insert();
+							
+							App.current.event(NewOperation(operation));
+							App.current.event(Refund(operation,b));
+							
+
+						default :
+						if( o.pending ){
+							o.amount = 0;
+							o.update();
+						}
+					}
+				}
+				service.PaymentService.updateUserBalance(b.user, distrib.getGroup());
+
+			}			
+		}
+		throw Ok('/distribution/validate/'+distrib.id,"La distribution a bien été annulée.");
+	}
 
 	/**
 	 * validate a multidistrib

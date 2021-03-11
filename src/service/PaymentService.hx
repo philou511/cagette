@@ -179,7 +179,7 @@ class PaymentService {
 	/**
 		Create/update the needed order operations and returns the related operations.
 		Can handle orders happening on different multidistribs.
-			 	Orders are supposed to be from the same user.
+		Orders are supposed to be from the same user.
 	 */
 	public static function onOrderConfirm( orders : Array<db.UserOrder> ) : Array<db.Operation> { 
 
