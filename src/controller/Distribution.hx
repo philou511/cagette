@@ -1064,6 +1064,8 @@ class Distribution extends Controller
 				//refund mgp
 				for ( o in b.getPaymentsOperations()){
 
+					o.lock();
+
 					switch(o.getPaymentType()){
 						case MangopayECPayment.TYPE :
 							//
@@ -1092,7 +1094,7 @@ class Distribution extends Controller
 
 			}			
 		}
-		throw Ok('/distribution/validate/'+distrib.id,"La distribution a bien été annulée.");
+		throw Ok('/distribution/validate/'+distrib.id,"La distribution a bien été annulée (commandes mises à zéro, paiements Mangopay remboursés).");
 	}
 
 	/**

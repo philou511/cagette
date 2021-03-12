@@ -33,12 +33,12 @@
 				
 			</div>	
 		
-		
+			::if(distribution.getTotalIncome()>0)::
 			<div class="alert alert-danger text-center">
 				<p>
 					<i class="icon icon-info"></i>
-					<b>Suite à la coupure de service dûe à l'incendie chez OVH, certains d'entre vous ont dû annuler leur distribution.</b><br/>
-					Cliquez sur le bouton ci-dessous pour annuler une distribution en un seul clic<br/>
+					<b>Suite à la coupure de service du 10 et 11 Mars, certains d'entre vous ont dû annuler leur distribution.</b><br/>
+					Cliquez sur le bouton ci-dessous si vous souhaitez annuler cette distribution en un seul clic<br/>
 					( mise à zéro des commandes, remboursement des paiements Mangopay )
 				</p>
 				
@@ -47,6 +47,7 @@
 				</p>
 				
 			</div>
+			::end::
 				
 		<p class="text-center">
 			
