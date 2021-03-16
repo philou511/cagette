@@ -320,7 +320,7 @@ class Admin extends Controller {
 		MultiDistrib.manager.delete( $distribStartDate < DateTools.delta(Date.now(),-1000 * 60 * 60 * 24 * 360 * 2) );
 
 		//delete old messages
-		db.Message.manager.delete( $date < DateTools.delta(Date.now(),-1000 * 60 * 60 * 24 * 360 * 2) );
+		// db.Message.manager.delete( $date < DateTools.delta(Date.now(),-1000 * 60 * 60 * 24 * 360 * 2) );
 
 		//delete old contracts
 		Catalog.manager.delete( $endDate < DateTools.delta(Date.now(),-1000 * 60 * 60 * 24 * 360) );
