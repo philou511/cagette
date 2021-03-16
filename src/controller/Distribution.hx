@@ -1,4 +1,9 @@
 package controller;
+import mangopay.MangopayPlugin;
+import db.Operation;
+import mangopay.Types.Refund;
+import mangopay.Mangopay;
+import mangopay.Types.Error;
 import sugoi.BaseApp;
 import pro.payment.MangopayECPayment;
 import db.Catalog;
@@ -1061,30 +1066,98 @@ class Distribution extends Controller
 				//update order ops
 				var orderOps = service.PaymentService.onOrderConfirm(orders);
 
-				//refund mgp
-				for ( o in b.getPaymentsOperations()){
+				var paymentsOps = b.getPaymentsOperations();
+				var refundOps = paymentsOps.filter(o -> o.amount < 0 );
+				paymentsOps = paymentsOps.filter(o -> o.amount > 0);
+
+				//refund payments
+				for ( o in paymentsOps){
+
+					if (refundOps.find(o -> Math.abs(o.amount)==o.amount) != null ){
+						//refund already done for this payment
+						continue;
+					}
 
 					o.lock();
 
 					switch(o.getPaymentType()){
 						case MangopayECPayment.TYPE :
 							//
-							var operation = new db.Operation();
-							operation.type = db.Operation.OperationType.Payment;
-							operation.setPaymentData({type:MangopayECPayment.TYPE});
-							operation.group = distrib.getGroup();
-							operation.user = b.user;
-							operation.name = "Remboursement";
-							operation.relation = b.getOrderOperation();
-							operation.amount = 0 - Math.abs(o.amount);
-							operation.insert();
+
+							try{
+
+								//Let's do the refund for this payment
+								var conf = MangopayPlugin.getGroupConfig(b.getGroup());
+								var amount = MangopayPlugin.getAmountAndFees(o.amount,conf);
+								var mangopayUser = mangopay.db.MangopayUser.get(b.getUser());
+
+								var refund : Refund = {				
+									DebitedFunds: {				
+										Currency: Euro,
+										Amount: Math.round(amount.netAmount * 100)		
+									},
+									Fees: {				
+										Currency: Euro,
+										Amount: 0 - Math.round(amount.fees * 100),//negative : refund fees
+									},
+									AuthorId: mangopayUser.mangopayUserId,
+									InitialTransactionId: o.getPaymentData().remoteOpId.parseInt()				
+								};
+								// trace(refund);
+								
+								refund = Mangopay.createPayInRefund(refund);
+
+								// trace(refund);
+
+								//create one operation for each refund
+								var op  = new db.Operation();
+								op.type = db.Operation.OperationType.Payment;
+								op.setPaymentData({type:o.getPaymentData().type,remoteOpId: refund.Id.string()});
+								op.name = 'Remboursement (${refund.Id.string()})';
+								op.group = o.group;
+								op.user = o.user;
+								op.relation = o.relation;
+								op.amount = 0 - Math.abs(o.amount);						
+								op.date = Date.now();
+								op.insert();
+
+							}catch(e:tink.core.Error){
+
+								var data:Dynamic = e.data;
+								if(data.ResultMessage == "Transaction has already been successfully refunded"){
+
+									//recreate refund op in cagette
+									var payinToRefundId = Std.parseInt(data.InitialTransactionId);
+									if(o.getPaymentData().remoteOpId != Std.string(payinToRefundId)){ 
+										throw new tink.core.Error("found refund do not relate to payin. mgp error :" + data +", payin id "+o.getPaymentData().remoteOpId);
+									}
+									for( mgpRefund in Mangopay.getPayInRefunds(payinToRefundId)){
+
+										if(mgpRefund.Nature!="REFUND" || mgpRefund.Status!="SUCCEEDED") continue;
+
+										var amount = mgpRefund.CreditedFunds.Amount/100;
+
+										var refund = new db.Operation();
+										refund.type = db.Operation.OperationType.Payment;
+										refund.setPaymentData({type:MangopayECPayment.TYPE,remoteOpId: mgpRefund.Id.string()});
+										refund.group = distrib.getGroup();
+										refund.user = b.user;
+										refund.name = 'Remboursement (${mgpRefund.Id})';
+										refund.relation = b.getOrderOperation();
+										refund.amount = 0 - Math.abs(amount);
+										refund.date = Date.now();
+										refund.insert();
+
+
+									}
+
+								}
+							}
 							
-							App.current.event(NewOperation(operation));
-							App.current.event(Refund(operation,b));
 							
 
 						default :
-						if( o.pending ){
+						if( o!=null && o.pending ){
 							o.amount = 0;
 							o.update();
 						}

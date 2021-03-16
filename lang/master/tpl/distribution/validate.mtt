@@ -32,21 +32,22 @@
 				::end::
 				
 			</div>	
-		
-			::if(distribution.getTotalIncome()>0)::
-			<div class="alert alert-danger text-center">
-				<p>
-					<i class="icon icon-info"></i>
-					<b>Suite à la coupure de service du 10 et 11 Mars, certains d'entre vous ont dû annuler leur distribution.</b><br/>
-					Cliquez sur le bouton ci-dessous si vous souhaitez annuler cette distribution en un seul clic<br/>
-					( mise à zéro des commandes, remboursement des paiements Mangopay )
-				</p>
-				
-				<p>
-					<a href="/distribution/cancel/::distribution.id::?token=::token::" $$confirm() class="btn btn-danger"><i class="icon icon-delete"></i> Annuler toute la distribution</a>
-				</p>
-				
-			</div>
+			::if(distribution.getDate().toString().substr(0,10)=="2021-03-10" || distribution.getDate().toString().substr(0,10)=="2021-03-11")::
+				::if(distribution.getTotalIncome()>0)::
+				<div class="alert alert-danger text-center">
+					<p>
+						<i class="icon icon-info"></i>
+						<b>Suite à la coupure de service du 10 et 11 Mars, certains d'entre vous ont dû annuler leur distribution.</b><br/>
+						Cliquez sur le bouton ci-dessous si vous souhaitez annuler cette distribution en un seul clic<br/>
+						( mise à zéro des commandes, remboursement des paiements Mangopay )
+					</p>
+					
+					<p>
+						<a href="/distribution/cancel/::distribution.id::?token=::token::" $$confirm() class="btn btn-danger"><i class="icon icon-delete"></i> Annuler toute la distribution</a>
+					</p>
+					
+				</div>
+				::end::
 			::end::
 				
 		<p class="text-center">
