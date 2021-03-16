@@ -26,7 +26,10 @@ class Subscriptions extends controller.Controller
 		view.c = catalog;
 		view.subscriptions = catalogSubscriptions;
 		if ( catalog.hasPayments ) {
-			view.negativeBalanceCount = catalogSubscriptions.count( s -> s.getBalance() < 0 );
+			view.negativeBalanceCount = catalogSubscriptions.count( function( subscription ) { return  subscription.getBalance() < 0; } );
+		} else {
+			view.negativeBalanceCount = catalogSubscriptions.count( function( subscription ) { return  !subscription.paid(); } );
+			/*view.negativeBalanceCount = catalogSubscriptions.count( s -> s.getBalance() < 0 );
 
 			catalogSubscriptions.sort(function(a,b){
 				if( a.user.lastName > b.user.lastName ){
@@ -47,6 +50,7 @@ class Subscriptions extends controller.Controller
 					return -1;
 				}
 			});
+			*/
 		}
 		
 		view.dateToString = function( date : Date ) {

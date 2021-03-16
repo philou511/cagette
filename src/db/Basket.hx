@@ -102,8 +102,7 @@ class Basket extends Object
 				out = out.concat( d.getUserOrders(this.user).array() );
 			}
 			return out;
-		}
-		
+		}		
 	}
 	
 	/**

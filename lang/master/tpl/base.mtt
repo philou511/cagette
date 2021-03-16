@@ -33,7 +33,6 @@
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
 
     <!-- Haxe JS + libs bundled with browserify -->
-
     <script type="text/javascript" src="/js/::getVariable('js')::/fetch.umd.js"></script>
 
     ::if(DEBUG)::
@@ -52,8 +51,10 @@
     <div style="position: fixed;background: #666;padding: 8px;left: 0;bottom:0;color:#FF0;">DEBUG ::session.lang::</div>
     ::end::
 
-    ::if HOST.substr(0,3)=="pp."::
-    <div style="position: fixed;background: #F60;padding: 8px;left:0;bottom:0;color: #FF0;">PREPROD</div>
+    ::if ( HOST.indexOf(".dev.",null)!=-1 || HOST.substr(0,3)=="pp." )::
+    <div style="position: fixed;background: #600;padding: 8px;left:0;bottom:0;color: #FA0;width: 100%;z-index: 99;text-align: center;">
+        <i class="icon icon-alert"></i> Ce site n'est pas le "vrai" site Cagette, c'est un site de test. <b>Ne l'utilisez surtout pas pour prendre de vraies commandes.</b>
+    </div>
     ::end::
 
     <!-- Modal window -->

@@ -108,10 +108,8 @@
 		</script>
 
 		::foreach script getNeoModuleScripts()::
-		<script src="::script::"></script>
+			<script src="::script::"></script>
 		::end::
-
-
 		
 	</body>
 </html>

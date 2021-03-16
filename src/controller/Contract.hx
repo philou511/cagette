@@ -176,7 +176,7 @@ class Contract extends Controller
 
 
 	/**
-	 * Edit a contract 
+	 * Edit a contract/catalog
 	 */
 	 @logged @tpl("form.mtt")
 	 function doEdit( catalog : db.Catalog ) {
@@ -217,6 +217,7 @@ class Contract extends Controller
 					for ( sub in SubscriptionService.getCatalogSubscriptions(catalog)){
 						SubscriptionService.createOrUpdateTotalOperation( sub );
 					}
+
 				}
 				
 				//update rights
