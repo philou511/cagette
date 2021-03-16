@@ -426,8 +426,6 @@ class Cron extends Controller
 		task.execute(!App.config.DEBUG);
 		
 		var task = new TransactionWrappedTask( "Old datas cleaning", function() {
-			task.log("Delete old messages");
-			db.Message.manager.delete($date < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30 * 3));
 			task.log("Delete old sessions");
 			sugoi.db.Session.clean();
 			task.log("Delete old demo catalogs");
