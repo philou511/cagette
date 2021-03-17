@@ -1,10 +1,4 @@
 package controller;
-import db.Catalog;
-import db.Message;
-import db.UserOrder;
-import sugoi.form.ListData;
-import sugoi.form.elements.*;
-import sugoi.form.Form;
 
 class Messages extends Controller
 {
@@ -17,9 +11,5 @@ class Messages extends Controller
 	
 	@tpl("messages/default.mtt")
 	function doDefault() {}
-	
-	public function doMessage(msg:Message) {
-		throw Redirect('/messages');
-	}
 	
 }

@@ -36,11 +36,19 @@ class Admin extends Controller {
 			args.reset.update();
 		}
 
+		var emails: Array<Dynamic> = service.BridgeService.call("/mail/getUnsentMails");
+
 		var browse = function(index:Int, limit:Int) {
-			return BufferedJsonMail.manager.search($sdate==null,{limit:[index,limit],orderBy:-cdate},false);
+			var filtered = [];
+			for (i in 0...limit) {
+				if (i+index < emails.length){
+					filtered.push(emails[i+index]);
+				}
+			}
+			return filtered;
 		}
 
-		var count = BufferedJsonMail.manager.count($sdate==null);
+		var count = emails.length;
 		view.browser = new sugoi.tools.ResultsBrowser(count,10,browse);
 		view.num = count;
 	}
@@ -320,7 +328,7 @@ class Admin extends Controller {
 		MultiDistrib.manager.delete( $distribStartDate < DateTools.delta(Date.now(),-1000 * 60 * 60 * 24 * 360 * 2) );
 
 		//delete old messages
-		db.Message.manager.delete( $date < DateTools.delta(Date.now(),-1000 * 60 * 60 * 24 * 360 * 2) );
+		// db.Message.manager.delete( $date < DateTools.delta(Date.now(),-1000 * 60 * 60 * 24 * 360 * 2) );
 
 		//delete old contracts
 		Catalog.manager.delete( $endDate < DateTools.delta(Date.now(),-1000 * 60 * 60 * 24 * 360) );
