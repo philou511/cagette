@@ -24,7 +24,6 @@ class Product extends Object
 	
 	public var unitType : SNull<SEnum<Unit>>; // Kg / L / g / units
 	public var qt : SNull<SFloat>;
-	public var smallQt : SNull<SFloat>; //if bulk is true, a smallQt should be defined
 	
 	public var organic : SBool;
 	public var variablePrice : Bool; 	//price can vary depending on weighting of the product
@@ -34,6 +33,8 @@ class Product extends Object
 	@hideInForms public var wholesale : Bool;	//this product is a wholesale product (crate,bag,pallet)
 	@hideInForms public var retail : Bool;		//this products is a fraction of a wholesale product
 	public var bulk : Bool;		//(vrac) warn the customer this product is not packaged
+	public var smallQt : SNull<SFloat>; //if bulk is true, a smallQt should be defined
+
 	public var hasFloatQt:SBool; //deprecated : this product can be ordered in "float" quantity
 	
 	@hideInForms @:relation(imageId) public var image : SNull<sugoi.db.File>;
@@ -231,6 +232,7 @@ class Product extends Object
 			"variablePrice"		=> t._("Variable price based on weight"),			
 			"multiWeight" 		=> t._("Multi-weighing"),	
 			"bulk" 				=> "Vrac",
+			"smallQt"			=> "Petite quantité (pour le vrac)",
 		];
 	}
 	

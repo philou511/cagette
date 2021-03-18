@@ -31,6 +31,15 @@ class Product extends Controller
 
 			f.toSpod(product);
 
+			if (product.bulk==true) {
+				if (product.smallQt==null) {
+					throw Error("#", "Vous devez définir une petite quantité pour un produit en vrac.");
+				}
+				if (product.qt==null) {
+					throw Error("#", "Vous devez définir une quantité pour un produit en vrac.");
+				}
+			}
+
 			//manage stocks by distributions for CSA contracts
 			if(!product.catalog.group.hasShopMode() && product.catalog.hasStockManagement()){
 				product.stock = (f.getValueOf("stock"):Float) * product.catalog.getDistribs(false).length;
