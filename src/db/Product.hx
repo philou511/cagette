@@ -24,6 +24,7 @@ class Product extends Object
 	
 	public var unitType : SNull<SEnum<Unit>>; // Kg / L / g / units
 	public var qt : SNull<SFloat>;
+	public var smallQt : SNull<SFloat>; //if bulk is true, a smallQt should be defined
 	
 	public var organic : SBool;
 	public var variablePrice : Bool; 	//price can vary depending on weighting of the product
