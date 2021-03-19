@@ -51,7 +51,7 @@ class Main extends Controller {
 		}
 
 		if(app.user!=null && app.user.isGroupManager() && group.hasShopMode()  && !group.betaFlags.has(db.Group.BetaFlags.ShopV2) ){
-			app.session.addMessage("Attention, l'ancienne boutique et les catégories personnalisées disparaîtront le lundi 5 avril 2021, pensez à vous préparer avant le jour J.<br/><a href='https://wiki.cagette.net/admin:5april' target='_blank'>Cliquez-ici pour plus d'informations</a>",true);
+			app.session.addMessage("Attention, l'ancienne boutique et les catégories personnalisées disparaîtront le lundi 3 Mai 2021, pensez à vous préparer avant le jour J.<br/><a href='https://wiki.cagette.net/admin:5april' target='_blank'>Cliquez-ici pour plus d'informations</a>",true);
 		}
 
 		view.amap = group;
