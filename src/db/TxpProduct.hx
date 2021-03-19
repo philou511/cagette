@@ -11,7 +11,7 @@ class TxpProduct extends Object
 
 	public var id : SId;
 	public var name : SString<128>;	
-	@:relation(categoryId) public var category : db.TxpCategory;
+	// @:relation(categoryId) public var category : db.TxpCategory;
 	@:relation(subCategoryId) public var subCategory : db.TxpSubCategory;
 	
 	override public function toString(){
@@ -19,7 +19,7 @@ class TxpProduct extends Object
 	}
 	
 	public function getFullCategorization():Array<String>{
-		return [category.name, subCategory.name, name];
+		return [subCategory.category.name, subCategory.name, name];
 		
 	}
 	

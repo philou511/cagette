@@ -211,7 +211,7 @@ class Install extends controller.Controller
 		
 	}
 	
-	@admin
+	/*@admin
 	function _0_9_2_installTaxonomy(){
 		
 		db.TxpCategory.manager.delete(true);
@@ -250,7 +250,7 @@ class Install extends controller.Controller
 			pro.insert();
 		}
 		
-	}
+	}*/
 
 	@admin
 	public function doMigrateCSAOrders(){
