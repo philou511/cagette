@@ -63,29 +63,16 @@ class Product extends Controller
 		
 		var product = new db.Product();
 		var f = ProductService.getForm(null,contract);
-		
-		/*f.removeElementByName("catalogId");
-		
-		//stock mgmt ?
-		if (!contract.hasStockManagement()) f.removeElementByName('stock');
-		
-		//vat selector
-		f.removeElement( f.getElement('vat') );
-		var data = [];
-		for (k in app.user.getGroup().vatRates.keys()) {
-			data.push( { value:app.user.getGroup().vatRates[k], label:k } );
-		}
-		f.addElement( new FloatSelect("vat", "TVA", data, product.vat ) );
-		
-		var formName = f.name;
-		var html = service.ProductService.getCategorizerHtml("",null,formName);
-		f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);*/
-		
+	
 		if (f.isValid()) {
 
 			f.toSpod(product);
-			product.catalog = contract;
 
+			if(product.bulk && product.smallQt==null) throw Error(sugoi.Web.getURI(),"Vous devez définir le champs 'petite quantité' si l'option 'vrac' est activée");
+			if(product.bulk && product.unitType==null) throw Error(sugoi.Web.getURI(),"Vous devez définir l'unité de votre produit si l'option 'vrac' est activée");
+			if(product.bulk && product.qt==null) throw Error(sugoi.Web.getURI(),"Vous devez définir une quantité si l'option 'vrac' est activée");
+
+			product.catalog = contract;
 			app.event(NewProduct(product));
 			product.insert();
 			throw Ok('/contractAdmin/products/'+product.catalog.id, t._("The product has been saved"));
