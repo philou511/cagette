@@ -38,6 +38,12 @@ class Product extends Controller
 				if (product.qt==null) {
 					throw Error("#", "Vous devez définir une quantité pour un produit en vrac.");
 				}
+				if (product.multiWeight==true) {
+					throw Error("#", "Un produit en vrac ne peut pas être aussi en multi-pesée.");
+				}
+				if (product.variablePrice==true) {
+					throw Error("#", "Un produit en vrac ne peut pas avoir un prix variable selon pesée.");
+				}
 			}
 
 			//manage stocks by distributions for CSA contracts
