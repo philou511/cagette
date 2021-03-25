@@ -236,7 +236,7 @@ class Admin extends Controller {
 		var flags : sys.db.Types.SFlags<db.Group.GroupFlags> = cast 0;
 		flags.set(ShopMode);
 		flags.set(HasPayments);		
-		getOrCreateTestGroup( 'GT4 Locavores gloutons', GroupedOrders, Open, flags, cast 0, ["lemonway", "cash", "check", "transfer"] );
+		getOrCreateTestGroup( 'GT4 Locavores gloutons', GroupedOrders, Open, flags, cast 0, ["cash", "check", "transfer"] );
 
 		var flags : sys.db.Types.SFlags<db.Group.GroupFlags> = cast 0;
 		flags.set(ShopMode);

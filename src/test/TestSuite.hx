@@ -506,7 +506,6 @@ class TestSuite
 		//app.plugins.push( new hosted.HostedPlugIn() );				
 		app.plugins.push( new pro.ProPlugIn() );		
 		app.plugins.push( new connector.ConnectorPlugIn() );				
-		//app.plugins.push( new pro.LemonwayEC() );
 		//app.plugins.push( new who.WhoPlugIn() );
 		#end
 		

@@ -8,14 +8,13 @@
 -lib hx3compat
 -lib thx.csv
 -lib thx.semver
-
 -lib sugoi
--lib cagette-pro
 -lib jwt
 
 -cp ../common
 -cp ../src
 -cp ../lang/master/tpl
+-cp ../plugins
 
 -neko ../www/index.n
 
