@@ -70,6 +70,9 @@ RUN haxe cagetteAllPlugins.hxml
 WORKDIR /srv/frontend
 RUN haxe cagetteJs.hxml
 
+WORKDIR /srv/lang/master/tpl/
+RUN neko ../../../backend/temploc2.n -macros macros.mtt -output ../tmp/ *.mtt */*.mtt */*/*.mtt */*/*/*.mtt */*/*/*/*.mtt
+
 EXPOSE 3009
 
 WORKDIR /srv
