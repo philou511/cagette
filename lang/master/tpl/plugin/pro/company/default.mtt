@@ -1,0 +1,54 @@
+::use 'plugin/pro/company/design.mtt'::
+	
+	<div class=" article">
+		<h3>::vendor.name::</h3>
+		<p>::raw nl2br(vendor.desc)::</p>
+		<p>
+			$$edit(Modifier les propriétés,/p/pro/company/edit)
+			::if(company!=null)::
+				$$edit(Taux de TVA,/p/pro/company/vatRates)
+			::end::
+			<!--<a href="/p/pro/company/addVendorImage/::vendor.id::" class="btn btn-default btn-sm">
+					<span class="glyphicon glyphicon-picture"></span>&nbsp;Définir un logo</a>
+				-->
+		</p>
+	
+
+		<hr/>
+
+		::set images = vendor.getImages()::
+
+		<div class="row">
+			<div class="col-md-6">
+				<p>	
+					<h4>Votre logo</h4>
+					<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/pro/company/::company.id::', '::file(images.logo)::', 300, 300, 'logo')">
+						<i class="icon icon-image"></i> ::_("Choose a logo")::
+					</a>
+				</p>
+			</div>			
+			<div class="col-md-6">				
+				::if images.logo!=null::
+				<img src="::file(images.logo)::" style="max-width: 256px;max-height: 128px;" class="thumbnail" />
+				::end::
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-6">
+				<p>	
+					<h4>Votre portrait</h4>				
+					<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/pro/company/::company.id::', '::file(images.portrait)::', 300, 300, 'portrait')">
+						<i class="icon icon-image"></i> Définir un portrait
+					</a>
+				</p>
+			</div>			
+			<div class="col-md-6">				
+				::if images.portrait!=null::
+				<img src="::file(images.portrait)::" style="max-width: 256px;max-height: 128px;" class="thumbnail" />
+				::end::
+			</div>
+		</div>
+
+	</div>
+::end::

@@ -1,0 +1,35 @@
+::use 'plugin/pro/design.mtt'::
+
+<div class="col-md-12">
+	<h2>Votre réseau de points de livraison</h2>			
+</div>
+
+<div class="col-md-6">
+	<div class="article">
+		
+		<h4>Récapitulatifs</h4>
+		
+		::raw form.render()::
+		
+	</div>	
+</div>
+
+<div class="col-md-6">
+	<div class="article">		
+		<h4>Groupes appartenant au réseau :</h4>
+		<table class="table table-condensed">
+			::foreach g company.getNetworkGroups()::
+			<tr>
+				<td><a href="/group/::g.id::" target="_blank">::g.name::</a></td>
+				<td>$$delete(Suppr., /p/pro/network/removeGroup/::g.id::)</td>
+				  
+			</tr>
+			::end::
+		</table>
+		$$insert(Ajouter un groupe, /p/pro/network/addGroup)
+	</div>
+</div>
+
+
+
+::end::

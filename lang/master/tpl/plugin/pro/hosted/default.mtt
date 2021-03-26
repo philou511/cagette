@@ -1,0 +1,64 @@
+::use 'admin/design.mtt'::
+
+	<div class="article">
+				
+		<table class="table table-bordered">
+			<tr>
+				<th style="text-align:center;">Groupes</th>
+				<th style="text-align:center;">Groupes actifs</th>
+				<th style="text-align:center;">Foyers</th>
+			</tr>
+			<tr>
+				<td>
+					<h1 style="text-align:center;">::groups.length::</h1>
+				</td>
+				<td class="text-center">
+					<h1 style="text-align:center;">::active::</h1>	
+					Dont <b>::activeCpro::</b> avec CPro
+				</td>
+				<td>
+					<h1 style="text-align:center;">::members::</h1>	
+				</td>
+			</tr>
+		</table>
+	
+		<div class="shortList">
+			
+			<table class="table table-bordered table-condensed table-striped" >
+				<tr>
+					<th>Id</th>
+					<th>Nom</th>
+					<th>Type</th>
+					<th>Membres</th>
+					<th>Actif</th>
+					<th>Visible</th>
+					<th>Contrats std</th>
+					<th>Contrats cpro</th>
+				</tr>
+				::foreach a groups::
+				<tr>
+					<td>::a.id::</td>
+					<td><a href="/p/hosted/group/::a.id::">::a.name::</a></td>
+					<td>
+						::if a.groupType==null::
+						::elseif a.groupType==0:: AMAP
+						::elseif a.groupType==1:: Groupement d'achat
+						::elseif a.groupType==2:: Drive de producteurs
+						::else:: Vente à la ferme
+						::end::
+					</td>
+					<td>::a.membersNum::</td>
+					<td>$$bool(::a.active::)</td>
+					<td>$$bool(::a.visible::)</td>
+					<td>$$nullSafe(::a.contractNum::)</td>
+					<td>$$nullSafe(::a.cproContractNum::)</td>
+				</tr>
+				::end::
+				
+			</table>
+			
+		</div>
+	</div>
+	
+	
+::end::

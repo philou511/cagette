@@ -1,0 +1,115 @@
+::use 'plugin/pro/company/design.mtt'::
+	
+	<div class=" article">
+		<h3>Ma page producteur</h3>		
+		
+        ::if(link!=null)::
+        <p>
+            Transmettez cette URL à vos clients, ou utilisez là sur votre site ou les réseaux sociaux.
+        </p>
+        <p class="linkToShare">
+            <i class="icon icon-link"></i>
+            <a href="https://::HOST::/::link.link::">
+                https://::HOST::/::link.link::				
+            </a>
+        </p>
+        ::else::
+        <p>
+            $$insert(Créer ma page producteur,/p/pro/company/createLink)
+        </p>
+        ::end::
+        
+        <hr/>
+
+        <p>::raw form::</p>
+        
+        <hr/>
+
+        <div class="row">
+			<div class="col-md-6">
+				<p>	
+					<h4>Bannière</h4>
+					<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/pro/company/::company.id::', '::file(images.banner)::', 1500, 500, 'banner')">
+						<i class="icon icon-image"></i> Envoyer une image
+					</a>	
+				</p>
+			</div>			
+			<div class="col-md-6">				
+				::if images.banner!=null::
+				<img src="::file(images.banner)::" style="max-width: 256px;max-height: 128px;" class="thumbnail" />
+				::end::
+			</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-6">
+					<h4>Photos de votre ferme</h4>
+				</div>
+			</div>
+
+			<!-- farm1 -->
+			<div class="row">
+				<div class="col-md-2">Image 1</div>
+				<div class="col-md-4">
+					<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/pro/company/::company.id::', '::file(images.farm1)::', 300, 300, 'farm1')">
+						<i class="icon icon-image"></i> ::if images.farm1==null::Envoyer une image ::else:: Modifier l'image ::end::
+					</a>
+				</div>			
+				<div class="col-md-6">				
+					::if images.farm1!=null::<img src="::file(images.farm1)::" style="max-width: 256px;max-height: 128px;" class="thumbnail" />::end::
+				</div>
+			</div>
+
+			<!-- farm2 -->
+			<div class="row">
+					<div class="col-md-2">Image 2</div>
+					<div class="col-md-4">
+					<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/pro/company/::company.id::', '::file(images.farm2)::', 300, 300, 'farm2')">
+						<i class="icon icon-image"></i> ::if images.farm2==null::Envoyer une image ::else:: Modifier l'image ::end::
+					</a>
+				</div>			
+				<div class="col-md-6">				
+					::if images.farm2!=null::<img src="::file(images.farm2)::" style="max-width: 256px;max-height: 128px;" class="thumbnail" />::end::
+				</div>
+			</div>
+
+			<!-- farm3 -->
+			<div class="row">
+					<div class="col-md-2">Image 3</div>
+					<div class="col-md-4">
+					<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/pro/company/::company.id::', '::file(images.farm3)::', 300, 300, 'farm3')">
+						<i class="icon icon-image"></i> ::if images.farm3==null::Envoyer une image ::else:: Modifier l'image ::end::
+					</a>
+				</div>			
+				<div class="col-md-6">				
+					::if images.farm3!=null::<img src="::file(images.farm3)::" style="max-width: 256px;max-height: 128px;" class="thumbnail" />::end::
+				</div>
+			</div>
+
+			<!-- farm4 -->
+			<div class="row">
+					<div class="col-md-2">Image 4</div>
+					<div class="col-md-4">
+					<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/pro/company/::company.id::', '::file(images.farm4)::', 300, 300, 'farm4')">
+						<i class="icon icon-image"></i> ::if images.farm4==null::Envoyer une image ::else:: Modifier l'image ::end::
+					</a>
+				</div>			
+				<div class="col-md-6">				
+					::if images.farm4!=null::<img src="::file(images.farm4)::" style="max-width: 256px;max-height: 128px;" class="thumbnail" />::end::
+				</div>
+			</div>
+		
+	</div>
+
+	<script src="/js/tinymce/tinymce.min.js"></script>
+	<script>
+		tinymce.init({ 
+			selector:'textarea',
+			plugins: "autolink textcolor emoticons image ",
+			toolbar: "styleselect bold italic alignleft aligncenter emoticons bullist outdent indent forecolor",
+			language: '::session.lang::',
+			menubar: false,
+			height:300
+		});	
+	</script>
+::end::

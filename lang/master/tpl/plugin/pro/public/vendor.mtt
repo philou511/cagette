@@ -1,0 +1,42 @@
+::use 'reactBase.mtt'::
+
+		::if catalog!=null::
+		::set cid = catalog.id::
+		::end::
+		<script>
+			_.getVendorPage("vendorPage",::vendor.id::,::cid::);
+		</script>
+		<div id="vendorPage"></div>
+
+		<noscript>
+			
+			<h1>::vendor.name::</h1>
+			<h4>::vendor.profession::</h4>
+			<p>
+				::raw nl2br(vendor.desc)::
+			</p>
+				
+			<p>
+				<i class="icon icon-map-marker"></i>
+				$$nullSafe(::vendor.address1::) $$nullSafe(::vendor.address2::)
+				$$nullSafe(::vendor.zipCode::) $$nullSafe(::vendor.city::)
+			</p>
+
+			<p>
+				::if catalog!=null::
+				<h2>Produits</h2>
+					<ul>
+					::foreach off catalog.getOffers()::
+					::set p = off._offer.getInfos()::
+						<li>::p.name::</li>
+
+					::end::
+					</ul>
+				::end::
+			</p>
+				
+		</noscript>
+
+	
+
+::end::

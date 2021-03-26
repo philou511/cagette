@@ -1,0 +1,81 @@
+::use 'plugin/pro/mail/design.mtt'::
+
+   <p>
+	   Vos commandes du catalogue <b>::catalog.name::</b> ont fermé le <b>::hDate(distribution.orderEndDate)::</b>.
+	</p>
+
+	<h3>Récapitulatif de commande</h3>
+
+   <table class="table table-striped">
+		<tr>
+			<td>Groupe</td>
+			<td>
+				<b>::distribution._catalog._group.name::</b>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Date de livraison
+			</td>
+			<td>
+				::dDate(distribution.date):: de ::hHour(distribution.date):: à ::hHour(distribution.end)::
+			</td>
+		</tr>
+		<tr>
+			<td>Adresse</td>
+			<td>
+				::distribution._place.getFullAddress()::
+			</td>				
+		</tr>
+		<tr>
+			<td>Catalogue</td>
+			<td>				
+				::catalog.name::
+			</td>
+		</tr>
+	</table>
+
+	<br/>
+	<br/>
+	
+	<!-- produits -->
+	<table class="table table-bordered table-hover" >
+		<tr>
+			<th>Poids/Vol.</th>
+			<th>Quantités</th>				
+			<th>Produit</th>
+			<th>Référence</th>
+			<th>Prix unitaire TTC</th>
+			<th>Total</th>
+		</tr>
+		::set total = 0::
+			::foreach m orders::
+			<tr>
+				<td>::raw m.weightOrVolume::</td>
+				<td>
+					::formatNum(m.quantity)::
+				</td>
+				<td>
+					::m.pname::
+				</td>
+				<td class="ref">
+					$$nullSafe(::m.ref::)
+				</td>
+				<td>
+					::formatNum(m.priceTTC)::&nbsp;::currency()::
+				</td>
+				<td>
+					::formatNum(m.totalTTC)::&nbsp;::currency()::
+					::set total = total + m.totalTTC::
+				</td>
+			</tr>
+			::end::
+			
+			<tr style="background:#DDD;">					
+				<th colspan="4"></th>
+				<th class="text-right">Total :</th>
+				<th>::formatNum(total)::&nbsp;::currency()::</th>	
+			</tr>
+	</table>
+			
+::end::

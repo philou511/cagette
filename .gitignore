@@ -13,8 +13,7 @@ html
 
 *.DS_Store*
 
-lang/master/tpl/plugin/*
-backend/lang/*
+backend/lang
 
 lang/fr/tpl/*
 lang/en/tpl/*
@@ -39,7 +38,7 @@ www/css/*.css
 
 devLibs/
 
-backend/lang
+
 
 codes.sh
 

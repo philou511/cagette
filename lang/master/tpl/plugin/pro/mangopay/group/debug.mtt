@@ -1,0 +1,80 @@
+::use 'amapadmin/design.mtt'::
+	
+	<div class=" article">
+        <h3>Bug de Brigitte : ::group.name::</h3>
+        
+        $$timeframe(::timeframe::)
+
+        <table class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>date</th>
+                <th>Nature</th>
+                
+                <th>Status</th>
+                <th>MP UserId</th>
+                <th>montant</th>
+                <th>Op cagette</th>
+            </tr>
+            ::foreach t transactions::
+<!-- on affiche pas les refund et les payout -->
+                ::if(t.Nature=="REGULAR" && t.Type=="PAYIN")::
+                <tr>
+                <td>
+                    <a href="https://dashboard.mangopay.com/PayIn/::t.Id::" target="_blank">::t.Id::</a>
+                </td>
+                <td>::fromTimestamp(t.CreationDate)::</td>
+                <td>::t.Nature::</td>
+              
+                <td>::t.Status::</td>
+                <td>
+                    <a href="https://dashboard.mangopay.com/User/::t.AuthorId::/Details" target="_blank">::t.AuthorId::</a>
+                    ::set u = findUser(t.AuthorId)::
+                    ::if( u!=null) ::
+                    <br/><a href='/member/payments/::u._user.id::' target="_blank">::u._user.getName()::</a>
+                    ::end::
+                </td>
+                <td>::t.DebitedFunds.Amount/100:: €</td>
+                <td>
+
+                    ::set op = findOperation(t.Id)::
+                    ::if op!=null::
+                        ::op.amount:: €<br/>
+                        ::op.name::<br/>
+                        ::op.date::<br/>
+                        ::op._user.getName()::
+                    ::else::
+
+                        ::set refunds = getRefunds(t.Id)::
+
+                        ::if(refunds.length>0)::
+                        <div class="alert alert-success">
+                            Remboursement OK
+
+                            ::foreach r refunds::
+                            ::r.CreditedFunds.Amount/100:: ::r.CreditedFunds.Currency::<br/>
+                            ::end::
+                        
+                        </div>
+                        ::else::
+                        <div class="alert alert-danger">A rembourser :
+                                <a href="https://dashboard.mangopay.com/PayIn/::t.Id::" target="_blank">opréation ::t.Id::</a>
+                        </div>
+                        ::end::
+
+
+                    ::end::
+
+
+                </td>
+                </tr>
+            ::end::
+            ::end::  
+        </table>
+
+
+
+    </div>
+    
+    
+::end::

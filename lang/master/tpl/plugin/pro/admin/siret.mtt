@@ -1,0 +1,32 @@
+::use 'admin/design.mtt'::
+
+<h2>Producteurs sans infos légales</h2>
+
+<p><b>::total::</b> producteurs actifs total</p>
+<p>$$check(false) <a href="?type=bad">::badVendors::</a> producteurs non conformes</p>
+<p>$$check(true)  <a href="?type=good">::total-badVendors::</a> producteurs conformes</p>
+
+::if(type=="bad")::<h3>Producteurs non conformes</h3>::end::
+::if(type=="good")::<h3>Producteurs conformes</h3>::end::
+
+::if(vendors!=null)::
+<table class="table table-bordered table-condensed table-striped" >
+	
+	::foreach v vendors::	
+	<tr>
+		
+		<td>
+			<a href="/p/pro/admin/vendor/::v.id::" target="_blank">::v.name::</a>			
+		</td>
+		<td style="font-size:0.6em;">::short(v.desc,120)::</td>
+		<td><img ::cond (v._image!=null):: src="::file(v._image)::" width="120"/></td>
+		<td>::v.email::</td>
+		<td>::v.zipCode::</td>
+		<td>::v.city::</td>		
+		
+	</tr>
+	::end::
+</table>
+::end::
+
+::end::
