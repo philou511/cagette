@@ -1,4 +1,5 @@
 package pro.controller;
+import Common.Unit;
 import pro.service.PProductService;
 import form.CagetteForm;
 import sugoi.form.Form;
@@ -109,25 +110,20 @@ class Product extends controller.Controller
 	@tpl("plugin/pro/form.mtt")
 	public function doInsert() {
 		
-		var d = new pro.db.PProduct();
-		var f = PProductService.getForm(this.company);
-		
-		// f.removeElement( f.getElement("type") );		
-		
-		//var ref = d.ref;
-		/*var txId = d.txpProduct == null ? null : d.txpProduct.id;
-		var html = service.ProductService.getCategorizerHtml("",txId,f.name);		
-		f.addElement(new sugoi.form.elements.Html("html", html, 'Nom'),1);*/
+		var p = new pro.db.PProduct();
+		var f = PProductService.getForm(p,this.company);
 		
 		if (f.isValid()) {
-			f.toSpod(d); //update model
-			d.company = company;
-			
-			if (pro.db.PProduct.refExists(company, d.ref)){
+			f.toSpod(p); //update model
+			p.company = company;
+
+			if(p.unitType==null) p.unitType = Unit.Piece;
+	
+			if (pro.db.PProduct.refExists(company, p.ref)){
 				throw Error(baseUrl, "cette référence est déjà utilisée dans un autre produit");
 			}
 			
-			d.insert();
+			p.insert();
 			throw Ok(baseUrl,'Le produit a été enregistrée');
 		}
 		

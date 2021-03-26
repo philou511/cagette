@@ -17,6 +17,7 @@ class POffer extends Object
 	//@hideInForms public var htPrice : SFloat; //price excluding VAT @deprecated
 	public var price : SFloat; //price including VAT
 	public var vat : SFloat;
+	public var smallQt : SNull<SFloat>; //if bulk is true, a smallQt should be defined
 	public var active : SBool; 	//if false, product disabled, not visible on front office
 	
 	@hideInForms public var stock : SNull<SFloat>; // Current stock of this offer (available for sale + undelivered orders)

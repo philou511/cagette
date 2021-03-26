@@ -30,13 +30,18 @@ class Offer extends controller.Controller
 		var f = CagetteForm.fromSpod(o);
 		
 		//units
-		f.removeElement( f.getElement('quantity') );
+		f.removeElementByName('quantity');
 		var uname = o.product.unitType==null ? "Quantité" : switch(o.product.unitType){
 			case Kilogram,Gram: "Poids";
 			case Litre: "Volume";
 			default : "Quantité";
 		}
 		f.addElement( new form.UnitQuantity("quantity", uname, o.quantity, true, o.product.unitType) );
+
+		f.removeElementByName('smallQt');
+		if(o.product.bulk){
+			f.addElement( new form.UnitQuantity("smallQt", uname+" (petite quantité pour le vrac)", o.smallQt==null ? 0.1 : o.smallQt, true, o.product.unitType) );
+		}
 		
 		//for the VATBox component
 		view.rates = Lambda.array(company.getVatRates()).join("|");
@@ -53,14 +58,17 @@ class Offer extends controller.Controller
 			if ( co.price == o.price ) checked.push(Std.string(co.catalog.id)); 
 		}
 		var el = new sugoi.form.elements.CheckboxGroup("catalogs", "Mettre à jour le prix dans les catalogues", data, checked);
-		f.addElement(el);
-		
+		f.addElement(el);		
 
-		if (f.isValid()) {
+		if (f.isValid()) {			
 			
 			f.toSpod(o); 
 
-			
+			if(o.product.bulk){
+				if(o.smallQt==null) throw Error(sugoi.Web.getURI(),"Vous devez définir le champs 'petite quantité' si l'option 'vrac' est activée");
+				if(o.product.unitType==null) throw Error(sugoi.Web.getURI(),"Vous devez définir l'unité de votre produit si l'option 'vrac' est activée");
+				if(o.quantity==null) throw Error(sugoi.Web.getURI(),"Vous devez définir une quantité/poids/volume si l'option 'vrac' est activée");
+			}			
 			
 			//ref uniqueness
 			if ( pro.db.POffer.refExists(company, o.ref, o) ){
@@ -96,20 +104,25 @@ class Offer extends controller.Controller
 	@tpl("plugin/pro/offerform.mtt")
 	public function doInsert(p:pro.db.PProduct) {
 		
-		var d = new pro.db.POffer();
-		d.ref = p.ref + "-" + (pro.db.POffer.manager.count($product==p)+1);
-		var f = CagetteForm.fromSpod(d);		
+		var o = new pro.db.POffer();
+		o.product = p;
+		o.ref = p.ref + "-" + (pro.db.POffer.manager.count($product==p)+1);
+		var f = CagetteForm.fromSpod(o);		
 		
 		//units
-		f.removeElement( f.getElement('quantity') );
-		if (p.unitType != null){
-			var uname = switch(p.unitType){
-				case Kilogram,Gram: "Poids";
-				case Litre: "Volume";
-				default : "Quantité";
-			}
-			f.addElement( new form.UnitQuantity("quantity", uname, 1, true, p.unitType) );	
-		}				
+		f.removeElementByName('quantity');
+		var uname = switch(p.unitType){
+			case Kilogram,Gram: "Poids";
+			case Litre: "Volume";
+			default : "Quantité";
+		}
+		f.addElement( new form.UnitQuantity("quantity", uname, 1, true, p.unitType) );	
+		
+		
+		f.removeElementByName('smallQt');
+		if(o.product.bulk){
+			f.addElement( new form.UnitQuantity("smallQt", uname+" (petite quantité pour le vrac)", o.smallQt==null ? 0.1 : o.smallQt, true, o.product.unitType) );
+		}
 		
 		//for the VATBox component
 		view.rates = Lambda.array(company.getVatRates()).join("|");
@@ -117,13 +130,21 @@ class Offer extends controller.Controller
 		view.vat = Lambda.array(company.getVatRates())[0];
 
 		if (f.isValid()) {
-			f.toSpod(d);
-			d.product = p;		
-			if ( pro.db.POffer.refExists(company, d.ref) ){
+			f.toSpod(o);
+			o.product = p;		
+
+			if(o.product.bulk){
+				if(o.smallQt==null) throw Error(sugoi.Web.getURI(),"Vous devez définir le champs 'petite quantité' si l'option 'vrac' est activée");
+				if(o.product.unitType==null) throw Error(sugoi.Web.getURI(),"Vous devez définir l'unité de votre produit si l'option 'vrac' est activée");
+				if(o.quantity==null) throw Error(sugoi.Web.getURI(),"Vous devez définir une quantité/poids/volume si l'option 'vrac' est activée");
+			}
+			
+
+			if ( pro.db.POffer.refExists(company, o.ref) ){
 				throw Error("/p/pro/product", "Cette référence existe dejà dans votre catalogue");
 			}
 			
-			d.insert();
+			o.insert();
 			throw Ok('/p/pro/product#product'+p.id,'L\'offre a été enregistrée');
 		}
 		

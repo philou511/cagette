@@ -32,7 +32,7 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 	public function onEvent(e:Event) {
 		
 		switch(e) {
-			
+			//Add Lemonway config in group admin
 			case Nav(nav,name,id) :				
 				switch(name) {
 					case "company":

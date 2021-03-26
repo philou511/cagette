@@ -113,14 +113,14 @@ class PCatalogService{
 		groupProduct.ref = co.offer.ref;
 		groupProduct.vat = co.offer.vat;
 		groupProduct.txpProduct = co.offer.product.txpProduct;
-		groupProduct.organic = co.offer.product.organic;
-		
+		groupProduct.organic = co.offer.product.organic;		
 		groupProduct.hasFloatQt = co.offer.product.hasFloatQt;
 		groupProduct.variablePrice = co.offer.product.variablePrice;
 		groupProduct.multiWeight = co.offer.product.multiWeight;
 		groupProduct.wholesale = co.offer.product.wholesale;
 		groupProduct.retail = co.offer.product.retail;
 		groupProduct.bulk = co.offer.product.bulk;
+		groupProduct.smallQt = co.offer.smallQt;
 		
 		//set stock if it's a new product
 		if(groupProduct.id == null && co.offer.stock!=null){

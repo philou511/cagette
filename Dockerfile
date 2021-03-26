@@ -43,6 +43,7 @@ COPY --chown=www-data:www-data js/ /srv/js/
 COPY --chown=www-data:www-data lang/ /srv/lang/
 COPY --chown=www-data:www-data src/ /srv/src/
 COPY --chown=www-data:www-data www/ /srv/www/
+COPY --chown=www-data:www-data plugins/ /srv/plugins/
 
 USER www-data
 
