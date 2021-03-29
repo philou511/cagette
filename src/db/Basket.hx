@@ -13,7 +13,7 @@ class Basket extends Object
 	public var ref : SNull<SString<256>>; 	//basket unique ref, used also by tmpBasket
 	public var cdate : SDateTime; 			//date when the order has been placed
 	public var num : SInt;		 			//Basket number for distribution
-	public var total : SNull<SFloat>;		//orders total price for *stats*, this is not reliable, dont use this for payments
+	public var total : SNull<SFloat>;		//orders total price for stats, !!! this is not reliable, dont use this for payments !!!
 
 
 	@:relation(userId) public var user : db.User;
@@ -136,10 +136,8 @@ class Basket extends Object
 
 	/**
 	 * Returns the total amount of all the orders in this basket
-	 * @return Float
 	 */
 	public function getOrdersTotal(?type:Int) : Float {
-
 		/*var total = 0.0;
 		for( order in getOrders(type)){
 			total += order.quantity * (order.productPrice * (1+order.feesRate/100));
@@ -149,8 +147,6 @@ class Basket extends Object
 		return getOrders(type).fold( 
 			(order,total)-> return total + order.quantity * (order.productPrice * (1+order.feesRate/100))
 		, 0.0);
-		
-
 	}
 	
 	/**
