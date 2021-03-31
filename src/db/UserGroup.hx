@@ -137,7 +137,7 @@ class UserGroup extends Object
 							return true;
 						}
 
-						if(cid!=null && right.params.has(Std.string(cid))){
+						if(cid!=null && right.params!=null && right.params.has(Std.string(cid))){
 							return true;
 						}						
 					}
