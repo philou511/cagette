@@ -1,5 +1,6 @@
 package service;
 
+import tink.core.Error;
 import sugoi.form.elements.Html;
 import controller.Product;
 
@@ -144,6 +145,22 @@ class ProductService{
 		}
 
 		return f;
+
+	}
+
+
+	/**
+		check that a product is well configured
+	**/
+	public static function check(product:db.Product){
+
+		if(product.bulk){
+			if(product.smallQt==null) throw new Error("Vous devez définir une petite quantité si l'option 'vrac' est activée");
+			if(product.smallQt>=1 || product.smallQt<=0) throw new Error("La petite quantité doit être supérieure à zéro et inférieure à 1");
+			if(product.unitType==null) throw new Error("Vous devez définir l'unité de votre produit si l'option 'vrac' est activée");
+			if(product.qt==null) throw new  Error("Vous devez définir une quantité si l'option 'vrac' est activée");
+			if(product.multiWeight) throw new Error("Un produit en vrac ne peut pas être aussi en multi-pesée.");			
+		}
 
 	}
 

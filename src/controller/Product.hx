@@ -31,24 +31,15 @@ class Product extends Controller
 
 			f.toSpod(product);
 
-			if (product.bulk==true) {
-				if (product.smallQt==null) {
-					throw Error("#", "Vous devez définir une petite quantité pour un produit en vrac.");
-				}
-				if (product.qt==null) {
-					throw Error("#", "Vous devez définir une quantité pour un produit en vrac.");
-				}
-				if (product.multiWeight==true) {
-					throw Error("#", "Un produit en vrac ne peut pas être aussi en multi-pesée.");
-				}
-				if (product.variablePrice==true) {
-					throw Error("#", "Un produit en vrac ne peut pas avoir un prix variable selon pesée.");
-				}
-			}
-
 			//manage stocks by distributions for CSA contracts
 			if(!product.catalog.group.hasShopMode() && product.catalog.hasStockManagement()){
 				product.stock = (f.getValueOf("stock"):Float) * product.catalog.getDistribs(false).length;
+			}
+
+			try{
+				ProductService.check(product);
+			}catch(e:tink.core.Error){
+				throw Error(sugoi.Web.getURI(),e.message);
 			}
 
 			app.event(EditProduct(product));
@@ -73,12 +64,14 @@ class Product extends Controller
 		if (f.isValid()) {
 
 			f.toSpod(product);
-
-			if(product.bulk && product.smallQt==null) throw Error(sugoi.Web.getURI(),"Vous devez définir le champs 'petite quantité' si l'option 'vrac' est activée");
-			if(product.bulk && product.unitType==null) throw Error(sugoi.Web.getURI(),"Vous devez définir l'unité de votre produit si l'option 'vrac' est activée");
-			if(product.bulk && product.qt==null) throw Error(sugoi.Web.getURI(),"Vous devez définir une quantité si l'option 'vrac' est activée");
-
 			product.catalog = contract;
+
+			try{
+				ProductService.check(product);
+			}catch(e:tink.core.Error){
+				throw Error(sugoi.Web.getURI(),e.message);
+			}
+			
 			app.event(NewProduct(product));
 			product.insert();
 			throw Ok('/contractAdmin/products/'+product.catalog.id, t._("The product has been saved"));

@@ -68,6 +68,7 @@ class Offer extends controller.Controller
 				if(o.smallQt==null) throw Error(sugoi.Web.getURI(),"Vous devez définir le champs 'petite quantité' si l'option 'vrac' est activée");
 				if(o.product.unitType==null) throw Error(sugoi.Web.getURI(),"Vous devez définir l'unité de votre produit si l'option 'vrac' est activée");
 				if(o.quantity==null) throw Error(sugoi.Web.getURI(),"Vous devez définir une quantité/poids/volume si l'option 'vrac' est activée");
+				if(o.smallQt>=1 || o.smallQt<=0) throw Error(sugoi.Web.getURI(),"La petite quantité doit être supérieure à zéro et inférieure à 1");
 			}			
 			
 			//ref uniqueness
@@ -137,6 +138,7 @@ class Offer extends controller.Controller
 				if(o.smallQt==null) throw Error(sugoi.Web.getURI(),"Vous devez définir le champs 'petite quantité' si l'option 'vrac' est activée");
 				if(o.product.unitType==null) throw Error(sugoi.Web.getURI(),"Vous devez définir l'unité de votre produit si l'option 'vrac' est activée");
 				if(o.quantity==null) throw Error(sugoi.Web.getURI(),"Vous devez définir une quantité/poids/volume si l'option 'vrac' est activée");
+				if(o.smallQt>=1 || o.smallQt<=0) throw Error(sugoi.Web.getURI(),"La petite quantité doit être supérieure à zéro et inférieure à 1");
 			}
 			
 
