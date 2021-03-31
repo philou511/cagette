@@ -129,10 +129,6 @@ class AmapAdmin extends Controller
 		}
 		
 		var data = [];
-		//for (r in Right.getConstructors()) {
-			//if (r == "ContractAdmin") continue; //managed later
-			//data.push({label:r,value:r});
-		//}
 		data.push({label:t._("Group administrator"), value:"GroupAdmin"});
 		data.push({label:t._("Membership management"),value:"Membership"});
 		data.push({label:t._("Messages"),value:"Messages"});
@@ -142,9 +138,7 @@ class AmapAdmin extends Controller
 		if (u != null) {
 			ua = db.UserGroup.get(u, app.user.getGroup(), true);
 			if (ua == null) throw "no user";
-			if (ua.rights == null) ua.rights = [];
-			//populate form
-			populate = ua.rights.map(function(x) return x.getName());
+			populate = ua.getRights().map(r -> r.right);
 		}
 		
 		form.addElement( new sugoi.form.elements.CheckboxGroup("rights", t._("Rights"), data, populate, true, true) );
@@ -158,14 +152,14 @@ class AmapAdmin extends Controller
 			data.push( { label:r.name , value:"contract"+Std.string(r.id) } );
 		}
 		
-		if(ua!=null && ua.rights!=null){
-			for ( r in ua.rights) {
-				switch(r) {
-					case Right.ContractAdmin(cid):
-						if (cid == null) {
+		if(ua!=null && ua.getRights()!=null && ua.getRights().length>0){
+			for ( r in ua.getRights()) {
+				switch(r.right) {
+					case "ContractAdmin":
+						if (r.params == null) {
 							populate.push("contractAll");
 						}else {
-							populate.push("contract"+cid);	
+							populate.push("contract"+r.params[0]);	
 						}
 						
 					default://
@@ -178,46 +172,37 @@ class AmapAdmin extends Controller
 		
 		if (form.checkToken()) {
 			
-			var wasManager = app.user.isAmapManager();
+			var wasManager = app.user.isGroupManager();
 			
 			if (u == null) {				
 				ua = db.UserGroup.manager.select($userId == Std.parseInt(form.getValueOf("user")) && $groupId == app.user.getGroup().id, true);
-			}
-			ua.rights = [];
+			}			
+
+			ua.rights2 = "[]";
 
 			var arr : Array<String> = cast form.getElement("rights").value;
 			for ( r in arr) {
 				if (r.substr(0, 8) == "contract") {
 					if (r == "contractAll") {
-						ua.rights.push( Right.ContractAdmin() );
+						ua.giveRight( Right.ContractAdmin() );
 					}else {
-						ua.rights.push( Right.ContractAdmin(Std.parseInt(r.substr(8)) ) );	
+						ua.giveRight( Right.ContractAdmin(Std.parseInt(r.substr(8)) ) );	
 					}
 					
 				}else {
-					ua.rights.push( Right.createByName(r) );	
+					ua.giveRight( Right.createByName(r) );	
 				}
 			}
 			
 			//avoid "cut my own hands" problem
 			if (ua.user.id == app.user.id && wasManager ) {
-				var isManager = false;
-				for ( r in ua.rights) {
-					if (r.equals(Right.GroupAdmin)) {
-						isManager = true; 
-						break;
-					}
-				}
-				if (isManager == false) {
+				if (!ua.hasRight(GroupAdmin)) {
 					throw Error("/amapadmin/rights", t._("You cannot strip yourself of admin rights."));
 				}
-			}
+			}			
 			
-			
-			if (ua.rights.length == 0) ua.rights = null;
-			ua.sync();
 			ua.update();
-			if (ua.rights == null) {
+			if (ua.getRights().length == 0) {
 				throw Ok("/amapadmin/rights", t._("Rights removed"));
 			}else {
 				throw Ok("/amapadmin/rights", t._("Rights created or modified"));

@@ -249,8 +249,11 @@ class Group extends controller.Controller
 			var ua = new db.UserGroup();
 			ua.user = user;
 			ua.group = g;
-			ua.rights = [Right.GroupAdmin,Right.Membership,Right.Messages,Right.ContractAdmin(null)];
 			ua.insert();
+			ua.giveRight(Right.GroupAdmin);
+			ua.giveRight(Right.Membership);
+			ua.giveRight(Right.Messages);
+			ua.giveRight(Right.ContractAdmin(null));
 			
 			//example datas
 			var place = new db.Place();

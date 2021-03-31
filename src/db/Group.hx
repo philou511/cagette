@@ -332,17 +332,10 @@ class Group extends Object
 	**/
 	public function getGroupAdmins():Array<db.UserGroup>{
 
-		var users = db.UserGroup.manager.search($rights != null && $group == this, false);
+		var users = db.UserGroup.manager.search($rights2 != null && $rights2 != "[]" && $group == this, false);
 		
 		//cleaning 
-		for ( u in users.array()) {
-			
-			//rights can be null (serialized null) and not null in DB
-			var rights : Null<Array<Right>> = cast u.rights;
-			if (rights == null || rights.length == 0) {
-				users.remove(u);
-				continue;
-			}
+		/*for ( u in users.array()) {
 			
 			//rights on a deleted catalog
 			for ( r in u.rights) {
@@ -357,7 +350,7 @@ class Group extends Object
 					default :
 				}
 			}
-		}
+		}*/
 
 		return users.array();
 	}

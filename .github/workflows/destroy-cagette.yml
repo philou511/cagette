@@ -13,10 +13,12 @@ env:
 
 jobs:
   delete-service:
+    if: startsWith(github.event.ref, 'feature/')
     runs-on: ubuntu-latest
     steps:
       - name: retrieve project name
         run: |
+          echo "Triggered on ref ${{ github.event.ref }}"
           PROJ=$(echo "${{ github.event.ref }}" | perl -F/ -a -e 'print $F[-1]')
           # see https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
           echo "project to delete: $PROJ"

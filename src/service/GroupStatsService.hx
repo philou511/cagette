@@ -21,7 +21,6 @@ class GroupStatsService{
         }
     }
 
-
     public function getBasketNumber() {
         var dids = db.MultiDistrib.getFromTimeRange( group , from , to  ).map(d -> d.id);
         return Basket.manager.count( $multiDistribId in dids );

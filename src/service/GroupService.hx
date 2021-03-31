@@ -60,9 +60,9 @@ class GroupService
 	**/
 	public static function getGroupMembersWithRights(group:db.Group,?rights:Array<Right>):Array<db.User>{
 
-		var membersWithAnyRights = db.UserGroup.manager.search($rights!=null && $group==group,false).array();
+		var membersWithAnyRights = db.UserGroup.manager.search($rights2!=null && $rights2!="[]" && $group==group,false).array();
 		if(rights==null){
-			return Lambda.map(membersWithAnyRights,function(ua) return ua.user).array();
+			return membersWithAnyRights.map(ua -> ua.user);
 		}else{
 			var members = [];
 			for( m in membersWithAnyRights){
@@ -72,8 +72,7 @@ class GroupService
 						break;
 					}
 				}
-			}
-			
+			}			
 			return members.deduplicate();
 		}
 
