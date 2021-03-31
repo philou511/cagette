@@ -92,7 +92,9 @@ class Admin extends Controller {
 		d.dispatch(new controller.admin.Plugins());
 	}
 	
-	
+	/**
+		export taxo as CSV
+	**/
 	@tpl("admin/taxo.mtt")
 	function doTaxo(){
 		var categs = db.TxpCategory.manager.search(true,{orderBy:displayOrder});
@@ -110,10 +112,20 @@ class Admin extends Controller {
 					}
 				}
 			}
-
 			sugoi.tools.Csv.printCsvDataFromStringArray(data,[],"categories.csv");
 		}
 		
+	}
+
+	@admin 
+	function doMigrateRights(){
+
+		// populate UserGroup.rights2 field
+		for( ua in db.UserGroup.manager.search($rights2==null,{limit:5000})){
+			Sys.print(ua.user.getName()+"@"+ua.group.name+" = "+ua.sync()+"<br>");
+		}
+
+		Sys.print("Reste encore "+db.UserGroup.manager.count($rights2==null)+" userGroup à migrer");
 	}
 	
 	/**
