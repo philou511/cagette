@@ -55,7 +55,12 @@ class UserGroup extends Object
 	}
 
 	public function getRights():JsonRights{
-		return haxe.Json.parse(this.rights2);
+		if(this.rights2==null) return [];
+		// try{
+			return haxe.Json.parse(this.rights2);
+		/*}catch(e:Dynamic){
+			return [];
+		}*/		
 	}
 	
 	/**
