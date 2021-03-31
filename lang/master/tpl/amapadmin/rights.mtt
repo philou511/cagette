@@ -17,9 +17,10 @@
 					::u._user.getName()::	
 				</td>
 				<td>
-					<ul ::cond u._rights!=null::>
-					::foreach r u._rights::
-						<li>::u.getRightName(r)::</li>
+					::set rights = u.getRights()::
+					<ul ::cond rights!=null::>
+					::foreach r rights::
+						<li>::u.getJsonRightName(r)::</li>
 					::end::
 					</ul>
 				</td>

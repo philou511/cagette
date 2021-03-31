@@ -11,6 +11,8 @@ enum Right{
 	Messages;					//can send messages
 }
 
+typedef JsonRights = Array<{right:String,params:Array<String>}>;
+
 /**
  * A user which is member of a group
  */
@@ -19,8 +21,8 @@ class UserGroup extends Object
 {
 	@:relation(groupId) public var group : db.Group;
 	@:relation(userId) public var user : db.User;
-	public var rights : SNull<SData<Array<Right>>>;		// rights in this group
-	public var rights2 : SNull<SSmallText>; 
+	public var rights : SNull<SData<Array<Right>>>;		//@deprecated
+	public var rights2 : SNull<SSmallText>; 			//rights in JSON
 	public var balance : SFloat; 						//account balance in group currency
 	public static var CACHE = new Map<String,db.UserGroup>();
 	
@@ -51,6 +53,10 @@ class UserGroup extends Object
 		}
 		return ua;
 	}
+
+	public function getRights():JsonRights{
+		return haxe.Json.parse(this.rights2);
+	}
 	
 	/**
 	 * give right and update DB
@@ -58,35 +64,93 @@ class UserGroup extends Object
 	public function giveRight(r:Right) {
 	
 		if (hasRight(r)) return;
-		if (rights == null) rights = [];
 		lock();
-		rights.push(r);
-		update();
-		sync();
+		var rights:JsonRights = haxe.Json.parse(this.rights2);
+		if (rights == null) rights = [];
+
+		switch(r){
+			case ContractAdmin(cid):					
+				rights.push({
+					right : "ContractAdmin",
+					params : cid==null? null : [Std.string(cid)]
+				});
+			default:
+				rights.push({
+					right:Type.enumConstructor(r).toString(),
+					params:null
+				});			
+		}
+
+		rights2 = haxe.Json.stringify(rights);
+		update();		
 	}
 		
 	/**
 	 * remove right and update DB
 	 */
 	public function removeRight(r:Right) {	
-		if (rights == null) return;
-		var newrights = [];
-		for (right in rights.copy()) {
-			if ( !Type.enumEq(right, r) ) {
-				newrights.push(right);
-			}
+		
+		var rights = getRights();
+		if (rights == null) rights = [];
+		
+		switch(r){
+			case ContractAdmin(cid):					
+				rights.push({
+					right : "ContractAdmin",
+					params : cid==null? null : [Std.string(cid)]
+				});
+
+				for ( right in rights.copy()){
+					if(right.right==Type.enumConstructor(r).toString()){
+						
+						if(cid==null && right.params==null){
+							rights.remove(right);													
+						}
+
+						if(cid!=null && right.params.has(Std.string(cid))){
+							right.params.remove( Std.string(cid) );
+						}						
+					}
+				}	
+
+			default:
+				for ( right in rights.copy()){
+					if(right.right==Type.enumConstructor(r).toString()){
+						rights.remove(right);						
+					}
+				}					
 		}
-		rights = newrights;
+
+		rights2 = haxe.Json.stringify(rights);
 		update();
-		sync();
 	}
 	
 	public function hasRight(r:Right):Bool {
 		if (this.user.isAdmin()) return true;
-		if (rights == null) return false;
-		for ( right in rights) {
-			if ( Type.enumEq(r,right) ) return true;
+		var rights = getRights();
+		switch(r){
+			case ContractAdmin(cid):					
+				for ( right in rights){
+					if(right.right==Type.enumConstructor(r).toString()){
+						
+						if(cid==null && right.params==null){
+							return true;
+						}
+
+						if(cid!=null && right.params.has(Std.string(cid))){
+							return true;
+						}						
+					}
+				}	
+
+			default:
+				for ( right in rights.copy()){
+					if(right.right==Type.enumConstructor(r).toString()){
+						return true;					
+					}
+				}					
 		}
+
 		return false;
 	}
 	
@@ -108,6 +172,28 @@ class UserGroup extends Object
 				}
 			}
 		}
+	}
+
+	public function getJsonRightName(r:{right:String,params:Array<String>}){
+		var t = sugoi.i18n.Locale.texts;
+		return switch(r.right) {
+			case "GroupAdmin" 	: t._("Administrator");
+			case "Messages" 	: t._("Messaging");
+			case "Membership" 	: t._("Members management");
+			case "ContractAdmin" : 
+				if (r.params == null) {
+					t._("Management of all catalogs");
+				}else {
+					var c = db.Catalog.manager.get(Std.parseInt(r.params[0]));
+					if(c==null) {
+						t._("Deleted contract");	
+					}else{
+						t._("::name:: catalog management",{name:c.name});
+					}
+				}
+			default : Std.string(r);
+		}
+		
 	}
 	
 	public function hasValidMembership():Bool {
@@ -131,7 +217,8 @@ class UserGroup extends Object
 	}
 
 	public function canManageAllContracts(){
-		if (rights == null) return false;
+		return hasRight(ContractAdmin(null));
+		/*if (rights == null) return false;
 		for (r in rights) {
 			switch(r) {
 				case Right.ContractAdmin(cid):
@@ -139,7 +226,7 @@ class UserGroup extends Object
 				default:
 			}
 		}
-		return false;			
+		return false;			*/
 	}
 
 	/**
@@ -148,20 +235,21 @@ class UserGroup extends Object
 	public function sync(){
 		lock();
 		var r2 = new Array<{right:String,params:Array<String>}>();
-		if(rights==null) return null;
-		for(r in rights){
-			switch(r){
-				case ContractAdmin(cid):					
-					r2.push({right:"CatalogAdmin",params:cid==null? null : [Std.string(cid)]});
-				case GroupAdmin:
-					r2.push({right:"GroupAdmin",params:null});
-				case Membership:
-					r2.push({right:"Membership",params:null});
-				case Messages : 
-					r2.push({right:"Messages",params:null});
+		if(this.rights!=null){			
+			for(r in this.rights){
+				switch(r){
+					case ContractAdmin(cid):					
+						r2.push({right:"ContractAdmin",params:cid==null? null : [Std.string(cid)]});
+					case GroupAdmin:
+						r2.push({right:"GroupAdmin",params:null});
+					case Membership:
+						r2.push({right:"Membership",params:null});
+					case Messages : 
+						r2.push({right:"Messages",params:null});
+				}
 			}
 		}
-
+		
 		this.rights2 = haxe.Json.stringify(r2);
 		update();
 		return r2;

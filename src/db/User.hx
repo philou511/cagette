@@ -179,57 +179,38 @@ class User extends Object {
 	 * @param	contract
 	 */
 	public function isContractManager(?contract:db.Catalog ) {
-		if (isAdmin()) return true;
-		if (contract != null) {			
-			return canManageContract(contract);
-		}else {
-			var ua = getUserGroup(getGroup());
-			if (ua == null) return false;
-			if (ua.rights == null) return false;
-			for (r in ua.rights) {
-				switch(r) {
-					case Right.ContractAdmin(cid):
-						return true;
-					default:
-				}
-			}
-			return false;			
-		}
+		var ua = getUserGroup(getGroup());
+		if (ua == null) return false;
+		if(contract==null){
+			if(this.isAdmin()) return true;
+			return ua.getRights().exists( r -> r.right=="ContractAdmin" );
+		}else{
+			return ua.hasRight(Right.ContractAdmin(contract.id));
+		}		
 	}
 	
 	public function canManageAllContracts(){
-		if (isAdmin()) return true;
 		var ua = getUserGroup(getGroup());
 		if (ua == null) return false;
-		if (ua.rights == null) return false;
-		for (r in ua.rights) {
-			switch(r) {
-				case Right.ContractAdmin(cid):
-					if(cid==null) return true;
-				default:
-			}
-		}
-		return false;			
+		return ua.hasRight(Right.ContractAdmin(null));		
 	}
 	
-	public function getRights():Array<Right>{
+	/*public function getRights():Array<Right>{
 		var ua = getUserGroup(getGroup());
 		if (ua == null) return [];
 		return ua.rights;
-	}
+	}*/
 
 	public function canAccessMessages():Bool {
 		var ua = getUserGroup(getGroup());
 		if (ua == null) return false;
-		if (ua.hasRight(Right.Messages)) return true;
-		return false;
+		return ua.hasRight(Right.Messages);
 	}
 	
 	public function canAccessMembership():Bool {
 		var ua = getUserGroup(getGroup());
 		if (ua == null) return false;
-		if (ua.hasRight(Right.Membership)) return true;
-		return false;
+		return ua.hasRight(Right.Membership);
 	}
 	
 	public function canManageContract(c:db.Catalog):Bool {
