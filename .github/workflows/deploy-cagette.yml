@@ -19,15 +19,7 @@ jobs:
       - name: Checkout cagette
         uses: actions/checkout@v2
 
-      # checkout cagette-pro
       # see chart https://github.com/actions/checkout#checkout-multiple-repos-private
-      - name: Checkout cagette-pro
-        uses: actions/checkout@v2
-        with:
-          repository: bablukid/cagette-pro
-          path: devLibs/cagette-pro
-          token: ${{ secrets.GH_PAT }}
-
       - name: Checkout record-macros
         uses: actions/checkout@v2
         with:
