@@ -20,7 +20,10 @@ class TxpProduct extends Object
 	
 	public function getFullCategorization():Array<String>{
 		return [subCategory.category.name, subCategory.name, name];
-		
+	}
+
+	public function countProducts():Int{
+		return db.Product.manager.count($txpProduct==this);
 	}
 	
 }

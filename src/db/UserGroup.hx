@@ -70,8 +70,7 @@ class UserGroup extends Object
 	
 		if (hasRight(r)) return;
 		lock();
-		var rights:JsonRights = haxe.Json.parse(this.rights2);
-		if (rights == null) rights = [];
+		var rights = getRights();		
 
 		switch(r){
 			case ContractAdmin(cid):					
@@ -112,7 +111,7 @@ class UserGroup extends Object
 							rights.remove(right);													
 						}
 
-						if(cid!=null && right.params.has(Std.string(cid))){
+						if(cid!=null && right.params!=null && right.params.has(Std.string(cid))){
 							right.params.remove( Std.string(cid) );
 						}						
 					}
@@ -138,7 +137,8 @@ class UserGroup extends Object
 				for ( right in rights){
 					if(right.right==Type.enumConstructor(r).toString()){
 						
-						if(cid==null && right.params==null){
+						if(right.params==null){
+							//can manage all contracts
 							return true;
 						}
 

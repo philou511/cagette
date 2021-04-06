@@ -1,4 +1,5 @@
 package controller.admin;
+import db.TxpProduct;
 import db.BufferedJsonMail;
 import hosted.db.Hosting;
 import tools.Timeframe;
@@ -126,6 +127,41 @@ class Admin extends Controller {
 		}
 
 		Sys.print("Reste encore "+db.UserGroup.manager.count($rights2==null)+" userGroup à migrer");
+	}
+
+
+	/**
+		merge TxpProduct categs
+	**/
+	@admin @tpl('form.mtt')
+	function doMergeCategs(){
+
+		var f = new sugoi.form.Form("merge");
+		var data = [];
+		for( c in TxpProduct.manager.search(true,{orderBy:name})){
+			data.push({label:c.name+" #"+c.id,value:c.id});
+		}
+		f.addElement(new sugoi.form.elements.IntSelect("toreplace","Fusionner",data));
+		f.addElement(new sugoi.form.elements.IntSelect("by","dans",data));
+		f.addElement(new sugoi.form.elements.Checkbox("delete","supprimer la première catégorie",true));
+
+		if(f.isValid()){
+			var oldCateg = TxpProduct.manager.get(f.getValueOf("toreplace") );
+			var newCateg = TxpProduct.manager.get(f.getValueOf("by"));
+			for( p in db.Product.manager.search($txpProduct==oldCateg,true)){
+				p.txpProduct = newCateg;
+				p.update();				
+			}
+
+			if(f.getValueOf("delete")==true && oldCateg.countProducts()==0){
+				oldCateg.delete();
+			}
+
+			throw Ok("/admin/taxo","Catégories fusionnées");
+		}
+
+		view.form = f;
+		view.title = "Fusion de categories de niveau 3";
 	}
 	
 	/**
