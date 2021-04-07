@@ -1,4 +1,6 @@
 package controller;
+import service.PaymentService;
+import sugoi.Web;
 import payment.Check;
 import sugoi.db.Cache;
 import db.Catalog;
@@ -564,7 +566,6 @@ class Subscriptions extends controller.Controller
 				return -1;
 			}
 		});
-
 		
 		var paymentTypes = service.PaymentService.getPaymentTypes(PCManualEntry, catalog.group);
 		var out = [];
@@ -575,12 +576,33 @@ class Subscriptions extends controller.Controller
 		}
 		view.paymentTypes = out;
 		view.selected = selected;
-
-		view.dateToString = function( date : Date ) {
-			return DateTools.format( date, "%d/%m/%Y");
-		}
+		view.dateToString = Formatting.shortDate;
 		view.subscriptionService = SubscriptionService;
 		view.nav.push( 'subscriptions' );
+
+		if(checkToken()){
+			
+			var params = Web.getParams();
+			for( sub in catalogSubscriptions.copy()){
+				if(params.get('sub${sub.id}_amount')!=null){
+					var amount = params.get('sub${sub.id}_amount').parseFloat();
+					var paymentType = params.get('sub${sub.id}_paymentType');
+					var label = params.get('sub${sub.id}_label');
+
+					var op = PaymentService.makePaymentOperation(sub.user,catalog.group,paymentType,amount,label);
+					op.subscription = sub;
+					op.update();
+
+				}else{
+					catalogSubscriptions.remove(sub);
+				}
+
+
+			}
+
+			throw Ok(sugoi.Web.getURI(),catalogSubscriptions.length+" paiements saisis, les soldes ont été mis à jour.");
+
+		}
 
 	}
 

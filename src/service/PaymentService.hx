@@ -21,8 +21,7 @@ class PaymentService {
 	/**
 	 * Record a new payment operation
 	 */
-	public static function makePaymentOperation(user:db.User, group:db.Group, type:String, amount:Float, name:String, ?relation:db.Operation,
-			?remoteOpId:String):db.Operation {
+	public static function makePaymentOperation(user:db.User, group:db.Group, type:String, amount:Float, name:String, ?relation:db.Operation,?remoteOpId:String):db.Operation {
 		if (type == payment.OnTheSpotPayment.TYPE) {
 			var onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(group);
 			if (onTheSpotAllowedPaymentTypes.length == 1) {

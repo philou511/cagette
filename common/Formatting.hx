@@ -172,7 +172,14 @@ class Formatting
 			str.add( Math.round(diff/(3600*24)) +" jours" );
 		}
 		return str.toString();
+	}
 
+	/**
+		date like 01/01/2021
+	**/
+	public static function shortDate(d:Date):String{
+		if(d==null) return "unknown date";
+		return DateTools.format(d,"%d/%m/%Y");
 	}
 
 
