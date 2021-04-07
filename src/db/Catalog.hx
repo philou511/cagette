@@ -38,7 +38,7 @@ class Catalog extends Object
 	public var requiresOrdering : SNull<Bool>;			// ordering at each distrib is a compulsory
 	public var distribMinOrdersTotal : SNull<SFloat>;
 	public var catalogMinOrdersTotal : SNull<SFloat>;
-	public var allowedOverspend : SNull<SFloat>;
+	// public var allowedOverspend : SNull<SFloat>;  //removed 
 
 	public var absentDistribsMaxNb : SNull<SInt>;
 	public var absencesStartDate : SNull<SDateTime>;

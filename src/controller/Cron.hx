@@ -305,16 +305,15 @@ class Cron extends Controller
 							var distribSubscriptionOrders = db.UserOrder.manager.search( $subscription == subscription && $distribution == distrib );
 							if ( distribSubscriptionOrders.length == 0 ) {
 
-								if ( service.SubscriptionService.areAutomatedOrdersValid( subscription, distrib ) ) {
+								// if ( service.SubscriptionService.areAutomatedOrdersValid( subscription, distrib ) ) {
 
-									var defaultOrders : Array< { productId : Int, quantity : Float } > = subscription.getDefaultOrders();
+									var defaultOrders = subscription.getDefaultOrders();
 
 									var automatedOrders = [];
 									for ( order in defaultOrders ) {
 
 										var product = db.Product.manager.get( order.productId, false );
 										if ( product != null && order.quantity != null && order.quantity != 0 ) {
-
 											automatedOrders.push( service.OrderService.make( subscription.user, order.quantity, product, distrib.id, null, subscription ) );	
 										}
 									}
@@ -335,11 +334,9 @@ class Cron extends Controller
 								
 									//Create order operation only
 									if ( distrib.catalog.group.hasPayments() ) {
-			
 										service.SubscriptionService.createOrUpdateTotalOperation( subscription );
 									}
-
-								}
+								// }
 							}
 
 						}

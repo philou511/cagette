@@ -308,19 +308,16 @@ class SubscriptionService
 					label += '<br /><span class="disabled">A l\'origine ce minimum était de ${catalog.catalogMinOrdersTotal} € mais un prorata a été appliqué<br/>car des distributions ont déjà eu lieu.</span>';
 				}
 
-
-				if( catalog.allowedOverspend != null ){
+				/*if( catalog.allowedOverspend != null ){
 					if(catalog.hasPayments){
 						label += '<br />Dépassement autorisé au delà du solde : ${catalog.allowedOverspend} €';
 					}else{
 						label += '<br />Maximum de commandes sur la durée du contrat : ${catalogMinOrdersTotal + catalog.allowedOverspend} €';
 					}				
-				}
-				
+				}*/			
 			}
 
 		} else {
-
 			label += "Contrat AMAP classique : votre commande est identique à chaque distribution.";
 		}
 
@@ -356,13 +353,13 @@ class SubscriptionService
 					label += '<br /><span class="disabled">Calculé au prorata de vos distributions : ${catalog.catalogMinOrdersTotal}€ x ($subscriptionDistribsNb/$catalogAllDistribsNb) = $catalogMinOrdersTotal€</span>';
 				}
 
-				if( catalog.allowedOverspend != null ){
+				/*if( catalog.allowedOverspend != null ){
 					if(catalog.hasPayments){
 						label += '<br />Dépassement autorisé au delà du solde : ${catalog.allowedOverspend}€';
 					}else{
 						label += '<br />Maximum de commandes sur la durée du contrat : ${catalogMinOrdersTotal + catalog.allowedOverspend}€';
 					}				
-				}
+				}*/
 				
 			}
 
@@ -495,7 +492,7 @@ class SubscriptionService
 	**/
 	public static function getCatalogMinOrdersTotal( catalog:db.Catalog, ?subscription:db.Subscription ) : Float {
 
-		if ( catalog.catalogMinOrdersTotal == null || catalog.catalogMinOrdersTotal == 0 || catalog.allowedOverspend == null ) {
+		if ( catalog.catalogMinOrdersTotal == null || catalog.catalogMinOrdersTotal == 0 /*|| catalog.allowedOverspend == null*/ ) {
 			return null;
 		}
 
@@ -523,18 +520,14 @@ class SubscriptionService
 	}
 
 	 /*
-	  *	Checks if automated orders are valid
-	  * @param subscription 
-	  * @param distribution 
-	  * @return Bool
+	  *	Checks if automated orders are valid.
 	  */
-	  public static function areAutomatedOrdersValid( subscription : db.Subscription, distribution : db.Distribution ) : Bool {
+	  /*public static function areAutomatedOrdersValid( subscription:db.Subscription, distribution:db.Distribution ):Bool {
 
 		var catalog = subscription.catalog;
 		
 		var catalogMinOrdersTotal = getCatalogMinOrdersTotal( catalog, subscription );
 		if ( catalogMinOrdersTotal == null || catalogMinOrdersTotal == 0 || catalog.allowedOverspend == null || catalog.allowedOverspend == 0 ) {
-
 			return true;
 		}
 
@@ -546,14 +539,13 @@ class SubscriptionService
 			//Checks that the orders total is lower than the allowed overspend
 			var maxAllowedTotal = catalogMinOrdersTotal + catalog.allowedOverspend;
 			if ( maxAllowedTotal < subscriptionNewTotal ) {
-
 				return false;
 			}
 
 		}
 
 		return true;
-	}
+	}*/
 
 
 	 /*
@@ -569,7 +561,7 @@ class SubscriptionService
 		}
 
 		var catalogMinOrdersTotal = getCatalogMinOrdersTotal( catalog, subscription );
-		if ( ( catalog.distribMinOrdersTotal == null || catalog.distribMinOrdersTotal == 0 ) && ( catalogMinOrdersTotal == null || catalogMinOrdersTotal == 0 || catalog.allowedOverspend == null ) ) {
+		if ( ( catalog.distribMinOrdersTotal == null || catalog.distribMinOrdersTotal == 0 ) && ( catalogMinOrdersTotal == null || catalogMinOrdersTotal == 0 /*|| catalog.allowedOverspend == null*/ ) ) {
 			return true;
 		}
 
@@ -653,7 +645,7 @@ class SubscriptionService
 			}
 
 			//Checks that the orders total is lower than the allowed overspend
-			if(catalog.allowedOverspend!=null){
+			/*if(catalog.allowedOverspend!=null){
 				if(catalog.hasPayments && subscription!=null){
 
 					var paid = subscription.getPaymentsTotal();
@@ -677,7 +669,7 @@ class SubscriptionService
 						throw TypedError.typed( message, CatalogRequirementsNotMet );
 					}
 				}
-			}
+			}*/
 		}
 
 		return true;

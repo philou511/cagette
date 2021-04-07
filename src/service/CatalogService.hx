@@ -34,7 +34,7 @@ class CatalogService{
 			form.removeElement(form.getElement("requiresOrdering"));
 			form.removeElement(form.getElement("distribMinOrdersTotal"));
 			form.removeElement(form.getElement("catalogMinOrdersTotal"));
-			form.removeElement(form.getElement("allowedOverspend"));
+			// form.removeElement(form.getElement("allowedOverspend"));
 			form.removeElement(form.getElement("absentDistribsMaxNb"));
 			form.removeElement(form.getElement("absencesStartDate"));
 			form.removeElement(form.getElement("absencesEndDate"));
@@ -55,7 +55,7 @@ class CatalogService{
 				form.getElement("orderEndHoursBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#ouverture_et_fermeture_de_commande";
 				if( !catalog.hasPayments ) form.getElement("catalogMinOrdersTotal").label = "Minimum de commandes sur la durée du contrat (en €)";
 				form.getElement("catalogMinOrdersTotal").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#minimum_de_commandes_sur_la_duree_du_contrat";
-				form.getElement("allowedOverspend").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#depassement_autorise";
+				// form.getElement("allowedOverspend").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#depassement_autorise";
 				
 			} else { 
 				//CONST
@@ -63,7 +63,7 @@ class CatalogService{
 				form.removeElement(form.getElement("requiresOrdering"));
 				form.removeElement(form.getElement("distribMinOrdersTotal"));
 				form.removeElement(form.getElement("catalogMinOrdersTotal"));
-				form.removeElement(form.getElement("allowedOverspend"));
+				// form.removeElement(form.getElement("allowedOverspend"));
 
 				form.getElement("orderEndHoursBeforeDistrib").label = "Délai minimum pour saisir une souscription (nbre d'heures avant prochaine distribution)";
 				form.getElement("orderEndHoursBeforeDistrib").docLink = "https://wiki.cagette.net/admin:admin_contratsamap#champs_delai_minimum_pour_saisir_une_souscription";
@@ -78,11 +78,11 @@ class CatalogService{
 				//if catalog is new
 				if ( catalog.type == Catalog.TYPE_VARORDER ) {
 					form.getElement("orderStartDaysBeforeDistrib").value = 365;
-					if ( hasPayments ) {
-						form.getElement("allowedOverspend").value = 10;
-					} else {
-						form.getElement("allowedOverspend").value = 500;
-					}
+					// if ( hasPayments ) {
+					// 	form.getElement("allowedOverspend").value = 10;
+					// } else {
+					// 	form.getElement("allowedOverspend").value = 500;
+					// }
 				}
 				form.getElement("orderEndHoursBeforeDistrib").value = 24;
 
@@ -181,10 +181,10 @@ class CatalogService{
 				}
 
 				var catalogMinOrdersTotal = form.getValueOf("catalogMinOrdersTotal");
-				var allowedOverspend = form.getValueOf("allowedOverspend");
+				/*var allowedOverspend = form.getValueOf("allowedOverspend");
 				if( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 && allowedOverspend == null ) {
 					throw new Error( 'Vous devez obligatoirement définir un dépassement autorisé car vous avez rentré un minimum de commandes/provision minimale sur la durée du contrat.');
-				}
+				}*/
 			}
 
 			if( catalog.type == Catalog.TYPE_CONSTORDERS ) {
