@@ -2,7 +2,6 @@ package controller;
 import service.SubscriptionService;
 import haxe.macro.Expr.Catch;
 import payment.Check;
-import service.WaitingListService;
 import db.Catalog;
 import service.OrderService;
 import db.MultiDistrib;

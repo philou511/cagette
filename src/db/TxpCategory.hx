@@ -16,7 +16,7 @@ class TxpCategory extends Object
 	public var name : SString<128>;	
 	
 	public function getSubCategories(){
-		return db.TxpSubCategory.manager.search($category == this, false);
+		return db.TxpSubCategory.manager.search($category == this,{orderBy:displayOrder},false);
 	}
 
 	public static function all(){

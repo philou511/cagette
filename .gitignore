@@ -32,8 +32,6 @@ www/file/*
 www/js/*
 www/css/.sass-cache
 www/css/*.css
-www/*.xls
-www/*.xlsx
 !www/js/libs.dev.js
 !www/js/libs.prod.js
 !www/js/fetch.umd.js

@@ -81,9 +81,12 @@ class Install extends controller.Controller
 				
 				var ua = new db.UserGroup();
 				ua.user = user;
-				ua.group = amap;
-				ua.rights = [Right.GroupAdmin,Right.Membership,Right.Messages,Right.ContractAdmin(null)];
+				ua.group = amap;				
 				ua.insert();
+				ua.giveRight(Right.GroupAdmin);
+				ua.giveRight(Right.Membership);
+				ua.giveRight(Right.Messages);
+				ua.giveRight(Right.ContractAdmin(null));
 				
 				//example datas
 				var place = new db.Place();
@@ -211,7 +214,7 @@ class Install extends controller.Controller
 		
 	}
 	
-	@admin
+	/*@admin
 	function _0_9_2_installTaxonomy(){
 		
 		db.TxpCategory.manager.delete(true);
@@ -250,7 +253,7 @@ class Install extends controller.Controller
 			pro.insert();
 		}
 		
-	}
+	}*/
 
 	@admin
 	public function doMigrateCSAOrders(){

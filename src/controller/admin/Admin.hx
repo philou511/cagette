@@ -1,4 +1,5 @@
 package controller.admin;
+import db.TxpProduct;
 import db.BufferedJsonMail;
 import hosted.db.Hosting;
 import tools.Timeframe;
@@ -36,11 +37,19 @@ class Admin extends Controller {
 			args.reset.update();
 		}
 
+		var emails: Array<Dynamic> = service.BridgeService.call("/mail/getUnsentMails");
+
 		var browse = function(index:Int, limit:Int) {
-			return BufferedJsonMail.manager.search($sdate==null,{limit:[index,limit],orderBy:-cdate},false);
+			var filtered = [];
+			for (i in 0...limit) {
+				if (i+index < emails.length){
+					filtered.push(emails[i+index]);
+				}
+			}
+			return filtered;
 		}
 
-		var count = BufferedJsonMail.manager.count($sdate==null);
+		var count = emails.length;
 		view.browser = new sugoi.tools.ResultsBrowser(count,10,browse);
 		view.num = count;
 	}
@@ -84,7 +93,9 @@ class Admin extends Controller {
 		d.dispatch(new controller.admin.Plugins());
 	}
 	
-	
+	/**
+		export taxo as CSV
+	**/
 	@tpl("admin/taxo.mtt")
 	function doTaxo(){
 		var categs = db.TxpCategory.manager.search(true,{orderBy:displayOrder});
@@ -102,10 +113,55 @@ class Admin extends Controller {
 					}
 				}
 			}
-
 			sugoi.tools.Csv.printCsvDataFromStringArray(data,[],"categories.csv");
 		}
 		
+	}
+
+	@admin 
+	function doMigrateRights(){
+
+		// populate UserGroup.rights2 field
+		for( ua in db.UserGroup.manager.search($rights2==null,{limit:5000})){
+			Sys.print(ua.user.getName()+"@"+ua.group.name+" = "+ua.sync()+"<br>");
+		}
+
+		Sys.print("Reste encore "+db.UserGroup.manager.count($rights2==null)+" userGroup à migrer");
+	}
+
+
+	/**
+		merge TxpProduct categs
+	**/
+	@admin @tpl('form.mtt')
+	function doMergeCategs(){
+
+		var f = new sugoi.form.Form("merge");
+		var data = [];
+		for( c in TxpProduct.manager.search(true,{orderBy:name})){
+			data.push({label:c.name+" #"+c.id,value:c.id});
+		}
+		f.addElement(new sugoi.form.elements.IntSelect("toreplace","Fusionner",data));
+		f.addElement(new sugoi.form.elements.IntSelect("by","dans",data));
+		f.addElement(new sugoi.form.elements.Checkbox("delete","supprimer la première catégorie",true));
+
+		if(f.isValid()){
+			var oldCateg = TxpProduct.manager.get(f.getValueOf("toreplace") );
+			var newCateg = TxpProduct.manager.get(f.getValueOf("by"));
+			for( p in db.Product.manager.search($txpProduct==oldCateg,true)){
+				p.txpProduct = newCateg;
+				p.update();				
+			}
+
+			if(f.getValueOf("delete")==true && oldCateg.countProducts()==0){
+				oldCateg.delete();
+			}
+
+			throw Ok("/admin/taxo","Catégories fusionnées");
+		}
+
+		view.form = f;
+		view.title = "Fusion de categories de niveau 3";
 	}
 	
 	/**
@@ -320,7 +376,7 @@ class Admin extends Controller {
 		MultiDistrib.manager.delete( $distribStartDate < DateTools.delta(Date.now(),-1000 * 60 * 60 * 24 * 360 * 2) );
 
 		//delete old messages
-		db.Message.manager.delete( $date < DateTools.delta(Date.now(),-1000 * 60 * 60 * 24 * 360 * 2) );
+		// db.Message.manager.delete( $date < DateTools.delta(Date.now(),-1000 * 60 * 60 * 24 * 360 * 2) );
 
 		//delete old contracts
 		Catalog.manager.delete( $endDate < DateTools.delta(Date.now(),-1000 * 60 * 60 * 24 * 360) );
@@ -403,8 +459,26 @@ class Admin extends Controller {
 			}
 			
 		}
-		
 	}**/
+
+	function doLastCproTest(){
+		//cagette pro test par date de creation du cpro
+		var vendors = db.Vendor.manager.unsafeObjects("SELECT v.*,cpro.cdate as cprocdate FROM CagettePro cpro, Vendor v WHERE v.id=cpro.vendorId and isTest=1 order by cpro.cdate DESC",false);
+		Sys.print("<h2>Derniers Cagette Pro test</h2>");
+		Sys.print('<p>${vendors.length} producteurs</p>');
+		Sys.print('<table class="table"><tr><th>Producteur</th><th>Bloqué</th><th>Inscription</th></tr>');
+		for( v in vendors){
+
+			var cpro = pro.db.CagettePro.getFromVendor(v);
+			var blocked = cpro.getUserCompany().exists( uc -> uc.disabled );
+
+			Sys.print('<tr><td><a href="/p/pro/admin/vendor/${v.id}" target="_blank">${v.id} - ${v.name}</a></td>');
+			Sys.print('<td>${blocked?"OUI":"NON"}</a></td>');
+			Sys.print('<td>${untyped v.cprocdate}</a></td>');
+			Sys.print("</tr>");
+		}
+		Sys.print('</table>');
+	}
 
 }
 

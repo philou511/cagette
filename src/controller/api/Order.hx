@@ -76,7 +76,7 @@ class Order extends Controller
 		checkRights( user, catalog, multiDistrib );
 		
 		//POST payload
-		var ordersData = new Array< { id : Int, productId : Int, qt : Float, paid : Bool, invertSharedOrder : Bool, userId2 : Int } >();
+		var ordersData = new Array<{ id:Int, productId:Int, qt:Float, paid:Bool, invertSharedOrder:Bool, userId2:Int }>();
 		
 		var raw = StringTools.urlDecode( sugoi.Web.getPostData() );
 		

@@ -65,7 +65,7 @@ class Product extends Object
 	public function getImage() {
 		if (image == null) {
 			if (txpProduct != null){				
-				return "/img/taxo/grey/" + txpProduct.category.image + ".png";
+				return "/img/taxo/grey/" + txpProduct.subCategory.category.image + ".png";
 			}else{
 				return "/img/taxo/grey/fruits-legumes.png";
 			}			
@@ -139,17 +139,16 @@ class Product extends Object
 			}else{
 				//standard categories
 				if(txpProduct!=null){
-					o.categories = [txpProduct.category.id];
+					o.categories = [txpProduct.subCategory.category.id];
 					o.subcategories = [txpProduct.subCategory.id];
 				}else{
 					//get the "Others" category
 					var txpOther = db.TxpProduct.manager.get(679,false);
 					if(txpOther!=null){
-						o.categories = [txpOther.category.id];
+						o.categories = [txpOther.subCategory.category.id];
 						o.subcategories = [txpOther.subCategory.id];
 					}
-				}
-				
+				}				
 			}
 		}
 

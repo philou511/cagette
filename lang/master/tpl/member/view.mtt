@@ -94,7 +94,7 @@
 		::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user.getGroup().getPeriodName(null)::</b>
 		<br/>
 		
-		<a onclick="_.membershipBox(::member.id::,::userGroup._group.id::,'/member/view/::member.id::')" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
+		<a onclick="_.membershipBox(::member.id::,'::member.getName()::',::userGroup._group.id::,'/member/view/::member.id::')" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
 
 	</div>
 	::end::
@@ -341,13 +341,13 @@
 	</div>
 </div>
 
-
-<div class="col-md-4" ::cond userGroup.rights!=null && userGroup._rights!=null::>
+::set rights = userGroup.getRights()::
+<div class="col-md-4" ::cond rights.length > 0 ::>
 	<h3>::_("Rights")::</h3>
 	<div class="article">
 		<ul>
-		::foreach r userGroup._rights::
-		<li>::userGroup.getRightName(r)::</li>
+		::foreach r rights::
+		<li>::userGroup.getJsonRightName(r)::</li>
 		::end::
 		</ul>
 	</div>	

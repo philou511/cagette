@@ -12,13 +12,10 @@ class TxpSubCategory extends Object
 	public var id : SId;
 	public var name : SString<128>;	
 	@:relation(categoryId) public var category:db.TxpCategory;
-	
+	public var displayOrder : STinyInt;
 	
 	public function getProducts(){
-		
 		return db.TxpProduct.manager.search($subCategory == this, false);
-	
-		
 	}
 	
 	override public function toString(){

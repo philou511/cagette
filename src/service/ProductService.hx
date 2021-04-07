@@ -101,7 +101,7 @@ class ProductService{
 		var f = form.CagetteForm.fromSpod(product);
 
 		f.getElement("bulk").description = "Ce produit est vendu en vrac ( sans conditionnement ). Le poids/volume commandé peut être corrigé après pesée.";
-		f.getElement("hasFloatQt").description = "<div class='alert alert-danger'>Attention cette option <a href='https://wiki.cagette.net/admin:5april' target='_blank'>disparaîtra le lundi 5 avril</a>. </a>";
+		f.getElement("hasFloatQt").description = "<div class='alert alert-danger'>Attention cette option <a href='https://wiki.cagette.net/admin:5april' target='_blank'>disparaîtra le lundi 3 Mai 2021</a>. </a>";
 		f.getElement("variablePrice").description = "Comme au marché, le prix final sera calculé en fonction du poids réel après pesée.";
 		f.getElement("multiWeight").description = "Permet de peser séparément chaque produit. Idéal pour la volaille par exemple.";
 

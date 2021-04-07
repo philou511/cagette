@@ -15,7 +15,7 @@
 	cache="0"
 	maintain="0"
 	cachetpl="0"
-	key="localdevkey"
+	key="7F8Xr1hDLyDMeNDF9kod"
 
 	cagette_api="http://localhost:3010"
 	cagette_bridge_api="http://nest:3010"

@@ -133,6 +133,15 @@
 								slotDuration: 1000 * 60 * 15,
 							})
 						</script>
+
+						::if(d.getDate().toString().substr(0,10)=="2021-03-10" || d.getDate().toString().substr(0,10)=="2021-03-11")::
+							::if(d.getTotalIncome()>0)::
+							<a href="/distribution/validate/::d.id::" class="btn btn-danger">
+								<i class="icon icon-delete"></i> Annuler la distribution
+							</a>
+							::end::
+						::end::
+
                 </div>
             </div>
             

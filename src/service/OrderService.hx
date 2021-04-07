@@ -824,13 +824,11 @@ class OrderService
 				// Edit existing order
 				var updatedOrder = OrderService.edit( existingOrder, order.qt, order.paid );
 				if ( updatedOrder != null ) orders.push( updatedOrder );
-			}
-			else {
+			} else {
 
 				// Insert new order
 				var distrib = null;
 				if( multiDistrib != null ) { 
-
 					distrib = multiDistrib.getDistributionFromProduct( product );
 				}
 
@@ -858,10 +856,16 @@ class OrderService
 				if ( newOrder != null ) orders.push( newOrder );
 				
 			}
-
 		}
 
 		App.current.event( MakeOrder( orders ) );
+
+		//update basket total
+		if(multiDistrib!=null){
+			var b = db.Basket.get(user,multiDistrib,true);
+			b.total = b.getOrdersTotal();
+			b.update();
+		}
 
 		if ( shopMode ) {
 			service.PaymentService.onOrderConfirm( orders );

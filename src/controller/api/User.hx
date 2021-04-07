@@ -1,5 +1,4 @@
 package controller.api;
-import service.MembershipService;
 import haxe.Json;
 import tink.core.Error;
 import service.PaymentService;
