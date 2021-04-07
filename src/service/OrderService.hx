@@ -313,9 +313,7 @@ class OrderService
 	 */
 	public static function delete( order : db.UserOrder, ?force = false ) {
 		var t = sugoi.i18n.Locale.texts;
-
 		if(order==null) throw new Error( t._( "This order has already been deleted." ) );
-		
 		order.lock();
 		
 		if (order.quantity == 0 || force) {
@@ -350,20 +348,16 @@ class OrderService
 				}
 
 				order.delete();
-			}
-			else {
+			} else {
 
 				order.delete();
 
 				if( hasPayments ) {
-
 					service.SubscriptionService.createOrUpdateTotalOperation( order.subscription );
 				}
 			}
 	
-		}
-		else {
-
+		} else {
 			throw new Error( t._( "Deletion not possible: quantity is not zero." ) );
 		}
 

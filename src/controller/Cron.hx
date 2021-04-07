@@ -175,27 +175,29 @@ class Cron extends Controller
 		});
 		task.execute(!App.config.DEBUG);
 
-		//Send warnings about subscriptions that are not validated yet and for which there is a distribution that starts in the right time range
+		//Send warnings about subscriptions that are not validated yet and for which there is a distribution that starts in the right time range.
+		//  /!\ subscription validation is needed only with catalog with payments
 		var task = new TransactionWrappedTask( "Subscriptions to validate alert emails");
 		task.setTask(function() {
 			
 			var fromNow = now.setHourMinute( now.getHours(), 0 );
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
-			var subscriptionsToValidate : Array< db.Subscription > = Lambda.array( db.Subscription.manager.unsafeObjects(
+			var subscriptionsToValidate = db.Subscription.manager.unsafeObjects(
 				'SELECT DISTINCT Subscription.* 
 				FROM Subscription INNER JOIN Catalog
 				ON Subscription.catalogId = Catalog.id
 				INNER JOIN Distribution
 				ON Distribution.catalogId = Catalog.id
 				WHERE Subscription.isPaid = false 
-				AND Catalog.type = ${db.Catalog.TYPE_CONSTORDERS} 
+				AND Catalog.type = ${db.Catalog.TYPE_CONSTORDERS}
+				AND Catalog.hasPayments = 0 
 				AND Distribution.date >= DATE_ADD(\'${fromNow}\', INTERVAL 3 DAY)
-				AND Distribution.date < DATE_ADD(\'${toNow}\', INTERVAL 3 DAY);', false ) );
+				AND Distribution.date < DATE_ADD(\'${toNow}\', INTERVAL 3 DAY);',false).array();
 			
-			var subscriptionsToValidateByCatalog = new Map< db.Catalog, Array< db.Subscription > >();
+			var subscriptionsToValidateByCatalog = new Map<db.Catalog, Array<db.Subscription>>();
 			for ( subscription in subscriptionsToValidate ) {
 				if ( subscriptionsToValidateByCatalog[ subscription.catalog ] == null ) {
-					subscriptionsToValidateByCatalog[ subscription.catalog ] = new Array< db.Subscription >();
+					subscriptionsToValidateByCatalog[ subscription.catalog ] = [];
 				}
 				subscriptionsToValidateByCatalog[ subscription.catalog ].push( subscription );
 			}

@@ -302,7 +302,6 @@ class Contract extends Controller
 	 * 
 	 * It should work for constant orders ( will display one column )
 	 * or varying orders ( with as many columns as distributions dates )
-	 * 
 	 */
 	
 	function doOrder( catalog : db.Catalog ) {
@@ -356,11 +355,10 @@ class Contract extends Controller
 			view.json = function(d) return haxe.Json.stringify(d);
 
 			view.multiWeightQuantity  = function( order : db.UserOrder ) {
-
 				return db.UserOrder.manager.count( $subscription == order.subscription && $distribution == order.distribution && $product == order.product && $quantity > 0 );
 			}
 
-			var openDistributions : Array<db.Distribution> = SubscriptionService.getOpenDistribsForSubscription( app.user, catalog, currentOrComingSubscription );
+			var openDistributions = SubscriptionService.getOpenDistribsForSubscription( app.user, catalog, currentOrComingSubscription );
 			hasComingOpenDistrib = openDistributions.length != 0;
 	
 			for ( distrib in openDistributions ) {
@@ -399,43 +397,32 @@ class Contract extends Controller
 								}
 
 								useOrder = true;
-
 							}
-
 						}
-
 						if ( useOrder ) {							
 							orderProduct.order = order;
 						}
-
 					}
-
 					data.push( orderProduct );
 				}
 
 				userOrders.push( { distrib : distrib, ordersProducts : data } );
-
 			}
 			
 		} else {
-
 			//CSA contracts
 			hasComingOpenDistrib = SubscriptionService.getComingOpenDistrib( catalog ) != null;
 
 			var data = [];
 			for ( product in products ) {
-
 				var orderProduct = { order : null, product : product };
 				if ( currentOrComingSubscription != null ) {
-
 					var subscriptionOrders = SubscriptionService.getCSARecurrentOrders( currentOrComingSubscription, null );
 					var order = subscriptionOrders.find( function ( order ) return order.product.id == product.id );
 					if ( order != null ) orderProduct.order = order;
 				}
-
 				data.push( orderProduct );
 			}
-			
 			userOrders.push( { distrib : null, ordersProducts : data } );
 		}
 
@@ -447,12 +434,12 @@ class Contract extends Controller
 			var varOrders = []; 
 			var varOrdersToEdit = [];
 			var varOrdersToMake = [];
-			var pricesQuantitiesByDistrib = new Map< db.Distribution, Array< { productQuantity:Float, productPrice:Float } > >();
+			var pricesQuantitiesByDistrib = new Map< db.Distribution, Array< { productQuantity:Float, productPrice:Float }>>();
 			//For const catalogs
-			var constOrders = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }> (); 
+			var constOrders = new Array<{ productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }> (); 
 
 			var firstDistrib = null;
-			var varDefaultOrders = new Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
+			var varDefaultOrders = new Array<{ productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
 
 			for ( key in app.params.keys() ) {
 				
@@ -490,15 +477,11 @@ class Contract extends Controller
 				
 				if ( orderProduct == null ) throw t._( "Could not find the product ::product:: and delivery ::delivery::", { product : productId, delivery : distribId } );
 				
-				var quantity = 0.0;
-				
+				var quantity = 0.0;				
 				if ( orderProduct.product.hasFloatQt ) {
-
 					var param = StringTools.replace( qty, ",", "." );
 					quantity = Std.parseFloat( param );
-
 				} else {
-
 					quantity = Std.parseInt( qty );
 				}
 				
@@ -514,11 +497,8 @@ class Contract extends Controller
 								pricesQuantitiesByDistrib[orderProduct.order.distribution] = [];
 							}
 							pricesQuantitiesByDistrib[orderProduct.order.distribution].push( { productQuantity : quantity, productPrice : orderProduct.order.productPrice } );
-
 						}
-						
-					}
-					else {
+					} else {
 
 						if ( distribution.orderEndDate.getTime() > Date.now().getTime() ) {
 
@@ -540,7 +520,7 @@ class Contract extends Controller
 	
 						if ( firstDistrib != null && distribution.date.getTime() < firstDistrib.date.getTime() ) {
 							firstDistrib = distribution;
-							varDefaultOrders = new Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
+							varDefaultOrders = new Array< { productId:Int, quantity:Float, ?userId2:Int, ?invertSharedOrder:Bool } >();
 						}
 	
 						if( firstDistrib != null && distribution.id == firstDistrib.id ) {
@@ -582,7 +562,7 @@ class Contract extends Controller
 							}
 						}
 						
-						var newSubscriptionAbsentDistribs : Array<db.Distribution> = new Array<db.Distribution>();
+						var newSubscriptionAbsentDistribs = [];
 						if( subscriptionIsNew ) {
 							newSubscriptionAbsentDistribs = currentOrComingSubscription.getAbsentDistribs();
 						}
@@ -638,7 +618,7 @@ class Contract extends Controller
 			if ( !hasRequirementsError ) {
 				var msg = "Votre souscription a bien été mise à jour.";
 				//message if no payments has been made and there is a catalogMinOrdersTotal
-				if(catalog.hasPayments && catalog.catalogMinOrdersTotal!=0){
+				if(catalog.hasPayments && catalog.catalogMinOrdersTotal > 0){
 					if(currentOrComingSubscription.getPaymentsTotal()==0){
 						msg += " <b>Pensez à payer votre provision initiale de "+SubscriptionService.getCatalogMinOrdersTotal(catalog,currentOrComingSubscription)+"€</b>";
 					}					
@@ -651,22 +631,18 @@ class Contract extends Controller
 		App.current.breadcrumb = [ { link : "/home", name : "Commandes", id : "home" } ]; 
 		view.subscriptionService = SubscriptionService;
 		view.catalog = catalog;
+
 		//small balance warning
 		/*if ( currentOrComingSubscription != null && catalog.type == db.Catalog.TYPE_VARORDER && catalog.hasPayments ) {
-
 			var balance = currentOrComingSubscription.getBalance();
 			var remainingDistribsNb = SubscriptionService.getSubscriptionRemainingDistribsNb( currentOrComingSubscription );
 			var averageSpentPerDistrib = SubscriptionService.getDistribOrdersAverageTotal( currentOrComingSubscription );
 			if( averageSpentPerDistrib != 0 && remainingDistribsNb != 0 ) {
-
 				var remainingDistribsToZero = Math.floor( balance / averageSpentPerDistrib );
-			
 					// si j'ai de la réserve pour moins de 4 distribs,
 					// et que ce que j'ai en réserve fait moins que les distribs qu'ils reste à faire
 					// et que la souscription a plus de 4 distribs.
-			
 				if( remainingDistribsToZero < 4  && remainingDistribsToZero < remainingDistribsNb && SubscriptionService.getSubscriptionDistribsNb( currentOrComingSubscription )>4 ) {
-
 					view.smallBalance = balance < ( remainingDistribsNb * averageSpentPerDistrib ) ? balance : null;
 				}
 			}
