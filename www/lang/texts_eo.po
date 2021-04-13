@@ -1,9 +1,16 @@
 msgid ""
 msgstr ""
+"Report-Msgid-Bugs-To: francois@alilo.fr\n"
+"PO-Revision-Date: 2021-04-14 09:27+0000\n"
+"Last-Translator: phlostically <phlostically@mailinator.com>\n"
+"Language-Team: Esperanto <https://hosted.weblate.org/projects/cagette/"
+"translations/eo/>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.6-dev\n"
 
 #: ../src/payment/Cash.hx:293
 msgid "Cash"
@@ -23,7 +30,7 @@ msgstr ""
 
 #: ../src/payment/Check.hx:294
 msgid "Check"
-msgstr ""
+msgstr "Ĉeko"
 
 #: ../src/controller/Transaction.hx:459 ../src/controller/Transaction.hx:2592 ../src/controller/Transaction.hx:4254 ../src/controller/Transaction.hx:4545
 msgid "Action forbidden"
@@ -32,15 +39,15 @@ msgstr ""
 #. label or name for a payment
 #: ../src/controller/Transaction.hx:702 ../src/controller/Transaction.hx:2791 ../src/controller/Validate.hx:2871 ../src/controller/Validate.hx:4600
 msgid "Label"
-msgstr ""
+msgstr "Etikedo"
 
 #: ../src/controller/Transaction.hx:819 ../src/controller/Transaction.hx:2911 ../src/controller/Validate.hx:2970 ../src/controller/Validate.hx:4709
 msgid "Amount"
-msgstr ""
+msgstr "Kvanto"
 
 #: ../src/controller/Transaction.hx:906 ../src/controller/Transaction.hx:3003 ../src/controller/Validate.hx:4796 ../src/db/MultiDistrib.hx:12151 ../src/db/Distribution.hx:9070 ../lang/master/tpl/member/lastMessages.mtt:50 ../lang/master/tpl/contractadmin/selectDistrib.mtt:191
 msgid "Date"
-msgstr ""
+msgstr "Dato"
 
 #: ../src/controller/Transaction.hx:1222 ../src/controller/Validate.hx:3373 ../src/controller/Validate.hx:5112
 msgid "Payment type"
@@ -60,11 +67,11 @@ msgstr ""
 
 #: ../src/controller/Transaction.hx:3096
 msgid "Confirmed"
-msgstr ""
+msgstr "Konfirmita"
 
 #: ../src/controller/Transaction.hx:3991
 msgid "Operation updated"
-msgstr ""
+msgstr "Operacio ĝisdatiĝis"
 
 #: ../src/controller/Transaction.hx:4659 ../src/controller/Validate.hx:1397
 msgid "Operation deleted"
@@ -102,7 +109,7 @@ msgstr ""
 
 #: ../src/controller/Vendor.hx:1543 ../src/controller/Place.hx:746 ../src/controller/Place.hx:1468 ../src/db/Vendor.hx:4061 ../src/db/Place.hx:1422
 msgid "Country"
-msgstr ""
+msgstr "Lando"
 
 #: ../src/controller/Vendor.hx:1706
 msgid "This supplier has been updated"
@@ -118,7 +125,7 @@ msgstr ""
 
 #: ../src/controller/Contract.hx:939
 msgid "Edit catalog \"::contractName::\""
-msgstr ""
+msgstr "Redakti katalogon \"::contractName::\""
 
 #: ../src/controller/Contract.hx:1525
 msgid "If you would like to add fees to the order, define a rate (%) and a label."
@@ -136,7 +143,7 @@ msgstr ""
 
 #: ../src/controller/Contract.hx:2732
 msgid "Catalog updated"
-msgstr ""
+msgstr "Katalogo ĝisdatiĝis"
 
 #: ../src/controller/Contract.hx:2977
 msgid "Define a vendor"
@@ -158,7 +165,7 @@ msgstr ""
 
 #: ../src/controller/Contract.hx:3449 ../lang/master/tpl/member/import.mtt:932 ../lang/master/tpl/member/import.mtt:1638
 msgid "zip code"
-msgstr ""
+msgstr "poŝtkodo"
 
 #: ../src/controller/Contract.hx:4276
 msgid "This supplier has been saved"
@@ -176,7 +183,7 @@ msgstr ""
 
 #: ../src/controller/Contract.hx:5003
 msgid "Create a catalog"
-msgstr ""
+msgstr "Krei katalogon"
 
 #: ../src/controller/Contract.hx:5551
 msgid "Vendor"
@@ -184,7 +191,7 @@ msgstr ""
 
 #: ../src/controller/Contract.hx:6326
 msgid "New catalog created"
-msgstr ""
+msgstr "Nova katalogo kreiĝis"
 
 #: ../src/controller/Contract.hx:7119
 msgid "You cannot delete this catalog because some orders are linked to it."
@@ -196,7 +203,7 @@ msgstr ""
 
 #: ../src/controller/Contract.hx:7580 ../src/controller/Documents.hx:3347 ../src/controller/Product.hx:3403
 msgid "Token error"
-msgstr ""
+msgstr "Eraro pri ĵetono"
 
 #: ../src/controller/Contract.hx:8155 ../src/controller/Contract.hx:11291
 msgid "This catalog is not opened for orders"
@@ -242,7 +249,7 @@ msgstr ""
 
 #: ../src/controller/AmapAdmin.hx:616 ../src/controller/AmapAdmin.hx:10517
 msgid "Means of payment"
-msgstr ""
+msgstr "Pagmetodo"
 
 #: ../src/controller/AmapAdmin.hx:755 ../lang/master/tpl/categories/default.mtt:38
 msgid "Customized categories"
@@ -254,11 +261,11 @@ msgstr ""
 
 #: ../src/controller/AmapAdmin.hx:3793 ../lang/master/tpl/distribution/volunteersParticipation.mtt:1930
 msgid "Member"
-msgstr ""
+msgstr "Ano"
 
 #: ../src/controller/AmapAdmin.hx:4056
 msgid "Group administrator"
-msgstr ""
+msgstr "Grupadministranto"
 
 #: ../src/controller/AmapAdmin.hx:4125
 msgid "Membership management"
@@ -266,15 +273,15 @@ msgstr ""
 
 #: ../src/controller/AmapAdmin.hx:4195
 msgid "Messages"
-msgstr ""
+msgstr "Mesaĝoj"
 
 #: ../src/controller/AmapAdmin.hx:4611 ../src/db/User.hx:19140 ../lang/master/tpl/member/view.mtt:7308 ../lang/master/tpl/amapadmin/rights.mtt:220
 msgid "Rights"
-msgstr ""
+msgstr "Rajtoj"
 
 #: ../src/controller/AmapAdmin.hx:4842
 msgid "All catalogs"
-msgstr ""
+msgstr "Ĉiuj katalogoj"
 
 #: ../src/controller/AmapAdmin.hx:5348
 msgid "Catalogs management"
@@ -294,15 +301,15 @@ msgstr ""
 
 #: ../src/controller/AmapAdmin.hx:6708
 msgid "Give rights to a user"
-msgstr ""
+msgstr "Rajtigi uzanton"
 
 #: ../src/controller/AmapAdmin.hx:6764
 msgid "Modify the rights of ::user::"
-msgstr ""
+msgstr "Ŝanĝi la rajtojn de ::user::"
 
 #: ../src/controller/AmapAdmin.hx:7215 ../src/controller/AmapAdmin.hx:7436 ../src/db/Place.hx:1260 ../lang/master/tpl/product/import.mtt:1865 ../lang/master/tpl/distribution/listByDateShort.mtt:420 ../lang/master/tpl/distribution/listByDate.mtt:572 ../lang/master/tpl/member/waiting.mtt:153 ../lang/master/tpl/amapadmin/rights.mtt:193 ../lang/master/tpl/contractadmin/view.mtt:1173 ../lang/master/tpl/contractadmin/products.mtt:1741
 msgid "Name"
-msgstr ""
+msgstr "Nomo"
 
 #: ../src/controller/AmapAdmin.hx:7282 ../src/controller/AmapAdmin.hx:7506
 msgid "Rate"
@@ -318,15 +325,15 @@ msgstr ""
 
 #: ../src/controller/AmapAdmin.hx:8350
 msgid "Currency used by your group."
-msgstr ""
+msgstr "Valuto uzata de via grupo."
 
 #: ../src/controller/AmapAdmin.hx:8492
 msgid "Currency symbol"
-msgstr ""
+msgstr "Simbolo de valuto"
 
 #: ../src/controller/AmapAdmin.hx:8620
 msgid "3 digit ISO code"
-msgstr ""
+msgstr "3-cifera ISO-kodo"
 
 #: ../src/controller/AmapAdmin.hx:8940
 msgid "Currency updated"
@@ -362,23 +369,23 @@ msgstr ""
 
 #: ../src/controller/Messages.hx:793
 msgid "Sender name"
-msgstr ""
+msgstr "Nomo de sendinto"
 
 #: ../src/controller/Messages.hx:881
 msgid "Sender E-Mail"
-msgstr ""
+msgstr "Retpoŝta adreso de sendinto"
 
 #: ../src/controller/Messages.hx:967
 msgid "Recipients"
-msgstr ""
+msgstr "Ricevantoj"
 
 #: ../src/controller/Messages.hx:1079 ../lang/master/tpl/messages/message.mtt:110
 msgid "Subject:"
-msgstr ""
+msgstr "Temo:"
 
 #: ../src/controller/Messages.hx:1179
 msgid "Message:"
-msgstr ""
+msgstr "Mesaĝo:"
 
 #: ../src/controller/Messages.hx:1625
 msgid "The message body is empty !"
@@ -394,7 +401,7 @@ msgstr ""
 
 #: ../src/controller/Messages.hx:3950
 msgid "Everyone"
-msgstr ""
+msgstr "Ĉiu"
 
 #: ../src/controller/Messages.hx:3990
 msgid "The board: people with administration rights in this group"
@@ -414,7 +421,7 @@ msgstr ""
 
 #: ../src/controller/Messages.hx:4429
 msgid "Subscribers"
-msgstr ""
+msgstr "Abonantoj"
 
 #: ../src/controller/User.hx:924
 msgid "You are not connected"
@@ -426,11 +433,11 @@ msgstr ""
 
 #: ../src/controller/User.hx:2391 ../src/controller/User.hx:5615
 msgid "Your new password"
-msgstr ""
+msgstr "Via nova pasvorto"
 
 #: ../src/controller/User.hx:2527 ../src/controller/User.hx:5681
 msgid "Again your new password"
-msgstr ""
+msgstr "Denove via nova pasvorto"
 
 #: ../src/controller/User.hx:3119
 msgid "This E-mail is not linked to a known account"
@@ -438,19 +445,19 @@ msgstr ""
 
 #: ../src/controller/User.hx:3408 ../src/controller/User.hx:4397 ../src/controller/Member.hx:12079 ../src/db/User.hx:17210 ../lang/master/tpl/macros.mtt:13311 ../lang/master/tpl/mail/design.mtt:638
 msgid "Cagette.net"
-msgstr ""
+msgstr "Cagette.net"
 
 #: ../src/controller/User.hx:3525
 msgid "Password change"
-msgstr ""
+msgstr "Ŝanĝo de pasvorto"
 
 #: ../src/controller/User.hx:3931
 msgid "Invalid request"
-msgstr ""
+msgstr "Nevalida peto"
 
 #: ../src/controller/User.hx:4597
 msgid "New password confirmed"
-msgstr ""
+msgstr "Nova pasvorto konfirmiĝis"
 
 #: ../src/controller/User.hx:4963 ../src/controller/User.hx:6132
 msgid "You must key-in two times the same password"
@@ -466,7 +473,7 @@ msgstr ""
 
 #: ../src/controller/User.hx:6229
 msgid "Create a password for your account"
-msgstr ""
+msgstr "Krei pasvorton por via konto"
 
 #: ../src/controller/User.hx:6512
 msgid "Your invitation is invalid or expired ($k)"
@@ -484,7 +491,7 @@ msgstr ""
 
 #: ../src/controller/User.hx:7806 ../src/controller/Member.hx:23640 ../lang/master/tpl/member/default.mtt:2533
 msgid "New member"
-msgstr ""
+msgstr "Nova ano"
 
 #: ../src/controller/User.hx:7948
 msgid ""
@@ -538,7 +545,7 @@ msgstr ""
 
 #: ../src/controller/Member.hx:3097 ../lang/master/tpl/member/default.mtt:681 ../lang/master/tpl/design.mtt:2179
 msgid "Members"
-msgstr ""
+msgstr "Anoj"
 
 #: ../src/controller/Member.hx:4000
 msgid "is now on waiting list."
@@ -554,7 +561,7 @@ msgstr ""
 
 #: ../src/controller/Member.hx:4871
 msgid "Invitation sent."
-msgstr ""
+msgstr "Invito sendiĝis."
 
 #: ../src/controller/Member.hx:5322
 msgid "An error occurred while sending emails, please retry"
@@ -586,7 +593,7 @@ msgstr ""
 
 #: ../src/controller/Member.hx:10381 ../src/db/User.hx:19241
 msgid "Password"
-msgstr ""
+msgstr "Pasvorto"
 
 #: ../src/controller/Member.hx:10651 ../src/controller/Member.hx:22885
 msgid "Phone number is required in this group."
@@ -626,11 +633,11 @@ msgstr ""
 
 #: ../src/controller/Member.hx:13280
 msgid "You cannot do that."
-msgstr ""
+msgstr "Vi ne rajtas fari tion."
 
 #: ../src/controller/Member.hx:13378
 msgid "You cannot delete yourself."
-msgstr ""
+msgstr "Vi ne povas forigi vin mem."
 
 #: ../src/controller/Member.hx:13570
 msgid ""
@@ -660,11 +667,11 @@ msgstr ""
 
 #: ../src/controller/Member.hx:14866
 msgid "Account 1"
-msgstr ""
+msgstr "Konto 1"
 
 #: ../src/controller/Member.hx:14982
 msgid "Account 2"
-msgstr ""
+msgstr "Konto 2"
 
 #: ../src/controller/Member.hx:16133
 msgid "Both accounts have been merged"
@@ -672,51 +679,51 @@ msgstr ""
 
 #: ../src/controller/Member.hx:16528
 msgid "Firstname"
-msgstr ""
+msgstr "Persona nomo"
 
 #: ../src/controller/Member.hx:16546
 msgid "Lastname"
-msgstr ""
+msgstr "Familia nomo"
 
 #: ../src/controller/Member.hx:16563 ../lang/master/tpl/member/view.mtt:611 ../lang/master/tpl/member/view.mtt:735
 msgid "E-mail"
-msgstr ""
+msgstr "Retpoŝta adreso"
 
 #: ../src/controller/Member.hx:16578
 msgid "Mobile phone"
-msgstr ""
+msgstr "Telefonnumero"
 
 #: ../src/controller/Member.hx:16599
 msgid "Partner's firstname"
-msgstr ""
+msgstr "Persona nomo de kunulo"
 
 #: ../src/controller/Member.hx:16627
 msgid "Partner's lastname"
-msgstr ""
+msgstr "Familia nomo de kunulo"
 
 #: ../src/controller/Member.hx:16654
 msgid "Partner's e-mail"
-msgstr ""
+msgstr "Retpoŝta adreso de kunulo"
 
 #: ../src/controller/Member.hx:16679
 msgid "Partner's Mobile phone"
-msgstr ""
+msgstr "Telefonnumero de kunulo"
 
 #: ../src/controller/Member.hx:16710 ../src/db/Vendor.hx:5081 ../src/db/User.hx:18876 ../src/db/Place.hx:1290 ../lang/master/tpl/member/import.mtt:866 ../lang/master/tpl/member/import.mtt:1574
 msgid "Address 1"
-msgstr ""
+msgstr "Adreso 1"
 
 #: ../src/controller/Member.hx:16728 ../src/db/Vendor.hx:5119 ../src/db/User.hx:18911 ../src/db/Place.hx:1325 ../lang/master/tpl/member/import.mtt:899 ../lang/master/tpl/member/import.mtt:1606
 msgid "Address 2"
-msgstr ""
+msgstr "Adreso 2"
 
 #: ../src/controller/Member.hx:16746
 msgid "Post code"
-msgstr ""
+msgstr "Poŝtkodo"
 
 #: ../src/controller/Member.hx:16764 ../src/controller/Group.hx:4414 ../src/db/Vendor.hx:5190 ../src/db/User.hx:18976 ../src/db/Place.hx:1390 ../lang/master/tpl/member/import.mtt:964 ../lang/master/tpl/member/import.mtt:1669
 msgid "City"
-msgstr ""
+msgstr "Urbo"
 
 #: ../src/controller/Member.hx:17022
 msgid "The email <b>::email::</b> is invalid, please update your CSV file"
@@ -778,7 +785,7 @@ msgstr ""
 
 #: ../src/controller/Membership.hx:854 ../lang/master/tpl/membership/default.mtt:196
 msgid "Period"
-msgstr ""
+msgstr "Periodo"
 
 #: ../src/controller/Membership.hx:983
 msgid "Date of payment of subscription"
@@ -812,7 +819,7 @@ msgstr ""
 
 #: ../src/controller/Place.hx:1264
 msgid "Edit a place"
-msgstr ""
+msgstr "Redakti lokon"
 
 #: ../src/controller/Place.hx:1639
 msgid "The place has been registred"
@@ -830,7 +837,7 @@ msgstr ""
 
 #: ../src/controller/Place.hx:2141
 msgid "Place deleted"
-msgstr ""
+msgstr "Loko estis forigita"
 
 #: ../src/controller/api/Order.hx:1319
 msgid "You do not have the authorization to manage this catalog"
@@ -862,23 +869,23 @@ msgstr ""
 
 #: ../src/controller/amapadmin/Categories.hx:927
 msgid "Vegetables"
-msgstr ""
+msgstr "Legumoj"
 
 #: ../src/controller/amapadmin/Categories.hx:946
 msgid "Fruits"
-msgstr ""
+msgstr "Fruktoj"
 
 #: ../src/controller/amapadmin/Categories.hx:961
 msgid "Fish"
-msgstr ""
+msgstr "Fiŝoj"
 
 #: ../src/controller/amapadmin/Categories.hx:974
 msgid "Red meat"
-msgstr ""
+msgstr "Ruĝa viando"
 
 #: ../src/controller/amapadmin/Categories.hx:991
 msgid "Breads"
-msgstr ""
+msgstr "Panoj"
 
 #: ../src/controller/amapadmin/Categories.hx:1006
 msgid "Grocery"
@@ -886,11 +893,11 @@ msgstr ""
 
 #: ../src/controller/amapadmin/Categories.hx:1022
 msgid "Beverages"
-msgstr ""
+msgstr "Trinkaĵoj"
 
 #: ../src/controller/amapadmin/Categories.hx:1049
 msgid "Labels"
-msgstr ""
+msgstr "Etikedoj"
 
 #: ../src/controller/amapadmin/Categories.hx:1067
 msgid "Certified organic agriculture"
@@ -910,7 +917,7 @@ msgstr ""
 
 #: ../src/controller/amapadmin/Categories.hx:1546 ../src/db/CategoryGroup.hx:1045
 msgid "Color"
-msgstr ""
+msgstr "Koloro"
 
 #: ../src/controller/amapadmin/Categories.hx:1689
 msgid "Group modified"
@@ -918,7 +925,7 @@ msgstr ""
 
 #: ../src/controller/amapadmin/Categories.hx:1739
 msgid "Modify the group "
-msgstr ""
+msgstr "Modifi la grupon "
 
 #: ../src/controller/amapadmin/Categories.hx:2224
 msgid "Group added"
@@ -934,7 +941,7 @@ msgstr ""
 
 #: ../src/controller/amapadmin/Categories.hx:2689
 msgid "Create a category"
-msgstr ""
+msgstr "Krei kategorion"
 
 #: ../src/controller/amapadmin/Categories.hx:3037
 msgid "Modify the category "
@@ -982,11 +989,11 @@ msgstr ""
 
 #: ../src/controller/amapadmin/Volunteers.hx:3435 ../src/controller/amapadmin/Volunteers.hx:4519 ../lang/master/tpl/amapadmin/volunteers/default.mtt:256
 msgid "Related catalog"
-msgstr ""
+msgstr "Rilata katalogo"
 
 #: ../src/controller/amapadmin/Volunteers.hx:3489 ../src/controller/amapadmin/Volunteers.hx:4586 ../lang/master/tpl/amapadmin/volunteers/default.mtt:503
 msgid "None"
-msgstr ""
+msgstr "Nenio"
 
 #: ../src/controller/amapadmin/Volunteers.hx:3861
 msgid "Volunteer Role has been successfully added"
@@ -1048,15 +1055,15 @@ msgstr ""
 
 #: ../src/controller/Group.hx:4261
 msgid "Address"
-msgstr ""
+msgstr "Adreso"
 
 #: ../src/controller/Group.hx:4340 ../src/db/Vendor.hx:5156 ../src/db/User.hx:18945 ../src/db/Place.hx:1359
 msgid "Zip code"
-msgstr ""
+msgstr "Poŝtkodo"
 
 #: ../src/controller/Group.hx:4485 ../src/db/Vendor.hx:5047 ../src/db/User.hx:18651 ../lang/master/tpl/member/import.mtt:688 ../lang/master/tpl/member/import.mtt:1401 ../lang/master/tpl/member/payments.mtt:521 ../lang/master/tpl/member/waiting.mtt:208 ../lang/master/tpl/contractadmin/view.mtt:1360
 msgid "Phone"
-msgstr ""
+msgstr "Telefonnumero"
 
 #: ../src/controller/Group.hx:5024
 msgid "You already subscribed to Cagette.net, please log in on this page"
@@ -1124,7 +1131,7 @@ msgstr ""
 
 #: ../src/controller/Group.hx:9556
 msgid "12 eggs"
-msgstr ""
+msgstr "12 ovoj"
 
 #: ../src/controller/Group.hx:9721
 msgid "Chicken"
@@ -1188,11 +1195,11 @@ msgstr ""
 
 #: ../src/controller/ContractAdmin.hx:5039 ../src/db/Catalog.hx:9138 ../lang/master/tpl/contractadmin/view.mtt:704
 msgid "Start date"
-msgstr ""
+msgstr "Komenca dato"
 
 #: ../src/controller/ContractAdmin.hx:5172 ../src/db/Catalog.hx:9176 ../lang/master/tpl/contractadmin/view.mtt:797
 msgid "End date"
-msgstr ""
+msgstr "Fina dato"
 
 #: ../src/controller/ContractAdmin.hx:5531 ../src/controller/ContractAdmin.hx:8103
 msgid "Global view of orders"
@@ -1530,7 +1537,7 @@ msgstr ""
 
 #: ../src/controller/Distribution.hx:4777
 msgid "Font size"
-msgstr ""
+msgstr "Grando de tiparo"
 
 #: ../src/controller/Distribution.hx:9164
 msgid "The distribution has been deleted"
@@ -1609,7 +1616,7 @@ msgstr ""
 
 #: ../src/controller/Distribution.hx:23705 ../src/controller/Distribution.hx:30937 ../lang/master/tpl/contractadmin/default.mtt:164 ../lang/master/tpl/design.mtt:2666
 msgid "Catalogs"
-msgstr ""
+msgstr "Katalogoj"
 
 #: ../src/controller/Distribution.hx:26080
 msgid "The distribution has been updated"
@@ -1729,7 +1736,7 @@ msgstr ""
 
 #: ../src/controller/Distribution.hx:50656
 msgid "New price"
-msgstr ""
+msgstr "Nova prezo"
 
 #: ../src/controller/Distribution.hx:51402
 msgid "The price of ::product:: has been modified to ::price:: in orders."
@@ -1884,11 +1891,11 @@ msgstr ""
 
 #: ../src/service/UserService.hx:1213
 msgid "Invalid password"
-msgstr ""
+msgstr "Nevalida pasvorto"
 
 #: ../src/service/UserService.hx:1858 ../src/service/UserService.hx:3222 ../src/service/UserService.hx:3775
 msgid "Invalid email address"
-msgstr ""
+msgstr "Nevalida retpoŝta adreso"
 
 #: ../src/service/UserService.hx:1969 ../src/service/UserService.hx:3345
 msgid "We already have an account with this email address"
@@ -2035,113 +2042,113 @@ msgstr ""
 #. kilogramms
 #: ../src/View.hx:3151 ../common/Formatting.hx:1336
 msgid "Kg."
-msgstr ""
+msgstr "kg"
 
 #. gramms
 #: ../src/View.hx:3192 ../common/Formatting.hx:1376
 msgid "g."
-msgstr ""
+msgstr "g"
 
 #. unit of a product)
 #: ../src/View.hx:3243
 msgid "pieces"
-msgstr ""
+msgstr "pecoj"
 
 #. unit of a product)
 #: ../src/View.hx:3282 ../common/Formatting.hx:1263 ../common/Formatting.hx:1411
 msgid "piece"
-msgstr ""
+msgstr "peco"
 
 #. liter
 #: ../src/View.hx:3333 ../common/Formatting.hx:1461
 msgid "L."
-msgstr ""
+msgstr "L"
 
 #. centiliter
 #: ../src/View.hx:3372 ../common/Formatting.hx:1500
 msgid "cl."
-msgstr ""
+msgstr "cL"
 
 #. milliliter
 #: ../src/View.hx:3417
 msgid "ml."
-msgstr ""
+msgstr "mL"
 
 #: ../src/View.hx:3718
 msgid "Sunday"
-msgstr ""
+msgstr "dimanĉo"
 
 #: ../src/View.hx:3733
 msgid "Monday"
-msgstr ""
+msgstr "lundo"
 
 #: ../src/View.hx:3748
 msgid "Tuesday"
-msgstr ""
+msgstr "mardo"
 
 #: ../src/View.hx:3764
 msgid "Wednesday"
-msgstr ""
+msgstr "merkredo"
 
 #: ../src/View.hx:3782
 msgid "Thursday"
-msgstr ""
+msgstr "ĵaŭdo"
 
 #: ../src/View.hx:3799
 msgid "Friday"
-msgstr ""
+msgstr "vendredo"
 
 #: ../src/View.hx:3814
 msgid "Saturday"
-msgstr ""
+msgstr "sabato"
 
 #: ../src/View.hx:3844
 msgid "January"
-msgstr ""
+msgstr "Januaro"
 
 #: ../src/View.hx:3860
 msgid "February"
-msgstr ""
+msgstr "Februaro"
 
 #: ../src/View.hx:3877
 msgid "March"
-msgstr ""
+msgstr "Marto"
 
 #: ../src/View.hx:3891
 msgid "April"
-msgstr ""
+msgstr "Aprilo"
 
 #: ../src/View.hx:3905
 msgid "May"
-msgstr ""
+msgstr "Majo"
 
 #: ../src/View.hx:3917
 msgid "June"
-msgstr ""
+msgstr "Junio"
 
 #: ../src/View.hx:3930
 msgid "July"
-msgstr ""
+msgstr "Julio"
 
 #: ../src/View.hx:3943
 msgid "August"
-msgstr ""
+msgstr "Aŭgusto"
 
 #: ../src/View.hx:3958
 msgid "September"
-msgstr ""
+msgstr "Septembro"
 
 #: ../src/View.hx:3976
 msgid "October"
-msgstr ""
+msgstr "Oktobro"
 
 #: ../src/View.hx:3992
 msgid "November"
-msgstr ""
+msgstr "Novembro"
 
 #: ../src/View.hx:4009
 msgid "December"
-msgstr ""
+msgstr "Decembro"
 
 #: ../src/View.hx:4275 ../src/View.hx:5258
 msgid "no date set"
@@ -4136,11 +4143,11 @@ msgstr ""
 
 #: ../lang/master/tpl/error.mtt:313
 msgid "Ouch !"
-msgstr ""
+msgstr "Ho ve!"
 
 #: ../lang/master/tpl/error.mtt:347
 msgid "An error occurred."
-msgstr ""
+msgstr "Okazis eraro."
 
 #: ../lang/master/tpl/error.mtt:407
 msgid "If the website is unavailable, please try again in few minutes."
@@ -4152,7 +4159,7 @@ msgstr ""
 
 #: ../lang/master/tpl/error.mtt:600
 msgid "Technical description of the error"
-msgstr ""
+msgstr "Teknika priskribo de la eraro"
 
 #: ../lang/master/tpl/categories/default.mtt:84
 msgid ""
@@ -4173,15 +4180,15 @@ msgstr ""
 
 #: ../lang/master/tpl/categories/default.mtt:744
 msgid "Modify group"
-msgstr ""
+msgstr "Modifi grupon"
 
 #: ../lang/master/tpl/categories/default.mtt:885
 msgid "Remove group"
-msgstr ""
+msgstr "Forigi grupon"
 
 #: ../lang/master/tpl/categories/default.mtt:1277
 msgid "Remove"
-msgstr ""
+msgstr "Forigi"
 
 #: ../lang/master/tpl/categories/default.mtt:1418
 msgid "Add a category in this group"
@@ -4189,11 +4196,11 @@ msgstr ""
 
 #: ../lang/master/tpl/categories/default.mtt:1576
 msgid "Add a group"
-msgstr ""
+msgstr "Aldoni grupon"
 
 #: ../lang/master/tpl/group/view.mtt:1240
 msgid "Go to my account"
-msgstr ""
+msgstr "Iri al mia konto"
 
 #: ../lang/master/tpl/group/view.mtt:1408
 msgid ""
@@ -4241,7 +4248,7 @@ msgstr ""
 
 #: ../lang/master/tpl/group/view.mtt:5753
 msgid "http://www.cagette.net"
-msgstr ""
+msgstr "http://www.cagette.net"
 
 #: ../lang/master/tpl/group/view.mtt:5786
 msgid "Cagette.net, the free software of food direct-selling"
@@ -4249,7 +4256,7 @@ msgstr ""
 
 #: ../lang/master/tpl/design.mtt:1697
 msgid "My account"
-msgstr ""
+msgstr "Mia konto"
 
 #: ../lang/master/tpl/validate/user.mtt:2562
 msgid "Total ordered"
@@ -4309,7 +4316,7 @@ msgstr ""
 
 #: ../lang/master/tpl/validate/user.mtt:6621
 msgid "Membership"
-msgstr ""
+msgstr "Aneco"
 
 #: ../lang/master/tpl/validate/user.mtt:7781 ../lang/master/tpl/validate/user.mtt:8257
 msgid "Payment history of this member"
@@ -4334,7 +4341,7 @@ msgstr ""
 #. product has a variable weight
 #: ../lang/master/tpl/shop/productInfo.mtt:876
 msgid "about ::qt:: ::unit::"
-msgstr ""
+msgstr "ĉirkaŭ ::qt:: ::unit::"
 
 #: ../lang/master/tpl/shop/productInfo.mtt:1359
 msgid "Variable price depending on weight"
@@ -4398,7 +4405,7 @@ msgstr ""
 
 #: ../lang/master/tpl/mail/newPasswordConfirmed.mtt:160
 msgid "The new password is <b>::pass::</b>, don't forget it !"
-msgstr ""
+msgstr "La nova pasvorto estas <b>::pass::</b>; ne forgesu ĝin!"
 
 #: ../lang/master/tpl/mail/newPasswordConfirmed.mtt:255
 msgid "You can use the following emails to log into your account : <b>::emails::</b>"
@@ -4418,7 +4425,7 @@ msgstr ""
 
 #: ../lang/master/tpl/mail/invitation.mtt:324
 msgid "As a member of <b>::groupName::</b>"
-msgstr ""
+msgstr "Kiel ano de <b>::groupName::</b>"
 
 #: ../lang/master/tpl/mail/invitation.mtt:405 ../lang/master/tpl/mail/invitation.mtt:481
 msgid "you have been pre-registered on Cagette.net"
@@ -4468,7 +4475,7 @@ msgstr ""
 
 #: ../js/Tuto.hx:1863
 msgid "OK"
-msgstr ""
+msgstr "Bone"
 
 #: ../common/Common.hx:8467
 msgid "Guided tour for the group administrator"
