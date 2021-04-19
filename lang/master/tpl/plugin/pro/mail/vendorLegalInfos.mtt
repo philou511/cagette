@@ -1,0 +1,68 @@
+<html>
+
+<body>
+
+    <p class="text-align:center;">
+        <img src="https://app.cagette.net/img/logo2.png" />
+    </p>
+
+    <h2>Important : mise en conformité des comptes producteurs</h2>
+
+    <p>Cher producteur,</p>
+
+  
+    
+    ::if(type==1 || type==2 || type==3)::
+    <p>
+    Vous êtes référencé sur Cagette.net comme producteur. Vous utilisez vous-même la plateforme pour gérer vos ventes, ou peut être que vous travaillez avec une AMAP ou un groupement d’achat qui organise les commandes sur Cagette.net.
+    </p>
+    ::else::
+    <p>
+        Vous utilisez Cagette Pro pour vendre vos produits sur le réseau Cagette. Nous espérons que notre outil vous aide à vous développer et à gagner du temps.
+    </p>
+    ::end::
+    
+    <p>
+    Cagette.net est assimilé à un site de e-commerce, nous sommes donc soumis à un ensemble de lois régissant le commerce sur Internet.
+    Afin d’être en conformité avec le code de la consommation, la Direction départementale de la protection des populations nous demande de faire une mise à jour de notre base de données Producteurs.
+    </p>
+    <p>
+    Outre la mise en ligne de “Conditions générales d’utilisation” et de “Conditions générales de vente”, nous devons obligatoirement collecter les informations légales de tous les producteurs référencés sur la plateforme ( numéro SIRET, numéro TVA et capital social si applicable )
+    </p>
+    
+    <p>
+        <a href="::link::" style="font-size: 24px;font-weight:bold;text-decoration:underline;">Mettre mon compte Producteur <br/>“::vendor.name::” en conformité</a>
+        <br/>
+        <span style="color:#AA0000;">
+            Mettez à jour votre compte avant le 15 Novembre.<br/>
+    Passé ce délai, votre compte sera suspendu <br/>
+    et ne pourra plus accepter de commandes.
+    
+        </span>
+    </p>
+
+    
+    <p>
+        <b>Détail des mises à jour demandées :</b>
+    </p>
+    
+    <p>
+        Accepter <b>la Charte producteurs Cagette</b> qui définit quels producteurs sont autorisés à vendre des produits sur Cagette. Il était important de définir cette charte afin de préserver les valeurs de notre réseau !
+    </p>
+    
+    <p>
+        Accepter les <b>Conditions générales de vente</b> qui définissent les règles liées à l’usage de Cagette.net par les producteurs. 
+    </p>
+    
+    <p>
+        <b>Compléter votre compte producteur avec les informations légales de votre entreprise</b> : Numéro SIRET, capital social, numéro de TVA.  Cela peut sembler intrusif, mais le code de la consommation impose de fournir ces informations aux consommateurs. Profitons de cette occasion pour être encore plus transparents dans la relation entre producteurs et consommateurs.
+    </p>
+    
+    
+    <p>
+        Contactez-nous sur support@cagette.net si vous avez des questions.
+    </p>
+    
+    
+</body>
+</html>

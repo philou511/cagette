@@ -1,0 +1,76 @@
+<html>
+
+<body>
+
+    Bonjour ::companyCourse._user.firstName::,<br/>
+
+<p>
+    Nous sommes très heureux de t'accueillir pour la journée en salle dans quelques jours. 
+Pour que cette journée soit vraiment profitable je t'invite à te connecter à la plateforme d'apprentissage en ligne et à suivre le parcours de préparation que nous te proposons.
+</p>
+<p>
+    <b>Ce travail préalable est important pour profiter de la journée en salle et répondre aux exigences du financement Vivea.</b>
+</p>
+
+<p>
+Une fois connecté à la plateforme, tu retrouveras les consignes des activités à réaliser avant cette journée. 
+Tu constateras qu'on te propose de réaliser un exercice sur Cagette. Peut être te paraitra-t-il facile si tu as déjà consulté toutes les vidéos du guide express mis à disposition pendant le confinement. Et peut être auras-tu besoin de prendre tes repères tranquillement parce que tu découvres Cagette ou que tu n'es pas très à l'aise sur Internet.
+</p>
+<p>
+L'idée de cet exercice préparatoire c'est que tu arrives en salle en connaissant les fonctionnalités de base. 
+Dans tous les cas tu seras plus à l'aise à le faire tranquillement chez toi avec la possibilité de nous solliciter si besoin plutôt qu'en salle en étant obligé de t'adapter à la vitesse du groupe.
+</p>
+
+<p>
+<b>Voici les étapes à suivre pour te préparer à la journée en salle :</b>
+</p>
+<p>
+    <ul>
+        <li>1 - Rend toi sur le site <a href="http://formation.alilo.fr">formation.alilo.fr</a></li>
+        <li>2 - Dans la rubrique "Cours disponibles", clique sur "Développer sa vente directe en ligne"</li>
+        <li>3 - Connecte toi avec tes identifiants :</li>
+        <ul>
+            <li>Utilisateur : <b>::companyCourse.moodleUser::</b></li>
+            <li>Mot de passe : <b>::companyCourse.moodlePass::</b></li>
+        </ul>
+        <li>
+            4 - Une fois connecté, tu verras apparaitre à l'écran ceci :<br/>
+            <img src="https://app.cagette.net/img/moodle.png" style="margin:12px;"/>
+        </li>
+    </ul>
+
+    <ul>
+        <li>5 - Rend toi dans la rubrique "Se préparer à la journée en salle" et consulte les ressources qui te sont présentées.
+            Tu y retrouveras notamment des conseils, un questionnaire autodiagnostic et un exercice à réaliser sur Cagette.net.</li>
+        <li>6 - Pour te connecter à Cagette.net :</li>
+        <ul>
+            <li>Rend toi sur le site <a href="https://www.cagette.net">www.cagette.net</a>.</li>
+            <li>Clique sur le bouton rouge connexion</li>
+            <li>Connecte toi avec tes identifiants :</li>
+            <li>Mail : <b>::companyCourse.cagetteUser::</b></li>
+            ::if(companyCourse.cagettePass!=null)::
+            <li>Mot de passe : <b>::companyCourse.cagettePass::</b></li>
+            ::else::
+            <li>Tu as déjà un compte sur Cagette.net.<br/>
+                Tu peux donc l'utiliser pour te connecter avec le mot de passe habituel.<br/>
+                Si nécéssaire, n'hésites pas à cliquer sur "Mot de passe oublié" sur la page de connexion.</li>
+            ::end::
+        </ul>
+        <li>
+            7 - Si jamais tu as des questions, prend rendez-vous avec un formateur (lien sur la plate forme). 
+            Et si tu es carrément bloqué, n'hésite pas à appeler la hotline au 09 80 80 10 48 (menu 3).
+        </li>
+    </ul>
+
+</p>
+
+<p>
+    Je te souhaite de profiter au maximum de la formation et que tu sauras tirer le meilleur parti de Cagette.net pour concrétiser tes projets.
+</p>
+
+<b>Déborah Reyt</b><br/>
+Assistante formation.<br/>
+deborah@alilo.fr<br/>
+
+</body>
+</html>

@@ -1,0 +1,156 @@
+::use 'admin/design.mtt'::
+
+	<div class="article">
+		<h4>Groupe #::group.id::</h4>
+		<h2>::group.name::</h2>
+
+		
+		créé le : ::group.cdate::<br/>
+		
+		::if group._contact!=null::
+		
+			Par <a href="/p/hosted/userGroup/::group._contact.id::/::group.id::">::group._contact.getName()::</a>
+			<p>
+				Tel. <b>::group._contact.phone::</b><br/>
+				Email <b>::group._contact.email::</b><br/>
+				Dernier login ::group._contact.ldate:: <br/>				
+			</p>
+			
+			::set memberof = group._contact.getGroups()::		
+			<div ::cond memberof.length>1:: style="max-height:300px;overflow-y:scroll;">
+				Egalement membre de : 
+				<ul>
+				::foreach x memberof::
+					::if x.id!=group.id::
+					<li><a href="/p/hosted/group/::x.id::">#::x.id::-::x.name::</a></li>
+					::end::
+				::end::
+				</ul>
+			</div>
+		
+		::end::
+		
+		<hr/>
+		
+		<h3>Lieux de livraison</h3>		
+		<p>
+			<ul>
+			::foreach d group.getDeliveries(4)::
+			::set p = d._place::
+			<li>
+				[::p.lat::,::p.lng::]
+				
+				::if p.lat!=0 && p.lat!=null::
+					$$bool(true)
+				::else::
+					$$bool(false)
+				::end::
+				
+				::d._place.getFullAddress()::
+			</li>
+			::end::
+			</ul>
+		</p>
+		
+		<hr/>
+		
+		<a href="/group/::group.id::" class="btn btn-default">Page publique</a>
+		<a href="/p/hosted/addMe/::group.id::" class="btn btn-default">Devenir Membre de ce groupe</a>
+		
+
+		<hr/>
+		
+		<h3>Membres</h3>		
+		<div style="max-height:300px;overflow-y:scroll;">
+		
+					<table class="table table-condensed">
+				::foreach u group.getMembers()::
+				<tr>
+					<td>::u.id::</td>
+					<td><a href="/p/hosted/userGroup/::u.id::/::group.id::">::u.getName()::</a></td>
+				</tr>
+				::end::
+			</table>
+
+		</div>
+		
+		<hr/>
+		
+		<h3>Producteurs</h3>
+		<div style="max-height:300px;overflow-y:scroll;">
+			<table class="table table-condensed">
+				::foreach v vendors::
+
+				::set stats = getVendorStats(v)::
+				<tr>
+					<td>::v.id::</td>
+					<td><a href='/p/pro/admin/vendor/::v.id::'>::v.name::</a></td>
+					<td>$$vendorType(::enumIndex(stats._type)::)</td>
+				</tr>
+			
+				::end::
+			</table>
+		</div>
+		<a href="/p/hosted/syncToHubspot/::group.id::" class="btn btn-default">Synchroniser les producteurs sur Hubspot</a>
+
+
+		<hr/>
+
+
+		<h3>Catalogues</h3>
+		<div style="max-height:300px;overflow-y:scroll;">
+			<table class="table table-condensed">
+				::foreach c group.getActiveContracts(false)::
+				<tr>
+					<td>::c.id::</td>
+					<td>::c.name::</td>
+				</tr>
+				::end::
+			</table>
+			
+		</div>
+
+		<hr/>
+
+		<h3>Paiements</h3>
+
+		<!--<a href="/p/hosted/debugOps/::group.id::">Trouver les ops de commande en doublon</a>-->
+		<a href="/p/hosted/resetBalances/::group.id::" class="btn btn-default" $$confirm()>Remise à l'équilibre des soldes adhérents</a>
+		<hr/>
+
+		
+		::if(mangopay!=null)::
+		<h3>Mangopay</h3>
+		<div>
+			Structure qui reçoit les paiements : <b>::mangopay._legalUser.name::</b><br/>
+			Legal User Id : <a href="https://dashboard.mangopay.com/User/::mangopay._legalUser.mangopayUserId::/Details">#::mangopay._legalUser.mangopayUserId::</a> <br/>
+			Wallet Id : <a href="https://dashboard.mangopay.com/User/::mangopay._legalUser.mangopayUserId::/Wallets/::mangopay.walletId::">#::mangopay.walletId::</a> <br/>
+			
+			<a href="/p/pro/transaction/mangopay/group/debug/::mangopay.groupId::">Debug bug de Brigitte</a><br/>
+			<a href="/p/pro/transaction/mangopay/group/debug2/::mangopay.groupId::">Debug compta au centime près</a><br/>
+
+			
+			<a href="/debug/neo?hash=::debugLegalUserModule::">Debug Dossier Mangopay (mangopay-legal-user-module)</a><br/>
+
+		</div>
+		::end::
+
+		<hr/>
+
+		<h3>Maintenance</h3>
+		<a href="?roleIds=1" class="btn btn-default">Cocher automatiquement les rôles en fonction des catalogues actifs</a>
+		<a href="/p/hosted/geocode/::group.id::" class="btn btn-default">Géocoding</a>
+		<a href="/p/hosted/refresh/::group.id::" class="btn btn-default">Revérifier visibilité carte</a>
+		<a href="/p/hosted/disableNotifs/::group.id::" class="btn btn-default">Désactiver les notifs</a>
+		<a href="/p/hosted/deleteDemoContracts/::group.id::" class="btn btn-default">Effacer contrats de démo</a>
+		<a href="/p/pro/admin/fixGroupOps/::group.id::" class="btn btn-default">Fix remoteIds + faux paiements mangopay</a>
+		<hr/>
+
+
+		<a href="/p/hosted/deleteGroup/::group.id::?token=::token::" $$confirm(::_("Delete ?")::) class="btn btn-danger" >
+				<i class="icon icon-delete"></i>
+				Supprimer DEFINITIVEMENT le groupe (irréversible)
+		</a>
+		
+	</div>
+::end::

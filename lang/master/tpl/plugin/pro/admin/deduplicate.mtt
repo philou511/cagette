@@ -1,0 +1,32 @@
+::use 'admin/design.mtt'::
+
+<h2>Déduplication de producteurs</h2>
+
+
+<p>
+	Doublons : ::duplicates::<br />
+	Vendor sans user : ::unlinkedVendors::<br/>
+	<a href="/p/pro/admin/nullEmailVendors">Producteurs avec email null</a>
+</p>
+
+
+::set deduplicates = 0::
+
+<table class="table table-bordered table-condensed table-striped" >
+	<tr>
+		<th>Nom</th>
+		<th>Email</th>		
+		<th>Doublons</th>
+		<th>code postal</th>
+	</tr>
+	::foreach v vendors::	
+	<tr>
+		<td><a href="/p/pro/admin/vendor/::v.id::">::v.name::</a></td>
+		<td>::v.email::</td>
+		<td>::v.duplicates::</td>
+		<td>::v.zipCode::</td>
+	</tr>
+	::end::
+</table>
+
+::end::

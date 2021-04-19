@@ -1,0 +1,82 @@
+::use 'amapadmin/design.mtt'::
+	
+	<div class=" article">
+        <h3>Debug Paiements Mangopay - ::group.name::</h3>
+        
+        ::set walletShouldBe = 0.0::
+		
+        <table class="table table-striped">
+            <tr>
+                <th>Distribution</th>
+                <th>C.A MP net</th>
+                <th>payout</th>
+                <th>Decalage</th>
+                <th>Actions</th>
+            </tr>
+
+        ::foreach md multidistribs::
+            <tr>
+                <td>
+                    ::hDate(md.getDate())::<br/>
+                    à ::md.getPlace()::
+                </td>
+                
+                    ::set amount = getMangopayECTotal(md)::
+                    ::set payout = getMangopayGroupPayout(md)::
+
+                        <td>::formatNum(amount):: &euro;</td>
+                        
+                        <td>
+                            ::if(payout!=null)::
+
+                                ::if(payout.hasSucceeded())::
+                                    <a href="/p/pro/transaction/mangopay/group/payOut/::payout.payOutId::">::payout.getAmount()::</a>
+                                ::elseif(payout._cachedDatas.Status=="CREATED")::
+                                    Virement en attente
+                                ::else::
+                                    ::payout._cachedDatas.Status::
+                                ::end::
+                                
+                            ::else::
+
+                                ::set walletShouldBe = walletShouldBe+amount::
+
+                            ::end::
+                        </td>
+                        <td>
+                            ::if(payout!=null && payout.hasSucceeded())::
+                                ::set diff = numClean(amount) - numClean(payout.getAmount())::
+
+                                ::if(diff>0 || diff<0)::
+                                    <span class="alert alert-danger">::numClean(diff)::</span>
+                                ::end::
+                            ::end::
+                        </td>
+                
+
+                
+            <td>
+                <a href="/p/pro/transaction/mangopay/group/multiDistribDebug/::md.id::" class="btn btn-default btn-sm">Détails distrib</a>
+            </td>
+            </tr>
+        ::end::
+        </table>
+
+        <p class="text-center">
+            SOLDE WALLET : <br/>
+            <b>::formatNum(wallet.Balance.Amount/100):: &euro;</b>       
+            
+        </p>
+
+        ::if( numClean(walletShouldBe) != numClean(wallet.Balance.Amount/100) )::
+        <p class="alert alert-danger">
+            <b>PROBLEM : </b>
+            Wallet devrait être : ::formatNum(walletShouldBe):: &euro;,<br/>
+            Différence de ::wallet.Balance.Amount/100-walletShouldBe::</p>
+        ::else::
+        <p class="alert alert-success">ALLRIGHT !</p>
+        ::end::
+
+
+    </div>
+::end::

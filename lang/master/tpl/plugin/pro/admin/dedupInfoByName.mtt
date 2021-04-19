@@ -1,0 +1,26 @@
+::use 'admin/design.mtt'::
+
+<h2>Déduplication par nom</h2>
+
+
+<table class="table table-bordered table-condensed table-striped" >
+	
+	::foreach v vendors::	
+	<tr>
+		<td>
+			<a href="/p/pro/admin/vendor/::v.id::" target="_blank">::v.name::</a>			
+		</td>
+		<td style="font-size:0.6em;">::v.desc::</td>
+		<td><img ::cond(v._image!=null):: src="::file(v._image)::" width="120"/></td>
+		<td>::v.email::</td>
+		<td>::v.zipCode::</td>
+		<td>::v.city::</td>
+		<td>::if(v.status!=null)::
+				::v.status::
+			::end::
+		</td>
+	</tr>
+	::end::
+</table>
+
+::end::

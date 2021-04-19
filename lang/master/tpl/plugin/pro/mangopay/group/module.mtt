@@ -1,0 +1,10 @@
+::use 'amapadmin/design2.mtt'::
+    
+    <div id="mangopay-neo-container" style="margin-bottom: 24px;"></div>
+    <script>
+			document.addEventListener("DOMContentLoaded", function(event) {
+                neo.createNeoModule("mangopay-neo-container", "mangopay-group-module", { groupId: parseInt("::user.getGroup().id::", 10) });
+			})
+    </script>
+	
+::end::

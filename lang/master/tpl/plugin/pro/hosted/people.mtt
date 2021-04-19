@@ -1,0 +1,32 @@
+::use 'admin/design.mtt'::
+
+<p>
+	<a href="?csv=1" class="btn btn-default">Export pour mailings</a>
+</p>
+
+
+<h1>Responsables</h1>
+		
+		<table class="table table-bordered">
+			<tr>
+				<th>Id</th>
+				<th>Prenom</th>
+				<th>Nom</th>
+				<th>Group</th>				
+			</tr>
+			::foreach u users::
+			<tr>
+			<td>::u.id::</td>
+			<td>::u.firstName::</td>
+			<td>::u.lastName::</td>
+			<td>
+				
+			</td>
+			<td>
+				<a href="/p/hosted/loginas/::u.id::" class="btn btn-default btn-xs">login as</a>
+			</td>
+			</tr>
+			::end::
+		</table>
+
+::end::

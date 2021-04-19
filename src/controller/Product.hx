@@ -36,6 +36,12 @@ class Product extends Controller
 				product.stock = (f.getValueOf("stock"):Float) * product.catalog.getDistribs(false).length;
 			}
 
+			try{
+				ProductService.check(product);
+			}catch(e:tink.core.Error){
+				throw Error(sugoi.Web.getURI(),e.message);
+			}
+
 			app.event(EditProduct(product));
 			product.update();
 			throw Ok('/contractAdmin/products/'+product.catalog.id, t._("The product has been updated"));
@@ -54,29 +60,18 @@ class Product extends Controller
 		
 		var product = new db.Product();
 		var f = ProductService.getForm(null,contract);
-		
-		/*f.removeElementByName("catalogId");
-		
-		//stock mgmt ?
-		if (!contract.hasStockManagement()) f.removeElementByName('stock');
-		
-		//vat selector
-		f.removeElement( f.getElement('vat') );
-		var data = [];
-		for (k in app.user.getGroup().vatRates.keys()) {
-			data.push( { value:app.user.getGroup().vatRates[k], label:k } );
-		}
-		f.addElement( new FloatSelect("vat", "TVA", data, product.vat ) );
-		
-		var formName = f.name;
-		var html = service.ProductService.getCategorizerHtml("",null,formName);
-		f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);*/
-		
+	
 		if (f.isValid()) {
 
 			f.toSpod(product);
 			product.catalog = contract;
 
+			try{
+				ProductService.check(product);
+			}catch(e:tink.core.Error){
+				throw Error(sugoi.Web.getURI(),e.message);
+			}
+			
 			app.event(NewProduct(product));
 			product.insert();
 			throw Ok('/contractAdmin/products/'+product.catalog.id, t._("The product has been saved"));

@@ -1,0 +1,10 @@
+::use 'plugin/pro/catalog/design.mtt'::
+
+		<h3 ::cond title!=null::>::title::</h3>
+		<p ::cond text!=null::>
+			::raw text::
+		</p>
+		
+		::raw form::
+
+::end::
