@@ -480,5 +480,71 @@ class Admin extends Controller {
 		Sys.print('</table>');
 	}
 
+	function doGroupStats(){
+		/*Caractérisation des groupes ( condition : les groupes actifs) :, 
+		mode du groupe, 
+		nombre de membres, 
+		réglage des inscriptions, 
+		nombre de produits différents vendus sur un an, 
+		nombre de producteurs par type (formés, invités...), 
+		bouléen sur utilisation des stocks dans un des catalogues, 
+		CA réalisé, 
+		nombre de distributions au cours des 12 derniers mois, 
+		a activé la gestion des paiements ou pas, 
+		modalités de paiement le cas échéant
+		*/
+
+		var sql = "SELECT g.*,h.membersNum,h.cproContractNum,h.contractNum";		
+		sql += " FROM `Group` g LEFT JOIN  Hosting h ON g.id=h.id WHERE h.active=1";
+		sql += " ORDER BY g.id ASC";
+
+		var groups = db.Group.manager.unsafeObjects(sql,false);
+		var headers = [
+			"id","name","mode","membersNum","inscriptions","productNum","vendorNum","cproCatalogNum","catalogNum","useStocks",
+			"turnover23months","distribNum12months","payments"
+		];
+			
+		var data = [];
+		var now = Date.now();
+		for( g in groups){
+			
+			var catalogs = g.getActiveContracts();
+			var cids = catalogs.map(c -> c.id);
+			var vendors = tools.ObjectListTool.deduplicate(catalogs.map(c -> c.vendor));
+			var from = DateTools.delta(now,-1000.0*60*60*24*365);
+			var to = now;
+			var distributions = MultiDistrib.getFromTimeRange(g,from,to);
+			// var turnOver = 0.0;
+			// for( d in distributions){
+			// 	turnOver += d.getTotalIncome();
+			// }
+
+			data.push({
+				id:g.id,
+				name:g.name,
+				mode:g.hasShopMode()?"BOUTIQUE":"AMAP",
+				membersNum:untyped g.membersNum,
+				inscriptions:Std.string(g.regOption),
+				productNum:db.Product.manager.count($catalogId in cids),
+				vendorNum:vendors.length,
+				cproCatalogNum:untyped g.cproContractNum,
+				catalogNum:untyped g.contractNum,
+				useStocks:db.Product.manager.count(($catalogId in cids) && $active==true && $stock>0)>0,
+				// turnover12months:Math.round(turnOver),
+				distribNum12months:distributions.length,
+				payments:g.allowedPaymentsType
+
+
+			
+			});
+		}
+
+		sugoi.tools.Csv.printCsvDataFromObjects(data,headers,"stats_groupes");
+		// var t = new sugoi.helper.Table();
+		// Sys.print(t.toString(data));
+	}
+
+
+
 }
 
