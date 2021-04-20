@@ -1,4 +1,5 @@
 package controller.admin;
+import sugoi.db.Variable;
 import db.TxpProduct;
 import db.BufferedJsonMail;
 import hosted.db.Hosting;
@@ -542,6 +543,26 @@ class Admin extends Controller {
 		sugoi.tools.Csv.printCsvDataFromObjects(data,headers,"stats_groupes");
 		// var t = new sugoi.helper.Table();
 		// Sys.print(t.toString(data));
+	}
+
+	@tpl('form.mtt')
+	function doMessages(){
+
+		var homeVendorMessage = Variable.get("homeVendorMessage");
+		var homeGroupAdminMessage = Variable.get("homeGroupAdminMessage");
+
+		var f = new sugoi.form.Form("msg");
+		f.addElement(new sugoi.form.elements.TextArea("homeVendorMessage","Accueil producteurs",homeVendorMessage));
+		f.addElement(new sugoi.form.elements.TextArea("homeGroupAdminMessage","Accueil admin de groupes",homeGroupAdminMessage));
+
+		if(f.isValid()){
+			Variable.set("homeVendorMessage",f.getValueOf("homeVendorMessage"));
+			Variable.set("homeGroupAdminMessage",f.getValueOf("homeGroupAdminMessage"));
+			throw Ok("/admin/messages","Messages mis à jour");
+		}
+
+		view.title = "Messages";
+		view.form = f;
 	}
 
 

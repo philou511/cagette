@@ -9,12 +9,13 @@
 		
 		<ul class="nav nav-tabs nav-stacked" >
 			<li><a href="/db"><i class="icon icon-cog"></i> Base de données</a> </li>
-			<li><a href="/admin/taxo"><i class="icon icon-tag"></i> Dictionnaire de produits</a> </li>			
+			<li><a href="/admin/taxo"><i class="icon icon-tag"></i> Catégories</a> </li>			
 			<li><a href="/admin/errors"><i class="icon icon-cog"></i> Errors</a> </li>			
-			<li><a href="/admin/smtp"><i class="icon icon-mail"></i> Conf. Email</a> </li>			
+			<!--<li><a href="/admin/smtp"><i class="icon icon-mail"></i> Conf. Email</a> </li>	-->		
 			<li><a href="/admin/emails"><i class="icon icon-mail"></i> Emails</a> </li>			
-			<li><a href="/admin/graph"><i class="icon icon-chart"></i> Statistiques</a> </li>			
-			<!--<li><a href="/admin/plugins">Plugins</a> </li>-->
+			<li><a href="/admin/graph"><i class="icon icon-chart"></i> Statistiques</a> </li>	
+			<li><a href="/admin/messages"><i class="icon icon-info"></i> Messages</a> </li>					
+			
 			::if nav!=null::
 					::foreach i nav::
 					<li><a href="::i.link::">
