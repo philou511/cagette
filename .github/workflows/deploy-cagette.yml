@@ -75,6 +75,12 @@ jobs:
           cluster-name: 'alilo-dev'
         id: login
 
+      - name: setup nodemailer SMTP credentials
+        run: |
+          npm install
+          node scripts/generate-fake-smtp-credentials.js > smtp.env
+          kubectl -n $NAMESPACE get secret ${{ env.project_name }}-smtp || kubectl -n $NAMESPACE create secret generic ${{ env.project_name }}-smtp --from-file=smtp.env
+
       - name: setup db-pw secret
         run: |
           kubectl -n $NAMESPACE get secret ${{ env.project_name }}-db-pw || kubectl -n $NAMESPACE create secret generic ${{ env.project_name }}-db-pw --from-literal=password="$(openssl rand -hex 10)"
