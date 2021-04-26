@@ -149,7 +149,13 @@ class Admin extends Controller {
 		if(f.isValid()){
 			var oldCateg = TxpProduct.manager.get(f.getValueOf("toreplace") );
 			var newCateg = TxpProduct.manager.get(f.getValueOf("by"));
+
 			for( p in db.Product.manager.search($txpProduct==oldCateg,true)){
+				p.txpProduct = newCateg;
+				p.update();				
+			}
+
+			for( p in pro.db.PProduct.manager.search($txpProduct==oldCateg,true)){
 				p.txpProduct = newCateg;
 				p.update();				
 			}
@@ -545,6 +551,9 @@ class Admin extends Controller {
 		// Sys.print(t.toString(data));
 	}
 
+	/**
+		edit general messages on homepage
+	**/
 	@tpl('form.mtt')
 	function doMessages(){
 
