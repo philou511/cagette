@@ -29,10 +29,10 @@ class AmapAdmin extends Controller
 		if (app.user.getGroup().hasPayments()) {
 			nav.push({id:"payments",link:"/amapadmin/payments",name: t._("Means of payment"),icon:"payment-type" });
 		}	
-		if(!app.user.getGroup().hasTaxonomy()){
-			nav.push({id:"categories",link:"/amapadmin/categories",name: t._("Customized categories"),icon:"tag" });
-		}
-		
+
+		// if(!app.user.getGroup().hasTaxonomy()){
+		// 	nav.push({id:"categories",link:"/amapadmin/categories",name: t._("Customized categories"),icon:"tag" });
+		// }
 
 		var e = Nav(nav,"groupAdmin");
 		app.event(e);
@@ -258,9 +258,9 @@ class AmapAdmin extends Controller
 		view.form = f;
 	}
 	
-	function doCategories(d:haxe.web.Dispatch) {
-		d.dispatch(new controller.amapadmin.Categories());
-	}
+	// function doCategories(d:haxe.web.Dispatch) {
+	// 	d.dispatch(new controller.amapadmin.Categories());
+	// }
 
 	function doVolunteers(d:haxe.web.Dispatch) {
 		d.dispatch(new controller.amapadmin.Volunteers());

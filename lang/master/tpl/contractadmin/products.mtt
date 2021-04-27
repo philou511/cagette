@@ -5,11 +5,6 @@
 	$$insert(::_("New product")::,/product/insert/::c.id::)
 	<a href="/product/import/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-upload"></i> ::_("Import from Excel/CSV")::</a>
 		
-	::if !c._group.hasTaxonomy()::	
-	<a ::cond c.type==1:: href="/product/categorize/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-tag"></i> ::_("Categories")::</a>	
-	::end::
-
-
 	<div class="btn-group" role="group" style="display: inline-block;">
 		<a onclick="check();" class="btn btn-default btn-sm btn-noAntiDoubleClick"> ::_("Check all")::</a>
 		<a class="btn btn-default btn-sm" onclick="enableProducts()">
@@ -98,17 +93,11 @@
 				::p.qt::&nbsp;::unit(p._unitType,false)::
 				::end::
 				
-				::if !c._group.hasTaxonomy()::	
-				<div>
-					::foreach c p.getCategories()::
-					<span class='tag' style='background-color: ::c.getColor()::;'>::c.name::</span>
-					::end::
-				</div>
-				::else::
+				
 				<div class="detail">
 					::p.getFullCategorization().join(" / ")::
 				</div>
-				::end::
+				
 				<div style="color:#AAA">
 				::if p.organic ::<i class="icon icon-bio"></i>::end::
 				::if p.variablePrice ::<i class="icon icon-scale"></i>::end::

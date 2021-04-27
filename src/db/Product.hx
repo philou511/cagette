@@ -133,12 +133,12 @@ class Product extends Object
 		
 		if(populateCategories){
 			//custom categories 
-			if (this.catalog.group.flags.has(CustomizedCategories)){
+			/*if (this.catalog.group.flags.has(CustomizedCategories)){
 
 				o.categories = Lambda.array(Lambda.map(getCategories(), function(c) return c.id));
 				o.subcategories = o.categories;
 				
-			}else{
+			}else{*/
 				//standard categories
 				if(txpProduct!=null){
 					o.categories = [txpProduct.subCategory.category.id];
@@ -151,7 +151,7 @@ class Product extends Object
 						o.subcategories = [txpOther.subCategory.id];
 					}
 				}				
-			}
+			// }
 		}
 
 		App.current.event(ProductInfosEvent(o,distribution));
@@ -162,11 +162,11 @@ class Product extends Object
 	/**
 	 * customs categs
 	 */
-	public function getCategories() {		
-		//"Types de produits" categGroup first
-		//var pc = db.ProductCategory.manager.search($productId == id, {orderBy:categoryId}, false);		
-		return Lambda.map(db.ProductCategory.manager.search($productId == id,{orderBy:categoryId},false), function(x) return x.category);
-	}
+	// public function getCategories() {		
+	// 	//"Types de produits" categGroup first
+	// 	//var pc = db.ProductCategory.manager.search($productId == id, {orderBy:categoryId}, false);		
+	// 	return Lambda.map(db.ProductCategory.manager.search($productId == id,{orderBy:categoryId},false), function(x) return x.category);
+	// }
 	
 	/**
 	 * general categs

@@ -61,7 +61,7 @@ class ProGroupService
 			}	
 		}
 		
-		var mapping = duplicateCategories(g,d);
+		// var mapping = duplicateCategories(g,d);
 		
 		//copy contracts
 		if (App.current.user.isAdmin() && fullCopy){
@@ -75,7 +75,7 @@ class ProGroupService
 				var ct = rc.getContract();
 									
 				//need to sync categories
-				syncCatgories(c, ct, mapping);
+				// syncCatgories(c, ct, mapping);
 				
 				//add cpro members to group
 				if (this.company == null){
@@ -99,7 +99,7 @@ class ProGroupService
 					var ct = rc.getContract();
 					
 					//need to sync categories
-					syncCatgories(c, ct, mapping);					
+					// syncCatgories(c, ct, mapping);					
 				}
 			}
 		}
@@ -113,7 +113,7 @@ class ProGroupService
 	 *  @param to - 
 	 *  @param mapping - 
 	 */
-	function syncCatgories(from:db.Catalog, to:db.Catalog, mapping:Map<Int,Int>){
+	/*function syncCatgories(from:db.Catalog, to:db.Catalog, mapping:Map<Int,Int>){
 		if (mapping == null) return;
 		for ( p in from.getProducts(false)){
 			for ( x in to.getProducts(false)){
@@ -125,7 +125,7 @@ class ProGroupService
 				}
 			}
 		}
-	}
+	}*/
 	
 	
 	/**
@@ -133,7 +133,7 @@ class ProGroupService
 	 * @param	from
 	 * @param	to
 	 */
-	function duplicateCategories(from:db.Group, to:db.Group){
+	/*function duplicateCategories(from:db.Group, to:db.Group){
 		
 		var mapping = new Map<Int,Int>(); //old categ id -> new categ id
 		
@@ -161,7 +161,7 @@ class ProGroupService
 		}
 		
 		return mapping;
-	}
+	}*/
 	
 
 	

@@ -50,9 +50,9 @@ class Main extends Controller {
 			throw Redirect("/user/login");
 		}
 
-		if(app.user!=null && app.user.isGroupManager() && group.hasShopMode()  && !group.betaFlags.has(db.Group.BetaFlags.ShopV2) ){
-			app.session.addMessage("Attention, l'ancienne boutique et les catégories personnalisées disparaîtront le lundi 3 Mai 2021, pensez à vous préparer avant le jour J.<br/><a href='https://wiki.cagette.net/admin:5april' target='_blank'>Cliquez-ici pour plus d'informations</a>",true);
-		}
+		// if(app.user!=null && app.user.isGroupManager() && group.hasShopMode()  && !group.betaFlags.has(db.Group.BetaFlags.ShopV2) ){
+		// 	app.session.addMessage("Attention, l'ancienne boutique et les catégories personnalisées disparaîtront le lundi 3 Mai 2021, pensez à vous préparer avant le jour J.<br/><a href='https://wiki.cagette.net/admin:5april' target='_blank'>Cliquez-ici pour plus d'informations</a>",true);
+		// }
 
 		view.amap = group;
 		
@@ -264,19 +264,21 @@ Called from controller/Main.hx line 117
 		d.dispatch(new controller.Shop());
 	}
 
-	@tpl('shop/default2.mtt')
+	@tpl('shop/default.mtt')
 	function doShop2(md:db.MultiDistrib,?args:{continueShopping:Bool}) {
-		if( app.getCurrentGroup()==null || app.getCurrentGroup().id!=md.getGroup().id){
-			throw  Redirect("/group/"+md.getGroup().id);
-		}
-		if(args!=null){
-			if(!args.continueShopping){
-				service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
-			}
-		}
-		view.category = 'shop';
-		view.md = md;
-		view.tmpBasketId = app.session.data.tmpBasketId;
+		throw  Redirect("/shop/"+md.id+"?continueShopping="+(args!=null?args.continueShopping:false));
+
+		// if( app.getCurrentGroup()==null || app.getCurrentGroup().id!=md.getGroup().id){
+		// 	throw  Redirect("/group/"+md.getGroup().id);
+		// }
+		// if(args!=null){
+		// 	if(!args.continueShopping){
+		// 		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
+		// 	}
+		// }
+		// view.category = 'shop';
+		// view.md = md;
+		// view.tmpBasketId = app.session.data.tmpBasketId;
 	}
 	
 	@logged

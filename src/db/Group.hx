@@ -9,13 +9,13 @@ enum GroupFlags {
 	__HasMembership; 	//DEPRECATED membership management  
 	ShopMode; 		//shop mode / standard mode
 	HasPayments; 	//manage payments and user balance
-	ComputeMargin;	//compute margin instead of percentage
+	__ComputeMargin;	//compute margin instead of percentage
 	CagetteNetwork; //register in cagette.net groups directory
-	CustomizedCategories;  //the custom categories are not used anymore, use product taxonomy instead
+	__CustomizedCategories;  //the custom categories are not used anymore, use product taxonomy instead
 	HidePhone; 		//Hide manager phone on group public page
 	PhoneRequired;	//phone number of members is required for this group	
 	AddressRequired;//address required for delivery at home
-	UnUsed;
+	__UnUsed;
 	Show3rdCategoryLevel; //Show the third category level in the shop (Only for shop V2)
 }
 
@@ -203,19 +203,19 @@ class Group extends Object
 		return flags != null && flags.has(HasPayments) && flags.has(ShopMode);
 	}
 	
-	public function hasTaxonomy(){
+	/*public function hasTaxonomy(){
 		return flags != null && !flags.has(CustomizedCategories);
-	}
+	}*/
 	
 	public function hasPhoneRequired(){
 		return flags != null && flags.has(PhoneRequired);
 	}
 
-	public function hasShopV2(){		
-		return betaFlags != null && betaFlags.has(ShopV2);
-	}
+	// public function hasShopV2(){		
+	// 	return betaFlags != null && betaFlags.has(ShopV2);
+	// }
 	
-	public function getCategoryGroups() {
+	/*public function getCategoryGroups() {
 		
 		//if (flags.has(ShopCategoriesFromTaxonomy)){
 			//return Lambda.array( cast db.TxpCategory.manager.all(false) );	
@@ -257,7 +257,7 @@ class Group extends Object
 		
 		return categs;
 		
-	}
+	}*/
 	
 	
 	//public function canAddMember():Bool {

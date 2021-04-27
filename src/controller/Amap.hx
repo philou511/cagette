@@ -34,9 +34,11 @@ class Amap extends Controller
 		
 		var form = form.CagetteForm.fromSpod(group);
 
+		form.removeElementByName("betaFlags");
+
 		//remove "membership", "shop mode", "marge a la place des %", "unused" from flags
 		var flags = form.getElement("flags");
-		untyped flags.excluded = [0,1,3,9];
+		untyped flags.excluded = [0,1,3,5,9];
 		if(!group.hasShopMode()) untyped flags.excluded.push(2);
 
 		//group mode
@@ -70,11 +72,11 @@ class Amap extends Controller
 			// 	}				
 			// }
 
-			if(group.betaFlags.has(db.Group.BetaFlags.ShopV2) && group.flags.has(db.Group.GroupFlags.CustomizedCategories)){
+			/*if(group.betaFlags.has(db.Group.BetaFlags.ShopV2) && group.flags.has(db.Group.GroupFlags.CustomizedCategories)){
 				App.current.session.addMessage("Vous ne pouvez pas activer les catégories personnalisées et la nouvelle boutique. La nouvelle boutique ne fonctionne pas avec les catégories personnalisées.",true);
 				group.flags.unset(db.Group.GroupFlags.CustomizedCategories);
 				group.update();
-			}
+			}*/
 
 			if(!group.betaFlags.has(db.Group.BetaFlags.ShopV2) && group.flags.has(db.Group.GroupFlags.Show3rdCategoryLevel)){
 				App.current.session.addMessage("Vous ne pouvez classer la boutique par catégorie de troisième niveau seulement avec la nouvelle boutique.",true);

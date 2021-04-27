@@ -180,7 +180,7 @@ class Product extends Controller
 		view.step = csv.step;
 	}
 	
-	@tpl("product/categorize.mtt")
+	/*@tpl("product/categorize.mtt")
 	public function doCategorize(contract:db.Catalog) {
 		
 		
@@ -201,13 +201,13 @@ class Product extends Controller
 		//view.form = form;
 		view.c = contract;
 		
-	}
+	}/
 	
 	/**
 	 * init du Tagger
 	 * @param	contract
 	 */	
-	public function doCategorizeInit(contract:db.Catalog) {
+	/*public function doCategorizeInit(contract:db.Catalog) {
 		
 		if (!app.user.canManageContract(contract)) throw t._("Forbidden access");
 		
@@ -233,27 +233,27 @@ class Product extends Controller
 		}
 		
 		Sys.print(haxe.Json.stringify(data));
-	}
+	}*/
 	
-	public function doCategorizeSubmit(contract:db.Catalog) {
+	// public function doCategorizeSubmit(contract:db.Catalog) {
 		
-		if (!app.user.canManageContract(contract)) throw t._("Forbidden access");
+	// 	if (!app.user.canManageContract(contract)) throw t._("Forbidden access");
 		
-		var data : TaggerInfos = haxe.Json.parse(app.params.get("data"));
+	// 	var data : TaggerInfos = haxe.Json.parse(app.params.get("data"));
 		
-		db.ProductCategory.manager.unsafeDelete("delete from ProductCategory where productId in (" + Lambda.map(contract.getProducts(), function(t) return t.id).join(",")+")");
+	// 	db.ProductCategory.manager.unsafeDelete("delete from ProductCategory where productId in (" + Lambda.map(contract.getProducts(), function(t) return t.id).join(",")+")");
 		
-		for (p in data.products) {
-			for (t in p.categories) {
-				var x = new db.ProductCategory();
-				x.category = db.Category.manager.get(t, false);
-				x.product = db.Product.manager.get(p.product.id,false);
-				x.insert();				
-			}
-		}
+	// 	for (p in data.products) {
+	// 		for (t in p.categories) {
+	// 			var x = new db.ProductCategory();
+	// 			x.category = db.Category.manager.get(t, false);
+	// 			x.product = db.Product.manager.get(p.product.id,false);
+	// 			x.insert();				
+	// 		}
+	// 	}
 		
-		Sys.print(t._("Modifications saved"));
-	}
+	// 	Sys.print(t._("Modifications saved"));
+	// }
 	
 	
 

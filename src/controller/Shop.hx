@@ -12,68 +12,76 @@ class Shop extends Controller
 	var tmpBasket : db.TmpBasket;
 
 	@tpl('shop/default.mtt')
-	public function doDefault(md:db.MultiDistrib) {
-
-		if(app.getCurrentGroup()==null){
-			throw Redirect("/group/"+md.getGroup().id);
+	public function doDefault(md:db.MultiDistrib,?args:{continueShopping:Bool}) {
+		
+		if( app.getCurrentGroup()==null || app.getCurrentGroup().id!=md.getGroup().id){
+			throw  Redirect("/group/"+md.getGroup().id);
 		}
-
-		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
-
-		var date = md.getDate();
-		var place = md.getPlace();
-		if(place.group.betaFlags.has(ShopV2)) throw Redirect('/shop2/${md.id}');
-
-		var products = getProducts(md);
-		view.products = products;
-		view.place = place;
-		view.date = date;
-		view.group = place.group;
-		view.multiDistrib = md;	
-
-		//various closing dates	
-		var infos = ArrayTool.groupByDate(Lambda.array(distribs), "orderEndDate");
-		var str = "";
-		if (Lambda.count(infos) == 1){
-			str = Formatting.hDate( infos.iterator().next()[0].orderEndDate );
-		}else{
-			str = "<ul>";
-			for( k in infos.keys()){
-				str+="<li>";
-				var dists = infos.get(k);
-				
-				if (dists.length==1){
-					str += dists[0].catalog.name;
-				} else {
-					var tt = "";
-					for(d  in dists) tt  += d.catalog.name + ". ";					
-					str += '<span data-toggle="tooltip" title="$tt" style="text-decoration:underline;">Autres</span>';
-				}
-				
-				str += ": "+Formatting.hDate(Date.fromString(k));
-				str+="</li>";
+		if(args!=null){
+			if(!args.continueShopping){
+				service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
 			}
-			str +="</ul>";
 		}
-		view.infos = str;
+		view.category = 'shop';
+		view.md = md;
+		view.tmpBasketId = app.session.data.tmpBasketId;
+
+		// service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
+
+		// var date = md.getDate();
+		// var place = md.getPlace();
+		// if(place.group.betaFlags.has(ShopV2)) throw Redirect('/shop2/${md.id}');
+
+		// var products = getProducts(md);
+		// view.products = products;
+		// view.place = place;
+		// view.date = date;
+		// view.group = place.group;
+		// view.multiDistrib = md;	
+
+		// //various closing dates	
+		// var infos = ArrayTool.groupByDate(Lambda.array(distribs), "orderEndDate");
+		// var str = "";
+		// if (Lambda.count(infos) == 1){
+		// 	str = Formatting.hDate( infos.iterator().next()[0].orderEndDate );
+		// }else{
+		// 	str = "<ul>";
+		// 	for( k in infos.keys()){
+		// 		str+="<li>";
+		// 		var dists = infos.get(k);
+				
+		// 		if (dists.length==1){
+		// 			str += dists[0].catalog.name;
+		// 		} else {
+		// 			var tt = "";
+		// 			for(d  in dists) tt  += d.catalog.name + ". ";					
+		// 			str += '<span data-toggle="tooltip" title="$tt" style="text-decoration:underline;">Autres</span>';
+		// 		}
+				
+		// 		str += ": "+Formatting.hDate(Date.fromString(k));
+		// 		str+="</li>";
+		// 	}
+		// 	str +="</ul>";
+		// }
+		// view.infos = str;
 
 
 		//message if phone is required
-		if(app.user!=null && md.getGroup().flags.has(db.Group.GroupFlags.PhoneRequired) && app.user.phone==null){
-			app.session.addMessage(t._("Members of this group should provide a phone number. <a href='/account/edit'>Please click here to update your account</a>."),true);
-		}
+		// if(app.user!=null && md.getGroup().flags.has(db.Group.GroupFlags.PhoneRequired) && app.user.phone==null){
+		// 	app.session.addMessage(t._("Members of this group should provide a phone number. <a href='/account/edit'>Please click here to update your account</a>."),true);
+		// }
 
-		//event for additionnal blocks on home page
-		var e = Blocks([], "shop");
-		app.event(e);
-		view.blocks = e.getParameters()[0];
+		// //event for additionnal blocks on home page
+		// var e = Blocks([], "shop");
+		// app.event(e);
+		// view.blocks = e.getParameters()[0];
 	}
 
 	
 	/**
 	 * prints the full product list and current cart 
 	 */
-	public function doInit(md:db.MultiDistrib) {
+	/*public function doInit(md:db.MultiDistrib) {
 		
 		//init order serverside if needed		
 		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);
@@ -91,17 +99,14 @@ class Shop extends Controller
 		
 		categs = md.getGroup().getCategoryGroups();
 
-		//clean 
-		/*for ( p in order.products){
-			p.product = null;
-		}*/
+	
 
 		Sys.print( haxe.Serializer.run( {
 			products:products,
 			categories:categs,
 			order:tmpBasket.getData()
 		} ) );
-	}
+	}*/
 	
 	/**
 	 * Get the available products list
@@ -173,37 +178,37 @@ class Shop extends Controller
 	/**
 	 * add a product to the cart
 	 */
-	public function doAdd(md:db.MultiDistrib, productId:Int, quantity:Int) {
+	// public function doAdd(md:db.MultiDistrib, productId:Int, quantity:Int) {
 	
-		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);	
-		var data = tmpBasket.getData();		
-		data.products.push({ 
-			productId:productId,
-			quantity:quantity
-		});
-		tmpBasket.setData(data);
-		tmpBasket.update();
-		Sys.print( haxe.Json.stringify( {success:true} ) );
+	// 	var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);	
+	// 	var data = tmpBasket.getData();		
+	// 	data.products.push({ 
+	// 		productId:productId,
+	// 		quantity:quantity
+	// 	});
+	// 	tmpBasket.setData(data);
+	// 	tmpBasket.update();
+	// 	Sys.print( haxe.Json.stringify( {success:true} ) );
 		
-	}
+	// }
 	
 	/**
 	 * remove a product from cart 
 	 */
-	public function doRemove(md:db.MultiDistrib, pid:Int) {
+	// public function doRemove(md:db.MultiDistrib, pid:Int) {
 	
-		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);
+	// 	var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);
 
-		var data = tmpBasket.getData();	
-		for ( p in data.products.copy()) {
-			if (p.productId == pid) {
-				data.products.remove(p);
-			}
-		}
-		tmpBasket.setData(data);
-		tmpBasket.update();
-		Sys.print( haxe.Json.stringify( { success:true } ) );		
-	}
+	// 	var data = tmpBasket.getData();	
+	// 	for ( p in data.products.copy()) {
+	// 		if (p.productId == pid) {
+	// 			data.products.remove(p);
+	// 		}
+	// 	}
+	// 	tmpBasket.setData(data);
+	// 	tmpBasket.update();
+	// 	Sys.print( haxe.Json.stringify( { success:true } ) );		
+	// }
 	
 	
 	/**
