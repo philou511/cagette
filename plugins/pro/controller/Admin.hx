@@ -1,4 +1,5 @@
 package pro.controller;
+import crm.CrmService;
 import db.Group.BetaFlags;
 import tools.DateTool;
 import pro.db.PUserCompany;
@@ -455,7 +456,11 @@ class Admin extends controller.Controller
 		view.vendor = v;
 		view.cpro = cpro;
 		
-		if(app.params["refresh"]=="1") pro.db.VendorStats.updateStats(v);
+		if(app.params["refresh"]=="1") {
+			pro.db.VendorStats.updateStats(v);
+			CrmService.syncToHubspot(v);
+		}
+
 		if(app.params["disableAccess"]!=null){
 			var user = db.User.manager.get(Std.parseInt(app.params["disableAccess"]),false);
 			var uc  = PUserCompany.get(user,cpro,true);

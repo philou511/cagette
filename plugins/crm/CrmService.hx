@@ -8,18 +8,17 @@ import haxe.Http;
 **/
 class CrmService{
 
-    public static function syncToHubspot(vendor:db.Vendor) {
-        if(App.config.DEBUG) return;
+    public static function syncToHubspot(vendor:db.Vendor) {       
+        // if(App.config.DEBUG) return;
         var key = haxe.crypto.Md5.encode(App.config.KEY + vendor.id);
-        var req = Http.requestUrl(App.config.get("cagette_api")+"/crm/hubspot/"+vendor.id+"/"+key);
-        
+        var req = Http.requestUrl(App.config.get("cagette_bridge_api")+"/crm/hubspot/"+vendor.id+"/"+key);       
     }  
     
     
     public static function syncToSiB(user:db.User,?newsletter:Bool,?event:String, ?eventData:Dynamic) {
         // if(App.config.DEBUG) return;
         var key = haxe.crypto.Md5.encode(App.config.KEY + user.id);
-        var url = App.config.get("cagette_api")+"/crm/sib/"+user.id+"/"+key;
+        var url = App.config.get("cagette_bridge_api")+"/crm/sib/"+user.id+"/"+key;
        /* var params = [];
         if(newsletter) params.push("newsletter=1");
         if(event!=null) params.push("event="+event);

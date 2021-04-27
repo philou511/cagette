@@ -106,6 +106,16 @@
 	</div>
 	::end::
 
+	::if(isGroupAdmin || (vendors!=null && vendors.length>0))::
+	<div class="col-md-12">
+		<div class="alert alert-danger">
+	<b>Mise à jour des catégories du 26 Avril :</b> Le système de catégorisation des produits sur Cagette.net a été repensé pour plus de clarté. <br/>
+	Pensez à vérifier vos boutiques en ligne et à choisir les catégories les plus adaptées à vos produits ! 
+	<!--Pour en savoir plus : (+ lien vers la documentation)"-->
+		</div>
+	</div>
+	::end::
+
 	<div class="col-md-12">
 		<h2>::_("Hello")::
 		::if whichUser()==0::

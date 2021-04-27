@@ -576,5 +576,41 @@ class Admin extends Controller {
 
 
 
+
+	/*function doOldshop(){
+
+		var sql = "SELECT g.*,h.membersNum,h.cproContractNum,h.contractNum";		
+		sql += " FROM `Group` g LEFT JOIN  Hosting h ON g.id=h.id WHERE h.active=1";
+		sql += " ORDER BY g.id ASC";
+
+		var groups = db.Group.manager.unsafeObjects(sql,false);
+
+		for( g in groups){
+			if(!g.betaFlags.has(ShopV2) && g.flags.has(ShopMode)){
+				if(g.contact!=null){
+					Sys.print(g.name+","+g.contact.email+"<br/>");
+				}
+			}
+		}
+	}*/
+
+	/*function doPaul(){
+
+		var sql = "SELECT g.*,h.membersNum,h.cproContractNum,h.contractNum";		
+		sql += " FROM `Group` g LEFT JOIN  Hosting h ON g.id=h.id WHERE h.active=1";
+		sql += " ORDER BY g.id ASC";
+
+		var groups = db.Group.manager.unsafeObjects(sql,false);
+
+		for( g in groups){
+			for ( c in g.getActiveContracts()){
+				if(who.db.WConfig.isActive(c)!=null){
+					Sys.print(g.id+","+g.name+"<br/>");
+					continue;
+				}
+
+			}
+		}
+	}*/
 }
 
