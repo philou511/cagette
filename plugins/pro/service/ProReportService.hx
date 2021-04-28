@@ -172,7 +172,7 @@ class ProReportService{
 			
 			//smartQt
 			var p = db.Product.manager.get(r.pid, false);	
-			if( p.hasFloatQt || p.variablePrice ){
+			if( OrderService.canHaveFloatQt(p) ){
 				o.smartQt = view.smartQt(o.quantity, p.qt, p.unitType);
 			}else{
 				o.smartQt = Std.string(o.quantity);

@@ -158,7 +158,7 @@ class Product extends Controller
 					}
 					if (p["stock"] != null) product.stock = fv.filterString(p["stock"]);
 					product.organic = p["organic"] != null;
-					product.hasFloatQt = p["floatQt"] != null;
+					// product.hasFloatQt = p["floatQt"] != null;
 					
 					product.catalog = c;
 					product.insert();

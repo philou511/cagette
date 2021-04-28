@@ -1523,7 +1523,7 @@ class Admin extends controller.Controller
 			for( product in company.getProducts()){
 
 				var p2 = new pro.db.PProduct();
-				for( key in ["name","ref","txpProduct","desc","imageId","active","unitType","organic","variablePrice","multiWeight","hasFloatQt"]){
+				for( key in ["name","ref","txpProduct","desc","imageId","active","unitType","organic","variablePrice","multiWeight"]){
 					Reflect.setProperty(p2,key, Reflect.getProperty(product,key));
 				}
 				p2.company = destCompany;

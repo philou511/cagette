@@ -114,7 +114,6 @@ class PCatalogService{
 		groupProduct.vat = co.offer.vat;
 		groupProduct.txpProduct = co.offer.product.txpProduct;
 		groupProduct.organic = co.offer.product.organic;		
-		groupProduct.hasFloatQt = co.offer.product.hasFloatQt;
 		groupProduct.variablePrice = co.offer.product.variablePrice;
 		groupProduct.multiWeight = co.offer.product.multiWeight;
 		groupProduct.wholesale = co.offer.product.wholesale;

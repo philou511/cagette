@@ -12,8 +12,8 @@ import tink.core.Error;
 class OrderService
 {
 
-	static function canHaveFloatQt(product:db.Product):Bool{
-		return product.hasFloatQt || product.wholesale || product.variablePrice || product.bulk;
+	public static function canHaveFloatQt(product:db.Product):Bool{
+		return product.wholesale || product.variablePrice || product.bulk;
 	}
 
 	/**
@@ -395,7 +395,6 @@ class OrderService
 			x.productUnit = o.product.unitType;
 			x.productPrice = o.productPrice;
 			x.productImage = o.product.getImage();
-			x.productHasFloatQt = o.product.hasFloatQt;
 			x.productHasVariablePrice = o.product.variablePrice;
 			//new way
 			x.product = o.product.infos();
@@ -405,7 +404,7 @@ class OrderService
 			//smartQt
 			if (x.quantity == 0.0){
 				x.smartQt = t._("Canceled");
-			}else if(x.productHasFloatQt || x.productHasVariablePrice || o.product.wholesale){
+			}else if( OrderService.canHaveFloatQt(o.product)){
 				x.smartQt = view.smartQt(x.quantity, x.productQt, x.productUnit);
 			}else{
 				x.smartQt = Std.string(x.quantity);

@@ -35,7 +35,7 @@ class Product extends Object
 	public var bulk : Bool;		//(vrac) warn the customer this product is not packaged
 	public var smallQt : SNull<SFloat>; //if bulk is true, a smallQt should be defined
 
-	public var hasFloatQt:SBool; //deprecated : this product can be ordered in "float" quantity
+	// public var hasFloatQt:SBool; //deprecated : this product can be ordered in "float" quantity
 	
 	@hideInForms @:relation(imageId) public var image : SNull<sugoi.db.File>;
 	@:relation(txpProductId) public var txpProduct : SNull<db.TxpProduct>; //taxonomy	
@@ -46,9 +46,7 @@ class Product extends Object
 	public function new() 
 	{
 		super();
-		//type = 0;
 		organic = false;
-		hasFloatQt = false;
 		active = true;
 		variablePrice = false;
 		multiWeight = false;
@@ -117,7 +115,6 @@ class Product extends Object
 			subcategories:null,
 			orderable : this.catalog.isUserOrderAvailable(),
 			stock : catalog.hasStockManagement() ? this.stock : null,
-			hasFloatQt : hasFloatQt,
 			qt:qt,
 			unitType:unitType,
 			organic:organic,
@@ -198,9 +195,7 @@ class Product extends Object
 
 		//Only Integers are allowed for consumers and float for coordinators
 		if( this.multiWeight ) {
-
 			this.variablePrice = true;
-			this.hasFloatQt = false;
 		}
 	}
 

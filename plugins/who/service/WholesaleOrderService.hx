@@ -94,7 +94,7 @@ class WholesaleOrderService {
 			//big products should have wholesale enabled ! Otherwise editing an order will round quantities
 			if (!bigOffer.product.wholesale){
 				bigOffer.product.lock();
-				bigOffer.product.hasFloatQt = false;
+				bigOffer.product.bulk = true;
 				bigOffer.product.wholesale = true;
 				bigOffer.product.update();
 				var cat = rc.getCatalog();
