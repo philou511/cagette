@@ -255,11 +255,12 @@ class OrderService
 		return order;
 	}
 
-
-	public static function editMultiWeight( order : db.UserOrder, newquantity : Float ) : db.UserOrder {
+	/**
+		edit a multiweight order from a single qt input ( CSA order form ).
+	**/
+	public static function editMultiWeight( order:db.UserOrder, newquantity:Float ):db.UserOrder {
 
 		if( !tools.FloatTool.isInt(newquantity) ) {
-
 			throw new Error( "Erreur : la quantité du produit" + order.product.name + " devrait être un entier." );
 		}
 	
@@ -281,24 +282,19 @@ class OrderService
 						edit( orders[i], 0 );
 						orders.remove( orders[i] );
 					}
-				}
-				else if ( quantityDiff > 0 ) {
+				} else if ( quantityDiff > 0 ) {
 
 					for ( i in 0...quantityDiff ) {
-
 						orders.push( make( order.user, 1, order.product, order.distribution.id, null, order.subscription ) );
 					}
 				}
 
 				for ( orderToEdit in orders ) {
-
 					edit( orderToEdit, 1 );
 				}
-			}
-			else {
+			}else{
 
 				for ( orderToEdit in orders ) {
-
 					edit( orderToEdit, 0 );
 				}
 			}

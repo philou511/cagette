@@ -291,12 +291,12 @@ class PaymentService {
 
 			//For the payment page
 			case PCPayment:
-				if ( group.allowedPaymentsType == null ) return [];
+				if ( group.getAllowedPaymentTypes() == null ) return [];
 				//ontheSpot payment type replaces checks or cash
 			
 				var hasOnTheSpotPaymentTypes = false;
 				var all = getPaymentTypes(PCAll);
-				for ( paymentTypeId in group.allowedPaymentsType ){
+				for ( paymentTypeId in group.getAllowedPaymentTypes() ){
 					var found = all.find(function(a) return a.type == paymentTypeId);
 					if (found != null)  {
 						if(found.onTheSpot==true){
@@ -333,13 +333,13 @@ class PaymentService {
 	 * @return Array<payment.PaymentType>
 	 */
 	public static function getOnTheSpotAllowedPaymentTypes(group:db.Group):Array<payment.PaymentType> {
-		if (group.allowedPaymentsType == null)
+		if (group.getAllowedPaymentTypes() == null)
 			return [];
 		var onTheSpotAllowedPaymentTypes:Array<payment.PaymentType> = [];
 		var onTheSpotPaymentTypes = payment.OnTheSpotPayment.getPaymentTypes();
 		var all = getPaymentTypes(PCAll);
 		for (paymentType in onTheSpotPaymentTypes) {
-			if (Lambda.has(group.allowedPaymentsType, paymentType)) {
+			if (Lambda.has(group.getAllowedPaymentTypes(), paymentType)) {
 				var found = Lambda.find(all, function(a) return a.type == paymentType);
 				if (found != null) {
 					onTheSpotAllowedPaymentTypes.push(found);

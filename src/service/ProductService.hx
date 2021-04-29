@@ -124,10 +124,10 @@ class ProductService{
 		
 		//VAT selector
 		f.removeElement( f.getElement('vat') );		
-		var data :sugoi.form.ListData.FormData<Float> = [];
-		for (k in group.getVatRates().keys()) {
-			data.push( { label:k, value:group.getVatRates()[k] } );
-		}
+		var data :sugoi.form.ListData.FormData<Float> = group.getVatRates().map(r -> {label:r.label,value:r.value,desc:null,docLink:null});
+		// for (k in group.getVatRates().keys()) {
+		// 	data.push( { label:k, value:group.getVatRates()[k] } );
+		// }
 		f.addElement( new sugoi.form.elements.FloatSelect("vat", "TVA", data, product.vat ) );
 
 		f.removeElementByName("catalogId");
