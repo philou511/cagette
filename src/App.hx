@@ -195,8 +195,6 @@ class App extends sugoi.BaseApp {
 		out.set("Show3rdCategoryLevel", "Classer les produits de la boutique par catégorie de troisième niveau");	
 	
 
-		out.set("ShopV2", "Nouvelle boutique");
-
 		out.set("ref", "Référence");
 		out.set("linkText", "Intitulé du lien");
 		out.set("linkUrl", "URL du lien");
