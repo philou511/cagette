@@ -30,14 +30,14 @@ class ProGroupService
 		d.extUrl = g.extUrl;
 		d.membershipRenewalDate = g.membershipRenewalDate;
 		d.membershipFee = g.membershipFee;
-		d.vatRates = g.vatRates;
+		d.setVatRates(g.getVatRates());
 		d.flags = g.flags;
 		d.groupType = g.groupType;
 		d.image = g.image;
 		d.regOption = g.regOption;
 		d.currency = g.currency;
 		d.currencyCode =  g.currencyCode;
-		d.allowedPaymentsType = g.allowedPaymentsType;
+		d.setAllowedPaymentTypes(g.getAllowedPaymentTypes());
 		d.checkOrder = g.checkOrder;
 		d.IBAN = g.IBAN;		
 		d.insert();
