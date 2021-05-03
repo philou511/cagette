@@ -354,4 +354,8 @@ class Shop extends Controller
 		app.session.data.tmpBasketId = tmpBasketId;
 	}
 
+	public function doCheckTmpBasketId() {
+		Sys.print( haxe.Json.stringify( { tmpBasketId: app.session.data.tmpBasketId } ) );		
+	}
+
 }
