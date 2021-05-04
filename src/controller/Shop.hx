@@ -110,7 +110,7 @@ class Shop extends Controller
 	
 	/**
 	 * Get the available products list
-	 */
+	*/
 	private function getProducts(md:db.MultiDistrib,?categsFromTaxo=false):Array<ProductInfo> {
 
 		var date = md.getDate();
@@ -149,15 +149,15 @@ class Shop extends Controller
 	}
 	
 	/**
-	 * Overlay window loaded by Ajax for product Infos
-	 */
+	 * Product infos popup used in many places
+	*/
 	@tpl('shop/productInfo.mtt')
 	public function doProductInfo(p:db.Product,?args:{distribution:db.Distribution}) {
 		var d = args!=null && args.distribution!=null ? args.distribution : null;
 		view.p = p.infos(null,null,d);
 		view.product = p;
 		view.vendor = p.catalog.vendor;
-	}
+	} 
 	
 	/**
 	 * receive cart
@@ -175,42 +175,7 @@ class Shop extends Controller
 		
 	}
 	
-	/**
-	 * add a product to the cart
-	 */
-	// public function doAdd(md:db.MultiDistrib, productId:Int, quantity:Int) {
-	
-	// 	var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);	
-	// 	var data = tmpBasket.getData();		
-	// 	data.products.push({ 
-	// 		productId:productId,
-	// 		quantity:quantity
-	// 	});
-	// 	tmpBasket.setData(data);
-	// 	tmpBasket.update();
-	// 	Sys.print( haxe.Json.stringify( {success:true} ) );
-		
-	// }
-	
-	/**
-	 * remove a product from cart 
-	 */
-	// public function doRemove(md:db.MultiDistrib, pid:Int) {
-	
-	// 	var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);
 
-	// 	var data = tmpBasket.getData();	
-	// 	for ( p in data.products.copy()) {
-	// 		if (p.productId == pid) {
-	// 			data.products.remove(p);
-	// 		}
-	// 	}
-	// 	tmpBasket.setData(data);
-	// 	tmpBasket.update();
-	// 	Sys.print( haxe.Json.stringify( { success:true } ) );		
-	// }
-	
-	
 	/**
 		Confirms the temporary basket.
 		The user can come from the old or new shop, or from /transaction/tmpBasket.

@@ -332,11 +332,12 @@ class AmapAdmin extends Controller
 			if( f.getValueOf("groupId") != group.id ) throw "Vous avez changé de groupe.";
 
 			group.lock();
-
-			if(f.getValueOf("paymentTypes").has(MoneyPot.TYPE) && f.getValueOf("paymentTypes").length>1) {
+			var paymentTypes:Array<String> = f.getValueOf("paymentTypes");
+			if(paymentTypes.has(MoneyPot.TYPE) && paymentTypes.length>1) {
 				throw Error(sugoi.Web.getURI(),"Le paiement Cagnotte ne peut pas être utilisé en même temps que d'autres moyens de paiements.");
 			}
-			group.setAllowedPaymentTypes(f.getValueOf("paymentTypes"));
+			
+			group.setAllowedPaymentTypes(paymentTypes);
 			group.checkOrder = f.getValueOf("checkOrder");
 			group.IBAN = f.getValueOf("IBAN");
 			group.allowMoneyPotWithNegativeBalance = f.getValueOf("allowMoneyPotWithNegativeBalance");

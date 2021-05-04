@@ -558,7 +558,12 @@ class Group extends Object
 	}
 
 	public function getAllowedPaymentTypes():Array<String>{
-		return haxe.Json.parse(allowedPaymentsType2);
+		try{
+			return haxe.Json.parse(allowedPaymentsType2);
+		}catch(e:Dynamic){
+			return [];
+		}
+		
 	}
 
 }
