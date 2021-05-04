@@ -12,8 +12,8 @@ import tink.core.Error;
 class OrderService
 {
 
-	static function canHaveFloatQt(product:db.Product):Bool{
-		return product.hasFloatQt || product.wholesale || product.variablePrice || product.bulk;
+	public static function canHaveFloatQt(product:db.Product):Bool{
+		return product.wholesale || product.variablePrice || product.bulk;
 	}
 
 	/**
@@ -255,11 +255,12 @@ class OrderService
 		return order;
 	}
 
-
-	public static function editMultiWeight( order : db.UserOrder, newquantity : Float ) : db.UserOrder {
+	/**
+		edit a multiweight order from a single qt input ( CSA order form ).
+	**/
+	public static function editMultiWeight( order:db.UserOrder, newquantity:Float ):db.UserOrder {
 
 		if( !tools.FloatTool.isInt(newquantity) ) {
-
 			throw new Error( "Erreur : la quantité du produit" + order.product.name + " devrait être un entier." );
 		}
 	
@@ -281,24 +282,19 @@ class OrderService
 						edit( orders[i], 0 );
 						orders.remove( orders[i] );
 					}
-				}
-				else if ( quantityDiff > 0 ) {
+				} else if ( quantityDiff > 0 ) {
 
 					for ( i in 0...quantityDiff ) {
-
 						orders.push( make( order.user, 1, order.product, order.distribution.id, null, order.subscription ) );
 					}
 				}
 
 				for ( orderToEdit in orders ) {
-
 					edit( orderToEdit, 1 );
 				}
-			}
-			else {
+			}else{
 
 				for ( orderToEdit in orders ) {
-
 					edit( orderToEdit, 0 );
 				}
 			}
@@ -395,7 +391,6 @@ class OrderService
 			x.productUnit = o.product.unitType;
 			x.productPrice = o.productPrice;
 			x.productImage = o.product.getImage();
-			x.productHasFloatQt = o.product.hasFloatQt;
 			x.productHasVariablePrice = o.product.variablePrice;
 			//new way
 			x.product = o.product.infos();
@@ -405,7 +400,7 @@ class OrderService
 			//smartQt
 			if (x.quantity == 0.0){
 				x.smartQt = t._("Canceled");
-			}else if(x.productHasFloatQt || x.productHasVariablePrice || o.product.wholesale){
+			}else if( OrderService.canHaveFloatQt(o.product)){
 				x.smartQt = view.smartQt(x.quantity, x.productQt, x.productUnit);
 			}else{
 				x.smartQt = Std.string(x.quantity);

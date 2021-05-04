@@ -1,0 +1,37 @@
+::use 'plugin/pro/design.mtt'::
+<div class="col-md-9">
+	<div class="article">
+		<h3 ::cond title!=null::>::title::</h3>
+		<p ::cond text!=null::>
+			::raw text::
+		</p>
+		
+        ::raw form::
+        
+        <hr/>
+
+        <div class="alert alert-warning">
+            <p>
+                <i class="icon icon-info"></i>
+            ::if(groupAdmin)::
+
+            Vous êtes administrateur de <b>::distribution._catalog._group.name::</b>, si vous souhaitez modifier la distribution dans son ensemble, <br/>
+            <a href="/group/::distribution._catalog._group.id::">allez dans le groupe</a> et modifiez la distribution dans l'onglet "distribution". 
+            
+            ::else::
+            
+            Vous n'êtes pas administrateur de ce groupe. 
+            Pour toute autre modification de date pour cette commande, contactez l'administrateur : 
+            ::distribution._catalog._contact.getName()::
+            ( <a href="mailto: ::distribution._catalog._contact.email::">::distribution._catalog._contact.email::</a> )
+            
+            ::end::
+            </p>
+        </div>
+
+
+    </div>
+    
+</div>
+
+::end::

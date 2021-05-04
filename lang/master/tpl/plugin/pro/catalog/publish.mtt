@@ -1,0 +1,45 @@
+::use 'plugin/pro/catalog/design.mtt'::
+
+	<h3>Publier ce catalogue</h3>
+
+	<a href="/p/pro/public/::catalog.id::" class="btn btn-primary" target="_blank">
+		<i class="icon icon-chevron-right"></i> Voir ma page de catalogue
+	</a>
+	
+	<hr/>
+
+	<h4>Publier sur un site web</h4>
+
+	<p>
+		Copiez-collez ce code HTML dans votre page pour afficher votre catalogue sur votre site web.<br/>
+		Pour les sites tournant sour Wordpress, sélectionnez l'onglet "Texte" en haut à droite de votre zone de texte avant de copier le code HTML.
+	</p>
+
+	<pre>&lt;iframe src="https://::HOST::/p/pro/public/::catalog.id::?container=container-fluid" 
+style="width: 100%;"  width="100%" height="800"&gt;
+&lt;/iframe&gt;</pre>
+
+	<hr/>
+
+	<h4>Envoyer par email</h4>
+
+	<p>
+		Copiez-collez ce lien dans votre email :
+	</p>
+
+	<div class="linkToShare">
+			<i class="icon icon-link"></i> <a href="/p/pro/public/::catalog.id::" target="_blank">https://::HOST::/p/pro/public/::catalog.id::</a>		
+	</div>
+
+	<hr/>
+
+	<h4>Relier ce catalogue à un groupe que je pilote</h4>
+
+	<p>
+		Si vous êtes administrateur d'un groupe Cagette, vous pouvez facilement intégrer ce catalogue au groupe.<br/>
+		<a class="btn btn-default" href="/p/pro/catalog/publishGroup/::catalog.id::">
+			<i class="icon icon-chevron-right"></i> Relier ce catalogue à un groupe
+		</a>		
+	</p>
+	
+::end::

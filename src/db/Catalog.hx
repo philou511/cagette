@@ -152,14 +152,14 @@ class Catalog extends Object
 	public function computeFees(basePrice:Float) {
 		if (!hasPercentageOnOrders()) return 0.0;
 		
-		if (group.flags.has(ComputeMargin)) {
+		/*if (group.flags.has(ComputeMargin)) {
 			//commercial margin
 			return (basePrice / ((100 - percentageValue) / 100)) - basePrice;
 			
-		}else {
+		}else {*/
 			//add a percentage
 			return percentageValue / 100 * basePrice;
-		}
+		// }
 	}
 
 	public function check(){

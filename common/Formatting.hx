@@ -236,12 +236,12 @@ class Formatting
 		return str;
 	}
 
-	public static function color(id:Int) {
-		if (id == null) throw "color cant be null";
-		//try{
-			return intToHex(db.CategoryGroup.COLORS[id]);
-		//}catch (e:Dynamic) return "#000000";
-	}
+	// public static function color(id:Int) {
+	// 	if (id == null) throw "color cant be null";
+	// 	//try{
+	// 		return intToHex(db.CategoryGroup.COLORS[id]);
+	// 	//}catch (e:Dynamic) return "#000000";
+	// }
 	#end
 
 

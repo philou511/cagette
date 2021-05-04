@@ -1,0 +1,35 @@
+::use 'plugin/pro/design.mtt'::
+
+<div class="col-md-12">
+	<div class=" article">
+		<h2>C.A Total par producteurs</h2>	
+		<p>
+			Du ::hDate(startDate):: au ::hDate(endDate)::
+		</p>
+		<div class="text-center">
+			$$export(/p/pro/network/turnoverByVendors?startDate=::startDate.toString()::&endDate=::endDate.toString()::&csv=1)
+		</div>	
+		<p>
+			<table class="table table-bordered">
+				<tr>
+					<th>Producteur</th>
+					<th>C.A HT</th>
+					<th>C.A TTC</th>
+				</tr>
+				::foreach t turnover:: 
+				<tr>
+					<td>::t.vendorName::</td>
+					<td>::formatNum(t.turnoverHT):: &euro;</td>
+					<td>::formatNum(t.turnoverTTC):: &euro;</td>
+				</tr>
+				::end::
+
+			</table>
+		</p>				
+	</div>
+</div>
+
+
+
+
+::end::

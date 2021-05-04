@@ -390,12 +390,9 @@ class Contract extends Controller
 									order.product = product;
 									order.productPrice = product.price;
 								}
-								if ( product.hasFloatQt ) {
-									order.quantity = Std.parseFloat( StringTools.replace( paramQuantity, ",", "." ) );				
-								} else {				
-									order.quantity = Std.parseInt( paramQuantity );
-								}
-
+								
+								order.quantity = Std.parseInt( paramQuantity );
+								
 								useOrder = true;
 							}
 						}
@@ -477,13 +474,8 @@ class Contract extends Controller
 				
 				if ( orderProduct == null ) throw t._( "Could not find the product ::product:: and delivery ::delivery::", { product : productId, delivery : distribId } );
 				
-				var quantity = 0.0;				
-				if ( orderProduct.product.hasFloatQt ) {
-					var param = StringTools.replace( qty, ",", "." );
-					quantity = Std.parseFloat( param );
-				} else {
-					quantity = Std.parseInt( qty );
-				}
+				var quantity = Std.parseInt( qty );				
+				
 				
 				if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 
@@ -711,13 +703,7 @@ class Contract extends Controller
 					var order = Lambda.find(orders, function(uo) return uo.product.id == pid);
 					if (order == null) throw t._("Error, could not find the order");
 					
-					var q = 0.0;
-					if (order.product.hasFloatQt ) {
-						param = StringTools.replace(param, ",", ".");
-						q = Std.parseFloat(param);
-					}else {
-						q = Std.parseInt(param);
-					}
+					var q = Std.parseInt(param);					
 					
 					var quantity = Math.abs( q==null?0:q );
 

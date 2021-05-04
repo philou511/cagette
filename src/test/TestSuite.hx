@@ -365,7 +365,6 @@ class TestSuite
 		p.price = 15;
 		p.vat = 5.5;
 		p.multiWeight = true;
-		p.hasFloatQt = true;
 		p.catalog = c;
 		p.insert();
 
@@ -506,7 +505,6 @@ class TestSuite
 		//app.plugins.push( new hosted.HostedPlugIn() );				
 		app.plugins.push( new pro.ProPlugIn() );		
 		app.plugins.push( new connector.ConnectorPlugIn() );				
-		//app.plugins.push( new pro.LemonwayEC() );
 		//app.plugins.push( new who.WhoPlugIn() );
 		#end
 		

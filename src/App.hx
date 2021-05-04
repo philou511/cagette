@@ -50,8 +50,6 @@ class App extends sugoi.BaseApp {
 		plugins.push( new hosted.HostedPlugIn() );				
 		plugins.push( new pro.ProPlugIn() );		
 		plugins.push( new connector.ConnectorPlugIn() );				
-		//plugins.push( new lemonway.LemonwayEC() );
-		//plugins.push( new pro.LemonwayEC() );
 		plugins.push( new mangopay.MangopayPlugin() );
 		plugins.push( new who.WhoPlugIn() );
 		#end
@@ -170,7 +168,6 @@ class App extends sugoi.BaseApp {
 		out.set("uname", "Nom");
 		out.set("pname", "Produit");
 		out.set("organic", "Agriculture biologique");
-		out.set("hasFloatQt", "Autoriser quantités \"à virgule\"");
 		
 		out.set("membershipRenewalDate", "Adhésions : Date de renouvellement");
 		out.set("membershipPrice", "Adhésions : Coût de l'adhésion");
@@ -189,14 +186,14 @@ class App extends sugoi.BaseApp {
 		
 		//group options
 		out.set("ShopMode", "Mode boutique");
-		out.set("ComputeMargin", "Appliquer une marge à la place des pourcentages");
 		out.set("CustomizedCategories", "Catégories personnalisées");
 		out.set("HidePhone", "Masquer le téléphone du responsable sur la page publique");
 		out.set("PhoneRequired", "Saisie du numéro de téléphone obligatoire");
 		out.set("AddressRequired", "Saisie de l'adresse obligatoire");
-		
-
-		out.set("ShopV2", "Nouvelle boutique");
+		out.set("CagetteNetwork", "Lister ce groupe sur la carte Cagette.net et sur les annuaires partenaires");
+		out.set("HasPayments", "Gestion des paiements");
+		out.set("Show3rdCategoryLevel", "Classer les produits de la boutique par catégorie de troisième niveau");	
+	
 
 		out.set("ref", "Référence");
 		out.set("linkText", "Intitulé du lien");
@@ -214,8 +211,7 @@ class App extends sugoi.BaseApp {
 		out.set("Open", 		"Ouvert : tout le monde peut s'inscrire");
 		out.set("Full", 		"Complet : Le groupe n'accepte plus de nouveaux membres");
 
-		out.set("CagetteNetwork", "Me lister dans l'annuaire des groupes Cagette.net");
-		out.set("HasPayments", "Gestion des paiements");
+		
 
 		out.set("Soletrader"	, "Micro-entreprise");
 		out.set("Organization"	, "Association");
@@ -242,10 +238,8 @@ class App extends sugoi.BaseApp {
 		out.set("ByOffer"	, "Par offre (produits stockés déja conditionnés)");
 				
 		out.set("variablePrice", "Prix variable selon pesée");	
-		out.set("Show3rdCategoryLevel", "Classer les produits de la boutique par catégorie de troisième niveau");	
 		
-		//shop options
-		out.set("Show3rdCategoryLevel", "Classer par catégorie de troisième niveau");
+	
 
 		return out;
 	}

@@ -77,7 +77,7 @@
 			::foreach p products::
 				<th>
 					::set q = totalByProduct(p.id)::
-					::if(p.qt!=null && (p.hasFloatQt || p.variablePrice) )::
+					::if(p.qt!=null && (p.bulk || p.variablePrice) )::
 						::q * p.qt::  ::unit(p._unitType,false)::
 					::else::
 						::q::

@@ -110,18 +110,6 @@ class App {
         sentryInited = true;
     }*/
 
-	/**
-		Old Shop
-	**/
-	public function getCart() {
-        // //initSentry();
-		return new ShopCart();
-	}
-
-	public function getTagger(cid:Int ) {
-        // //initSentry();
-		return new Tagger(cid);
-	}
 
 	public function getTuto(name:String, step:Int) {
         // //initSentry();

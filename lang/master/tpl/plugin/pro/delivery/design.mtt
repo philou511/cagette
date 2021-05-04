@@ -1,0 +1,28 @@
+::use 'plugin/pro/design.mtt'::
+
+<div class="col-md-12">
+	<h2>Livraison ::hDate(distribution.date):: - ::distribution._catalog._group.name::</h2>
+		
+</div>
+
+<div class="col-md-3">
+	<div class="article">
+		
+		<ul id="subnav" class="nav nav-pills nav-stacked">
+			<li ::attr class if(nav[1]=="view") 		'active'::><a href="/p/pro/delivery/view/::distribution.id::">
+				<i class="icon icon-products"></i> Détail par produits</a></li>
+			<li ::attr class if(nav[1]=="detail") 		'active'::><a href="/p/pro/delivery/orders/::distribution.id::">
+				<i class="icon icon-users"></i>  Détail par membres</a></li>
+			
+		</ul>
+	</div>
+</div>
+
+
+<div class="col-md-9">
+	<div class="article">
+		::raw __content__::
+	</div>
+</div>
+
+::end::

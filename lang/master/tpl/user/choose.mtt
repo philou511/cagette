@@ -38,13 +38,15 @@
 				</div>
 				<div class="col-md-3 text-center">
 					<p>											
-						<b>Visio d'aide aux Producteurs :</b><br/>
+						<!--<b>Visio d'aide aux Producteurs :</b><br/>
 						<a href="https://us02web.zoom.us/meeting/register/tZAkfu-oqTgvGdBOeJj3JGssxcH9HiFXdu5R" target="_blank" title="">1er lundi du mois à 18h</a><br/>
 						<a href="https://us02web.zoom.us/meeting/register/tZEuf-6vqzwpGtTYCjqRtCfGyaqxSLl5gzvq" target="_blank" >3e lundi du mois à 18h</a><br/>
 
 						<b>Webinaire thématiques :</b><br/>
 						<a href="https://us02web.zoom.us/meeting/register/tZcrdOqtpjkpGdcVX_-TGDtl4iVpWzepGyr4" target="_blank" data-toggle="tooltip" title="tous les 2e lundi du mois à 18h">Bonnes pratiques</a><br/>
 						<a href="https://us02web.zoom.us/webinar/register/WN_ljYtX1oATOOy22wu33fmzQ" target="_blank" data-toggle="tooltip" title="Dernier lundi du mois à 18h"> Fonctionnalité</a><br/>
+						-->
+						::raw getVariable("homeVendorMessage")::
 					</p>
 				</div>
 			</div>
@@ -88,16 +90,28 @@
 				</div>
 				<div class="col-md-3 text-center">
 					<p>
-						<a href="https://us02web.zoom.us/meeting/register/tZEuf-6vqzwpGtTYCjqRtCfGyaqxSLl5gzvq" target="_blank" data-toggle="tooltip" title="Tous les 3e lundi du mois à 18h">Visio d'aide aux Coordinateurs</a><br/>
+						<!--<a href="https://us02web.zoom.us/meeting/register/tZEuf-6vqzwpGtTYCjqRtCfGyaqxSLl5gzvq" target="_blank" data-toggle="tooltip" title="Tous les 3e lundi du mois à 18h">Visio d'aide aux Coordinateurs</a><br/>
 						<b>Webinaire thématiques :</b><br/>
 						<a href="https://us02web.zoom.us/meeting/register/tZcrdOqtpjkpGdcVX_-TGDtl4iVpWzepGyr4" target="_blank" data-toggle="tooltip" title="Tous les 2e lundi du mois à 18h">Bonnes pratiques</a><br/>
 						<a href="https://us02web.zoom.us/webinar/register/WN_ljYtX1oATOOy22wu33fmzQ" target="_blank" data-toggle="tooltip" title="Tous les derniers lundi du mois à 18h"> Fonctionnalité</a><br/>
+						-->
+						::raw getVariable("homeGroupAdminMessage")::
 
 					</p>				
 				</div>
 			</div>
 				
 			
+		</div>
+	</div>
+	::end::
+
+	::if(isGroupAdmin || (vendors!=null && vendors.length>0))::
+	<div class="col-md-12">
+		<div class="alert alert-danger">
+			<b>Mise à jour des catégories du 26 Avril :</b> Le système de catégorisation des produits sur Cagette.net a été repensé pour plus de clarté. <br/>
+			Pensez à vérifier vos boutiques en ligne et à choisir les catégories les plus adaptées à vos produits ! <br/>
+			<a href="https://wiki.cagette.net/admin:nvllescats" target="_blank">En savoir plus</a>
 		</div>
 	</div>
 	::end::

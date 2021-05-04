@@ -1,0 +1,85 @@
+::use 'admin/design.mtt'::
+	<div class="article">
+		
+		<h1>Formations</h1>
+
+		<p>
+			<a href="/p/hosted/course/insert" class="btn btn-default">
+				<span class="glyphicon glyphicon-plus"></span> Nouvelle formation
+			</a>
+			
+		</p>
+
+		<!--<table class="table table-bordered">
+			<tr>
+				<th colspan="6">
+					Tableau de bord ( stagiaires inscrits à date J1 )
+				</th>
+			</tr>
+			<tr>
+				::foreach s stats::
+				<td>
+					<div class="text-center">
+							::s.month::<br/>
+							<b style="font-size: 1.4em;">::s.students::</b>
+					</div>
+					
+					
+					<div class="disabled">
+						Formations qui commencent :
+						<ul>
+						::foreach c s.courses::
+							<li>::c.name::</li>
+						::end::	
+						</ul>	
+					</div>
+
+					<div class="disabled">C.A ~ ::s.students*1300:: &euro;</div>
+
+				</td>
+				::end::
+			</tr>
+		</table>-->
+		
+		$$timeframe(::timeframe::)
+		::set students = 0::
+
+		<table class="table table-striped">
+			<tr>
+				<th>ID</th>
+				<th>Formation</th>
+				
+				<th>Date J1</th>
+				<th>Date J2</th>
+				<th>Nb stagiaires</th>
+			</tr>
+			::foreach c courses::
+			<tr>
+				<td style="font-weight:bold;">::c.ref::</td>
+				<td>
+					<a href="/p/hosted/course/view/::c.id::">::c.name::</a>
+				</td>
+				<!--<td>::c._teacher.getName()::</td>-->
+				<td>::dDate(c.date)::</td>
+				<td>::dDate(c.end)::</td>
+				<td style="width:150px;">
+
+					::set st = c.getStudents().length::
+					::set students = students + st::
+					::st::
+					<!--::if(c._group!=null)::
+						<a href="/group/::c._group.id::" target="_blank">::c._group.name::</a>
+					::end::-->
+				</td>
+			</tr>
+			::end::
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td>Total</td>
+				<td><b>::students::</b></td>
+			</tr>
+		</table>
+	</div>
+::end::

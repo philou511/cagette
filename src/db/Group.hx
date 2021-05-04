@@ -9,13 +9,13 @@ enum GroupFlags {
 	__HasMembership; 	//@deprecated membership management  
 	ShopMode; 		//shop mode / CSA mode
 	HasPayments; 	//manage payments and user balance
-	___ComputeMargin;	//@deprecated compute margin instead of percentage
+	__ComputeMargin;	//compute margin instead of percentage
 	CagetteNetwork; //register in cagette.net groups directory
-	___CustomizedCategories;  //@deprecated
+	__CustomizedCategories;  //the custom categories are not used anymore, use product taxonomy instead
 	HidePhone; 		//Hide manager phone on group public page
 	PhoneRequired;	//phone number of members is required for this group	
 	AddressRequired;//address required for delivery at home
-	___UnUsed;			//@deprecated
+	__UnUsed;
 	Show3rdCategoryLevel; //Show the third category level in the shop (Only for shop V2)
 }
 
@@ -61,7 +61,8 @@ class Group extends Object
 	@hideInForms public var membershipRenewalDate : SNull<SDate>;
 	@hideInForms public var membershipFee : SNull<STinyInt>;
 	
-	@hideInForms public var vatRates : SNull<SData<Map<String,Float>>>;
+	// @hideInForms public var vatRates : SNull<SData<Map<String,Float>>>;
+	@hideInForms public var vatRates2 : SNull<SText>; //
 	
 	//options and flags
 	public var flags:SFlags<GroupFlags>;
@@ -84,7 +85,7 @@ class Group extends Object
 	@formPopulate("getMembersFormElementData") @:relation(legalReprId) public var legalRepresentative : SNull<db.User>;
 	
 	//payments
-	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
+	// @hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
 	@hideInForms public var allowedPaymentsType2:SNull<SText>;
 	@hideInForms public var checkOrder:SNull<SString<64>>;
 	@hideInForms public var IBAN:SNull<SString<40>>;
@@ -105,7 +106,7 @@ class Group extends Object
 		flags.set(ShopMode);
 		betaFlags = cast 0;
 		betaFlags.set(ShopV2);
-		vatRates = ["5,5%" => 5.5, "20%" => 20];
+		setVatRates([{label:"TVA alimentaire",value:5.5},{label:"TVA standard",value:20}]);
 		cdate = Date.now();
 		regOption = Open;
 		currency = "€";
@@ -130,21 +131,7 @@ class Group extends Object
 		
 	}
 
-	/**
-		serialization error proof getter
-	**/
-	public function getVatRates():Map<String,Float>{
-		try{
-			if(this.vatRates==null){
-				return ["5,5%" => 5.5, "20%" => 20];
-			} else return this.vatRates;
-		}catch(e:Dynamic){
-			this.lock();
-			this.vatRates = ["5,5%" => 5.5, "20%" => 20];
-			this.update();
-			return this.vatRates;
-		}
-	}
+	
 	
 	/**
 	 * find the most common delivery place
@@ -204,19 +191,19 @@ class Group extends Object
 		return flags != null && flags.has(HasPayments) && flags.has(ShopMode);
 	}
 	
-	public function hasTaxonomy(){
+	/*public function hasTaxonomy(){
 		return flags != null && !flags.has(CustomizedCategories);
-	}
+	}*/
 	
 	public function hasPhoneRequired(){
 		return flags != null && flags.has(PhoneRequired);
 	}
 
-	public function hasShopV2(){		
-		return betaFlags != null && betaFlags.has(ShopV2);
-	}
+	// public function hasShopV2(){		
+	// 	return betaFlags != null && betaFlags.has(ShopV2);
+	// }
 	
-	public function getCategoryGroups() {
+	/*public function getCategoryGroups() {
 		
 		//if (flags.has(ShopCategoriesFromTaxonomy)){
 			//return Lambda.array( cast db.TxpCategory.manager.all(false) );	
@@ -258,7 +245,7 @@ class Group extends Object
 		
 		return categs;
 		
-	}
+	}*/
 	
 	
 	//public function canAddMember():Bool {
@@ -513,12 +500,71 @@ class Group extends Object
 		];
 	}
 
-	override function update() {
-		sync();
-		super.update();
+	// override function update() {
+	// 	sync();
+	// 	super.update();
+	// }
+
+	// public function sync() {
+	// 	this.allowedPaymentsType2 = this.allowedPaymentsType != null ? haxe.Json.stringify(this.allowedPaymentsType) : null;
+
+	// 	var transform = function(r:Map<String,Float>){
+	// 		var out  = [];
+	// 		if(r==null) return null;
+	// 		try{
+	// 			for ( k in r.keys() ){
+	// 				out.push(  {label:k,value:r.get(k)} );
+	// 			}
+	// 		}catch(e:Dynamic){
+
+	// 		}
+			
+	// 		return out;
+	// 	};
+
+	// 	this.vatRates2 = this.vatRates != null ? haxe.Json.stringify(transform(this.vatRates)) : null;
+	// }
+
+	public function setVatRates(rates:Array<{value:Float,label:String}>){
+		vatRates2 = haxe.Json.stringify(rates);
 	}
 
-	public function sync() {
-		this.allowedPaymentsType2 = this.allowedPaymentsType != null ? haxe.Json.stringify(this.allowedPaymentsType) : null;
+	public function getVatRates():Array<{value:Float,label:String}>{
+		try{
+			return haxe.Json.parse(vatRates2);
+		}catch(e:Dynamic){
+			var rates = [{label:"TVA alimentaire",value:5.5},{label:"TVA standard",value:20}];
+			this.lock();
+			setVatRates(rates);
+			this.update();
+			return rates;
+		}
 	}
+
+	/**
+		get vat rates as map
+	**/
+	public function getVatRatesOld():Map<String,Float>{
+		var map = new Map<String,Float>();
+		var rates = getVatRates();
+		if(rates==null) return null;
+		for( r in rates){
+			map.set(r.label,r.value);
+		}
+		return map;
+	}
+
+	public function setAllowedPaymentTypes(pt:Array<String>){
+		allowedPaymentsType2 = haxe.Json.stringify(pt);
+	}
+
+	public function getAllowedPaymentTypes():Array<String>{
+		try{
+			return haxe.Json.parse(allowedPaymentsType2);
+		}catch(e:Dynamic){
+			return [];
+		}
+		
+	}
+
 }

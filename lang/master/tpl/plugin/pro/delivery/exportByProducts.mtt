@@ -1,0 +1,86 @@
+::use 'plugin/pro/design.mtt'::
+<div class="col-md-12">
+	<div class="article">
+		
+		<h3>Récapitulatif par produits</h3>	
+
+		<table class="table table-striped">
+			<tr>
+				<td>Catalogues</td>
+				<td>
+					<b>Tous</b>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Fenêtre de temps
+				</td>
+				<td>
+					Du ::hDate(options.startDate):: au ::hDate(options.endDate)::
+				</td>
+			</tr>
+			<tr>
+				<td>Distributions</td>
+				<td>
+					<ul>
+					::foreach d distributions::
+					<li><a href="/p/pro/delivery/view/::d.id::">::d._catalog._group.name::</a> : ::hDate(d.date)::, ::d._place.name:: </li>
+					::end::
+					</ul>
+				</td>				
+			</tr>
+		</table>
+
+		<p>
+			$$export(::getURI()+"?"+getParamsString()+"&csv=1"::)
+		</p>
+		<hr/>
+		
+
+		<table class="table table-bordered table-hover"  style="width:100%;">
+			<tr>
+				<th>Poids/Vol.</th>
+				<th>Quantités</th>
+				<th>Produit</th>
+				<th>Référence</th>
+				<th>Prix unitaire TTC</th>
+				<th>Total</th>
+			</tr>
+			::set total = 0::
+			::foreach m orders::
+			<tr>
+				<td>
+					::raw m.weightOrVolume::
+				</td>
+				<td>
+					::formatNum(m.quantity)::
+				</td>
+				<td>
+					::m.pname::
+				</td>
+				<td class="ref">
+					$$nullSafe(::m.ref::)
+				</td>
+				<td>
+					::formatNum(m.priceTTC)::&nbsp;::currency()::
+				</td>
+				<td>
+					::formatNum(m.totalTTC)::&nbsp;::currency()::
+					::set total = total + m.totalTTC::
+				</td>
+				
+				
+			</tr>
+			::end::
+				
+			<tr style="background:#DDD;">
+				<th colspan="4"></th>
+				<th class="text-right">Total TTC : </th>
+				<th>::formatNum(total)::&nbsp;::currency()::</th>
+			</tr>
+			</table>
+			
+			
+	</div>
+</div>
+::end::

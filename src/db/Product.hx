@@ -33,7 +33,9 @@ class Product extends Object
 	@hideInForms public var wholesale : Bool;	//this product is a wholesale product (crate,bag,pallet)
 	@hideInForms public var retail : Bool;		//this products is a fraction of a wholesale product
 	public var bulk : Bool;		//(vrac) warn the customer this product is not packaged
-	public var hasFloatQt:SBool; //deprecated : this product can be ordered in "float" quantity
+	public var smallQt : SNull<SFloat>; //if bulk is true, a smallQt should be defined
+
+	// public var hasFloatQt:SBool; //deprecated : this product can be ordered in "float" quantity
 	
 	@hideInForms @:relation(imageId) public var image : SNull<sugoi.db.File>;
 	@:relation(txpProductId) public var txpProduct : SNull<db.TxpProduct>; //taxonomy	
@@ -44,9 +46,7 @@ class Product extends Object
 	public function new() 
 	{
 		super();
-		//type = 0;
 		organic = false;
-		hasFloatQt = false;
 		active = true;
 		variablePrice = false;
 		multiWeight = false;
@@ -115,7 +115,6 @@ class Product extends Object
 			subcategories:null,
 			orderable : this.catalog.isUserOrderAvailable(),
 			stock : catalog.hasStockManagement() ? this.stock : null,
-			hasFloatQt : hasFloatQt,
 			qt:qt,
 			unitType:unitType,
 			organic:organic,
@@ -131,12 +130,12 @@ class Product extends Object
 		
 		if(populateCategories){
 			//custom categories 
-			if (this.catalog.group.flags.has(CustomizedCategories)){
+			/*if (this.catalog.group.flags.has(CustomizedCategories)){
 
 				o.categories = Lambda.array(Lambda.map(getCategories(), function(c) return c.id));
 				o.subcategories = o.categories;
 				
-			}else{
+			}else{*/
 				//standard categories
 				if(txpProduct!=null){
 					o.categories = [txpProduct.subCategory.category.id];
@@ -149,7 +148,7 @@ class Product extends Object
 						o.subcategories = [txpOther.subCategory.id];
 					}
 				}				
-			}
+			// }
 		}
 
 		App.current.event(ProductInfosEvent(o,distribution));
@@ -160,11 +159,11 @@ class Product extends Object
 	/**
 	 * customs categs
 	 */
-	public function getCategories() {		
-		//"Types de produits" categGroup first
-		//var pc = db.ProductCategory.manager.search($productId == id, {orderBy:categoryId}, false);		
-		return Lambda.map(db.ProductCategory.manager.search($productId == id,{orderBy:categoryId},false), function(x) return x.category);
-	}
+	// public function getCategories() {		
+	// 	//"Types de produits" categGroup first
+	// 	//var pc = db.ProductCategory.manager.search($productId == id, {orderBy:categoryId}, false);		
+	// 	return Lambda.map(db.ProductCategory.manager.search($productId == id,{orderBy:categoryId},false), function(x) return x.category);
+	// }
 	
 	/**
 	 * general categs
@@ -196,9 +195,7 @@ class Product extends Object
 
 		//Only Integers are allowed for consumers and float for coordinators
 		if( this.multiWeight ) {
-
 			this.variablePrice = true;
-			this.hasFloatQt = false;
 		}
 	}
 
@@ -229,6 +226,7 @@ class Product extends Object
 			"variablePrice"		=> t._("Variable price based on weight"),			
 			"multiWeight" 		=> t._("Multi-weighing"),	
 			"bulk" 				=> "Vrac",
+			"smallQt"			=> "Petite quantité (pour le vrac)",
 		];
 	}
 	

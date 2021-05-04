@@ -1,0 +1,73 @@
+::use 'design.mtt'::
+	<style>
+        .cg{
+            background-color: bisque;
+        }
+    </style>
+	<div class="article">
+
+		<h3>Debug ::d::</h3>
+		<table class="table table-bordered">
+            <tr>
+                <th colspan="4" class="cg">Cagette payment ops</th>
+                <th colspan="4" >Mangopay datas</th>
+            </tr>
+            <tr>
+                <!--CAGETTE-->
+                <th class="cg">op Id</th>
+                <th class="cg">remote op id</th>                
+                <th class="cg">user</th>
+                <th class="cg">total amount</th>                
+                
+                <!--MGP-->    
+                <th>op Id</th>            
+                <th>user</th>
+                <th>total amount</th>
+                <th>fees</th>
+               
+            </tr>
+
+            ::foreach cgOp cgOps::
+            <tr>
+                <td class="cg">::cgOp.id::</td>
+                <td class="cg">::cgOp.getPaymentData().remoteOpId::</td>
+                <td class="cg">::cgOp._user.getName()::</td>
+                <td class="cg">::cgOp.amount::</td>
+
+
+                ::set mgp = find(cgOp,mgpOps)::
+
+                ::if(mgp!=null)::
+                <td>#::mgp.Id::</td>
+                <td>::mgp.AuthorId::</td>
+                <td>::money(mgp.CreditedFunds)::</td>
+                <td>::money(mgp.Fees)::</td>                         
+                ::end::
+            </tr>
+            ::end::
+                       
+            <tr>
+                <th class="cg" colspan="3">TOTAL</th>                
+                <th class="cg">::formatNum(distribIncomeCG)::</th>
+
+                <th colspan="3">TOTAL</th>
+                <th>::formatNum(distribIncomeMP)::</th>
+            </tr>
+
+        </table>
+
+        Il reste ça  dans mgpOps :
+        <table class="table table-bordered">
+            ::foreach mgp mgpOps::
+                <tr>
+                    <td>#::mgp.Id::</td>
+                    <td>::mgp.AuthorId::</td>
+                    <td>::money(mgp.CreditedFunds)::</td>
+                    <td>::money(mgp.Fees)::</td>                
+                </tr>
+            ::end::
+        </table>
+
+
+    </div>
+::end::

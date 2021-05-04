@@ -606,8 +606,8 @@
 		::elseif(status.has=="solo")::
 
 			<p>Vous avez choisi de ne retirer que votre propre commande.</p>
-			
-			::if(status.isResolved)::
+			  
+			::if(status.isResolved && slots!=null && slots.length>0 && status.selectedSlotId!=null)::
 				<p>
 					<b style="text-decoration:underline;">
 						Merci de bien vouloir venir chercher votre commande entre 

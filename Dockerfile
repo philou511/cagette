@@ -43,6 +43,7 @@ COPY --chown=www-data:www-data js/ /srv/js/
 COPY --chown=www-data:www-data lang/ /srv/lang/
 COPY --chown=www-data:www-data src/ /srv/src/
 COPY --chown=www-data:www-data www/ /srv/www/
+COPY --chown=www-data:www-data plugins/ /srv/plugins/
 
 USER www-data
 
@@ -63,12 +64,18 @@ RUN lix use haxe 4.0.5
 RUN lix download
 RUN npm install
 
+WORKDIR /srv
+COPY config.xml.dist config.xml
+
 WORKDIR /srv/backend
 
-RUN haxe cagetteAllPlugins.hxml
+RUN haxe cagetteAllPlugins.hxml -D i18n_generation;
 
 WORKDIR /srv/frontend
 RUN haxe cagetteJs.hxml
+
+WORKDIR /srv/lang/fr/tpl/
+RUN neko ../../../backend/temploc2.n -macros macros.mtt -output ../tmp/ *.mtt */*.mtt */*/*.mtt */*/*/*.mtt */*/*/*/*.mtt
 
 EXPOSE 3009
 

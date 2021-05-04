@@ -1,4 +1,5 @@
 package controller.admin;
+import sugoi.db.Variable;
 import db.TxpProduct;
 import db.BufferedJsonMail;
 import hosted.db.Hosting;
@@ -148,7 +149,13 @@ class Admin extends Controller {
 		if(f.isValid()){
 			var oldCateg = TxpProduct.manager.get(f.getValueOf("toreplace") );
 			var newCateg = TxpProduct.manager.get(f.getValueOf("by"));
+
 			for( p in db.Product.manager.search($txpProduct==oldCateg,true)){
+				p.txpProduct = newCateg;
+				p.update();				
+			}
+
+			for( p in pro.db.PProduct.manager.search($txpProduct==oldCateg,true)){
 				p.txpProduct = newCateg;
 				p.update();				
 			}
@@ -265,91 +272,9 @@ class Admin extends Controller {
 		view.newGroups = db.Group.manager.count($cdate >= from && $cdate < to);
 	}
 
-	@tpl("admin/default.mtt")
-	function doCreateTestGroups() {
-		
-		getOrCreateTestGroup( 'GT1 AMAP St Glinglin', Amap, Closed );
+	
 
-		var flags : sys.db.Types.SFlags<db.Group.GroupFlags> = cast 0;
-		flags.set(ShopMode);
-		getOrCreateTestGroup( 'GT2 Locavores affamés', GroupedOrders, WaitingList, flags );
-
-		var flags : sys.db.Types.SFlags<db.Group.GroupFlags> = cast 0;
-		flags.set(ShopMode);
-		flags.set(HasPayments);		
-		var betaFlags : sys.db.Types.SFlags<db.Group.BetaFlags> = cast 0;
-		betaFlags.set(ShopV2);
-		getOrCreateTestGroup( 'GT3 Locavores rassasiés', GroupedOrders, Open, flags, betaFlags, ["mangopay", "cash", "check", "transfer"] );
-
-		var flags : sys.db.Types.SFlags<db.Group.GroupFlags> = cast 0;
-		flags.set(ShopMode);
-		flags.set(HasPayments);		
-		getOrCreateTestGroup( 'GT4 Locavores gloutons', GroupedOrders, Open, flags, cast 0, ["lemonway", "cash", "check", "transfer"] );
-
-		var flags : sys.db.Types.SFlags<db.Group.GroupFlags> = cast 0;
-		flags.set(ShopMode);
-		flags.set(HasPayments);	
-		var betaFlags : sys.db.Types.SFlags<db.Group.BetaFlags> = cast 0;
-		betaFlags.set(ShopV2);	
-		getOrCreateTestGroup( 'GT5 Les légumes de Jojo', GroupedOrders, Open, flags, betaFlags, ["moneypot"] );
-		
-		view.now = Date.now();
-	}
-
-	/**
-	 * Get or create group by name
-	 * 
-	 */
-	public static function getOrCreateTestGroup( name : String, groupType : db.Group.GroupType, regOption : db.Group.RegOption,
-												 ?flags : sys.db.Types.SFlags<db.Group.GroupFlags>, ?betaFlags : sys.db.Types.SFlags<db.Group.BetaFlags>,  
-												 ?allowedPaymentsType : Array<String> ) : db.Group {
-
-		//Get or create
-		var group = db.Group.manager.search( $name == name ).first();
-		if ( group != null ) {
-			return group;
-		}
-
-		var group = new db.Group();
-		group.name = name;
-		group.contact = null;
-		group.txtIntro = "Groupe de test " + group.name;
-		group.txtHome = "Groupe de test " + group.name;
-		group.txtDistrib = null;
-		group.extUrl = null;
-		group.membershipRenewalDate = null;
-		group.membershipFee = 0;
-		group.vatRates = ["5,5%" => 5.5, "20%" => 20];
-		group.flags = flags;
-		group.betaFlags = betaFlags;
-		group.groupType = groupType;
-		group.image = null;
-		group.regOption = regOption;
-		group.currency = "€";
-		group.currencyCode = "EUR";
-		group.allowedPaymentsType = allowedPaymentsType;
-		group.checkOrder = group.name;
-		group.IBAN = null;		
-		group.insert();	
-
-		var place = new db.Place();
-		place.name = "Place du village";
-		place.zipCode = "00000";
-		place.city = "St Martin de la Cagette";
-		place.group = group;
-		place.insert();
-
-		//Add Alilo team members to the newly created group
-		addUserToGroup( 'admin@cagette.net', group );
-		addUserToGroup( 'francois@alilo.fr', group );
-		addUserToGroup( 'sebastien@alilo.fr', group );
-		addUserToGroup( 'mhelene@alilo.fr', group );
-		addUserToGroup( 'deborah@alilo.fr', group );
-		addUserToGroup( 'melanie@aqva.re', group );
-		addUserToGroup( 'julie_barbic@yahoo.fr', group );
-				
-		return group;
-	}
+	
 
 	public static function addUserToGroup( email : String, group : db.Group ) {
 
@@ -480,5 +405,134 @@ class Admin extends Controller {
 		Sys.print('</table>');
 	}
 
+	function doGroupStats(){
+		/*Caractérisation des groupes ( condition : les groupes actifs) :, 
+		mode du groupe, 
+		nombre de membres, 
+		réglage des inscriptions, 
+		nombre de produits différents vendus sur un an, 
+		nombre de producteurs par type (formés, invités...), 
+		bouléen sur utilisation des stocks dans un des catalogues, 
+		CA réalisé, 
+		nombre de distributions au cours des 12 derniers mois, 
+		a activé la gestion des paiements ou pas, 
+		modalités de paiement le cas échéant
+		*/
+
+		var sql = "SELECT g.*,h.membersNum,h.cproContractNum,h.contractNum";		
+		sql += " FROM `Group` g LEFT JOIN  Hosting h ON g.id=h.id WHERE h.active=1";
+		sql += " ORDER BY g.id ASC";
+
+		var groups = db.Group.manager.unsafeObjects(sql,false);
+		var headers = [
+			"id","name","mode","membersNum","inscriptions","productNum","vendorNum","cproCatalogNum","catalogNum","useStocks",
+			"turnover23months","distribNum12months","payments"
+		];
+			
+		var data = [];
+		var now = Date.now();
+		for( g in groups){
+			
+			var catalogs = g.getActiveContracts();
+			var cids = catalogs.map(c -> c.id);
+			var vendors = tools.ObjectListTool.deduplicate(catalogs.map(c -> c.vendor));
+			var from = DateTools.delta(now,-1000.0*60*60*24*365);
+			var to = now;
+			var distributions = MultiDistrib.getFromTimeRange(g,from,to);
+			// var turnOver = 0.0;
+			// for( d in distributions){
+			// 	turnOver += d.getTotalIncome();
+			// }
+
+			data.push({
+				id:g.id,
+				name:g.name,
+				mode:g.hasShopMode()?"BOUTIQUE":"AMAP",
+				membersNum:untyped g.membersNum,
+				inscriptions:Std.string(g.regOption),
+				productNum:db.Product.manager.count($catalogId in cids),
+				vendorNum:vendors.length,
+				cproCatalogNum:untyped g.cproContractNum,
+				catalogNum:untyped g.contractNum,
+				useStocks:db.Product.manager.count(($catalogId in cids) && $active==true && $stock>0)>0,
+				// turnover12months:Math.round(turnOver),
+				distribNum12months:distributions.length,
+				payments:g.allowedPaymentsType2
+			});
+		}
+
+		sugoi.tools.Csv.printCsvDataFromObjects(data,headers,"stats_groupes");
+		// var t = new sugoi.helper.Table();
+		// Sys.print(t.toString(data));
+	}
+
+	/**
+		edit general messages on homepage
+	**/
+	@tpl('form.mtt')
+	function doMessages(){
+
+		var homeVendorMessage = Variable.get("homeVendorMessage");
+		var homeGroupAdminMessage = Variable.get("homeGroupAdminMessage");
+
+		var f = new sugoi.form.Form("msg");
+		f.addElement(new sugoi.form.elements.TextArea("homeVendorMessage","Accueil producteurs",homeVendorMessage));
+		f.addElement(new sugoi.form.elements.TextArea("homeGroupAdminMessage","Accueil admin de groupes",homeGroupAdminMessage));
+
+		if(f.isValid()){
+			Variable.set("homeVendorMessage",f.getValueOf("homeVendorMessage"));
+			Variable.set("homeGroupAdminMessage",f.getValueOf("homeGroupAdminMessage"));
+			throw Ok("/admin/messages","Messages mis à jour");
+		}
+
+		view.title = "Messages";
+		view.form = f;
+	}
+
+
+
+
+	/*function doOldshop(){
+
+		var sql = "SELECT g.*,h.membersNum,h.cproContractNum,h.contractNum";		
+		sql += " FROM `Group` g LEFT JOIN  Hosting h ON g.id=h.id WHERE h.active=1";
+		sql += " ORDER BY g.id ASC";
+
+		var groups = db.Group.manager.unsafeObjects(sql,false);
+
+		for( g in groups){
+			if(!g.betaFlags.has(ShopV2) && g.flags.has(ShopMode)){
+				if(g.contact!=null){
+					Sys.print(g.name+","+g.contact.email+"<br/>");
+				}
+			}
+		}
+	}*/
+
+	/*function doPaul(){
+
+		var sql = "SELECT g.*,h.membersNum,h.cproContractNum,h.contractNum";		
+		sql += " FROM `Group` g LEFT JOIN  Hosting h ON g.id=h.id WHERE h.active=1";
+		sql += " ORDER BY g.id ASC";
+
+		var groups = db.Group.manager.unsafeObjects(sql,false);
+
+		for( g in groups){
+			for ( c in g.getActiveContracts()){
+				if(who.db.WConfig.isActive(c)!=null){
+					Sys.print(g.id+","+g.name+"<br/>");
+					continue;
+				}
+
+			}
+		}
+	}*/
+
+	function doGroups(){
+		for ( g in db.Group.manager.all(true)){
+			g.update();
+			Sys.println(g.name+"<br/>");
+		}
+	}
 }
 

@@ -93,14 +93,14 @@ class ContractAdmin extends Controller
 		view.c = contract;
 		
 		//checks
-		if (app.user.getGroup().hasShopMode() && !app.user.getGroup().hasTaxonomy() ) {		
-			for ( p in contract.getProducts(false)) {
-				if (p.getCategories().length == 0) {
-					app.session.addMessage(t._("Warning, at least one product does not have any category. <a href='/product/categorize/::contractid::'>Click here to add categories</a>", {contractid:contract.id}), true);
-					break;
-				}
-			}			
-		}
+		// if (app.user.getGroup().hasShopMode() && !app.user.getGroup().hasTaxonomy() ) {		
+		// 	for ( p in contract.getProducts(false)) {
+		// 		if (p.getCategories().length == 0) {
+		// 			app.session.addMessage(t._("Warning, at least one product does not have any category. <a href='/product/categorize/::contractid::'>Click here to add categories</a>", {contractid:contract.id}), true);
+		// 			break;
+		// 		}
+		// 	}			
+		// }
 		
 		//batch enable / disable products
 		if (args != null){

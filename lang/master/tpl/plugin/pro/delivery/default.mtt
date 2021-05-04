@@ -1,0 +1,63 @@
+::use 'plugin/pro/design.mtt'::
+
+<div class="col-md-6">
+	<div class="article">
+		<h2>Prochaines distributions</h2>
+		
+		<p>
+		$$insert(Livraison ponctuelle,/p/pro/delivery/insert)	
+		$$insert(Livraisons récurrentes,/p/pro/delivery/insertCycle)	
+		</p>
+		
+		::foreach k distribs::
+			$$deliveryPro(::k::,true)
+			<hr/>
+		::end::
+	</div>
+</div>
+
+<div class="col-md-6">
+
+	<div class="article">
+		
+		<h4>Récapitulatifs</h4>
+		
+		::raw form.render()::
+	</div>	
+
+	<div class="alert alert-warning">
+		<i class="icon icon-info"></i> Vous êtes en mode <b>Réseau captif</b> : contrairement au mode par défaut, 
+		vous pouvez directement programmer des distributions sur l'ensemble de votre réseau de groupes.
+	</div>
+</div>
+
+<div class="col-md-12" ::cond cycles.length>0::>
+	<div class="article">
+
+		<h4>Cycles de distributions</h4>
+		<table class="table">
+			
+			::foreach c cycles::
+			<tr>
+				<td><b>::c._group.name::</b></td>
+				<td><b>
+					::switch c.cycleType:: 						
+					::case::  ::_("Weekly")::
+					::case::  ::_("Monthly")::
+					::case::  ::_("Every 2 weeks")::
+					::case::  ::_("Every 3 weeks")::
+					::end::
+					</b>
+					: Du ::hDate(c.startDate):: au ::hDate(c.endDate)::
+				</td>
+				<td>
+					$$delete(::_("Del.")::,::"/p/pro/delivery/deleteCycle/"+c.id+"?token="+token::)
+				</td>
+			</tr>
+			::end::
+		</table>
+	</div>
+</div>
+
+
+::end::

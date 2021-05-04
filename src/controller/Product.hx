@@ -36,6 +36,12 @@ class Product extends Controller
 				product.stock = (f.getValueOf("stock"):Float) * product.catalog.getDistribs(false).length;
 			}
 
+			try{
+				ProductService.check(product);
+			}catch(e:tink.core.Error){
+				throw Error(sugoi.Web.getURI(),e.message);
+			}
+
 			app.event(EditProduct(product));
 			product.update();
 			throw Ok('/contractAdmin/products/'+product.catalog.id, t._("The product has been updated"));
@@ -54,29 +60,18 @@ class Product extends Controller
 		
 		var product = new db.Product();
 		var f = ProductService.getForm(null,contract);
-		
-		/*f.removeElementByName("catalogId");
-		
-		//stock mgmt ?
-		if (!contract.hasStockManagement()) f.removeElementByName('stock');
-		
-		//vat selector
-		f.removeElement( f.getElement('vat') );
-		var data = [];
-		for (k in app.user.getGroup().vatRates.keys()) {
-			data.push( { value:app.user.getGroup().vatRates[k], label:k } );
-		}
-		f.addElement( new FloatSelect("vat", "TVA", data, product.vat ) );
-		
-		var formName = f.name;
-		var html = service.ProductService.getCategorizerHtml("",null,formName);
-		f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);*/
-		
+	
 		if (f.isValid()) {
 
 			f.toSpod(product);
 			product.catalog = contract;
 
+			try{
+				ProductService.check(product);
+			}catch(e:tink.core.Error){
+				throw Error(sugoi.Web.getURI(),e.message);
+			}
+			
 			app.event(NewProduct(product));
 			product.insert();
 			throw Ok('/contractAdmin/products/'+product.catalog.id, t._("The product has been saved"));
@@ -163,7 +158,7 @@ class Product extends Controller
 					}
 					if (p["stock"] != null) product.stock = fv.filterString(p["stock"]);
 					product.organic = p["organic"] != null;
-					product.hasFloatQt = p["floatQt"] != null;
+					// product.hasFloatQt = p["floatQt"] != null;
 					
 					product.catalog = c;
 					product.insert();
@@ -185,7 +180,7 @@ class Product extends Controller
 		view.step = csv.step;
 	}
 	
-	@tpl("product/categorize.mtt")
+	/*@tpl("product/categorize.mtt")
 	public function doCategorize(contract:db.Catalog) {
 		
 		
@@ -206,13 +201,13 @@ class Product extends Controller
 		//view.form = form;
 		view.c = contract;
 		
-	}
+	}/
 	
 	/**
 	 * init du Tagger
 	 * @param	contract
 	 */	
-	public function doCategorizeInit(contract:db.Catalog) {
+	/*public function doCategorizeInit(contract:db.Catalog) {
 		
 		if (!app.user.canManageContract(contract)) throw t._("Forbidden access");
 		
@@ -238,27 +233,27 @@ class Product extends Controller
 		}
 		
 		Sys.print(haxe.Json.stringify(data));
-	}
+	}*/
 	
-	public function doCategorizeSubmit(contract:db.Catalog) {
+	// public function doCategorizeSubmit(contract:db.Catalog) {
 		
-		if (!app.user.canManageContract(contract)) throw t._("Forbidden access");
+	// 	if (!app.user.canManageContract(contract)) throw t._("Forbidden access");
 		
-		var data : TaggerInfos = haxe.Json.parse(app.params.get("data"));
+	// 	var data : TaggerInfos = haxe.Json.parse(app.params.get("data"));
 		
-		db.ProductCategory.manager.unsafeDelete("delete from ProductCategory where productId in (" + Lambda.map(contract.getProducts(), function(t) return t.id).join(",")+")");
+	// 	db.ProductCategory.manager.unsafeDelete("delete from ProductCategory where productId in (" + Lambda.map(contract.getProducts(), function(t) return t.id).join(",")+")");
 		
-		for (p in data.products) {
-			for (t in p.categories) {
-				var x = new db.ProductCategory();
-				x.category = db.Category.manager.get(t, false);
-				x.product = db.Product.manager.get(p.product.id,false);
-				x.insert();				
-			}
-		}
+	// 	for (p in data.products) {
+	// 		for (t in p.categories) {
+	// 			var x = new db.ProductCategory();
+	// 			x.category = db.Category.manager.get(t, false);
+	// 			x.product = db.Product.manager.get(p.product.id,false);
+	// 			x.insert();				
+	// 		}
+	// 	}
 		
-		Sys.print(t._("Modifications saved"));
-	}
+	// 	Sys.print(t._("Modifications saved"));
+	// }
 	
 	
 

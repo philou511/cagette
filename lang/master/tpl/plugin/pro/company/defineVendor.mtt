@@ -1,0 +1,52 @@
+::use 'plugin/pro/design.mtt'::
+
+<div class="col-md-12">
+	<div class="article">
+
+		<h2>::_("Select a vendor")::</h2>
+
+		<div class="row">
+				::if(vendors.length>0)::
+					<div class="col-md-12"><p>
+						::_("We found these vendors in our database :")::
+					</p></div>
+					::foreach v vendors::
+					<div class="col-md-4 col-sm-6">
+						<a href="/p/pro/company/linkVendor/::v.id::" class="clickable groupBlock" style="height:200px">					
+							::if v._image!=null::
+							<img src="::file(v._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
+							::end::
+							<p>
+								<b>::v.name::</b>
+							</p>
+							<p ::cond(v.desc!=null):: style="color:#999;font-size:0.9em;">
+								::short(v.desc,200)::
+							</p>
+							<p>
+							::v.zipCode:: ::v.city::
+							</p>
+						</a>
+					</div>
+					::end::
+				::else::
+					<div class="col-md-12">
+						$$empty(::_("We could not find any vendor matching your search")::)
+						$$back()
+					</div>					
+				::end::
+		</div>
+
+	</div>
+</div>
+
+<div class="col-md-12">
+	<div class="article text-center">
+		<p>
+			::_("The vendor you want to work with is not in this list ?")::
+		</p>
+		<a href="/p/pro/company/insertVendor/::email::/::name::" class="btn btn-default btn-lg">::_("Key-in a new vendor")::</a>
+
+	</div>
+</div>
+	
+::end::
