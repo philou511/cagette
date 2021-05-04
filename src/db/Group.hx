@@ -6,21 +6,22 @@ import Common;
 using tools.DateTool;
 
 enum GroupFlags {
-	__HasMembership; 	//DEPRECATED membership management  
-	ShopMode; 		//shop mode / standard mode
+	__HasMembership; 	//@deprecated membership management  
+	ShopMode; 		//shop mode / CSA mode
 	HasPayments; 	//manage payments and user balance
-	ComputeMargin;	//compute margin instead of percentage
+	___ComputeMargin;	//@deprecated compute margin instead of percentage
 	CagetteNetwork; //register in cagette.net groups directory
-	CustomizedCategories;  //the custom categories are not used anymore, use product taxonomy instead
+	___CustomizedCategories;  //@deprecated
 	HidePhone; 		//Hide manager phone on group public page
 	PhoneRequired;	//phone number of members is required for this group	
 	AddressRequired;//address required for delivery at home
-	UnUsed;
+	___UnUsed;			//@deprecated
 	Show3rdCategoryLevel; //Show the third category level in the shop (Only for shop V2)
 }
 
 enum BetaFlags{
-	ShopV2; 		//BETA shop V2
+	___ShopV2; 		//shop V2 @deprecated
+	Cagette2;		//BETA Cagette 2.0
 }
 
 //user registration options
