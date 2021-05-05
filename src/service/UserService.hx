@@ -98,6 +98,7 @@ class UserService
 		if (group != null && group.regOption == db.Group.RegOption.Open){
 			user.makeMemberOf(group);	
 		}
+		
 		if(group!=null){
 
 			if(group.flags.has(PhoneRequired) && (phone==null || phone=="") ){

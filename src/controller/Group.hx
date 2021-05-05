@@ -233,13 +233,11 @@ class Group extends controller.Controller
 			case GroupedOrders :
 				g.flags.set(ShopMode);
 				g.hasMembership=true;
-				g.betaFlags.set(ShopV2);
 				g.regOption = WaitingList;
 				
 			case ProducerDrive,FarmShop : 
 				g.flags.set(ShopMode);								
 				g.flags.set(PhoneRequired);
-				g.betaFlags.set(ShopV2);
 				g.regOption = Open;
 			}
 			

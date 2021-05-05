@@ -24,7 +24,8 @@ class User extends Object {
 	public var id : SId;
 	public var lang : SString<2>;
 	//@:skip public var name(get, set) : String;
-	public var pass : STinyText;
+	public var pass : STinyText; //hashed in MD5
+	public var pass2 : STinyText; //hashed en Bcrypt
 	public var rights : SFlags<RightSite>;
 	
 	public var firstName:SString<32>;

@@ -105,7 +105,6 @@ class Group extends Object
 		flags.set(CagetteNetwork);
 		flags.set(ShopMode);
 		betaFlags = cast 0;
-		betaFlags.set(ShopV2);
 		setVatRates([{label:"TVA alimentaire",value:5.5},{label:"TVA standard",value:20}]);
 		cdate = Date.now();
 		regOption = Open;
@@ -131,6 +130,24 @@ class Group extends Object
 		
 	}
 
+	/**
+		vérifie que le groupe est bien dans un ilot/isolat cagette 2
+	**/
+	public function checkIsolate(){
+	
+		if(this.betaFlags.has(BetaFlags.Cagette2)){
+			var noCagette2Vendors = getVendors().filter(v->!v.betaFlags.has(db.Vendor.VendorBetaFlags.Cagette2));
+			if ( noCagette2Vendors.length>0 ){
+				var name = noCagette2Vendors.map(v -> v.name).join(", ");
+				throw sugoi.ControllerAction.ControllerAction.ErrorAction("/user/choose",'Le groupe "${this.name}" a l\'option Cagette2 activée et ne peut pas fonctionner avec des producteurs qui n\'ont pas activé cette option ($name). Contactez nous sur <b>support@cagette.net</b> pour régler le problème.');
+			}
+			
+		} 
+	}
+
+	public function hasCagette2(){
+		return betaFlags.has(BetaFlags.Cagette2);
+	}
 	
 	
 	/**
@@ -199,59 +216,6 @@ class Group extends Object
 		return flags != null && flags.has(PhoneRequired);
 	}
 
-	// public function hasShopV2(){		
-	// 	return betaFlags != null && betaFlags.has(ShopV2);
-	// }
-	
-	/*public function getCategoryGroups() {
-		
-		//if (flags.has(ShopCategoriesFromTaxonomy)){
-			//return Lambda.array( cast db.TxpCategory.manager.all(false) );	
-		//}else{
-			//return Lambda.array( db.CategoryGroup.get(this) );	
-		//}
-		var t = sugoi.i18n.Locale.texts;
-		var categs = new Array<{id:Int,name:String,color:String,pinned:Bool,categs:Array<CategoryInfo>}>();	
-		
-		if (!this.flags.has(db.Group.GroupFlags.CustomizedCategories)){
-			
-			//TAXO CATEGORIES
-			var taxoCategs = db.TxpCategory.manager.all(false);
-			var c : Array<CategoryInfo> = Lambda.array(Lambda.map( taxoCategs, function(c){return cast {id:c.id, name:c.name}; }));
-			
-			categs.push({
-				id:0,
-				name: t._("Product type"),
-				pinned:false,
-				color:"#583816",
-				categs: c				
-			});
-			
-		}else{
-			
-			//CUSTOM CATEGORIES
-			var catGroups = db.CategoryGroup.get(this);
-			for ( cg in catGroups){
-				var color = Formatting.intToHex(db.CategoryGroup.COLORS[cg.color]);
-				categs.push({
-					id:cg.id,
-					name:cg.name,
-					pinned:cg.pinned,
-					color:color,
-					categs: Lambda.array(Lambda.map( cg.getCategories(), function(c) return c.infos()))					
-				});
-			}	
-		}
-		
-		return categs;
-		
-	}*/
-	
-	
-	//public function canAddMember():Bool {
-	//	return isAboOk(true);
-	//}
-	
 	/**
 	 * Renvoie la liste des contrats actifs
 	 * @param	large=false

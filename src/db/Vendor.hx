@@ -27,6 +27,10 @@ typedef SiretInfos = {
 	}
 }
 
+enum VendorBetaFlags{
+	Cagette2;		//BETA Cagette 2.0
+}
+
 /**
  * Vendor (farmer/producer/vendor)
  */
@@ -80,12 +84,33 @@ class Vendor extends Object
 	@hideInForms public var lat:SNull<SFloat>;
 	@hideInForms public var lng:SNull<SFloat>;
 
+	@hideInForms public var betaFlags:SFlags<VendorBetaFlags>;
+
 	public function new() 
 	{
 		super();
 		directory = true;
 		cdate = Date.now();
 
+	}
+
+	public function checkIsolate(){
+	
+		if(this.betaFlags.has(VendorBetaFlags.Cagette2)){
+
+			var cpro = pro.db.CagettePro.getCurrentCagettePro();
+
+			var noCagette2Groups = cpro.getGroups().filter(v->!v.hasCagette2());
+			if ( noCagette2Groups.length>0 ){
+				var name = noCagette2Groups.map(v -> v.name).join(", ");
+				throw sugoi.ControllerAction.ControllerAction.ErrorAction("/user/choose",'Le producteur "${this.name}" a l\'option Cagette2 activée et ne peut pas fonctionner avec des groupes qui n\'ont pas activé cette option ($name). Contactez nous sur <b>support@cagette.net</b> pour régler le problème.');
+			}
+			
+		} 
+	}
+
+	public function hasCagette2(){
+		return betaFlags.has(VendorBetaFlags.Cagette2);
 	}
 	
 	override function toString() {

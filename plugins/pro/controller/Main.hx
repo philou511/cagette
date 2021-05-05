@@ -18,6 +18,8 @@ class Main extends controller.Controller
 		view.company = company = pro.db.CagettePro.getCurrentCagettePro();
 		view.vendor = vendor = pro.db.CagettePro.getCurrentVendor();
 
+		vendor.checkIsolate();
+		
 		//hack into breadcrumb
 		if(vendor!=null){
 			App.current.breadcrumb[0] = {id:"v"+vendor.id,name:"Cagette Pro : "+vendor.name,link:"/p/pro"};

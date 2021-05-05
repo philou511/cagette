@@ -1177,7 +1177,6 @@ class Admin extends controller.Controller
 					group.image = sugoi.db.File.manager.get(60865,false);
 					group.flags.set(db.Group.GroupFlags.ShopMode);				
 					group.flags.unset(db.Group.GroupFlags.CagetteNetwork);			
-					group.betaFlags.set(db.Group.BetaFlags.ShopV2);
 					group.regOption = Closed;
 					group.groupType = db.Group.GroupType.GroupedOrders;
 					//group.membershipRenewalDate = new Date(2017, 8, 1, 0, 0, 0);

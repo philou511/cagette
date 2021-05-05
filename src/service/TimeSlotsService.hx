@@ -380,11 +380,11 @@ class TimeSlotsService{
 
 typedef Slot = {
 	id: Int,
-  distribId: Int,
-  selectedUserIds: Array<Int>,
+  	distribId: Int,
+  	selectedUserIds: Array<Int>,
 	registeredUserIds: Array<Int>,
 	start: Date,
-  end: Date
+  	end: Date
 }
 
 // typedef SlotResolver = {
