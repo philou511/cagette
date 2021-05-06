@@ -81,7 +81,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>Type de catalogue :</td>
+				<td>Type de catalogue :</td>				
 				<td>::if(group.hasShopMode())::
 						Catalogue standard ( commande variable )
 					::else::

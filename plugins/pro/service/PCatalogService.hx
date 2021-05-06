@@ -330,8 +330,8 @@ class PCatalogService{
 		//create contract		
 		var contract = syncContract(null,catalog,contact,clientGroup);
 
-		//if AMAP contract
-		if(contractType==0){
+		//if CSA contract with constant orders
+		if(contractType==db.Catalog.TYPE_CONSTORDERS && !clientGroup.hasShopMode()){
 			contract.type = db.Catalog.TYPE_CONSTORDERS;
 			contract.update();
 		}
