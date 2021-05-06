@@ -160,11 +160,6 @@ class Subscriptions extends controller.Controller
 					
 				}
 
-				if ( ordersData.length == 0 ) {
-
-					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, "La commande par défaut ne peut pas être vide. Vous devez obligatoirement commander quelque chose." );
-				}
-
 				var absencesNb = Std.parseInt( app.params.get( 'absencesNb' ) );
 				subscriptionService.createSubscription( user, catalog, ordersData, absencesNb, startDate, endDate );
 
@@ -190,14 +185,15 @@ class Subscriptions extends controller.Controller
 		view.nav.push( 'subscriptions' );
 	}
 
+	/**
+		an admin edits a subscription
+	**/
 	@tpl("contractadmin/editsubscription.mtt")
 	public function doEdit( subscription : db.Subscription ) {
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
 
 		var catalogProducts = subscription.catalog.getProducts();
-
-		// var canOrdersBeEdited = !SubscriptionService.hasPastDistribOrders( subscription );
 
 		var startDateDP = new form.CagetteDatePicker("startDate","Date de début",subscription.startDate);
 		var endDateDP = new form.CagetteDatePicker("endDate","Date de fin",subscription.endDate);
@@ -210,7 +206,6 @@ class Subscriptions extends controller.Controller
 		if ( checkToken() ) {
 
 			try {
-
 				startDateDP.populate();
 				endDateDP.populate();
 				var startDate = startDateDP.getValue();
@@ -222,50 +217,44 @@ class Subscriptions extends controller.Controller
 
 				var ordersData = new Array<{ productId:Int, quantity:Float, ?userId2:Int, ?invertSharedOrder:Bool }>();
 				
-				// if ( canOrdersBeEdited ) {
+				//get orders from the form ( constant order, ou default order is catalog.requiresOrdering)
+				for ( product in catalogProducts ) {
 
-					for ( product in catalogProducts ) {
+					var quantity : Float = 0;
+					var qtyParam = app.params.get( 'quantity' + product.id );
+					if ( qtyParam != "" ) quantity = Std.parseFloat( qtyParam );
+					var user2 : db.User = null;
+					var userId2 : Int = null;
+					if( subscription.catalog.type == Catalog.TYPE_CONSTORDERS ) {							
+						userId2 = Std.parseInt( app.params.get( 'user2' + product.id ) );
+					}
+					var invert = false;
+					if ( userId2 != null && userId2 != 0 ) {
 
-						var quantity : Float = 0;
-						var qtyParam = app.params.get( 'quantity' + product.id );
-						if ( qtyParam != "" ) quantity = Std.parseFloat( qtyParam );
-						var user2 : db.User = null;
-						var userId2 : Int = null;
-						if( subscription.catalog.type == Catalog.TYPE_CONSTORDERS ) {							
-							userId2 = Std.parseInt( app.params.get( 'user2' + product.id ) );
-						}
-						var invert = false;
-						if ( userId2 != null && userId2 != 0 ) {
-
-							user2 = db.User.manager.get( userId2, false );
-							if ( user2 == null ) {
-								throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, t._( "Unable to find user #::num::", { num : userId2 } ) );
-							}
-
-							if ( !user2.isMemberOf( subscription.catalog.group ) ) {
-								throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, subscription.user + " ne fait pas partie de ce groupe." );
-							}
-
-							if ( subscription.user.id == user2.id ) {
-								throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous ne pouvez pas alterner avec la personne qui a la souscription." );
-							}
-
-							invert = app.params.get( 'invert' + product.id ) == "true";
+						user2 = db.User.manager.get( userId2, false );
+						if ( user2 == null ) {
+							throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, t._( "Unable to find user #::num::", { num : userId2 } ) );
 						}
 
-						if ( quantity!=null && quantity > 0 ) {
-							if( subscription.catalog.type == Catalog.TYPE_CONSTORDERS ) {
-								ordersData.push( { productId : product.id, quantity : quantity, userId2 : userId2, invertSharedOrder : invert } );
-							} else {
-								ordersData.push( { productId : product.id, quantity : quantity } );
-							}
-						}						
+						if ( !user2.isMemberOf( subscription.catalog.group ) ) {
+							throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, subscription.user + " ne fait pas partie de ce groupe." );
+						}
+
+						if ( subscription.user.id == user2.id ) {
+							throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous ne pouvez pas alterner avec la personne qui a la souscription." );
+						}
+
+						invert = app.params.get( 'invert' + product.id ) == "true";
 					}
 
-					if ( ordersData.length == 0 ) {
-						throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "La commande par défaut ne peut pas être vide. Vous devez obligatoirement commander quelque chose." );
-					}
-				//}
+					if ( quantity!=null && quantity > 0 ) {
+						if( subscription.catalog.type == Catalog.TYPE_CONSTORDERS ) {
+							ordersData.push( { productId : product.id, quantity : quantity, userId2 : userId2, invertSharedOrder : invert } );
+						} else {
+							ordersData.push( { productId : product.id, quantity : quantity } );
+						}
+					}						
+				}
 
 				//if variable or not paid : can update absences nb
 				var absencesNb = if ( subscription.catalog.type == Catalog.TYPE_VARORDER || !subscription.paid() ) {
@@ -485,7 +474,7 @@ class Subscriptions extends controller.Controller
 		if ( form.checkToken() ) {
 
 			try {
-				var defaultOrders = new Array< { productId : Int, quantity : Float } >();
+				var defaultOrders = new Array<CSAOrder>();
 				for ( product in catalogProducts ) {
 					var quantity : Float = form.getValueOf( 'quantity' + product.id );
 					defaultOrders.push( { productId : product.id, quantity : quantity } );
