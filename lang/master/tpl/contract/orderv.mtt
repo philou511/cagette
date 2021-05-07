@@ -389,6 +389,8 @@
 							</div>
 						
 							<br/>
+
+							<!-- ABSENCES -->
 							::if subscriptionService.canAbsencesNbBeEdited( catalog, currentOrComingSubscription )::
 				
 								<div style="width:480px;float:left;font-weight:bold;">

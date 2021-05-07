@@ -382,8 +382,7 @@ class SubscriptionService
 
 		if ( !canAbsencesBeEdited( catalog ) ) return "Pas d'absences autorisées";
 
-		return catalog.absentDistribsMaxNb + ' absences maximum autorisées
-			   du ' + DateTools.format( catalog.absencesStartDate, "%d/%m/%Y" ) + ' au ' + DateTools.format( catalog.absencesEndDate, "%d/%m/%Y" );
+		return '${catalog.absentDistribsMaxNb} absences maximum autorisées  du ${DateTools.format( catalog.absencesStartDate, "%d/%m/%Y" )} au ${DateTools.format( catalog.absencesEndDate, "%d/%m/%Y")} ';
 	}
 
 
