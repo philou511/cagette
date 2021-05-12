@@ -131,33 +131,31 @@ class SubscriptionService
 		return db.Subscription.manager.search( $user == user && $catalog == catalog , false ).array();
 	}
 
-	public static function getSubscriptionDistribs( subscription : db.Subscription, type : String = 'all' ) : Array<db.Distribution> {
+	public static function getSubscriptionDistribs( subscription:db.Subscription, type:String = 'all' ) : Array<db.Distribution> {
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );
 
 		var subscriptionDistribs = null;
-		if ( type == "all" ) {
+		if ( type == "all" || type == "allWithAbsences") {
 
 			subscriptionDistribs = db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate, { orderBy : date }, false );
-		}
-		else if ( type == "open" ) {
+		} else if ( type == "open" ) {
 
 			var now = Date.now();
 			subscriptionDistribs = db.Distribution.manager.search( $catalog == subscription.catalog  && $orderStartDate <= now && $orderEndDate > now && $date >= subscription.startDate && $end <= subscription.endDate, { orderBy : date }, false );
-		}
-		else if ( type == "past" ) {
+
+		} else if ( type == "past" ) {
 
 			var now = Date.now();
 			var endOfToday = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59 );			
 			subscriptionDistribs = db.Distribution.manager.search( $catalog == subscription.catalog  && $end <= endOfToday && $date >= subscription.startDate && $end <= subscription.endDate, false );
 		}
 		
-		if ( subscriptionDistribs.length != 0 && subscription.catalog.hasAbsencesManagement() ) {
-
+		if ( type!="allWithAbsences" && subscriptionDistribs.length>0 && subscription.catalog.hasAbsencesManagement() ) {
+		//remove absence distribs
 			var absentDistribs = subscription.getAbsentDistribs();
 			for ( absentDistrib in absentDistribs ) {
-
-				subscriptionDistribs = subscriptionDistribs.filter( distrib -> return distrib.id != absentDistrib.id );
+				subscriptionDistribs = subscriptionDistribs.filter( distrib -> distrib.id != absentDistrib.id );
 			}
 		}
 		
@@ -183,38 +181,25 @@ class SubscriptionService
 		return remainingSubscriptionDistribs.length;
 	}
 
-	public static function getCatalogAbsencesDistribs( catalog : db.Catalog, ?subscription : db.Subscription ) : Array<db.Distribution> {
+	/**
+		get possible absence distribs of this catalog
+	**/
+	public static function getContractAbsencesDistribs( catalog:db.Catalog ) : Array<db.Distribution> {
 
 		if ( !catalog.hasAbsencesManagement() ) return [];
-
+		/*
 		var absencesStartDate : Date = null;
 		var absencesEndDate : Date = null;
 		if ( subscription == null ) {
-
 			absencesStartDate = catalog.absencesStartDate;
 			absencesEndDate = catalog.absencesEndDate;
-		}
-		else {
-
+		} else {
 			absencesStartDate = subscription.startDate.getTime() < catalog.absencesStartDate.getTime() ? catalog.absencesStartDate : subscription.startDate;
 			absencesEndDate = catalog.absencesEndDate.getTime() < subscription.endDate.getTime() ? catalog.absencesEndDate : subscription.endDate;
 		}
-
 		return db.Distribution.manager.search( $catalog == catalog && $date >= absencesStartDate && $end <= absencesEndDate, { orderBy : date }, false ).array();
-	}
-
-	public static function getCatalogAbsencesDistribsNb( catalog : db.Catalog, ?absStartDate : Date, ?absEndDate : Date ) : Int {
-
-		var absencesStartDate : Date = absStartDate != null ? absStartDate : catalog.absencesStartDate;
-		var absencesEndDate : Date = absEndDate != null ? absEndDate : catalog.absencesEndDate;
-		
-		if ( absencesStartDate == null || absencesEndDate == null ) {
-
-			return 0;
-		}
-
-		return db.Distribution.manager.count( $catalog == catalog && $date >= absencesStartDate && $end <= absencesEndDate );
-
+		*/
+		return catalog.getDistribs(true).array();
 	}
 
 	public static function getSubscriptionDistribsNb( subscription : db.Subscription, ?type : String, ?excludeAbsences = true ) : Int {
@@ -242,13 +227,11 @@ class SubscriptionService
 	}
 
 	public static function getSubscriptionAllOrders( subscription : db.Subscription ) : Array<db.UserOrder> {
-
 		if( subscription == null || subscription.id == null ) return [];
-
 		return db.UserOrder.manager.search( $subscription == subscription, false ).array();
 	}
 
-	public static function getCSARecurrentOrders( subscription : db.Subscription, oldAbsentDistribIds : Array<Int> ) : Array<db.UserOrder> {
+	public static function getCSARecurrentOrders( subscription:db.Subscription, oldAbsentDistribIds:Array<Int> ) : Array<db.UserOrder> {
 		
 		if( subscription == null || subscription.id == null ) return [];
 
@@ -290,7 +273,7 @@ class SubscriptionService
 	/**
 		Get contract description if no subscription for the current user
 	**/
-	public static function getContractDescription( catalog: db.Catalog):String{
+	public static function getContractDescription( catalog:db.Catalog ):String{
 		var label = '';
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 
@@ -381,8 +364,8 @@ class SubscriptionService
 	public static function getAbsencesDescription( catalog : db.Catalog ) {
 
 		if ( !canAbsencesBeEdited( catalog ) ) return "Pas d'absences autorisées";
-
-		return '${catalog.absentDistribsMaxNb} absences maximum autorisées  du ${DateTools.format( catalog.absencesStartDate, "%d/%m/%Y" )} au ${DateTools.format( catalog.absencesEndDate, "%d/%m/%Y")} ';
+		// return '${catalog.absentDistribsMaxNb} absences maximum autorisées  du ${DateTools.format( catalog.absencesStartDate, "%d/%m/%Y" )} au ${DateTools.format( catalog.absencesEndDate, "%d/%m/%Y")} ';
+		return '${catalog.absentDistribsMaxNb} absences maximum autorisées';
 	}
 
 
@@ -722,7 +705,7 @@ class SubscriptionService
 			subscription.user2 = db.User.manager.get( user2, false );
 		}
 		
-		SubscriptionService.updateAbsencesNb( subscription, absencesNb );
+		setAbsencesNb( subscription, absencesNb );
 		
 		check(subscription);
 
@@ -757,7 +740,7 @@ class SubscriptionService
 	/**
 		Update an existing subscription
 	**/
-	public function updateSubscription( subscription:db.Subscription, startDate:Date, endDate:Date, ?ordersData:Array<CSAOrder>, ?absentDistribIds:Array<Int>, ?absencesNb:Int ) {
+	public function updateSubscription( subscription:db.Subscription, startDate:Date, endDate:Date, ?ordersData:Array<CSAOrder>/*, ?absentDistribIds:Array<Int>, ?absencesNb:Int*/ ) {
 
 		if ( startDate == null || endDate == null ) {
 			throw new Error( 'La date de début et de fin de la souscription doivent être définies.' );
@@ -770,10 +753,10 @@ class SubscriptionService
 		subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
 
-		if ( absentDistribIds != null ) {			
-			subscription.setAbsentDistribIds( absentDistribIds );
+		/*if ( absentDistribIds != null ) {			
+			subscription.setAbsences( absentDistribIds );
 		}
-		SubscriptionService.updateAbsencesNb( subscription, absencesNb );
+		updateAbsencesNb( subscription, absencesNb );*/
 		
 		//check secondary user
 		if(ordersData!=null){
@@ -796,11 +779,13 @@ class SubscriptionService
 		}
 	}
 
-	public static function getAbsentDistribsMaxNb( catalog : Catalog, ?subscription : Subscription ) {
+	public static function getAbsentDistribsMaxNb( catalog:Catalog, ?subscription:Subscription ) {
+
 
 		if ( !catalog.hasAbsencesManagement() ) return 0;
+		return catalog.absentDistribsMaxNb;
 
-		if ( subscription == null || subscription.startDate == null || subscription.endDate == null ||
+		/*if ( subscription == null || subscription.startDate == null || subscription.endDate == null ||
 			( subscription.startDate.getTime() <= catalog.absencesStartDate.getTime() && subscription.endDate.getTime() >= catalog.absencesEndDate.getTime() ) ) {
 			return catalog.absentDistribsMaxNb;
 		} else {
@@ -819,70 +804,61 @@ class SubscriptionService
 			} else {
 				return catalog.absentDistribsMaxNb;
 			}
-		}
-	
+		}*/
 	}
 
-	public static function updateAbsencesNb( subscription : Subscription, newAbsencesNb : Int ) {
+	/**
+		Set Absences Number on a newly created subscription
+	**/
+	public function setAbsencesNb( subscription:Subscription, absencesNb:Int ) {
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );
 		if( !subscription.catalog.hasAbsencesManagement() ) return;
+		if(absencesNb==null) return;
+		
+		if ( subscription.id == null ) {
 
-		var currentAbsencesNb = subscription.getAbsencesNb();
-		if ( newAbsencesNb == currentAbsencesNb ) { return; }
+			var distribs = getSubscriptionDistribs(subscription);
+			
+			if ( absencesNb > subscription.catalog.absentDistribsMaxNb ) {
+				throw new Error( 'Nombre de jours d\'absence invalide, vous avez droit à ${subscription.catalog.absentDistribsMaxNb} jours d\'absence maximum.' );
+			}
 
-		var absentDistribIds : Array<Int> = null;
-		if ( newAbsencesNb != null && newAbsencesNb != 0 ) {
+			if ( absencesNb > distribs.length ) {
+				throw new Error( 'Nombre de jours d\'absence invalide, il n\'y a que ${distribs.length} distributions dans ce contrat.' );
+			}
 
-			absentDistribIds = new Array<Int>();
-			if ( subscription.id == null || currentAbsencesNb == 0 ) {
+			//sort from later to sooner distrib
+			distribs.sort( (a,b)-> Math.round(b.date.getTime()/1000) - Math.round(a.date.getTime()/1000) );
 
-				//Let's select the newAbsencesNb first distribs of the absences period in the subscription time range
-				var absencesDistribs = getCatalogAbsencesDistribs( subscription.catalog, subscription );
+			subscription.setAbsences( distribs.slice(0,absencesNb).map(d -> d.id) );
 
-				if ( newAbsencesNb > absencesDistribs.length ) {
-					throw new Error( 'Il n\'y a seulement que ' + absencesDistribs.length +  ' distributions pendant la période des absences.' );
-				}
+		} else {
+			throw new Error('Il n\'est pas possible de modifier le nombre de jours d\'absence sur une souscription déjà créée.' );
+			/*var currentAbsentDistribIds = subscription.getAbsentDistribIds();
+			var absencesNbDiff = newAbsencesNb - currentAbsencesNb;
+			if ( absencesNbDiff < 0 ) {
+
 				for ( i in 0...newAbsencesNb ) {
-					
-					absentDistribIds.push( absencesDistribs[i].id );
+					absentDistribIds.push( currentAbsentDistribIds[i] );
 				}
-			}
-			else {
+			} else if ( absencesNbDiff > 0 ) {
 
-				var currentAbsentDistribIds = subscription.getAbsentDistribIds();
-				var absencesNbDiff = newAbsencesNb - currentAbsencesNb;
-				if ( absencesNbDiff < 0 ) {
-
-					for ( i in 0...newAbsencesNb ) {
-
-						absentDistribIds.push( currentAbsentDistribIds[i] );
-					}
-				}
-				else if ( absencesNbDiff > 0 ) {
-
-					for ( i in 0...currentAbsencesNb ) {
-
-						absentDistribIds.push( currentAbsentDistribIds[i] );
-					}
-
-					var absencesDistribs = getCatalogAbsencesDistribs( subscription.catalog, subscription );
-					var absencesDistribsNb = absencesDistribs.length;
-
-					for ( i in 0...absencesNbDiff ) {
-
-						if ( ( i + currentAbsencesNb ) > ( absencesDistribsNb - 1 ) ) {
-							throw new Error( 'Il n\'y a seulement que ' + absencesDistribsNb +  ' distributions pendant la période des absences.' );
-						}
-						absentDistribIds.push( absencesDistribs[ i + currentAbsencesNb ].id );
-					}
+				for ( i in 0...currentAbsencesNb ) {
+					absentDistribIds.push( currentAbsentDistribIds[i] );
 				}
 
-			}
+				var absencesDistribs = subscription.getAbsentDistribs();
+				var absencesDistribsNb = absencesDistribs.length;
 
+				for ( i in 0...absencesNbDiff ) {
+					if ( ( i + currentAbsencesNb ) > ( absencesDistribsNb - 1 ) ) {
+						throw new Error( 'Il n\'y a seulement que $absencesDistribsNb distributions pendant la période des absences.' );
+					}
+					absentDistribIds.push( absencesDistribs[ i + currentAbsencesNb ].id );
+				}
+			}*/
 		}
-
-		subscription.setAbsentDistribIds( absentDistribIds );
 	}
 
 
@@ -1006,12 +982,12 @@ class SubscriptionService
 	}
 
 	/**
-		Create CSA recurrent orders
+		Create contract's recurrent orders
 	**/
-	public function createCSARecurrentOrders(subscription:db.Subscription, ordersData:Array<{productId:Int,quantity:Float,userId2:Int,invertSharedOrder:Bool}>, ?oldAbsentDistribIds:Array<Int> ) : Array<db.UserOrder> {
+	public function createCSARecurrentOrders(subscription:db.Subscription, ordersData:Array<CSAOrder>, ?oldAbsentDistribIds:Array<Int> ) : Array<db.UserOrder> {
 
 		if ( ordersData == null || ordersData.length == 0 ) {
-			ordersData = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool } >();
+			ordersData = [];
 			var subscriptionOrders = getCSARecurrentOrders( subscription, oldAbsentDistribIds );
 			for ( order in subscriptionOrders ) {
 				ordersData.push( { productId : order.product.id, quantity : order.quantity, userId2 : order.user2 != null ? order.user2.id : null, invertSharedOrder : order.hasInvertSharedOrder() } );
@@ -1067,7 +1043,7 @@ class SubscriptionService
 		return orders;	
 	}	
 
-	public static function getLastDistribBeforeAbsences( catalog : db.Catalog ) : db.Distribution {
+	/*public static function getLastDistribBeforeAbsences( catalog:db.Catalog ) : db.Distribution {
 
 		if ( !catalog.hasAbsencesManagement() ) return null;
 		
@@ -1076,63 +1052,80 @@ class SubscriptionService
 		for ( distrib in catalogDistribs ) {
 
 			if ( distrib.date.getTime() < catalog.absencesStartDate.getTime() ) {
-
 				lastDistribBeforeAbsences = distrib;
-			}
-			else {
-
+			} else {
 				break;
 			}
-
 		}
 
 		return lastDistribBeforeAbsences;
-	}
+	}*/
 
-	public static function canAbsencesNbBeEdited( catalog : db.Catalog, subscription : db.Subscription ) : Bool {
+	/**
+		can change absences number ?
+	**/
+	public static function canAbsencesNbBeEdited( catalog:db.Catalog, subscription:db.Subscription ):Bool {
 
 		if( !catalog.hasAbsencesManagement() ) return false;
 
-		var lastDistribBeforeAbsences = getLastDistribBeforeAbsences( catalog );
-		if( lastDistribBeforeAbsences == null ) return false;
+		if(subscription!=null){
+			if(subscription.id==null){
+				//can edit absence number only on creation
+				return true;
+			}else{
+				return false;
+			}
 
-		var deadline = lastDistribBeforeAbsences.date.getTime();
-		var beforeDeadline = Date.now().getTime() < deadline;
-		var subscriptionInAbsencesPeriod = subscription == null || ( subscription.startDate.getTime() < deadline && subscription.endDate.getTime() > catalog.absencesStartDate.getTime() );
-		var forbidden = catalog.type == db.Catalog.TYPE_CONSTORDERS && subscription != null && subscription.paid();
+		}else{
+			return true;
+		}
+		// var lastDistribBeforeAbsences = getLastDistribBeforeAbsences( catalog );
+		// if( lastDistribBeforeAbsences == null ) return false;
 
-		return !forbidden && beforeDeadline && subscriptionInAbsencesPeriod;
+		// var deadline = lastDistribBeforeAbsences.date.getTime();
+		// var beforeDeadline = Date.now().getTime() < deadline;
+		// var subscriptionInAbsencesPeriod = subscription == null || ( subscription.startDate.getTime() < deadline && subscription.endDate.getTime() > catalog.absencesStartDate.getTime() );
+		// var forbidden = catalog.type == db.Catalog.TYPE_CONSTORDERS && subscription != null && subscription.paid();
+
+		// return !forbidden && beforeDeadline && subscriptionInAbsencesPeriod;
+		
 	}
 
-	public static function canAbsencesBeEdited( catalog : db.Catalog ) : Bool {
-		return catalog.hasAbsencesManagement() && Date.now().getTime() < getLastDistribBeforeAbsences( catalog ).date.getTime();
+	/**
+		can change absences ?
+	**/
+	public static function canAbsencesBeEdited( catalog:db.Catalog ) : Bool {
+		// return catalog.hasAbsencesManagement() && Date.now().getTime() < getLastDistribBeforeAbsences( catalog ).date.getTime();
+		return true;
 	}
 
-	public function updateAbsencesDates( subscription : db.Subscription, newAbsentDistribIds : Array<Int> ) {
-   
+	/**
+		Updates a subscription's absences
+	**/
+	public function updateAbsencesDates( subscription:db.Subscription, newAbsentDistribIds:Array<Int> ) {
+		subscription.lock();
 		var oldAbsentDistribIds = subscription.getAbsentDistribIds();
 
 		//Check that dates have actually changed
 		var datesHaveChanged = false;
 		var newDatesNb = newAbsentDistribIds.length;
 		for ( i in 0...newDatesNb ) {
-
 			if ( newAbsentDistribIds[i] != oldAbsentDistribIds[i] ) {
-
 				datesHaveChanged = true;
 				break;
 			}
 		}
 
 		if ( !datesHaveChanged ) return;
-
-		subscription.lock();
-		subscription.setAbsentDistribIds( newAbsentDistribIds );
+		
+		subscription.setAbsences( newAbsentDistribIds );
 		subscription.update();
 
 		if ( subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+			//regen recurrent orders
 			this.createCSARecurrentOrders( subscription, null, oldAbsentDistribIds );
 		} else {
+			//remove orders in new absence dates
 			var absentDistribsOrders = db.UserOrder.manager.search( $subscription == subscription && $distributionId in newAbsentDistribIds, false );
 			for ( order in absentDistribsOrders ) {
 				order.lock();

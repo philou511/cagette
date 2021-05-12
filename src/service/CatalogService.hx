@@ -198,23 +198,23 @@ class CatalogService{
 			if ( catalog.id != null ) {
 
 				var absentDistribsMaxNb = form.getValueOf('absentDistribsMaxNb');
-				var absencesStartDate : Date = form.getValueOf('absencesStartDate');
-				var absencesEndDate : Date = form.getValueOf('absencesEndDate');
+				// var absencesStartDate : Date = form.getValueOf('absencesStartDate');
+				// var absencesEndDate : Date = form.getValueOf('absencesEndDate');
 
-				if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && ( absencesStartDate == null || absencesEndDate == null ) ) {
-					throw new Error( 'Vous avez défini un nombre maximum d\'absences alors vous devez sélectionner des dates pour la période d\'absences.' );
-				}
+				// if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && ( absencesStartDate == null || absencesEndDate == null ) ) {
+				// 	throw new Error( 'Vous avez défini un nombre maximum d\'absences alors vous devez sélectionner des dates pour la période d\'absences.' );
+				// }
 
-				if ( ( absencesStartDate != null || absencesEndDate != null ) && ( absentDistribsMaxNb == null || absentDistribsMaxNb == 0 ) ) {
-					throw new Error( 'Vous avez défini des dates pour la période d\'absences alors vous devez entrer un nombre maximum d\'absences.' );
-				}
+				// if ( ( absencesStartDate != null || absencesEndDate != null ) && ( absentDistribsMaxNb == null || absentDistribsMaxNb == 0 ) ) {
+				// 	throw new Error( 'Vous avez défini des dates pour la période d\'absences alors vous devez entrer un nombre maximum d\'absences.' );
+				// }
 			
-				if ( absencesStartDate != null && absencesEndDate != null ) {
+				/*if ( absencesStartDate != null && absencesEndDate != null ) {
 					if ( absencesStartDate.getTime() >= absencesEndDate.getTime() ) {
 						throw new Error( 'La date de début des absences doit être avant la date de fin des absences.' );
 					}
 
-					var absencesDistribsNb = service.SubscriptionService.getCatalogAbsencesDistribsNb( catalog, absencesStartDate, absencesEndDate );
+					var absencesDistribsNb = service.SubscriptionService.getContractAbsencesDistribs( catalog, absencesStartDate, absencesEndDate ).length;
 					if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && absentDistribsMaxNb > absencesDistribsNb ) {
 
 						throw new Error( 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
@@ -226,9 +226,9 @@ class CatalogService{
 						throw new Error( 'Les dates d\'absences doivent être comprises entre le début et la fin du contrat.' );
 					}
 
-					catalog.absencesStartDate = new Date( absencesStartDate.getFullYear(), absencesStartDate.getMonth(), absencesStartDate.getDate(), 0, 0, 0 );
-					catalog.absencesEndDate = new Date( absencesEndDate.getFullYear(), absencesEndDate.getMonth(), absencesEndDate.getDate(), 23, 59, 59 );
-				}
+					// catalog.absencesStartDate = new Date( absencesStartDate.getFullYear(), absencesStartDate.getMonth(), absencesStartDate.getDate(), 0, 0, 0 );
+					// catalog.absencesEndDate = new Date( absencesEndDate.getFullYear(), absencesEndDate.getMonth(), absencesEndDate.getDate(), 23, 59, 59 );
+				}*/
 			
 				if ( catalog.hasPercentageOnOrders() && catalog.percentageValue == null ) {
 					throw new Error( t._("If you would like to add fees to the order, define a rate (%) and a label.") );

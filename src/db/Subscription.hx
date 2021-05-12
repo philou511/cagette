@@ -138,45 +138,36 @@ class Subscription extends Object {
 		return label;
 	}
 
-	public function setAbsentDistribIds( distribIds : Array<Int> ) {
-
+	/**
+		set subscriptions absence distributions
+	**/
+	public function setAbsences( distribIds:Array<Int> ) {
 		if( distribIds != null && distribIds.length != 0 ) {
-
 			distribIds.sort( function(b, a) { return  a < b ? 1 : -1; } );
 			this.absentDistribIds = distribIds.join(',');
-		}
-		else {
-
+		} else {
 			this.absentDistribIds = null;
 		}
-		
 	}
 
-	public function getAbsencesNb() : Int {
+	public function getAbsencesNb():Int {
 
-		if ( this.absentDistribIds == null ) return 0;
+		/*if ( this.absentDistribIds == null ) return 0;
 		var distribIds = this.absentDistribIds.split(',');
 		if ( this.catalog.absentDistribsMaxNb < distribIds.length ) {
-
 			return this.catalog.absentDistribsMaxNb;
 		}
-
-		return distribIds.length;
+		return distribIds.length;*/
+		return getAbsentDistribIds().length;
 	}
 	
 	public function getAbsentDistribIds() : Array<Int> {
 
 		if ( this.absentDistribIds == null ) return [];
 		var distribIds : Array<Int> = this.absentDistribIds.split(',').map( Std.parseInt );
-		if ( this.catalog.absentDistribsMaxNb < distribIds.length ) {
-
-			var shortenedDistribIds = new Array<Int>();
-			for ( i in 0...this.catalog.absentDistribsMaxNb ) {
-
-				shortenedDistribIds.push( distribIds[i] );
-			}
-
-			return shortenedDistribIds;
+		if ( distribIds.length > catalog.absentDistribsMaxNb ) {
+			//shorten list
+			distribIds = distribIds.slice(0,catalog.absentDistribsMaxNb);
 		}
 
 		return distribIds;
@@ -184,22 +175,18 @@ class Subscription extends Object {
 
 	public function getAbsentDistribs() : Array<db.Distribution> {
 
-		var absentDistribIds : Array<Int> = getAbsentDistribIds();
+		var absentDistribIds = getAbsentDistribIds();
 		if ( absentDistribIds == null ) return [];
 
-		var absentDistribs : Array<db.Distribution> = new Array<db.Distribution>();
+		/*var absentDistribs = new Array<db.Distribution>();
 		for ( distribId in absentDistribIds ) {
-
 			var distribution = db.Distribution.manager.get( distribId, false );
 			if ( distribution != null && this.catalog.absencesStartDate.toString() <= distribution.date.toString()
 				&& distribution.date.toString() <= this.catalog.absencesEndDate.toString() ) {
-
 				absentDistribs.push( distribution );
 			}
-			
-		}
-
-		return absentDistribs;
+		}*/
+		return db.Distribution.manager.search($id in absentDistribIds,false).array();
 	}
 
 	override public function toString(){

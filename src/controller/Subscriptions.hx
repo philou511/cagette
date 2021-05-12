@@ -1,4 +1,5 @@
 package controller;
+import sugoi.form.elements.Html;
 import service.PaymentService;
 import sugoi.Web;
 import payment.Check;
@@ -179,7 +180,7 @@ class Subscriptions extends controller.Controller
 		view.showmember = true;
 		view.members = app.user.getGroup().getMembersFormElementData();
 		view.products = catalogProducts;
-		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( catalog ), function( distrib ) return Formatting.dDate( distrib.date ) );
+		// view.absencesDistribDates = Lambda.map( SubscriptionService.getAbsencesDistribs( catalog ), function( distrib ) return Formatting.dDate( distrib.date ) );
 		view.subscriptionService = SubscriptionService;
 
 		view.nav.push( 'subscriptions' );
@@ -272,7 +273,8 @@ class Subscriptions extends controller.Controller
 					}					
 				}
 
-				subscriptionService.updateSubscription( subscription, startDate, endDate, ordersData, absentDistribIds, absencesNb );
+				subscriptionService.updateSubscription( subscription, startDate, endDate, ordersData/*, absentDistribIds, absencesNb*/ );
+				subscriptionService.updateAbsencesDates(subscription, absentDistribIds);
 
 			} catch( error : Error ) {				
 				throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, error.message );
@@ -297,12 +299,12 @@ class Subscriptions extends controller.Controller
 		view.subscription = subscription;
 		view.nav.push( 'subscriptions' );
 		view.subscriptionService = SubscriptionService;
-		view.absencesDistribs = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
+		// view.absencesDistribs = Lambda.map( SubscriptionService.getAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
 		view.canAbsencesBeEdited = SubscriptionService.canAbsencesBeEdited( subscription.catalog );
 		view.absentDistribs = subscription.getAbsentDistribs();
-		if ( subscription.catalog.type == Catalog.TYPE_VARORDER || !subscription.paid() ) {
-			view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
-		}
+		// if ( subscription.catalog.type == Catalog.TYPE_VARORDER || !subscription.paid() ) {
+		// 	view.absencesDistribDates = Lambda.map( SubscriptionService.getAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
+		// }
 
 	}
 
@@ -390,52 +392,59 @@ class Subscriptions extends controller.Controller
 	}
 
 
-
+	/**
+		user can edit his absences.
+		The user can't change his absence number.
+	**/
 	@logged @tpl("form.mtt")
-	function doAbsences( subscription : db.Subscription, ?args: { returnUrl: String } ) {
+	function doAbsences( subscription:db.Subscription, ?args:{returnUrl:String} ) {
 
 		if( subscription.catalog.group.hasShopMode() ) throw Redirect( "/contract/view/" + subscription.catalog.id );
-
 		var subService = new SubscriptionService();
-
 		if ( args != null && args.returnUrl != null ) {
 			App.current.session.data.absencesReturnUrl = args.returnUrl;
 		}
-		
-		var absencesNb = subscription.getAbsencesNb();
-
-		if( !SubscriptionService.canAbsencesBeEdited( subscription.catalog ) || absencesNb == 0 ) {
+		if( !SubscriptionService.canAbsencesBeEdited( subscription.catalog ) ) {
 			throw Redirect( App.current.session.data.absencesReturnUrl );
 		}
 		
-		view.subscription = subscription;
-		view.subscriptionService = SubscriptionService;
-		view.catalog = subscription.catalog;
-		view.absentDistribsMaxNb = SubscriptionService.getAbsentDistribsMaxNb( subscription.catalog, subscription );
-		view.absencesDistribs = SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription );
-
-		var form = new sugoi.form.Form("subscriptionAbsences");
-		var absencesDistribs = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
-		var absentDistribIds = subscription.getAbsentDistribIds();
-		for ( i in 0...absencesNb ) {
-			form.addElement(new sugoi.form.elements.IntSelect( "absentDistrib" + i, "Je ne pourrai pas venir le :", absencesDistribs.array(), absentDistribIds[i], true ));
+		var absenceDistribs = subscription.getAbsentDistribs();
+		var possibleAbsences = SubscriptionService.getSubscriptionDistribs(subscription,"allWithAbsences");
+		var now = Date.now().getTime();
+		possibleAbsences = possibleAbsences.filter(d -> d.orderEndDate.getTime() > now);
+		var possibleAbsencesData = possibleAbsences.map( d -> { label : Formatting.hDate(d.date,true), value : d.id } );
+		var lockedDistribs = absenceDistribs.filter( d -> d.orderEndDate.getTime() < now);	//absences that are not editable anymore
+		
+		var form = new sugoi.form.Form("subscriptionAbsences");		
+		for ( i in 0...absenceDistribs.length ) {
+			if( lockedDistribs.has(absenceDistribs[i]) ){
+				//absence cannot be modified anymore, too late !
+				form.addElement(new sugoi.form.elements.Html('absenceLocked',Formatting.dDate(absenceDistribs[i].date)+" (trop tard pour changer)","Je serai absent(e) le :"));
+			}else{
+				form.addElement(new sugoi.form.elements.IntSelect( "absentDistrib" + i, "Je serai absent(e) le :", possibleAbsencesData, absenceDistribs[i].id, true ));
+			}			
 		}
-		view.form = form;
 		
 		if ( form.checkToken() ) {
 
 			try {
-				var absentDistribIds = new Array<Int>();
-				for ( i in 0...absencesNb ) {				
-					absentDistribIds.push( Std.parseInt( form.getValueOf( 'absentDistrib' + i ) ) );
+				var absentDistribIds = lockedDistribs.map(d->d.id);
+				for ( i in 0...absenceDistribs.length ) {				
+					if(form.getElement('absentDistrib' + i)!=null){
+						absentDistribIds.push( form.getValueOf( 'absentDistrib' + i ) );	
+					}					
 				}
 				subService.updateAbsencesDates( subscription, absentDistribIds );				
-			} catch( error : Error ) {
+			} catch( error:Error ) {
 				throw Error( '/subscriptions/absences/' + subscription.id, error.message );
 			}
 
 			throw Ok( App.current.session.data.absencesReturnUrl, 'Vos dates d\'absences ont bien été mises à jour.' );
 		}
+
+		view.form = form;
+		view.title = "Mes absences pour le contrat \""+subscription.catalog.name+"\"";
+		
 	}
 	
 	@admin

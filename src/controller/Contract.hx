@@ -328,21 +328,23 @@ class Contract extends Controller
 			view.shortDate = Formatting.csaShortDate;
 			view.closingDate  = Formatting.csaClosingDate;
 			view.json = function(d) return haxe.Json.stringify(d);
-
 			view.multiWeightQuantity  = function( order : db.UserOrder ) {
 				return db.UserOrder.manager.count( $subscription == order.subscription && $distribution == order.distribution && $product == order.product && $quantity > 0 );
 			}
 
-			var openDistributions = SubscriptionService.getOpenDistribsForSubscription( app.user, catalog, currentOrComingSubscription );
-			hasComingOpenDistrib = openDistributions.length != 0;
+			// var openDistributions = SubscriptionService.getOpenDistribsForSubscription( app.user, catalog, currentOrComingSubscription );
+			// hasComingOpenDistrib = openDistributions.length != 0;
+
+			var distribs = catalog.getDistribs(true);
+			hasComingOpenDistrib = distribs.find(d -> d.orderStartDate.getTime()>Date.now().getTime())!=null;
 	
-			for ( distrib in openDistributions ) {
+			for ( distrib in distribs ) {
 
 				var data = [];
 				for ( product in products ) {
 
 					var orderProduct = { order : null, product : product };
-					var order : db.UserOrder = db.UserOrder.manager.select( $user == app.user && $productId == product.id && $distributionId == distrib.id, true );
+					var order = db.UserOrder.manager.select( $user == app.user && $productId == product.id && $distributionId == distrib.id, true );
 					var useOrder = false;
 
 					if ( !app.params.exists("token") ) {
@@ -367,7 +369,6 @@ class Contract extends Controller
 								}
 								
 								order.quantity = Std.parseInt( paramQuantity );
-								
 								useOrder = true;
 							}
 						}
@@ -378,7 +379,11 @@ class Contract extends Controller
 					data.push( orderProduct );
 				}
 
-				userOrders.push( { distrib:distrib, ordersProducts:data, isAbsence:false } );
+				userOrders.push( { 
+					distrib:distrib,
+					ordersProducts:data,
+					isAbsence: currentOrComingSubscription==null? false : currentOrComingSubscription.getAbsentDistribIds().has(distrib.id) 
+				} );
 			}
 			
 		} else {
@@ -521,9 +526,9 @@ class Contract extends Controller
 
 						if ( currentOrComingSubscription == null ) {
 							subscriptionIsNew = true;
-							currentOrComingSubscription = subscriptionService.createSubscription( app.user, catalog, varDefaultOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
+							currentOrComingSubscription = subscriptionService.createSubscription( app.user, catalog, varDefaultOrders, app.params.get("absencesNb").parseInt() );
 						} else {							
-							subscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, varDefaultOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
+							subscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, varDefaultOrders/*, null, app.params.get("absencesNb").parseInt()*/ );
 							if ( catalog.requiresOrdering && currentOrComingSubscription.getDefaultOrders().length == 0 ) {
 								SubscriptionService.updateDefaultOrders( currentOrComingSubscription, varDefaultOrders );
 							}
@@ -568,9 +573,9 @@ class Contract extends Controller
 
 				try {
 					if ( currentOrComingSubscription == null ) {						
-						currentOrComingSubscription = subscriptionService.createSubscription( app.user, catalog, constOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
+						currentOrComingSubscription = subscriptionService.createSubscription( app.user, catalog, constOrders, app.params.get("absencesNb").parseInt() );
 					} else if ( !currentOrComingSubscription.paid() ) {						
-						subscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, constOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
+						subscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, constOrders/*, null, app.params.get("absencesNb").parseInt()*/ );
 					}
 				} catch ( e : Error ) {
 					throw Error( "/contract/order/" + catalog.id, e.message );
@@ -625,11 +630,9 @@ class Contract extends Controller
 			false;
 		};
 		view.userOrders = userOrders;
-		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( catalog, currentOrComingSubscription ), function( distrib ) return StringTools.replace( StringTools.replace( Formatting.dDate( distrib.date ), "Vendredi", "Ven." ), "Mercredi", "Mer." ) );
 		var subscriptions = SubscriptionService.getUserCatalogSubscriptions( app.user, catalog );
 		view.subscriptions = subscriptions;
 		view.visibleDocuments = catalog.getVisibleDocuments( app.user );
-		
 	}
 
 	

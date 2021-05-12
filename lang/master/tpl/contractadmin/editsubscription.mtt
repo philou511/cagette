@@ -222,19 +222,6 @@
 
 					</div>
 
-					<h5>Dates des distributions que vous pouvez manquer :</h5>
-
-					<div style="text-align: center;">
-
-						::foreach date absencesDistribDates::
-							<div style="width: 25%; float:left;">
-								::date::
-							</div>
-						::end::
-
-					</div>
-					<br/><br/><br/><br/><br/>
-				
 				::end::
 
 			::end::
