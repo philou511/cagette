@@ -588,6 +588,8 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 		op.pending = false;
 		op.update();
 
+		service.PaymentService.updateUserBalance(user, group);
+
 		return orders;
 	}	
 
