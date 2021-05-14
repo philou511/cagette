@@ -6,7 +6,7 @@ import tink.core.Error;
 class CatalogService{
 
 
-    public static function getForm( catalog : db.Catalog ) : sugoi.form.Form {
+    public static function getForm( catalog:db.Catalog ) : sugoi.form.Form {
 
 		if ( catalog.group == null || catalog.type == null || catalog.vendor == null ) {
 			throw new tink.core.Error( "Un des éléments suivants est manquant : le groupe, le type, ou le producteur." );
@@ -45,6 +45,8 @@ class CatalogService{
 			form.removeElementByName("percentageName");
 			untyped form.getElement("flags").excluded = [2];// remove "PercentageOnOrders" flag
 
+			form.getElement("absentDistribsMaxNb").docLink = "https://wiki.cagette.net/admin:absences";
+
 			var absencesIndex = 16;
 			if ( catalog.type == Catalog.TYPE_VARORDER ) {
 				//VAR
@@ -71,9 +73,7 @@ class CatalogService{
 				absencesIndex = 9;
 			}
 			
-			var html = "<h4>Gestion des absences</h4><div class='alert alert-warning'>";
-
-			
+			// var html = "<h4>Gestion des absences</h4><div class='alert alert-warning'>";
 			if ( catalog.id == null ) {
 				//if catalog is new
 				if ( catalog.type == Catalog.TYPE_VARORDER ) {
@@ -86,23 +86,23 @@ class CatalogService{
 				}
 				form.getElement("orderEndHoursBeforeDistrib").value = 24;
 
-				form.removeElement(form.getElement("absentDistribsMaxNb"));
-				form.removeElement(form.getElement("absencesStartDate"));
-				form.removeElement(form.getElement("absencesEndDate"));
+				// form.removeElement(form.getElement("absentDistribsMaxNb"));
+				// form.removeElement(form.getElement("absencesStartDate"));
+				// form.removeElement(form.getElement("absencesEndDate"));
 
-				html += "<p><i class='icon icon-info'></i> 
-					Vous pourrez définir une période pendant laquelle les membres pourront choisir d'être absent après avoir enregistré ce nouveau contrat et avoir ajouté des distributions.<br/>
-					<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
-				</p></div>";
+				// html += "<p><i class='icon icon-info'></i> 
+				// 	Vous pourrez définir une période pendant laquelle les membres pourront choisir d'être absent après avoir enregistré ce nouveau contrat et avoir ajouté des distributions.<br/>
+				// 	<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
+				// </p></div>";
 			} else {
 				//existing catalog
-				html += "<p><i class='icon icon-info'></i> 
-					Vous pouvez définir une période pendant laquelle les membres pourront choisir d'être absent.<br/>
-					<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
-				</p></div>";
+				// html += "<p><i class='icon icon-info'></i> 
+				// 	Vous pouvez définir une période pendant laquelle les membres pourront choisir d'être absent.<br/>
+				// 	<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
+				// </p></div>";
 			}
 
-			form.addElement( new sugoi.form.elements.Html( 'absences', html, '' ), absencesIndex );
+			// form.addElement( new sugoi.form.elements.Html( 'absences', html, '' ), absencesIndex );
 		}
 		
 		//For all types and modes

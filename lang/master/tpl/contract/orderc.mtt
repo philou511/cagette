@@ -94,21 +94,15 @@
 				<div class="col-md-12" style="margin: 24px 0;">
 
 					::if !hasComingOpenDistrib::
-
 						::if distribs.length == 0::
-
 							<p style="text-align: center;font-weight: bold;">
 								Il n'y a pas de distributions à venir.
 							</p>
-						
 						::else::
-
 							<p style="text-align: center;font-weight: bold;">
 								Actuellement, les commandes sont fermées pour ce contrat.
 							</p>
-
 						::end::
-
 					::end::
 
 					::if currentOrComingSubscription || (!hasComingOpenDistrib && currentOrComingSubscription == null)::
@@ -191,17 +185,9 @@
 							::if !hasComingOpenDistrib::
 
 								::if distribs.length == 0::
-
-									<p style="text-align: center;font-weight: bold;">
-										Il n'y a pas de distributions à venir.
-									</p>
-								
+									<p style="text-align: center;font-weight: bold;">Il n'y a pas de distributions à venir.</p>
 								::else::
-
-									<p style="text-align: center;font-weight: bold;">
-										Actuellement, les commandes sont fermées pour ce contrat.
-									</p>
-
+									<p style="text-align: center;font-weight: bold;">Actuellement, les commandes sont fermées pour ce contrat.</p>
 								::end::
 
 							::end::
@@ -430,7 +416,7 @@
 
 							<!-- absences -->
 							<tr class="greyhead text-center" ::cond  catalog.hasAbsencesManagement() && absencesNb != 0::>
-								<th class="text-center col-md-12" colspan="7" >Mes absences (modifiables jusqu'au ::dDate( subscriptionService.getLastDistribBeforeAbsences( catalog ).date )::)</th>
+								<th class="text-center col-md-12" colspan="7">Mes absences</th>
 							</tr>
 							<tr ::cond catalog.hasAbsencesManagement() && absencesNb != 0::>
 								<td colspan="7"  style="text-align: center;">

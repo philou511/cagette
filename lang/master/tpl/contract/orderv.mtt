@@ -96,9 +96,7 @@
 					</ul>
 					
 					::if distribs.length==0::
-					<p>
-						::_("No planned distributions.")::
-					</p>
+					<p>	::_("No planned distributions.")::</p>
 					::end::
 					
 				</div>	
@@ -107,21 +105,11 @@
 				<div class="col-md-12" style="margin-top:24px;">
 
 					::if !hasComingOpenDistrib::
-
 						::if distribs.length == 0::
-
-							<p style="text-align: center;font-weight: bold;">
-								Il n'y a pas de distributions à venir.
-							</p>
-						
+							<p style="text-align: center;font-weight: bold;">Il n'y a pas de distributions à venir.</p>						
 						::else::
-
-							<p style="text-align: center;font-weight: bold;">
-								Actuellement, les commandes sont fermées pour ce contrat.
-							</p>
-
+							<p style="text-align: center;font-weight: bold;">Actuellement, les commandes sont fermées pour ce contrat.</p>
 						::end::
-
 					::end::
 
 					::if currentOrComingSubscription || (!hasComingOpenDistrib && currentOrComingSubscription == null)::
@@ -471,13 +459,11 @@
 
 							</div>
 									
-						</form>
+					</form>
 
 					::else::
 
-						<p style="text-align: center;font-weight: bold;">
-							Actuellement, les commandes sont fermées pour ce contrat.
-						</p>
+						<p style="text-align: center;font-weight: bold;">Actuellement, les commandes sont fermées pour ce contrat.</p>
 
 					::end::
 				
