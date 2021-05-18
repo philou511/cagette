@@ -9,7 +9,6 @@ using tools.DateTool;
 using Lambda;
 
 enum SubscriptionServiceError {
-
 	NoSubscription;
 	PastDistributionsWithoutOrders;
 	PastOrders;
@@ -17,6 +16,8 @@ enum SubscriptionServiceError {
 	InvalidParameters;
 	CatalogRequirementsNotMet;
 }
+
+typedef CSAOrder = { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool };
 
 /**
  * Subscription service
@@ -387,9 +388,9 @@ class SubscriptionService
 
 
 	/**
-	 * Checks validity of this subscription
+	 * Checks subscription validity
 	 */
-	public function check( subscription : db.Subscription, ?previousStartDate : Date ) : Bool {
+	public function check( subscription:db.Subscription, ?previousStartDate:Date ) {
 
 		//catalog should have distribs
 		if(subscription.catalog.getDistribs().length==0){
@@ -481,8 +482,7 @@ class SubscriptionService
 				PastDistributionsWithoutOrders
 			);
 		}
-	
-		return true;
+
 	}
 
 	/**
@@ -689,20 +689,15 @@ class SubscriptionService
 	}
 
 	 /**
-	  *  Creates a new subscription and prevents subscription overlapping and other checks
-	  *  @return db.Subscription
+	  *  Creates a new subscription
 	  */
-	 public function createSubscription( user : db.User, catalog : db.Catalog,
-		?ordersData : Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >,
-		?absencesNb : Int, ?startDate : Date, ?endDate : Date ) : db.Subscription {
+	 public function createSubscription( user:db.User, catalog:db.Catalog, ?ordersData:Array<CSAOrder>, ?absencesNb:Int, ?startDate:Date, ?endDate:Date ):db.Subscription {
 
-		if ( startDate == null ) {
-			
+		if ( startDate == null ) {			
 			startDate = getNewSubscriptionStartDate( catalog );
 		}
 
-		if ( endDate == null ) {
-			
+		if ( endDate == null ) {			
 			endDate = catalog.endDate;
 		}
 		
@@ -719,33 +714,33 @@ class SubscriptionService
 		subscription.user = user;
 		subscription.catalog = catalog;
 		subscription.startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
-		subscription.endDate 	= new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
+		subscription.endDate 	= new Date( endDate.getFullYear()  , endDate.getMonth()  , endDate.getDate()  , 23, 59, 59 );
 		subscription.isPaid = false;
-		
-		if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
 
+		//is there a secondary user in this subscription
+		if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
 			var user2 = checkUser2( ordersData );
 			subscription.user2 = db.User.manager.get( user2, false );
 		}
 		
 		SubscriptionService.updateAbsencesNb( subscription, absencesNb );
 		
-		if ( check(subscription) ) {
+		check(subscription);
 
-			subscription.insert();
+		subscription.insert();
 
-			if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
-				this.createCSARecurrentOrders( subscription, ordersData );
-			}
-			
+		if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
+			//CONST
+			this.createCSARecurrentOrders( subscription, ordersData );
+		} else {
+			//VAR
+			SubscriptionService.updateDefaultOrders( subscription, ordersData );
 		}
-
-		SubscriptionService.updateDefaultOrders( subscription, ordersData );
 
 		return subscription;
 	}
 
-	public static function checkUser2(ordersData:Array<{ productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }>):Int{
+	public static function checkUser2(ordersData:Array<CSAOrder>):Int{
 		//check that there is only one secondary user
 		var user2 = null;
 		for( order in ordersData){
@@ -760,9 +755,10 @@ class SubscriptionService
 		return user2;
 	}
 
-
-	public function updateSubscription( subscription : db.Subscription, startDate : Date, endDate : Date, 
-	 ?ordersData : Array<{ productId:Int, quantity:Float, userId2:Int, invertSharedOrder:Bool }>, ?absentDistribIds : Array<Int>, ?absencesNb : Int ) {
+	/**
+		Update an existing subscription
+	**/
+	public function updateSubscription( subscription:db.Subscription, startDate:Date, endDate:Date, ?ordersData:Array<CSAOrder>, ?absentDistribIds:Array<Int>, ?absencesNb:Int ) {
 
 		if ( startDate == null || endDate == null ) {
 			throw new Error( 'La date de début et de fin de la souscription doivent être définies.' );
@@ -788,15 +784,17 @@ class SubscriptionService
 			}
 		}
 		
-		if ( this.check(subscription,previousStartDate) ) {
-			subscription.update();
-			if( subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
-				createCSARecurrentOrders( subscription, ordersData );
-			}
+		check(subscription,previousStartDate);
+
+		subscription.update();
+
+		if( subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
+			//CONST
+			createCSARecurrentOrders( subscription, ordersData );
+		}else{
+			//VAR
+			updateDefaultOrders( subscription, ordersData );			
 		}
-
-		updateDefaultOrders( subscription, ordersData );
-
 	}
 
 	public static function getAbsentDistribsMaxNb( catalog : Catalog, ?subscription : Subscription ) {
@@ -1108,7 +1106,6 @@ class SubscriptionService
 	}
 
 	public static function canAbsencesBeEdited( catalog : db.Catalog ) : Bool {
-
 		return catalog.hasAbsencesManagement() && Date.now().getTime() < getLastDistribBeforeAbsences( catalog ).date.getTime();
 	}
 
@@ -1146,11 +1143,18 @@ class SubscriptionService
 
 	}
 
-	public static function updateDefaultOrders( subscription : db.Subscription, defaultOrders : Array< { productId : Int, quantity : Float } > ) {
+	/**
+		Update default orders on a variable contract with requiresOrdering
+	**/
+	public static function updateDefaultOrders( subscription:db.Subscription, defaultOrders:Array<CSAOrder>){
 
-		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );
-		if( subscription.catalog.requiresOrdering != true ) return;
-		if( defaultOrders.length == 0 ) throw new Error( 'La commande par défaut n\'est pas définie.' );
+		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );		
+		if( !subscription.catalog.requiresOrdering ) return;
+		if ( subscription.catalog.requiresOrdering && (defaultOrders.length==0 || defaultOrders==null) ) {
+			throw new Error( "La commande par défaut ne peut pas être vide.");
+		}
+
+		if( subscription.catalog.type==Catalog.TYPE_CONSTORDERS) return;
 		
 		var totalPrice : Float = 0;
 		var totalQuantity : Float = 0;
@@ -1169,18 +1173,15 @@ class SubscriptionService
 		if ( subscription.catalog.distribMinOrdersTotal != null && subscription.catalog.distribMinOrdersTotal != 0 ) {
 
 			if ( totalPrice < subscription.catalog.distribMinOrdersTotal ) {
-
 				var message = '<strong>Engagement du catalogue :</strong> ' + subscription.catalog.name + '<br/>';
 				message += 'Le total de votre commande par défaut doit être d\'au moins ' + subscription.catalog.distribMinOrdersTotal + ' €. Veuillez rajouter des produits.';
 				throw TypedError.typed( message, CatalogRequirementsNotMet );
 			}
-		}
-		else {
+		} else {
 
 			if ( totalQuantity < 0.1 ) {
-
 				var message = '<strong>Engagement du catalogue :</strong> ' + subscription.catalog.name + '<br/>';
-				message += 'La commande par défaut ne peut pas être vide. Vous devez obligatoirement commander quelque chose.';
+				message += 'La commande par défaut ne peut pas être vide.';
 				throw TypedError.typed( message, CatalogRequirementsNotMet );
 			}
 		}

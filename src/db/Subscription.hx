@@ -81,19 +81,17 @@ class Subscription extends Object {
 		return Formatting.roundTo( getPaymentsTotal() + total, 2 );
 	}
 
-	public function setDefaultOrders( defaultOrders : Array< { productId : Int, quantity : Float } > ) {
-
+	public function setDefaultOrders( defaultOrders : Array<{ productId:Int, quantity:Float }> ) {
 		this.defaultOrders = haxe.Json.stringify( defaultOrders );
 	}	
 	
-	public function getDefaultOrders( ?productId : Int ) : Array< { productId : Int, quantity : Float } > {
+	public function getDefaultOrders( ?productId : Int ) : Array<{ productId:Int, quantity:Float }> {
 
 		if ( this.defaultOrders == null ) return [];
 		
-		var defaultOrders : Array< { productId : Int, quantity : Float } > = haxe.Json.parse( this.defaultOrders );
+		var defaultOrders : Array<{ productId:Int, quantity:Float }> = haxe.Json.parse( this.defaultOrders );
 		if ( productId != null ) {
-
-			return [ defaultOrders.find( function( order ) return order.productId == productId ) ];
+			return [ defaultOrders.find( order -> return order.productId == productId ) ];
 		}
 
 		return defaultOrders;
