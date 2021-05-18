@@ -1637,7 +1637,7 @@ class Admin extends controller.Controller {
 			}
 
 			var timeSlots:Dynamic = {
-				slotsMode: distribution.slotsMode,
+				slotMode: distribution.slotsMode,
 				slots: distribution.slots,
 				inNeedUsers: inNeedUsers,
 				voluntaryUsers: voluntaryUsers,
