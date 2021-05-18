@@ -57,6 +57,9 @@ class Distributions extends Controller {
     return resolved;
   }
 
+  /**
+   * MIGRATION IN PROGRESS
+   */
   public function doDefault() {
     if (sugoi.Web.getMethod() != "GET") throw new tink.core.Error(405, "Method Not Allowed");
     checkIsGroupMember();
@@ -343,7 +346,5 @@ class Distributions extends Controller {
       inNeedUsers: users
     }
   }
-
-  
 
 }

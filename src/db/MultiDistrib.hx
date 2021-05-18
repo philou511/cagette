@@ -27,6 +27,7 @@ class MultiDistrib extends Object
 	@hideInForms public var slots : SNull<SData<Array<Slot>>>;
 	@hideInForms public var inNeedUserIds : SNull<SData<Map<Int, Array<String>>>>;
 	@hideInForms public var voluntaryUsers : SNull<SData<Map<Int, Array<Int>>>>;
+	@hideInForms public var timeSlots : SNull<SText>; // IN JSON
 	
 	@hideInForms @:relation(groupId) public var group : db.Group;
 	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
