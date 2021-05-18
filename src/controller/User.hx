@@ -7,6 +7,7 @@ import sugoi.form.Form;
 import sugoi.form.elements.IntInput;
 import sugoi.form.elements.StringInput;
 import sugoi.form.validators.EmailValidator;
+import sugoi.Web;
 import ufront.mail.*;
 
 class User extends Controller
@@ -91,6 +92,7 @@ class User extends Controller
 	
 	function doLogout() {
 		App.current.session.delete();
+		Web.setHeader("Set-Cookie", "Authentication=; HttpOnly; Path=/; Max-Age=0");
 		throw Redirect('/');
 	}
 	
