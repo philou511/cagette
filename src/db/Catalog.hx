@@ -40,14 +40,15 @@ class Catalog extends Object
 	public var catalogMinOrdersTotal : SNull<SFloat>;
 	// public var allowedOverspend : SNull<SFloat>;  //removed 
 
+	//absences in CSA groups
 	public var absentDistribsMaxNb : SNull<SInt>;
-	// public var absencesStartDate : SNull<SDateTime>;
-	// public var absencesEndDate : SNull<SDateTime>;
+	public var absencesStartDate : SNull<SDateTime>;
+	public var absencesEndDate : SNull<SDateTime>;
 
-	public var hasPayments : SBool; //hasPayments , only for CSA groups
+	public var hasPayments : SBool; //only for CSA groups
 
-	@:skip inline public static var TYPE_CONSTORDERS = 0; 	//CSA catalog 
-	@:skip inline public static var TYPE_VARORDER = 1;		//variable orders catalog
+	@:skip inline public static var TYPE_CONSTORDERS = 0; 	//constant orders catalog (contrat AMAP classique)
+	@:skip inline public static var TYPE_VARORDER = 1;		//variable orders catalog (contrat AMAP variable)
 	@:skip inline public static var CATALOG_ID_HASPAYMENTS = 53442;		//payments is mandatory when id > CATALOG_ID_HASPAYMENTS
 	@:skip var cache_hasActiveDistribs : Bool;
 

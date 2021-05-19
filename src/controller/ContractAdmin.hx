@@ -785,5 +785,8 @@ class ContractAdmin extends Controller
 		view.md = md;
 		view.tmpBaskets = db.TmpBasket.manager.search($multiDistrib == md,false);
 	}
+
+
+	
 	
 }

@@ -27,6 +27,14 @@
 					<i class="icon icon-calendar"></i> ::_("Distributions")::
 				</a>
 			</li>
+			
+			::if (!c._group.hasShopMode() && (c.requiresOrdering || c.type==0) )::
+			<li id="absences" ::attr class if(nav[1]=="absences") 'active'::>
+				<a href="/contract/absences/::c.id::">
+					🌴 Période d'absences
+				</a>
+			</li>
+			::end::
 
 			<li id="orders" ::attr class if(nav[1]=="orders") 'active'::>
 				<a href="/contractAdmin/selectDistrib/::c.id::">

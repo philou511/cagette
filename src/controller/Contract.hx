@@ -1,4 +1,7 @@
 package controller;
+import sugoi.form.elements.IntInput;
+import haxe.display.Display.GotoDefinitionResult;
+import form.CagetteDatePicker;
 import sugoi.Web;
 import tink.core.Error;
 import service.VendorService;
@@ -712,6 +715,55 @@ class Contract extends Controller
 			throw Error( '/contract/order/' + subscription.catalog.id, error.message );
 		}
 		throw Ok( '/contract/order/' + subscription.catalog.id, 'La souscription a bien été supprimée.' );
+		
+	}
+
+	/**
+		the catalog admin updates absences options
+	**/
+	@tpl("form.mtt")
+	function doAbsences(catalog:db.Catalog){
+		view.category = 'contractadmin';
+		if (!app.user.isContractManager( catalog )) throw Error('/', t._("Forbidden action"));
+
+		view.title = 'Période d\'absences du contrat \"${catalog.name}\"';
+
+		var form = new sugoi.form.Form("absences");
+	
+		var html = "<div class='alert alert-warning'><p><i class='icon icon-info'></i> 
+		Vous pouvez définir une période pendant laquelle les membres pourront choisir d'être absent.<br/>
+		Saisissez la plage d'absence uniquement après avoir défini votre planning de distribution définitif sur toute la durée du contrat.<br/>
+		<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
+		</p></div>";
+		
+		form.addElement( new sugoi.form.elements.Html( 'absences', html, '' ) );
+		form.addElement(new IntInput("absentDistribsMaxNb","Nombre maximum d'absences autorisées",catalog.absentDistribsMaxNb,true));
+		var start = catalog.absencesStartDate==null ? catalog.startDate : catalog.absencesStartDate;
+		var end = catalog.absencesEndDate==null ? catalog.endDate : catalog.absencesEndDate;
+		form.addElement(new CagetteDatePicker("absencesStartDate","Début de la plage d'absence",start));
+		form.addElement(new CagetteDatePicker("absencesEndDate","Fin de la plage d'absence",end));
+		
+		if ( form.checkToken() ) {
+			catalog.lock();
+			form.toSpod( catalog );
+			var absencesStartDate : Date = form.getValueOf('absencesStartDate');
+			var absencesEndDate : Date = form.getValueOf('absencesEndDate');
+			catalog.absencesStartDate = new Date( absencesStartDate.getFullYear(), absencesStartDate.getMonth(), absencesStartDate.getDate(), 0, 0, 0 );
+			catalog.absencesEndDate = new Date( absencesEndDate.getFullYear(), absencesEndDate.getMonth(), absencesEndDate.getDate(), 23, 59, 59 );
+			catalog.update();
+		
+			try{
+				
+				CatalogService.checkAbsences(catalog);
+
+			} catch ( e : Error ) {
+				throw Error( '/contract/absences/'+catalog.id, e.message );
+			}
+			
+			throw Ok( "/contractAdmin/view/" + catalog.id,  "Catalogue mis à jour." );
+		}
+		 
+		view.form = form;
 		
 	}
 }
