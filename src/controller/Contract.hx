@@ -732,7 +732,7 @@ class Contract extends Controller
 	
 		var html = "<div class='alert alert-warning'><p><i class='icon icon-info'></i> 
 		Vous pouvez définir une période pendant laquelle les membres pourront choisir d'être absent.<br/>
-		Saisissez la plage d'absence uniquement après avoir défini votre planning de distribution définitif sur toute la durée du contrat.<br/>
+		Saisissez la période d'absence uniquement après avoir défini votre planning de distribution définitif sur toute la durée du contrat.<br/>
 		<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
 		</p></div>";
 		
@@ -740,8 +740,8 @@ class Contract extends Controller
 		form.addElement(new IntInput("absentDistribsMaxNb","Nombre maximum d'absences autorisées",catalog.absentDistribsMaxNb,true));
 		var start = catalog.absencesStartDate==null ? catalog.startDate : catalog.absencesStartDate;
 		var end = catalog.absencesEndDate==null ? catalog.endDate : catalog.absencesEndDate;
-		form.addElement(new CagetteDatePicker("absencesStartDate","Début de la plage d'absence",start));
-		form.addElement(new CagetteDatePicker("absencesEndDate","Fin de la plage d'absence",end));
+		form.addElement(new CagetteDatePicker("absencesStartDate","Début de la période d'absence",start));
+		form.addElement(new CagetteDatePicker("absencesEndDate","Fin de la période d'absence",end));
 		
 		if ( form.checkToken() ) {
 			catalog.lock();

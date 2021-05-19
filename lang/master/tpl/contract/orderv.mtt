@@ -437,6 +437,11 @@
 													<option value="::i::" ::attr selected if( i == selectedId ) '1' ::>::i:: ::label::</option>
 												::end::
 											</select>
+											<div class="disabled">
+												Entre le ::dDate(catalog.absencesStartDate):: et le ::dDate(catalog.absencesEndDate)::
+											</div>
+											
+											
 										::end::
 									</div>							
 								</div>

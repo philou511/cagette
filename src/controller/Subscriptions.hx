@@ -409,14 +409,14 @@ class Subscriptions extends controller.Controller
 		}
 		
 		var absenceDistribs = subscription.getAbsentDistribs();
-		var possibleAbsences = SubscriptionService.getSubscriptionDistribs(subscription,"allWithAbsences");
+		var possibleAbsences = subscription.getPossibleAbsentDistribs();
 		var now = Date.now().getTime();
 		possibleAbsences = possibleAbsences.filter(d -> d.orderEndDate.getTime() > now);
-		var possibleAbsencesData = possibleAbsences.map( d -> { label : Formatting.hDate(d.date,true), value : d.id } );
 		var lockedDistribs = absenceDistribs.filter( d -> d.orderEndDate.getTime() < now);	//absences that are not editable anymore
 		
 		var form = new sugoi.form.Form("subscriptionAbsences");		
-		for ( i in 0...absenceDistribs.length ) {
+		var possibleAbsencesData = possibleAbsences.map( d -> { label : Formatting.hDate(d.date,true), value : d.id } );
+		for ( i in 0...subscription.getAbsencesNb() ) {
 			if( lockedDistribs.has(absenceDistribs[i]) ){
 				//absence cannot be modified anymore, too late !
 				form.addElement(new sugoi.form.elements.Html('absenceLocked',Formatting.dDate(absenceDistribs[i].date)+" (trop tard pour changer)","Je serai absent(e) le :"));
@@ -443,6 +443,7 @@ class Subscriptions extends controller.Controller
 		}
 
 		view.form = form;
+		view.text = 'Vous avez <b>${subscription.getAbsencesNb()}</b> absences autorisées dans la période du <b>${DateTools.format( subscription.catalog.absencesStartDate, "%d/%m/%Y" )}</b> au <b>${DateTools.format( subscription.catalog.absencesEndDate, "%d/%m/%Y")}</b>';
 		view.title = "Mes absences pour le contrat \""+subscription.catalog.name+"\"";
 		
 	}

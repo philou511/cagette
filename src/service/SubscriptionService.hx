@@ -131,12 +131,12 @@ class SubscriptionService
 		return db.Subscription.manager.search( $user == user && $catalog == catalog , false ).array();
 	}
 
-	public static function getSubscriptionDistribs( subscription:db.Subscription, type:String = 'all' ) : Array<db.Distribution> {
+	public static function getSubscriptionDistribs( subscription:db.Subscription, ?type = 'all' ) : Array<db.Distribution> {
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );
 
 		var subscriptionDistribs = null;
-		if ( type == "all" || type == "allWithAbsences") {
+		if ( type == "all") {
 
 			subscriptionDistribs = db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate, { orderBy : date }, false );
 		} else if ( type == "open" ) {
@@ -151,8 +151,8 @@ class SubscriptionService
 			subscriptionDistribs = db.Distribution.manager.search( $catalog == subscription.catalog  && $end <= endOfToday && $date >= subscription.startDate && $end <= subscription.endDate, false );
 		}
 		
-		if ( type!="allWithAbsences" && subscriptionDistribs.length>0 && subscription.catalog.hasAbsencesManagement() ) {
-		//remove absence distribs
+		if ( subscriptionDistribs.length>0 && subscription.catalog.hasAbsencesManagement() ) {
+			//remove absence distribs
 			var absentDistribs = subscription.getAbsentDistribs();
 			for ( absentDistrib in absentDistribs ) {
 				subscriptionDistribs = subscriptionDistribs.filter( distrib -> distrib.id != absentDistrib.id );
@@ -185,41 +185,24 @@ class SubscriptionService
 		get possible absence distribs of this catalog
 	**/
 	public static function getContractAbsencesDistribs( catalog:db.Catalog ) : Array<db.Distribution> {
-
 		if ( !catalog.hasAbsencesManagement() ) return [];
-		/*
-		var absencesStartDate : Date = null;
-		var absencesEndDate : Date = null;
-		if ( subscription == null ) {
-			absencesStartDate = catalog.absencesStartDate;
-			absencesEndDate = catalog.absencesEndDate;
-		} else {
-			absencesStartDate = subscription.startDate.getTime() < catalog.absencesStartDate.getTime() ? catalog.absencesStartDate : subscription.startDate;
-			absencesEndDate = catalog.absencesEndDate.getTime() < subscription.endDate.getTime() ? catalog.absencesEndDate : subscription.endDate;
-		}
-		return db.Distribution.manager.search( $catalog == catalog && $date >= absencesStartDate && $end <= absencesEndDate, { orderBy : date }, false ).array();
-		*/
-		return catalog.getDistribs(true).array();
+		return db.Distribution.manager.search( $catalog == catalog && $date >= catalog.absencesStartDate && $end <= catalog.absencesEndDate, { orderBy : date }, false ).array();
 	}
 
-	public static function getSubscriptionDistribsNb( subscription : db.Subscription, ?type : String, ?excludeAbsences = true ) : Int {
+	public static function getSubscriptionDistribsNb( subscription:db.Subscription, ?type:String, ?excludeAbsences=true ):Int {
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );
 
 		var subscriptionDistribsNb = 0;
 		if ( type == null ) {
-
 			subscriptionDistribsNb = db.Distribution.manager.count( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate );
-		}
-		else if ( type == "past" ) {
-
+		} else if ( type == "past" ) {
 			var now = Date.now();
 			var endOfToday = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59 );			
 			subscriptionDistribsNb = db.Distribution.manager.count( $catalog == subscription.catalog  && $date <= endOfToday && $date >= subscription.startDate && $end <= subscription.endDate );
 		}
 
 		if ( excludeAbsences ) {
-
 			subscriptionDistribsNb = subscriptionDistribsNb - subscription.getAbsencesNb();
 		}
 		
@@ -362,10 +345,8 @@ class SubscriptionService
 	}
 
 	public static function getAbsencesDescription( catalog : db.Catalog ) {
-
-		if ( !canAbsencesBeEdited( catalog ) ) return "Pas d'absences autorisées";
-		// return '${catalog.absentDistribsMaxNb} absences maximum autorisées  du ${DateTools.format( catalog.absencesStartDate, "%d/%m/%Y" )} au ${DateTools.format( catalog.absencesEndDate, "%d/%m/%Y")} ';
-		return '${catalog.absentDistribsMaxNb} absences maximum autorisées';
+		if ( catalog.absentDistribsMaxNb==0 || catalog.absentDistribsMaxNb==null ) return "Pas d'absences autorisées";
+		return '${catalog.absentDistribsMaxNb} absences maximum autorisées  du ${DateTools.format( catalog.absencesStartDate, "%d/%m/%Y" )} au ${DateTools.format( catalog.absencesEndDate, "%d/%m/%Y")} ';
 	}
 
 
@@ -675,13 +656,8 @@ class SubscriptionService
 	  */
 	 public function createSubscription( user:db.User, catalog:db.Catalog, ?ordersData:Array<CSAOrder>, ?absencesNb:Int, ?startDate:Date, ?endDate:Date ):db.Subscription {
 
-		if ( startDate == null ) {			
-			startDate = getNewSubscriptionStartDate( catalog );
-		}
-
-		if ( endDate == null ) {			
-			endDate = catalog.endDate;
-		}
+		if ( startDate == null ) startDate = getNewSubscriptionStartDate( catalog );
+		if ( endDate == null ) 	endDate = catalog.endDate;
 		
 		//if the user is not a member of the group
 		if(!user.isMemberOf(catalog.group)){
@@ -818,14 +794,14 @@ class SubscriptionService
 		
 		if ( subscription.id == null ) {
 
-			var distribs = getSubscriptionDistribs(subscription);
+			var distribs = subscription.getPossibleAbsentDistribs();
 			
 			if ( absencesNb > subscription.catalog.absentDistribsMaxNb ) {
 				throw new Error( 'Nombre de jours d\'absence invalide, vous avez droit à ${subscription.catalog.absentDistribsMaxNb} jours d\'absence maximum.' );
 			}
 
 			if ( absencesNb > distribs.length ) {
-				throw new Error( 'Nombre de jours d\'absence invalide, il n\'y a que ${distribs.length} distributions dans ce contrat.' );
+				throw new Error( 'Nombre de jours d\'absence invalide, il n\'y a que ${distribs.length} distributions pendant le période d\'absence de ce contrat.' );
 			}
 
 			//sort from later to sooner distrib
@@ -1096,7 +1072,7 @@ class SubscriptionService
 	**/
 	public static function canAbsencesBeEdited( catalog:db.Catalog ) : Bool {
 		// return catalog.hasAbsencesManagement() && Date.now().getTime() < getLastDistribBeforeAbsences( catalog ).date.getTime();
-		return true;
+		return catalog.hasAbsencesManagement();
 	}
 
 	/**

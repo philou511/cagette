@@ -16,8 +16,7 @@ class Subscription extends Object {
 	var defaultOrders : SNull<SText>;
 	var absentDistribIds : SNull<SText>;
 
-	public function populate() {
-		
+	public function populate() {		
 		return App.current.user.getGroup().getMembersFormElementData();
 	}
 
@@ -173,24 +172,36 @@ class Subscription extends Object {
 		return distribIds;
 	}
 
+	/**
+		get subscription absence distribs
+	**/
 	public function getAbsentDistribs() : Array<db.Distribution> {
 
 		var absentDistribIds = getAbsentDistribIds();
 		if ( absentDistribIds == null ) return [];
-
-		/*var absentDistribs = new Array<db.Distribution>();
-		for ( distribId in absentDistribIds ) {
-			var distribution = db.Distribution.manager.get( distribId, false );
-			if ( distribution != null && this.catalog.absencesStartDate.toString() <= distribution.date.toString()
-				&& distribution.date.toString() <= this.catalog.absencesEndDate.toString() ) {
-				absentDistribs.push( distribution );
-			}
-		}*/
 		return db.Distribution.manager.search($id in absentDistribIds,false).array();
 	}
 
+	/**
+		get subscription POSSIBLE absence distribs
+	**/
+	public function getPossibleAbsentDistribs() : Array<db.Distribution> {
+		//get all subscription distribs
+		var subDistributions = db.Distribution.manager.search( $catalog == this.catalog && $date >= this.startDate && $end <= this.endDate, { orderBy : date }, false );
+		var out = [];
+		//keep only those who are in the absence period
+		for( d in subDistributions ){
+			if(d.date.getTime() >= this.catalog.absencesStartDate.getTime()){
+				if(d.date.getTime() <= this.catalog.absencesEndDate.getTime()){
+					out.push(d);
+				}
+			}
+		}
+		return out;
+	}
+
 	override public function toString(){
-		return "Souscription #"+id+" de "+user.getName()+" à "+catalog.name;
+		return 'Souscription #$id de ${user.getName()} à ${catalog.name}';
 	}
 
 	public static function getLabels() {

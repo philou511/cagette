@@ -133,7 +133,7 @@ class Catalog extends Object
 	}
 
 	public function hasAbsencesManagement() : Bool {
-		return this.absentDistribsMaxNb != null && this.absentDistribsMaxNb != 0 /*&& this.absencesStartDate != null && this.absencesEndDate != null*/;
+		return this.absentDistribsMaxNb != null && this.absentDistribsMaxNb != 0 && this.absencesStartDate != null && this.absencesEndDate != null;
 	}
 
 	/**
