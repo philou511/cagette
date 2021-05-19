@@ -94,7 +94,6 @@ class Subscriptions extends controller.Controller
 
 		var startDateDP = new form.CagetteDatePicker("startDate","Date de début", SubscriptionService.getNewSubscriptionStartDate( catalog ) );
 		view.startDate = startDateDP;
-
 		var endDateDP = new form.CagetteDatePicker("endDate","Date de fin",catalog.endDate);
 		view.endDate = endDateDP;
 
@@ -171,23 +170,20 @@ class Subscriptions extends controller.Controller
 			}
 
 		}
-	
-		view.title = 'Nouvelle souscription';
+			
 		view.edit = false;
 		view.canOrdersBeEdited = true;
 		view.c = catalog;
 		view.catalog = catalog;
-		view.showmember = true;
 		view.members = app.user.getGroup().getMembersFormElementData();
 		view.products = catalogProducts;
-		// view.absencesDistribDates = Lambda.map( SubscriptionService.getAbsencesDistribs( catalog ), function( distrib ) return Formatting.dDate( distrib.date ) );
 		view.subscriptionService = SubscriptionService;
 
 		view.nav.push( 'subscriptions' );
 	}
 
 	/**
-		an admin edits a subscription
+		An admin user edits a subscription
 	**/
 	@tpl("contractadmin/editsubscription.mtt")
 	public function doEdit( subscription : db.Subscription ) {
@@ -257,38 +253,20 @@ class Subscriptions extends controller.Controller
 					}						
 				}
 
-				//if variable or not paid : can update absences nb
-				var absencesNb = if ( subscription.catalog.type == Catalog.TYPE_VARORDER || !subscription.paid() ) {
-					Std.parseInt( app.params.get( 'absencesNb' ) );
-				}else{
-					null;
-				};
-
-				//if variable or paid : can update absences distribs
-				var absentDistribIds :Array<Int> = null;
-				 if ( subscription.catalog.type == Catalog.TYPE_VARORDER || subscription.paid() ) {
-					absentDistribIds = [];
-					for ( i in 0...subscription.getAbsencesNb() ) {					
-						absentDistribIds.push( Std.parseInt( app.params.get( 'absence' + i ) ) );
-					}					
-				}
-
-				subscriptionService.updateSubscription( subscription, startDate, endDate, ordersData/*, absentDistribIds, absencesNb*/ );
-				subscriptionService.updateAbsencesDates(subscription, absentDistribIds);
+				subscriptionService.updateSubscription( subscription, startDate, endDate, ordersData);
+				subscriptionService.setAbsencesNb( subscription, app.params.get('absencesNb').parseInt() );
 
 			} catch( error : Error ) {				
 				throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, error.message );
 			}
 
-			throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La souscription pour ' + subscription.user.getName() + ' a bien été mise à jour.' );
+			throw Ok( '/contractAdmin/subscriptions/${subscription.catalog.id}', 'La souscription de ${subscription.user.getName()} a bien été mise à jour.' );
 		}
 
-		view.title = 'Modification de la souscription pour ' + subscription.user.getName();
 		view.edit = true;
 		// view.canOrdersBeEdited = canOrdersBeEdited;
 		view.c = subscription.catalog;
 		view.catalog = subscription.catalog;
-		view.showmember = false;
 		view.members = app.user.getGroup().getMembersFormElementData();
 		view.products = catalogProducts;
 		view.getProductOrder = function( productId : Int ) {		
@@ -310,21 +288,13 @@ class Subscriptions extends controller.Controller
 
 
 	public function doMarkAsPaid( subscription : db.Subscription ) {
-
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
-
 		try {
-
 			SubscriptionService.markAsPaid( subscription );
-
-		}
-		catch( error : Error ) {
-
+		} catch( error : Error ) {
 			throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, error.message );
 		}
-
 		throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La souscription de ' + subscription.user.getName() + ' a bien été validée.' );
-		
 	}
 
 	@admin

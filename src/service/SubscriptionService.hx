@@ -716,7 +716,7 @@ class SubscriptionService
 	/**
 		Update an existing subscription
 	**/
-	public function updateSubscription( subscription:db.Subscription, startDate:Date, endDate:Date, ?ordersData:Array<CSAOrder>/*, ?absentDistribIds:Array<Int>, ?absencesNb:Int*/ ) {
+	public function updateSubscription( subscription:db.Subscription, startDate:Date, endDate:Date, ?ordersData:Array<CSAOrder>) {
 
 		if ( startDate == null || endDate == null ) {
 			throw new Error( 'La date de début et de fin de la souscription doivent être définies.' );
@@ -728,11 +728,6 @@ class SubscriptionService
 	
 		subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
-
-		/*if ( absentDistribIds != null ) {			
-			subscription.setAbsences( absentDistribIds );
-		}
-		updateAbsencesNb( subscription, absencesNb );*/
 		
 		//check secondary user
 		if(ordersData!=null){
@@ -792,16 +787,17 @@ class SubscriptionService
 		if( !subscription.catalog.hasAbsencesManagement() ) return;
 		if(absencesNb==null) return;
 		
-		if ( subscription.id == null ) {
-
-			var distribs = subscription.getPossibleAbsentDistribs();
+		//a user can only choose absenceNb on subscription creation
+		//an admin can change it at anytime
+		if ( subscription.id == null || adminMode) {
 			
 			if ( absencesNb > subscription.catalog.absentDistribsMaxNb ) {
 				throw new Error( 'Nombre de jours d\'absence invalide, vous avez droit à ${subscription.catalog.absentDistribsMaxNb} jours d\'absence maximum.' );
 			}
 
+			var distribs = subscription.getPossibleAbsentDistribs();
 			if ( absencesNb > distribs.length ) {
-				throw new Error( 'Nombre de jours d\'absence invalide, il n\'y a que ${distribs.length} distributions pendant le période d\'absence de ce contrat.' );
+				throw new Error( 'Nombre de jours d\'absence invalide, il n\'y a que ${distribs.length} distributions pendant le période d\'absence de cette souscription.' );
 			}
 
 			//sort from later to sooner distrib
@@ -810,30 +806,7 @@ class SubscriptionService
 			subscription.setAbsences( distribs.slice(0,absencesNb).map(d -> d.id) );
 
 		} else {
-			throw new Error('Il n\'est pas possible de modifier le nombre de jours d\'absence sur une souscription déjà créée.' );
-			/*var currentAbsentDistribIds = subscription.getAbsentDistribIds();
-			var absencesNbDiff = newAbsencesNb - currentAbsencesNb;
-			if ( absencesNbDiff < 0 ) {
-
-				for ( i in 0...newAbsencesNb ) {
-					absentDistribIds.push( currentAbsentDistribIds[i] );
-				}
-			} else if ( absencesNbDiff > 0 ) {
-
-				for ( i in 0...currentAbsencesNb ) {
-					absentDistribIds.push( currentAbsentDistribIds[i] );
-				}
-
-				var absencesDistribs = subscription.getAbsentDistribs();
-				var absencesDistribsNb = absencesDistribs.length;
-
-				for ( i in 0...absencesNbDiff ) {
-					if ( ( i + currentAbsencesNb ) > ( absencesDistribsNb - 1 ) ) {
-						throw new Error( 'Il n\'y a seulement que $absencesDistribsNb distributions pendant la période des absences.' );
-					}
-					absentDistribIds.push( absencesDistribs[ i + currentAbsencesNb ].id );
-				}
-			}*/
+			throw new Error('Il n\'est pas possible de modifier le nombre de jours d\'absence sur une souscription déjà créée.' );			
 		}
 	}
 
@@ -953,7 +926,6 @@ class SubscriptionService
 
 	
 	public static function hasPastDistributions( subscription : db.Subscription ) : Bool {
-
 		return getSubscriptionDistribsNb( subscription, 'past' ) != 0;
 	}
 

@@ -2,25 +2,21 @@
 
 <div class="article">
 
-		<h3 ::cond title != null:: >::title::</h3>
-		<br/>
-
-		<!--<div class="row" ::cond !canOrdersBeEdited:: >
-
-			<div id="content" class="col-md-12">
-				<div class="alert  alert-danger ">
-					<i class="icon icon-alert"></i> Les commandes de cette souscription ne peuvent pas êtres modifiée car il y a des distributions passées avec des commandes.
-				</div>
-			</div>
-		</div>-->
-
+		<h3>
+			::if(subscription==null)::
+				Nouvelle souscription
+			::else::
+				Modification de la souscription de ::subscription._user.getName()::
+			::end::
+		</h3>
+		
 		<form id="subscription" class="form-horizontal" name="subscription" method="POST" action="">
 
 			<input type="hidden" name="token" value="::token::"/>
 
-			::if showmember ::
+			<!-- select a member -->
+			::if !edit::
 				<div class="form-group">
-
 					<label class="col-sm-3 control-label" for="user" id="userLabel">
 						Membre *
 					</label>
@@ -32,29 +28,33 @@
 							::end::
 						</select>
 					</div>
-
-				</div>
-			
+				</div>	
 				<hr/>
 			::end::
 
+			<!-- constant order , or default order if variable -->
 			::if (catalog.type == TYPE_CONSTORDERS) || catalog.requiresOrdering ::
 
-				::if catalog.requiresOrdering ::
-					<h4 style="font-style: normal; text-align: center; margin-bottom: 20px;">
-						Commande par défaut
-					</h4>
-				::end::
+				<div class="form-group" >
+					<label class="col-sm-3 control-label"></label>
+					<div class="col-sm-5">
+						<h4>
+							::if catalog.requiresOrdering ::
+								Commande par défaut
+							::else::
+								Commande récurrente
+							::end::
+						</h4>
+					</div>
+				</div>
 
-				<div class="form-group" style="font-weight: bold;">
-					
+				<div class="form-group" style="font-weight: bold;">				
 					<div class="col-sm-3"></div>
 					<div class="col-sm-2">Quantité</div>
 					::if catalog.type == TYPE_CONSTORDERS::
 						<div class="col-sm-5">Alterner avec</div>
 						<div class="col-sm-2">Inverser alternance</div>
 					::end::
-
 				</div>
 				
 				::foreach product products::
@@ -79,9 +79,7 @@
 						::end::
 					::end::
 
-
 					<div class="form-group">
-
 						<label class="col-sm-3 control-label" for="quantity::product.id::" id="quantity::product.id::Label">
 							::product.name + " " + product.price + " €"::
 						</label>
@@ -96,159 +94,74 @@
 										<option value="::member.value::" ::attr selected if( member.value == user2Id ) '1' ::>::member.label::</option>
 									::end::
 								</select>
-
 							</div>
 							<div class="col-sm-1">
 								<input data-toggle="tooltip" title="::_("Reverse the alternation")::" type="checkbox" name="invert::product.id::" id="invert::product.id::" value="true" ::attr checked if( invert ) '1' :: />
 							</div>
 						::end::
-
 					</div>
 				::end::
-
-				<hr/>
 			::end::
-		
-			<div class="form-group">
 
+			<!-- help for VARORDERS -->
+			::if (!catalog.isConstantOrders())::
+			<div class="alert alert-warning">
+				<p>
+					<i class="icon icon-info"></i> 
+					Pour modifier les commandes de cette souscription, il faut se rendre sur <a href="/contractAdmin/selectDistrib/::catalog.id::">la page commandes de ce contrat</a>.
+				</p>
+			</div>
+			::end::
+
+			<hr/>
+			<div class="form-group">
 				<label class="col-sm-3 control-label" for="startdatepicker" id="startdatepickerLabel">
 					Date de début
 				</label>
 				<div class="col-sm-5">
 					::raw startDate.render()::
 				</div>
-
 			</div>
 		
 			<div class="form-group">
-
 				<label class="col-sm-3 control-label" for="enddatepicker" id="enddatepickerLabel">
 					Date de fin
 				</label>
 				<div class="col-sm-5">
 					::raw endDate.render()::
 				</div>
-
 			</div>
 
-			::if (!edit && catalog.absentDistribsMaxNb != null && catalog.absentDistribsMaxNb != 0) ||
-				(edit && subscriptionService.getAbsentDistribsMaxNb( catalog, subscription ) != null && subscriptionService.getAbsentDistribsMaxNb( catalog, subscription ) != 0)
-			::
-	
-				<hr/>
-
-				::if edit && ( catalog.type == TYPE_VARORDERS || subscription.paid() )::
-
-					::set absencesNb = subscription.getAbsencesNb()::
-
-					<div class="form-group">
-
-						<label class="col-sm-3 control-label" for="absences" id="absencesLabel">
-							::set start = catalog.absencesStartDate ::
-							::set end = catalog.absencesEndDate::
-							::if subscription != null::
-								:: if start.getTime() < subscription.startDate.getTime()::
-									::set start = subscription.startDate::
-								::end::
-								:: if end.getTime() > subscription.endDate.getTime()::
-									::set end = subscription.endDate::
-								::end::
-							::end::
-							Nombre d'absences du ::sDate(start):: au ::sDate(end)::
-						</label>
-						<div class="col-sm-2" style="padding-top: 7px;">
-							::absencesNb::
-						</div>
-
-					</div>
-
-					<div class="form-group" ::cond absencesNb != 0::>
-
-						<label class="col-sm-3 control-label" for="datesabs" id="datesabsLabel">
-							Dates des absences
-						</label>
-						<div class="col-sm-9">
-
-							::set absentDistribIds = subscription.getAbsentDistribIds()::
-							::if canAbsencesBeEdited::
-								::foreach i loopList(0, absencesNb)::
-									<select name="absence::i::" id="absence::i::" class="form-control" style="width: 300px;display: inherit;">
-									::foreach distribIdDate absencesDistribs::
-										<option value="::distribIdDate.value::" ::attr selected if( absentDistribIds != null && distribIdDate.value == absentDistribIds[i] ) '1' :: >::distribIdDate.label::</option>
-									::end::
-									</select>
-								::end::
-							::else::
-								::foreach distrib absentDistribs::
-									::dDate(distrib.date)::<br/>
-								::end::
-							::end::
-
-						</div>
-
-					</div>
-				::else::
-
-					<div class="form-group">
-
-						<label class="col-sm-3 control-label" for="absences" id="absencesLabel">
-							::set start = catalog.absencesStartDate ::
-							::set end = catalog.absencesEndDate::
-							::if subscription != null::
-								:: if start.getTime() < subscription.startDate.getTime()::
-									::set start = subscription.startDate::
-								::end::
-								:: if end.getTime() > subscription.endDate.getTime()::
-									::set end = subscription.endDate::
-								::end::
-							::end::
-							Nombre d'absences du ::sDate(start):: au ::sDate(end)::
-						</label>
-						<div class="col-sm-2">
-
-							<select name="absencesNb" id="absencesNb" class="form-control" style="width: 200px;">
-								::set label = ""::
-								::foreach i loopList(0, subscriptionService.getAbsentDistribsMaxNb( catalog, subscription ) + 1 )::
-									::if i > 1::
-										::set label = "distributions"::
-									::else::
-										::set label = "distribution"::
-									::end::
-									<option value="::i::" ::attr selected if( subscription != null && i == subscription.getAbsencesNb() ) '1':: >::i:: ::label::</option>
-								::end::
-							</select>
-
-						</div>
-
-					</div>
-
-				::end::
-
-			::end::
-
+			<!-- absence nb -->
+			<hr/>
 			<div class="form-group">
+				<label class="col-sm-3 control-label" for="absences" id="absencesLabel">					
+					Nombre d'absences autorisées entre le ::sDate(catalog.absencesStartDate):: et le ::sDate(catalog.absencesEndDate)::
+				</label>
+				<div class="col-sm-2">
+					<select name="absencesNb" id="absencesNb" class="form-control" style="width: 200px;">
+						::set label = ""::
+						::foreach i loopList(0, catalog.absentDistribsMaxNb + 1 )::
+							::if i > 1::
+								::set label = "distributions"::
+							::else::
+								::set label = "distribution"::
+							::end::
+							<option value="::i::" ::attr selected if( subscription != null && i == subscription.getAbsencesNb() ) '1':: >::i:: ::label::</option>
+						::end::
+					</select>
+				</div>
+			</div>
 
+			<!-- submit -->
+			<div class="form-group">
 				<div class="col-sm-5"></div>
 				<div class="col-sm-7">
-					<br/>
 					<input type="submit" class="btn btn-primary" value="OK" null="" name="submit" id="submit"/>
 				</div>
-
 			</div>
 
 		</form>
-
-		<!-- help for VARORDERS -->
-		::if (!catalog.isConstantOrders())::
-		<div class="alert alert-warning">
-            <p>
-				<i class="icon icon-info"></i> 
-				Pour modifier les commandes de cette souscription, il faut se rendre sur <a href="/contractAdmin/selectDistrib/::catalog.id::">la page commandes de ce contrat</a>.
-			</p>
-		</div>
-		::end::
-
-
 		
 	</div>
 
