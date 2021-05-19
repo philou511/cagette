@@ -307,7 +307,6 @@ class Contract extends Controller
 	function doOrder( catalog : db.Catalog ) {
 
 		if( catalog.group.hasShopMode() ) throw Redirect( '/contract/view/' + catalog.id );
-
 		if( app.user == null ) throw Redirect( '/user/login?__redirect=/contract/order/' + catalog.id );
 
 		if( catalog.isConstantOrders() ) {
@@ -336,7 +335,7 @@ class Contract extends Controller
 			// hasComingOpenDistrib = openDistributions.length != 0;
 
 			var distribs = catalog.getDistribs(true);
-			hasComingOpenDistrib = distribs.find(d -> d.orderStartDate.getTime()>Date.now().getTime())!=null;
+			// hasComingOpenDistrib = distribs.find(d -> d.orderStartDate.getTime() < Date.now().getTime())!=null;
 	
 			for ( distrib in distribs ) {
 
