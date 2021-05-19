@@ -804,6 +804,7 @@ class SubscriptionService
 			distribs.sort( (a,b)-> Math.round(b.date.getTime()/1000) - Math.round(a.date.getTime()/1000) );
 
 			subscription.setAbsences( distribs.slice(0,absencesNb).map(d -> d.id) );
+			subscription.update();
 
 		} else {
 			throw new Error('Il n\'est pas possible de modifier le nombre de jours d\'absence sur une souscription déjà créée.' );			
