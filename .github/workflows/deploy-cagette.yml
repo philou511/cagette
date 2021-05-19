@@ -11,6 +11,7 @@ env:
   CLUSTER_RESOURCE_GROUP: alilo-dev
   NAMESPACE: dev-playground
   APP_NAME: neko
+  KEEP_AT_MOST_IMAGES: 3
 
 jobs:
   docker-build:
@@ -19,7 +20,6 @@ jobs:
       - name: Checkout cagette
         uses: actions/checkout@v2
 
-      # checkout cagette-pro
       # see chart https://github.com/actions/checkout#checkout-multiple-repos-private
       #- name: Checkout cagette-pro
       #  uses: actions/checkout@v2
@@ -59,6 +59,13 @@ jobs:
     needs: docker-build
     runs-on: ubuntu-latest
     steps:
+      - name: retrieve project name
+        run: |
+          PROJ=$(echo "${{ github.ref }}" | perl -F/ -a -e 'print $F[-1]')
+          # see https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
+          echo "project to update: $PROJ"
+          echo "project_name=$PROJ" >> $GITHUB_ENV
+
       # see https://github.com/actions/checkout#checkout-multiple-repos-private
       - name: Checkout chart
         uses: actions/checkout@v2
@@ -75,14 +82,27 @@ jobs:
           cluster-name: 'alilo-dev'
         id: login
 
+      - name: setup nodemailer SMTP credentials
+        run: |
+          npm install
+          node scripts/generate-fake-smtp-credentials.js > smtp.env
+          kubectl -n $NAMESPACE get secret ${{ env.project_name }}-smtp || kubectl -n $NAMESPACE create secret generic ${{ env.project_name }}-smtp --from-file=smtp.env
+
       - name: setup db-pw secret
         run: |
-          PROJ=$(echo "${{ github.ref }}" | perl -F/ -a -e 'print $F[-1]')
-          kubectl -n $NAMESPACE get secret ${PROJ}-db-pw || kubectl -n $NAMESPACE create secret generic ${PROJ}-db-pw --from-literal=password="$(openssl rand -hex 10)"
+          kubectl -n $NAMESPACE get secret ${{ env.project_name }}-db-pw || kubectl -n $NAMESPACE create secret generic ${{ env.project_name }}-db-pw --from-literal=password="$(openssl rand -hex 10)"
 
       - name: deploy on cluster
         run: |
-          set -e -u
-          PROJ=$(echo "${{ github.ref }}" | perl -F/ -a -e 'print $F[-1]')
-          TAG="$PROJ-$GITHUB_RUN_NUMBER"
-          helm -n $NAMESPACE upgrade --install --reuse-values --set image.tag.$APP_NAME=$TAG $PROJ cagette-chart/
+          TAG="${{ env.project_name }}-$GITHUB_RUN_NUMBER"
+          helm -n $NAMESPACE upgrade --install --reuse-values --set image.tag.$APP_NAME=$TAG ${{ env.project_name }} cagette-chart/
+
+      - name: remove old ${{ env.project_name }} images
+        run: |
+          az login --service-principal -u ${{ secrets.REGISTRY_USERNAME }} \
+             -p ${{ secrets.REGISTRY_PASSWORD }} --tenant francoisalilo.onmicrosoft.com
+          for tag in $(az acr repository show-tags -n alilo --repository $APP_NAME --orderby time_asc --output tsv | grep ^${{ env.project_name }} | tail --lines=+$KEEP_AT_MOST_IMAGES )
+          do
+              echo "Deleting image $APP_NAME:$tag"
+              az acr repository delete -n alilo --yes --image $APP_NAME:$tag
+          done
