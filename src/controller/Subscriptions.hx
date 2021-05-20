@@ -370,6 +370,10 @@ class Subscriptions extends controller.Controller
 	function doAbsences( subscription:db.Subscription, ?args:{returnUrl:String} ) {
 
 		if( subscription.catalog.group.hasShopMode() ) throw Redirect( "/contract/view/" + subscription.catalog.id );
+		if ( !app.user.canManageContract(subscription.catalog) && !(app.user.id==subscription.user.id) ){
+			throw Error( '/', t._('Access forbidden') );
+		} 
+
 		var subService = new SubscriptionService();
 		if ( args != null && args.returnUrl != null ) {
 			App.current.session.data.absencesReturnUrl = args.returnUrl;
