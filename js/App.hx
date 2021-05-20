@@ -276,7 +276,7 @@ class App {
 	/**
 	 * Displays a login box
 	 */
-	public function loginBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false,?openRegistration=false) {	
+	public function loginBox(redirectUrl:String,sid:String,?message:String,?phoneRequired=false,?addressRequired=false,?openRegistration=false) {	
         var node = js.Browser.document.createDivElement();
 		node.id = "login-registration-container";
 		js.Browser.document.body.appendChild(node);
@@ -285,6 +285,7 @@ class App {
         var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
         neo.createNeoModule(node.id, "loginRegistration", {
             redirectUrl: redirectUrl,
+            sid: sid,
 			message: message,
 			phoneRequired: phoneRequired,
 			addressRequired: addressRequired,
@@ -295,8 +296,8 @@ class App {
 	/**
 	 *  Displays a sign up box
 	 */
-	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {
-        loginBox(redirectUrl, message, phoneRequired, addressRequired, true);
+	public function registerBox(redirectUrl:String,sid:String,?message:String,?phoneRequired=false,?addressRequired=false) {
+        loginBox(redirectUrl, sid, message, phoneRequired, addressRequired, true);
 	}
 
 	public function membershipBox(userId:Int,userName:String,groupId:Int,?callbackUrl:String,?distributionId:Int){

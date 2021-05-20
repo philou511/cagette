@@ -207,6 +207,9 @@ class UserService
 		} 
 		if(group.flags.has(PhoneRequired)) loginBoxOptions.phoneRequired = true;
 		if(group.flags.has(AddressRequired)) loginBoxOptions.addressRequired = true;
+
+		loginBoxOptions.sid = App.current.session.sid;
+
 		view.loginBoxOptions = loginBoxOptions;
 	}
 

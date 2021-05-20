@@ -293,6 +293,7 @@ class Shop extends Controller
 
 			app.session.data.tmpBasketId = tmpBasket.id;
 			view.redirect = sugoi.Web.getURI();
+			view.sid = App.current.session.sid;
 			view.group = tmpBasket.multiDistrib.getGroup();
 			view.register = true;
 			view.message =  t._("In order to confirm your order, You need to authenticate.");
