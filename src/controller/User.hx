@@ -31,6 +31,8 @@ class User extends Controller
 		}
 
 		service.UserService.prepareLoginBoxOptions(view);
+
+		view.sid = App.current.session.sid;
 		
 		//if its needed to redirect after login
 		if (app.params.exists("redirect")){

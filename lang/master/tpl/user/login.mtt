@@ -5,7 +5,7 @@ $$browserDetection()
 <div class="col-md-12" style="height: 500px">
   <script language="javascript">
     document.addEventListener("DOMContentLoaded", function(event) {
-      _.loginBox('::redirect::','::loginBoxOptions.sid::',null,::loginBoxOptions.phoneRequired::,::loginBoxOptions.addressRequired::);
+      _.loginBox('::redirect::','::sid::',null,::loginBoxOptions.phoneRequired::,::loginBoxOptions.addressRequired::);
     });
   </script>
 </div>
