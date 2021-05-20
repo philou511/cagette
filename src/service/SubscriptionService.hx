@@ -349,7 +349,6 @@ class SubscriptionService
 		return '${catalog.absentDistribsMaxNb} absences maximum autorisées  du ${DateTools.format( catalog.absencesStartDate, "%d/%m/%Y" )} au ${DateTools.format( catalog.absencesEndDate, "%d/%m/%Y")} ';
 	}
 
-
 	/**
 	 * Checks subscription validity
 	 */
@@ -1064,9 +1063,8 @@ class SubscriptionService
 				break;
 			}
 		}
-
 		if ( !datesHaveChanged ) return;
-		
+
 		subscription.setAbsences( newAbsentDistribIds );
 		subscription.update();
 

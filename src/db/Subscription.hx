@@ -141,6 +141,12 @@ class Subscription extends Object {
 		set subscriptions absence distributions
 	**/
 	public function setAbsences( distribIds:Array<Int> ) {
+
+		//check there is no duplicates
+		if(tools.ArrayTool.deduplicate(distribIds).length != distribIds.length){
+			throw new tink.core.Error(500,"Vous ne pouvez pas choisir deux fois la même distribution");
+		}
+
 		if( distribIds != null && distribIds.length != 0 ) {
 			distribIds.sort( function(b, a) { return  a < b ? 1 : -1; } );
 			this.absentDistribIds = distribIds.join(',');

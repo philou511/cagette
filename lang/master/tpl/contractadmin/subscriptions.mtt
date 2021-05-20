@@ -174,7 +174,15 @@
                                                 <a href="/contractAdmin/subscriptions/edit/::subscription.id::">
                                                     <i class="icon icon-edit"></i> ::_("Edit")::
                                                 </a>
-                                            </li>                                    
+                                            </li>
+                                            
+                                            ::if(catalog.hasAbsencesManagement())::
+                                            <li>
+                                                <a href="/subscriptions/absences/::subscription.id::?returnUrl=/contractAdmin/subscriptions/::catalog.id::">
+                                                    🌴 Absences
+                                                </a>
+                                            </li>
+                                            ::end::
                                             
                                             ::if(hasPayments)::
                                             <li>
