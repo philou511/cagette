@@ -93,8 +93,10 @@ class User extends Controller
 	}
 	
 	function doLogout() {
+		service.BridgeService.logout(App.current.user);
+
 		App.current.session.delete();
-		Web.setHeader("Set-Cookie", "Authentication=; HttpOnly; Path=/; Max-Age=0");
+
 		throw Redirect('/');
 	}
 	
