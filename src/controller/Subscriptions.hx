@@ -186,7 +186,7 @@ class Subscriptions extends controller.Controller
 		An admin user edits a subscription
 	**/
 	@tpl("contractadmin/editsubscription.mtt")
-	public function doEdit( subscription : db.Subscription ) {
+	public function doEdit( subscription:db.Subscription ) {
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
 
@@ -199,6 +199,7 @@ class Subscriptions extends controller.Controller
 
 		var subscriptionService = new service.SubscriptionService();
 		subscriptionService.adminMode = true;
+		
 
 		if ( checkToken() ) {
 
@@ -207,6 +208,7 @@ class Subscriptions extends controller.Controller
 				endDateDP.populate();
 				var startDate = startDateDP.getValue();
 				var endDate = endDateDP.getValue();
+				subscription.lock();
 
 				if ( startDate == null || endDate == null ) {
 					throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous devez sélectionner une date de début et de fin pour la souscription." );
@@ -254,7 +256,9 @@ class Subscriptions extends controller.Controller
 				}
 
 				subscriptionService.updateSubscription( subscription, startDate, endDate, ordersData);
+				
 				subscriptionService.setAbsencesNb( subscription, app.params.get('absencesNb').parseInt() );
+				subscription.update();
 
 			} catch( error : Error ) {				
 				throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, error.message );
