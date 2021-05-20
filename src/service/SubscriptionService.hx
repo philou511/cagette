@@ -785,6 +785,7 @@ class SubscriptionService
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );
 		if( !subscription.catalog.hasAbsencesManagement() ) return;
 		if(absencesNb==null) return;
+		subscription.lock();
 		
 		//a user can only choose absenceNb on subscription creation
 		//an admin can change it at anytime
