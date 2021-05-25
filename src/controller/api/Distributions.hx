@@ -67,6 +67,9 @@ class Distributions extends Controller {
   }
 
   /**
+   * MIGRATION IN PROGRESS
+   */
+  /**
     an admin updates the slots
   **/
   public function doActivateSlots() {
@@ -85,6 +88,9 @@ class Distributions extends Controller {
     json(this.parse());
   }
 
+  /**
+   * MIGRATION IN PROGRESS
+   */
   /**
    * deactivate slots
    */

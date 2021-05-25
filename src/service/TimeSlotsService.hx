@@ -337,6 +337,9 @@ class TimeSlotsService{
 		return true;
 	}
 
+	/**
+   * MIGRATION IN PROGRESS
+   */
 	public function registerUserToSlot(userId: Int, slotIds: Array<Int>) {
 		if (distribution.slots == null) return false;
 		if (userIsAlreadyAdded(userId)) return false;

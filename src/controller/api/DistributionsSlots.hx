@@ -18,6 +18,9 @@ class DistributionsSlots extends Controller {
 		this.distrib = distrib;
 	}
 
+	/**
+   * MIGRATION IN PROGRESS
+   */
 	public function doRegisterMe() {
 		if (sugoi.Web.getMethod() != "POST") throw new tink.core.Error(405, "Method Not Allowed");
 		checkIsGroupMember();
