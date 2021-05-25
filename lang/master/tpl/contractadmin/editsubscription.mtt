@@ -133,6 +133,7 @@
 			</div>
 
 			<!-- absence nb -->
+			::if(catalog.absentDistribsMaxNb!=null)::
 			<hr/>
 			<div class="form-group">
 				<label class="col-sm-3 control-label" for="absences" id="absencesLabel">					
@@ -152,6 +153,7 @@
 					</select>
 				</div>
 			</div>
+			::end::
 
 			<!-- submit -->
 			<div class="form-group">
