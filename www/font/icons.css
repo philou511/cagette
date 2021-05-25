@@ -1,10 +1,10 @@
 @font-face {
     font-family: "icons";
-    src: url("./icons.eot?9f0914209f650ead2d6da054c6c139f3?#iefix") format("embedded-opentype"),
-url("./icons.woff2?9f0914209f650ead2d6da054c6c139f3") format("woff2"),
-url("./icons.woff?9f0914209f650ead2d6da054c6c139f3") format("woff"),
-url("./icons.ttf?9f0914209f650ead2d6da054c6c139f3") format("truetype"),
-url("./icons.svg?9f0914209f650ead2d6da054c6c139f3#icons") format("svg");
+    src: url("./icons.eot?5396ec75636a92bb8a93241eef1da6a4?#iefix") format("embedded-opentype"),
+url("./icons.woff2?5396ec75636a92bb8a93241eef1da6a4") format("woff2"),
+url("./icons.woff?5396ec75636a92bb8a93241eef1da6a4") format("woff"),
+url("./icons.ttf?5396ec75636a92bb8a93241eef1da6a4") format("truetype"),
+url("./icons.svg?5396ec75636a92bb8a93241eef1da6a4#icons") format("svg");
 }
 
 i {
@@ -229,12 +229,15 @@ i[class^="icon-"]:before, i[class*=" icon-"]:before {
 .icon-users:before {
     content: "\f145";
 }
-.icon-wholesale:before {
+.icon-vacation:before {
     content: "\f146";
 }
-.icon-world:before {
+.icon-wholesale:before {
     content: "\f147";
 }
-.icon-youtube:before {
+.icon-world:before {
     content: "\f148";
+}
+.icon-youtube:before {
+    content: "\f149";
 }

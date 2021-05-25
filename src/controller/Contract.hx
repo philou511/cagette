@@ -721,9 +721,10 @@ class Contract extends Controller
 	/**
 		the catalog admin updates absences options
 	**/
-	@tpl("form.mtt")
+	@tpl("contractadmin/form.mtt")
 	function doAbsences(catalog:db.Catalog){
 		view.category = 'contractadmin';
+		view.nav.push("absences");
 		if (!app.user.isContractManager( catalog )) throw Error('/', t._("Forbidden action"));
 
 		view.title = 'Période d\'absences du contrat \"${catalog.name}\"';
@@ -764,6 +765,7 @@ class Contract extends Controller
 		}
 		 
 		view.form = form;
+		view.c = catalog;
 		
 	}
 }

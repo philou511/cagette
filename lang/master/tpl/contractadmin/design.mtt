@@ -31,7 +31,7 @@
 			::if (!c._group.hasShopMode() && (c.requiresOrdering || c.type==0) )::
 			<li id="absences" ::attr class if(nav[1]=="absences") 'active'::>
 				<a href="/contract/absences/::c.id::">
-					🌴 Période d'absences
+					<i class="icon icon-vacation"></i>  Période d'absences
 				</a>
 			</li>
 			::end::

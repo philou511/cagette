@@ -391,7 +391,7 @@ class Catalog extends Object
 			"requiresOrdering" 				=> "Commande obligatoire à chaque distribution",
 			"distribMinOrdersTotal" 		=> "Minimum de commande par distribution (en €)",
 			"catalogMinOrdersTotal" 		=> "Provision minimum initiale (en €)",
-			"allowedOverspend" 				=> "Dépassement autorisé (en €)",
+			// "allowedOverspend" 				=> "Dépassement autorisé (en €)",
 			"absentDistribsMaxNb" 			=> "Nombre maximum d'absences",
 			"absencesStartDate" 			=> "Date de début de la période d'absences",
 			"absencesEndDate" 				=> "Date de fin de la période d'absences",

@@ -312,7 +312,7 @@
 														::if(d.isAbsence)::
 															<th class="alert-warning text-center">
 																::raw shortDate(d.distrib.date)::<br/>
-																🌴<br/>
+																<i class="icon icon-vacation"></i><br/>
 																<div class="closingDate">
 																	Absent(e)
 																</div>
@@ -421,7 +421,7 @@
 								<div class="col-md-9">
 									<div class="text-right">
 										::if subscriptionService.canAbsencesNbBeEdited( catalog, currentOrComingSubscription )::
-											🌴 <b>Je serai absent(e) lors de : </b>&nbsp;
+										<i class="icon icon-vacation"></i> <b>Je serai absent(e) lors de : </b>&nbsp;
 											<select name="absencesNb" id="absencesNb" class="form-control" style="width: 200px;display: inline-block;">
 												::set label = ""::
 												::set selectedId = 0::
