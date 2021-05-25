@@ -213,12 +213,21 @@ class CatalogService{
 			}
 
 			var absencesDistribsNb = service.SubscriptionService.getContractAbsencesDistribs( catalog ).length;
-			if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && absentDistribsMaxNb > absencesDistribsNb ) {
-
+			if ( absentDistribsMaxNb > 0 && absentDistribsMaxNb > absencesDistribsNb ) {
 				throw new Error( 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
-				Il doit être inférieur ou égal au nombre de distributions dans la période d\'absences : ' + absencesDistribsNb );
-				
+				Il doit être inférieur ou égal au nombre de distributions dans la période d\'absences : ' + absencesDistribsNb );				
 			}
+
+			//edge case : if absence period == catalog period, check that absentDistribsMaxNb is less than all distribs number
+			if(catalog.startDate.toString().substr(0,10)==absencesStartDate.toString().substr(0,10)){
+				if(catalog.endDate.toString().substr(0,10)==absencesEndDate.toString().substr(0,10)){
+					if ( absentDistribsMaxNb > 0  && absentDistribsMaxNb == absencesDistribsNb ) {
+						throw new Error( 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
+						 Il doit être inférieur au nombre de distributions du contrat' );				
+					}
+				}	
+			}
+
 
 			if ( absencesStartDate.getTime() < catalog.startDate.getTime() || absencesEndDate.getTime() > catalog.endDate.getTime() ) {
 				throw new Error( 'Les dates d\'absences doivent être comprises entre le début et la fin du contrat.' );

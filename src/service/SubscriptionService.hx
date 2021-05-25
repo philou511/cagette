@@ -326,7 +326,6 @@ class SubscriptionService
 						label += '<br />Maximum de commandes sur la durée du contrat : ${catalogMinOrdersTotal + catalog.allowedOverspend}€';
 					}				
 				}*/
-				
 			}
 
 		} else {
@@ -681,9 +680,7 @@ class SubscriptionService
 		}
 		
 		setAbsencesNb( subscription, absencesNb );
-		
 		check(subscription);
-
 		subscription.insert();
 
 		if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
