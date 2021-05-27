@@ -69,6 +69,7 @@ class BridgeService {
 	}
 
 	public static function logout(user:db.User) {
+		if (user==null) return null;
 		var baseUrl = App.config.get("cagette_bridge_api") + "/bridge";
 		var headers = [
 			"Authorization" => "Bearer " + App.config.get("key"),
