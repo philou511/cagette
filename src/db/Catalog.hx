@@ -40,14 +40,15 @@ class Catalog extends Object
 	public var catalogMinOrdersTotal : SNull<SFloat>;
 	// public var allowedOverspend : SNull<SFloat>;  //removed 
 
+	//absences in CSA groups
 	public var absentDistribsMaxNb : SNull<SInt>;
 	public var absencesStartDate : SNull<SDateTime>;
 	public var absencesEndDate : SNull<SDateTime>;
 
-	public var hasPayments : SBool; //hasPayments , only for CSA groups
+	public var hasPayments : SBool; //only for CSA groups
 
-	@:skip inline public static var TYPE_CONSTORDERS = 0; 	//CSA catalog 
-	@:skip inline public static var TYPE_VARORDER = 1;		//variable orders catalog
+	@:skip inline public static var TYPE_CONSTORDERS = 0; 	//constant orders catalog (contrat AMAP classique)
+	@:skip inline public static var TYPE_VARORDER = 1;		//variable orders catalog (contrat AMAP variable)
 	@:skip inline public static var CATALOG_ID_HASPAYMENTS = 53442;		//payments is mandatory when id > CATALOG_ID_HASPAYMENTS
 	@:skip var cache_hasActiveDistribs : Bool;
 
@@ -128,26 +129,15 @@ class Catalog extends Object
 	}
 
 	public function hasConstraints() : Bool {
-
 		return this.type == TYPE_VARORDER && ( this.requiresOrdering || ( this.distribMinOrdersTotal != null &&  this.distribMinOrdersTotal != 0 ) || ( this.catalogMinOrdersTotal != null &&  this.catalogMinOrdersTotal != 0 ) );
 	}
 
 	public function hasAbsencesManagement() : Bool {
-
 		return this.absentDistribsMaxNb != null && this.absentDistribsMaxNb != 0 && this.absencesStartDate != null && this.absencesEndDate != null;
 	}
 
-
-	
-
-	
-
-	
 	/**
-	 * computes a 'percentage' fee or a 'margin' fee 
-	 * depending on the group settings
-	 * 
-	 * @param	basePrice
+	 * computes a 'percentage' fee
 	 */
 	public function computeFees(basePrice:Float) {
 		if (!hasPercentageOnOrders()) return 0.0;
@@ -401,7 +391,7 @@ class Catalog extends Object
 			"requiresOrdering" 				=> "Commande obligatoire à chaque distribution",
 			"distribMinOrdersTotal" 		=> "Minimum de commande par distribution (en €)",
 			"catalogMinOrdersTotal" 		=> "Provision minimum initiale (en €)",
-			"allowedOverspend" 				=> "Dépassement autorisé (en €)",
+			// "allowedOverspend" 				=> "Dépassement autorisé (en €)",
 			"absentDistribsMaxNb" 			=> "Nombre maximum d'absences",
 			"absencesStartDate" 			=> "Date de début de la période d'absences",
 			"absencesEndDate" 				=> "Date de fin de la période d'absences",

@@ -1,4 +1,5 @@
 package controller;
+import sugoi.form.elements.Html;
 import service.PaymentService;
 import sugoi.Web;
 import payment.Check;
@@ -93,7 +94,6 @@ class Subscriptions extends controller.Controller
 
 		var startDateDP = new form.CagetteDatePicker("startDate","Date de début", SubscriptionService.getNewSubscriptionStartDate( catalog ) );
 		view.startDate = startDateDP;
-
 		var endDateDP = new form.CagetteDatePicker("endDate","Date de fin",catalog.endDate);
 		view.endDate = endDateDP;
 
@@ -170,26 +170,23 @@ class Subscriptions extends controller.Controller
 			}
 
 		}
-	
-		view.title = 'Nouvelle souscription';
+			
 		view.edit = false;
 		view.canOrdersBeEdited = true;
 		view.c = catalog;
 		view.catalog = catalog;
-		view.showmember = true;
 		view.members = app.user.getGroup().getMembersFormElementData();
 		view.products = catalogProducts;
-		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( catalog ), function( distrib ) return Formatting.dDate( distrib.date ) );
 		view.subscriptionService = SubscriptionService;
 
 		view.nav.push( 'subscriptions' );
 	}
 
 	/**
-		an admin edits a subscription
+		An admin user edits a subscription
 	**/
 	@tpl("contractadmin/editsubscription.mtt")
-	public function doEdit( subscription : db.Subscription ) {
+	public function doEdit( subscription:db.Subscription ) {
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
 
@@ -202,6 +199,7 @@ class Subscriptions extends controller.Controller
 
 		var subscriptionService = new service.SubscriptionService();
 		subscriptionService.adminMode = true;
+		
 
 		if ( checkToken() ) {
 
@@ -210,6 +208,7 @@ class Subscriptions extends controller.Controller
 				endDateDP.populate();
 				var startDate = startDateDP.getValue();
 				var endDate = endDateDP.getValue();
+				subscription.lock();
 
 				if ( startDate == null || endDate == null ) {
 					throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous devez sélectionner une date de début et de fin pour la souscription." );
@@ -256,37 +255,22 @@ class Subscriptions extends controller.Controller
 					}						
 				}
 
-				//if variable or not paid : can update absences nb
-				var absencesNb = if ( subscription.catalog.type == Catalog.TYPE_VARORDER || !subscription.paid() ) {
-					Std.parseInt( app.params.get( 'absencesNb' ) );
-				}else{
-					null;
-				};
-
-				//if variable or paid : can update absences distribs
-				var absentDistribIds :Array<Int> = null;
-				 if ( subscription.catalog.type == Catalog.TYPE_VARORDER || subscription.paid() ) {
-					absentDistribIds = [];
-					for ( i in 0...subscription.getAbsencesNb() ) {					
-						absentDistribIds.push( Std.parseInt( app.params.get( 'absence' + i ) ) );
-					}					
-				}
-
-				subscriptionService.updateSubscription( subscription, startDate, endDate, ordersData, absentDistribIds, absencesNb );
+				subscriptionService.updateSubscription( subscription, startDate, endDate, ordersData);
+				
+				subscriptionService.setAbsencesNb( subscription, app.params.get('absencesNb').parseInt() );
+				subscription.update();
 
 			} catch( error : Error ) {				
 				throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, error.message );
 			}
 
-			throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La souscription pour ' + subscription.user.getName() + ' a bien été mise à jour.' );
+			throw Ok( '/contractAdmin/subscriptions/${subscription.catalog.id}', 'La souscription de ${subscription.user.getName()} a bien été mise à jour.' );
 		}
 
-		view.title = 'Modification de la souscription pour ' + subscription.user.getName();
 		view.edit = true;
 		// view.canOrdersBeEdited = canOrdersBeEdited;
 		view.c = subscription.catalog;
 		view.catalog = subscription.catalog;
-		view.showmember = false;
 		view.members = app.user.getGroup().getMembersFormElementData();
 		view.products = catalogProducts;
 		view.getProductOrder = function( productId : Int ) {		
@@ -297,32 +281,24 @@ class Subscriptions extends controller.Controller
 		view.subscription = subscription;
 		view.nav.push( 'subscriptions' );
 		view.subscriptionService = SubscriptionService;
-		view.absencesDistribs = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
+		// view.absencesDistribs = Lambda.map( SubscriptionService.getAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
 		view.canAbsencesBeEdited = SubscriptionService.canAbsencesBeEdited( subscription.catalog );
 		view.absentDistribs = subscription.getAbsentDistribs();
-		if ( subscription.catalog.type == Catalog.TYPE_VARORDER || !subscription.paid() ) {
-			view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
-		}
+		// if ( subscription.catalog.type == Catalog.TYPE_VARORDER || !subscription.paid() ) {
+		// 	view.absencesDistribDates = Lambda.map( SubscriptionService.getAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
+		// }
 
 	}
 
 
 	public function doMarkAsPaid( subscription : db.Subscription ) {
-
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
-
 		try {
-
 			SubscriptionService.markAsPaid( subscription );
-
-		}
-		catch( error : Error ) {
-
+		} catch( error : Error ) {
 			throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, error.message );
 		}
-
 		throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La souscription de ' + subscription.user.getName() + ' a bien été validée.' );
-		
 	}
 
 	@admin
@@ -390,52 +366,64 @@ class Subscriptions extends controller.Controller
 	}
 
 
-
+	/**
+		user can edit his absences.
+		The user can't change his absence number.
+	**/
 	@logged @tpl("form.mtt")
-	function doAbsences( subscription : db.Subscription, ?args: { returnUrl: String } ) {
+	function doAbsences( subscription:db.Subscription, ?args:{returnUrl:String} ) {
 
 		if( subscription.catalog.group.hasShopMode() ) throw Redirect( "/contract/view/" + subscription.catalog.id );
+		if ( !app.user.canManageContract(subscription.catalog) && !(app.user.id==subscription.user.id) ){
+			throw Error( '/', t._('Access forbidden') );
+		} 
 
 		var subService = new SubscriptionService();
-
 		if ( args != null && args.returnUrl != null ) {
 			App.current.session.data.absencesReturnUrl = args.returnUrl;
 		}
-		
-		var absencesNb = subscription.getAbsencesNb();
-
-		if( !SubscriptionService.canAbsencesBeEdited( subscription.catalog ) || absencesNb == 0 ) {
+		if( !SubscriptionService.canAbsencesBeEdited( subscription.catalog ) ) {
 			throw Redirect( App.current.session.data.absencesReturnUrl );
 		}
 		
-		view.subscription = subscription;
-		view.subscriptionService = SubscriptionService;
-		view.catalog = subscription.catalog;
-		view.absentDistribsMaxNb = SubscriptionService.getAbsentDistribsMaxNb( subscription.catalog, subscription );
-		view.absencesDistribs = SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription );
-
-		var form = new sugoi.form.Form("subscriptionAbsences");
-		var absencesDistribs = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
-		var absentDistribIds = subscription.getAbsentDistribIds();
-		for ( i in 0...absencesNb ) {
-			form.addElement(new sugoi.form.elements.IntSelect( "absentDistrib" + i, "Je ne pourrai pas venir le :", absencesDistribs.array(), absentDistribIds[i], true ));
+		var absenceDistribs = subscription.getAbsentDistribs();
+		var possibleAbsences = subscription.getPossibleAbsentDistribs();
+		var now = Date.now().getTime();
+		possibleAbsences = possibleAbsences.filter(d -> d.orderEndDate.getTime() > now);
+		var lockedDistribs = absenceDistribs.filter( d -> d.orderEndDate.getTime() < now);	//absences that are not editable anymore
+		
+		var form = new sugoi.form.Form("subscriptionAbsences");		
+		var possibleAbsencesData = possibleAbsences.map( d -> { label : Formatting.hDate(d.date,true), value : d.id } );
+		for ( i in 0...subscription.getAbsencesNb() ) {
+			if( lockedDistribs.has(absenceDistribs[i]) ){
+				//absence cannot be modified anymore, too late !
+				form.addElement(new sugoi.form.elements.Html('absenceLocked',Formatting.dDate(absenceDistribs[i].date)+" (trop tard pour changer)","Je serai absent(e) le :"));
+			}else{
+				form.addElement(new sugoi.form.elements.IntSelect( "absentDistrib" + i, "Je serai absent(e) le :", possibleAbsencesData, absenceDistribs[i].id, true ));
+			}			
 		}
-		view.form = form;
 		
 		if ( form.checkToken() ) {
 
 			try {
-				var absentDistribIds = new Array<Int>();
-				for ( i in 0...absencesNb ) {				
-					absentDistribIds.push( Std.parseInt( form.getValueOf( 'absentDistrib' + i ) ) );
+				var absentDistribIds = lockedDistribs.map(d->d.id);
+				for ( i in 0...absenceDistribs.length ) {				
+					if(form.getElement('absentDistrib' + i)!=null){
+						absentDistribIds.push( form.getValueOf( 'absentDistrib' + i ) );	
+					}					
 				}
 				subService.updateAbsencesDates( subscription, absentDistribIds );				
-			} catch( error : Error ) {
+			} catch( error:Error ) {
 				throw Error( '/subscriptions/absences/' + subscription.id, error.message );
 			}
 
-			throw Ok( App.current.session.data.absencesReturnUrl, 'Vos dates d\'absences ont bien été mises à jour.' );
+			throw Ok( App.current.session.data.absencesReturnUrl, 'Les dates d\'absences ont bien été mises à jour.' );
 		}
+
+		view.form = form;
+		view.text = '<b>${subscription.getAbsencesNb()}</b> absences autorisées dans la période du <b>${DateTools.format( subscription.catalog.absencesStartDate, "%d/%m/%Y" )}</b> au <b>${DateTools.format( subscription.catalog.absencesEndDate, "%d/%m/%Y")}</b>';
+		view.title = "Absences de "+subscription.user.getName()+" pour le contrat \""+subscription.catalog.name+"\"";
+		
 	}
 	
 	@admin
