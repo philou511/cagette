@@ -178,7 +178,7 @@
 									::end::
 								</td>
 								<td class="::class::" style="vertical-align: middle;">
-									du ::dDate( subscriptionService.getNewSubscriptionStartDate(catalog) )::<br/>
+									du ::dDate(subscriptionService.getNewSubscriptionStartDate(catalog))::<br/>
 									au ::dDate(catalog.endDate)::
 								</td>
 								<td style="vertical-align: middle;">
