@@ -54,13 +54,13 @@ class UserGroup extends Object
 		return ua;
 	}
 
-	public function getRights():JsonRights{
-		if(this.rights2==null) return [];
-		// try{
+	public function getRights():JsonRights{		
+		try{
+			if(this.rights2==null) return [];
 			return haxe.Json.parse(this.rights2);
-		/*}catch(e:Dynamic){
+		}catch(e:Dynamic){
 			return [];
-		}*/		
+		}
 	}
 	
 	/**

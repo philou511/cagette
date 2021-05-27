@@ -94,12 +94,8 @@ class Vendor extends Controller
 			var image = request.get("image");
 			if (image != null && image.length > 0) {
 				var img : sugoi.db.File = null;
-				if ( Sys.systemName() == "Windows") {
-					img = sugoi.db.File.create(request.get("image"), request.get("image_filename"));
-				}else {
-					img = sugoi.tools.UploadedImage.resizeAndStore(request.get("image"), request.get("image_filename"), 400, 400);	
-				}
-				
+				img = sugoi.tools.UploadedImage.resizeAndStore(request.get("image"), request.get("image_filename"), 400, 400);	
+								
 				vendor.lock();				
 				if (vendor.image != null) {
 					//efface ancienne
