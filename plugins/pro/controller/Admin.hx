@@ -1608,48 +1608,34 @@ class Admin extends controller.Controller {
 
 		print("</body></html>");
 	}*/
-	@admin
-	public function doSyncDistribTimeSlots() {
-		var distributions = MultiDistrib.manager.all();
+	public function doTimeSlotsStats() {
+		var distribs = db.MultiDistrib.manager.search($orderEndDate > Date.fromString("2021-01-01")
+			&& $orderEndDate < Date.fromString("2021-06-01")
+			&& $slots != null);
 
-		var output = [];
+		var nbDefaultSM = 0;
+		var nnSoloSM = 0;
+		var nbInvalid = 0;
+		var invalids = [];
+		for (distrib in distribs) {
+			var slotsMode = distrib.slotsMode;
 
-		for (distribution in distributions) {
-			var inNeedUsers:Array<Dynamic> = [];
-			var it = distribution.inNeedUserIds.keyValueIterator();
-			while (it.hasNext()) {
-				var v = it.next();
-				inNeedUsers.push({
-					userId: v.key,
-					permissions: v.value,
-				});
+			if (slotsMode == "solo-only") {
+				nnSoloSM += 1;
+			} else if (slotsMode == "default") {
+				nbDefaultSM += 1;
+			} else {
+				nbInvalid += 1;
+				invalids.push(slotsMode);
 			}
-
-			// var voluntaryUsersText = '{';
-			var voluntaryUsers:Array<Dynamic> = [];
-			var it = distribution.voluntaryUsers.keyValueIterator();
-			while (it.hasNext()) {
-				var v = it.next();
-				voluntaryUsers.push({
-					userId: v.key,
-					volunteerForUserIds: v.value
-				});
-			}
-
-			var timeSlots:Dynamic = {
-				slotMode: distribution.slotsMode,
-				slots: distribution.slots,
-				inNeedUsers: inNeedUsers,
-				voluntaryUsers: voluntaryUsers,
-			};
-
-			distribution.lock();
-			distribution.timeSlots = Json.stringify(timeSlots);
-			distribution.update();
-
-			output.push(timeSlots);
 		}
 
-		json(output);
+		json({
+			"nb Distribs": distribs.length,
+			nbDefaultSM: nbDefaultSM,
+			nnSoloSM: nnSoloSM,
+			nbInvalid: nbInvalid,
+			invalids: invalids
+		});
 	}
 }

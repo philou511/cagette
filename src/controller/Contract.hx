@@ -318,40 +318,15 @@ class Contract extends Controller
 
 		var subscriptionService = new SubscriptionService();
 		var currentOrComingSubscription = SubscriptionService.getCurrentOrComingSubscription( app.user, catalog );
-		var userOrders = new Array< { distrib : db.Distribution, ordersProducts : Array< { order : db.UserOrder, product : db.Product }> } >();
+		var userOrders = new Array<{distrib:db.Distribution, ordersProducts:Array<{order:db.UserOrder, product:db.Product }>, ?isAbsence:Bool}>();
 		var products = catalog.getProducts();
 		
 		var hasComingOpenDistrib = false;
 
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 
-			view.shortDate = function( d : Date ) {
-				if ( d == null ) return "Pas de date";
-				var date = Formatting.getDate( d );
-				if ( date.m == 'Janvier' || date.m == 'Avril' || date.m == 'Octobre' || date.m == 'Novembre' ) {
-					return date.dow + "<br/>" + date.d + " " + date.m.substr(0,3) + ".<br/>" + date.y;
-				} else if ( date.m == 'Février' || date.m == 'Juillet' || date.m == 'Septembre' || date.m == 'Décembre' ) {
-					return date.dow + "<br/>" + date.d + " " + date.m.substr(0,4) + ".<br/>" + date.y;
-				}
-				return date.dow + "<br/>" + date.d + " " + date.m + "<br/>" + date.y;
-			}
-			
-			view.closingDate  = function( d : Date ) {
-				if ( d == null ) return "Pas de date";
-				var date = Formatting.getDate( d );
-				var closingDate = '<div class="closingDate">Fermeture<br/>des commandes : <br/>';
-				if ( date.m == 'Janvier' || date.m == 'Avril' || date.m == 'Octobre' || date.m == 'Novembre' ) {
-					closingDate += date.dow + " " + date.d + " " + date.m.substr(0,3) + ".";
-				} else if ( date.m == 'Février' || date.m == 'Juillet' || date.m == 'Septembre' || date.m == 'Décembre' ) {
-					closingDate += date.dow + " " + date.d + " " + date.m.substr(0,4) + ".";
-				} else {
-					closingDate += date.dow + " " + date.d + " " + date.m;
-				}
-				closingDate += "<br/>à " + StringTools.lpad( Std.string( d.getHours() ), "0", 2 ) + ":" + StringTools.lpad( Std.string( d.getMinutes() ), "0", 2 );
-				closingDate += "</div>" ;
-				return closingDate;
-			}
-			
+			view.shortDate = Formatting.csaShortDate;
+			view.closingDate  = Formatting.csaClosingDate;
 			view.json = function(d) return haxe.Json.stringify(d);
 
 			view.multiWeightQuantity  = function( order : db.UserOrder ) {
@@ -403,7 +378,7 @@ class Contract extends Controller
 					data.push( orderProduct );
 				}
 
-				userOrders.push( { distrib : distrib, ordersProducts : data } );
+				userOrders.push( { distrib:distrib, ordersProducts:data, isAbsence:false } );
 			}
 			
 		} else {

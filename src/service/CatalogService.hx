@@ -176,7 +176,7 @@ class CatalogService{
 					throw new Error("Si vous activez la commande obligatoire, vous devez définir le montant minimum de commande par distribution.");
 				}
 
-				if( form.getValueOf("requiresOrdering")==true && form.getValueOf('absentDistribsMaxNb')!=null){
+				if( form.getValueOf("requiresOrdering")==false && form.getValueOf('absentDistribsMaxNb')!=null){
 					throw new Error("Si vous n'activez pas la commande obligatoire, la gestion des absences n'est pas nécéssaire, laissez le champs 'Nombre maximum d'absences' vide.");
 				}
 
