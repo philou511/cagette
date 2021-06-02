@@ -255,9 +255,9 @@ class Cron extends Controller
 			task.log('Get distribs whith order ending between ${range.from} and ${range.to}');
 			var distribs = MultiDistrib.manager.search($orderEndDate >= range.from && $orderEndDate < range.to && $slots!=null ,true);
 			for( d in distribs){
-				if(d.slots==null) continue; //d.slots can be a 'serialized null'
-				var s = new service.TimeSlotsService(d);
-				var slots = s.resolveSlots();
+				if(d.timeSlots==null) continue; //d.slots can be a 'serialized null'
+				service.BridgeService.call("/distributions/" + d.id + "/resolve-time-slots");
+
 				var group = d.getGroup();
 				task.log('Resolve slots for '+group.name);
 
@@ -600,9 +600,10 @@ class Cron extends Controller
 						
 						//time slots
 						var status = null;
-						if(u.distrib.slots!=null){
-							status = new service.TimeSlotsService(u.distrib).userStatus(u.user.id);
-						} 
+						// TODO
+						// if(u.distrib.slots!=null){
+						// 	status = new service.TimeSlotsService(u.distrib).userStatus(u.user.id);
+						// } 
 
 						m.setHtmlBody( app.processTemplate("mail/orderNotif.mtt", { text:text,group:group,multiDistrib:u.distrib,user:u.user,status:status,hHour:Formatting.hHour } ) );
 						App.sendMail(m , u.distrib.group);	

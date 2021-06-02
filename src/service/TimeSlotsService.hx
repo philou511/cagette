@@ -436,11 +436,7 @@ typedef Slot = {
 	end:Date
 }
 
-// typedef SlotResolver = {
-// 	id: Int,
-// 	selectedUserIds: Array<Int>,
-//   potentialUserIds: Array<Int>,
-// }
+
 
 /**
  * MIGRATION IN PROGRESS
