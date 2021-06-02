@@ -293,9 +293,9 @@ $$browserDetection()
 		::if(d.timeSlots!=null && d.userHasOrders(user,null))::
 
 
-		::set tsService2 = timeSlotService2(d)::
-		::set status = tsService2.userStatus(user.id)::
-		::set slots = tsService2.getSlots()::
+		::set tsService = timeSlotService(d)::
+		::set status = tsService.userStatus(user.id)::
+		::set slots = tsService.getSlots()::
 
 
 		<div id="distrib-time-slot::d.id::"></div>
@@ -339,7 +339,7 @@ $$browserDetection()
 
 						::foreach slotId status.registeredSlotIds::
 						<b>TODO PARSE DATE -- ::slotId::</b><br />
-						<!-- <b>de ::hHour(tsService2.getSlotById(slotId).start):: à ::hHour(tsService2.getSlotById(slotId).end)::.</b><br/> -->
+						<!-- <b>de ::hHour(tsService.getSlotById(slotId).start):: à ::hHour(tsService.getSlotById(slotId).end)::.</b><br/> -->
 						::end::
 					</p>
 					<p>

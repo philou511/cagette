@@ -17,9 +17,6 @@ enum Place {
 	ConfirmOrder(tmpBasket:db.TmpBasket);
 }
 
-typedef FlowSlot = {
-	var registeredUserIds:Array<Int>;
-};
 
 /**
 	Order flow management.
@@ -52,30 +49,15 @@ class OrderFlowService {
 				var distrib = tmpBasket.multiDistrib;
 
 				if (distrib.timeSlots != null) {
-					var timeSlots:Array<FlowSlot> = Json.parse(distrib.timeSlots);
+					var ts = new TimeSlotsService2(distrib);
+					var status = ts.userStatus(tmpBasket.user.id);
+		
 
-					var registered = Lambda.fold(timeSlots, function(slot, acc) {
-						if (acc == true)
-							return acc;
-						if (slot.registeredUserIds.indexOf(tmpBasket.user.id) != -1) {
-							return true;
-						}
-						return acc;
-					}, false);
-
-					if (!registered) {
+					if (!status.registered) {
 						return TimeSlotSelection(tmpBasket);
 					}
 				}
 
-				// if (distrib.slots != null) {
-				// 	// have to select timeslot
-				// 	var ts = new TimeSlotsService(distrib);
-				// 	var status = ts.userStatus(tmpBasket.user.id);
-				// 	if (!status.registered) {
-				// 		return TimeSlotSelection(tmpBasket);
-				// 	}
-				// }
 
 				return getNextPlace(TimeSlotSelection(tmpBasket));
 
