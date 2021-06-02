@@ -1,15 +1,21 @@
 ::use 'design.mtt'::
 
 
-	<div class="col-md-12">
-        <h2>Créneaux horaires pour la distribution du ::hDate(distribution.distribStartDate)::</h2>
-		<div id="users-slots-wrapper::distribution.id::"></div>
-        <script>_NeolithicViewsGenerator.distribSlotsResolver("users-slots-wrapper::distribution.id::", {
-            distribId: ::distribution.id::
+<div class="col-md-12">
+    <h2>Créneaux horaires pour la distribution du ::hDate(distribution.distribStartDate)::</h2>
+    <div id="users-slots-wrapper::distribution.id::" style="margin-bottom: 32px;"></div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            neo.createNeoModule("users-slots-wrapper::distribution.id::", "resolvedTimeSlots", {
+                distribId: ::distribution.id::
+
+            });
         });
-        </script>
-		
-		
-	</div>
+    </script>
+
+
+</div>
 
 ::end::

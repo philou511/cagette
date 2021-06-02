@@ -1,25 +1,28 @@
-package service; 
+package service;
+
 import haxe.Json;
 import haxe.DynamicAccess;
 
-class TimeSlotsService{
+class TimeSlotsService {
+	var distribution:db.MultiDistrib;
 
-    var distribution:db.MultiDistrib;
-
-    public function new(d:db.MultiDistrib){
-        distribution = d;
+	public function new(d:db.MultiDistrib) {
+		distribution = d;
 	}
 
-	public function isResolved(){
-
-		for( s in distribution.slots ){
-			if(s.selectedUserIds.length>0) return true;
+	public function isResolved() {
+		for (s in distribution.slots) {
+			if (s.selectedUserIds.length > 0)
+				return true;
 		}
 
 		return false;
 	}
-	
-    private function resolveUserMonoSlot(s: Array<SlotResolver>): Array<SlotResolver> {
+
+	/**
+	 * MIGRATION IN PROGRESS
+	 */
+	private function resolveUserMonoSlot(s:Array<SlotResolver>):Array<SlotResolver> {
 		var slots = s.copy();
 		var potentialUserMap = this.getPotentialUserMap(slots);
 		var userIdResolved = new Array<Int>();
@@ -30,14 +33,18 @@ class TimeSlotsService{
 			if (v.value.length == 1 && userIdResolved.indexOf(v.key) == -1) {
 				userIdResolved.push(v.key);
 				var slot = slots.find(slot -> slot.id == v.value[0]);
-				if (slot != null) slot.selectUser(v.key);
+				if (slot != null)
+					slot.selectUser(v.key);
 			}
 		}
 		return slots;
 	}
 
-    /** */
-	private function getPotentialUserMap(slots: Array<SlotResolver>) {
+	/** */
+	/**
+	 * MIGRATION IN PROGRESS
+	 */
+	private function getPotentialUserMap(slots:Array<SlotResolver>) {
 		var userMap = new Map<Int, Array<Int>>();
 
 		for (i in 0...slots.length) {
@@ -55,15 +62,20 @@ class TimeSlotsService{
 		return userMap;
 	}
 
-    private function resolve(s: Array<SlotResolver>) {
+	/**
+	 * MIGRATION IN PROGRESS
+	 */
+	private function resolve(s:Array<SlotResolver>) {
 		var slots = s.copy();
 		var workingSlots = slots.filter(slot -> !slot.isResolved());
-		if (workingSlots.length == 0) return slots;
+		if (workingSlots.length == 0)
+			return slots;
 
 		var potentialUserMap = this.getPotentialUserMap(slots);
-		var initFold: Null<SlotResolver> = null;
+		var initFold:Null<SlotResolver> = null;
 		var workingSlot = Lambda.fold(workingSlots, function(slot, acc) {
-			if (acc == null) return slot;
+			if (acc == null)
+				return slot;
 
 			if (slot.selectedUserIds.length < acc.selectedUserIds.length) {
 				return slot;
@@ -76,18 +88,18 @@ class TimeSlotsService{
 				var accUserWeight = Lambda.fold(acc.potentialUserIds, function(userId, accWeight) {
 					return accWeight + potentialUserMap.get(userId).length;
 				}, 0);
-				if (slotUserWeight < accUserWeight) return slot;
+				if (slotUserWeight < accUserWeight)
+					return slot;
 			}
-
 
 			// if (slot.selectedUserIds.length < acc.selectedUserIds.length) {
 			// 	if (slot.potentialUserIds.length < acc.potentialUserIds.length) {
-					// var slotUserWeight = Lambda.fold(slot.potentialUserIds, function(userId, accWeight) {
-					// 	return accWeight + potentialUserMap.get(userId).length;
-					// }, 0);
-					// var accUserWeight = Lambda.fold(acc.potentialUserIds, function(userId, accWeight) {
-					// 	return accWeight + potentialUserMap.get(userId).length;
-					// }, 0);
+			// var slotUserWeight = Lambda.fold(slot.potentialUserIds, function(userId, accWeight) {
+			// 	return accWeight + potentialUserMap.get(userId).length;
+			// }, 0);
+			// var accUserWeight = Lambda.fold(acc.potentialUserIds, function(userId, accWeight) {
+			// 	return accWeight + potentialUserMap.get(userId).length;
+			// }, 0);
 			// 		if (slotUserWeight < accUserWeight) return slot;
 			// 	}
 			// }
@@ -114,22 +126,24 @@ class TimeSlotsService{
 		}));
 	}
 
+	/**
+	 * MIGRATION IN PROGRESS
+	 */
 	public function resolveSlots() {
 		distribution.lock();
 		// distrib slots must be activated
-		if (distribution.slots == null) return null;
+		if (distribution.slots == null)
+			return null;
 
 		var userOrders = distribution.getOrders();
 
 		// on récupère les slots resolvers
-		var slots = distribution.slots.map(slot -> 
-			return new SlotResolver(slot.id, slot.registeredUserIds.filter(userId -> {
-				var founded = userOrders.find(uo -> {
-					return  uo.user.id == userId;
-				});
-				return founded != null;
-			}))
-		);
+		var slots = distribution.slots.map(slot -> return new SlotResolver(slot.id, slot.registeredUserIds.filter(userId -> {
+			var founded = userOrders.find(uo -> {
+				return uo.user.id == userId;
+			});
+			return founded != null;
+		})));
 
 		// parse
 		var slotResolvers = resolve(resolveUserMonoSlot(slots));
@@ -148,14 +162,11 @@ class TimeSlotsService{
 		var notInSoltUserOrderIds = distribution.getOrders()
 			.filter(userOrder -> registeredAndInNeedUserIds.indexOf(userOrder.user.id) == -1)
 			.map(userOrder -> userOrder.user.id);
-		
 
 		// RESOLVE 2
-		slotResolvers = resolve(slotResolvers.map(resolved -> 
-			new SlotResolver(resolved.id, notInSoltUserOrderIds, resolved.selectedUserIds)
-		));
+		slotResolvers = resolve(slotResolvers.map(resolved -> new SlotResolver(resolved.id, notInSoltUserOrderIds, resolved.selectedUserIds)));
 
-		distribution.slots = distribution.slots.map(function (slot) {
+		distribution.slots = distribution.slots.map(function(slot) {
 			var resolver = slotResolvers.find(r -> r.id == slot.id);
 			if (resolver != null) {
 				slot.selectedUserIds = resolver.selectedUserIds;
@@ -168,7 +179,10 @@ class TimeSlotsService{
 		return distribution.slots;
 	}
 
-	public function userStatus(userId: Int) {
+	/**
+	 * MIGRATION IN PROGRESS
+	 */
+	public function userStatus(userId:Int) {
 		var res = {
 			registered: this.userIsAlreadyAdded(userId),
 			isResolved: false,
@@ -193,7 +207,8 @@ class TimeSlotsService{
 				res.selectedSlotId = slot.id;
 			}
 			if (res.registered == true && slot.registeredUserIds.indexOf(userId) != -1) {
-				if (res.registeredSlotIds == null) res.registeredSlotIds = new Array<Int>();
+				if (res.registeredSlotIds == null)
+					res.registeredSlotIds = new Array<Int>();
 				res.registeredSlotIds.push(slot.id);
 			}
 			return true;
@@ -207,7 +222,8 @@ class TimeSlotsService{
 				var next = it.next();
 				if (next.value.indexOf(userId) != -1) {
 					founded = true;
-					if (res.voluntaryOfId == null) res.voluntaryOfId = new Array<Int>();
+					if (res.voluntaryOfId == null)
+						res.voluntaryOfId = new Array<Int>();
 					res.voluntaryOfId.push(next.key);
 					var user = db.User.manager.select($id == next.key);
 					res.voluntaryOf = {
@@ -222,7 +238,7 @@ class TimeSlotsService{
 			if (distribution.voluntaryUsers.exists(userId)) {
 				var inNeedUserId = distribution.voluntaryUsers.get(userId);
 				var users = db.User.manager.search($id in inNeedUserId, false).array().map(user -> {
-					var data: Dynamic =  {
+					var data:Dynamic = {
 						id: user.id,
 						firstName: user.firstName,
 						lastName: user.lastName,
@@ -250,27 +266,38 @@ class TimeSlotsService{
 		return res;
 	}
 
-	public function userIsAlreadyAdded(userId: Int) {
-		if (distribution.slots == null) return false;
+	/**
+	 * MIGRATION IN PROGRESS
+	 */
+	public function userIsAlreadyAdded(userId:Int) {
+		if (distribution.slots == null)
+			return false;
 
 		var founded = Lambda.fold(distribution.slots, function(slot, acc) {
-			if (acc == true) return acc;
+			if (acc == true)
+				return acc;
 			if (slot.registeredUserIds.indexOf(userId) != -1) {
 				return true;
 			}
 			return acc;
 		}, false);
 
-		if (founded == true) return true;
+		if (founded == true)
+			return true;
 
-		if (distribution.inNeedUserIds == null) return false;
+		if (distribution.inNeedUserIds == null)
+			return false;
 
 		return distribution.inNeedUserIds.exists(userId);
 	}
-    
-    /*** */
-	public function generateSlots(mode: String) {
-		if (distribution.slots != null) return;
+
+	/*** */
+	/**
+	 * MIGRATION IN PROGRESS
+	 */
+	public function generateSlots(mode:String) {
+		if (distribution.slots != null)
+			return;
 
 		distribution.lock();
 
@@ -292,44 +319,62 @@ class TimeSlotsService{
 
 		distribution.voluntaryUsers = new Map<Int, Array<Int>>();
 		distribution.inNeedUserIds = new Map<Int, Array<String>>();
-		
+
 		distribution.update();
 	}
 
-	public function registerVoluntary(userId: Int, forUserIds: Array<Int>) {
-		if (distribution.slots == null) return false;
-		if (distribution.slotsMode == "solo-only") return false;
-		if (!userIsAlreadyAdded(userId)) return false;
-		if (distribution.voluntaryUsers == null) return false;
+	/**
+	 * MIGRATION IN PROGRESS
+	 */
+	public function registerVoluntary(userId:Int, forUserIds:Array<Int>) {
+		if (distribution.slots == null)
+			return false;
+		if (distribution.slotsMode == "solo-only")
+			return false;
+		if (!userIsAlreadyAdded(userId))
+			return false;
+		if (distribution.voluntaryUsers == null)
+			return false;
 
 		distribution.lock();
-		if (distribution.voluntaryUsers.exists(userId)) return false;
+		if (distribution.voluntaryUsers.exists(userId))
+			return false;
 		distribution.voluntaryUsers.set(userId, forUserIds);
 		distribution.update();
 
 		return true;
 	}
 
-	public function updateVoluntary(userId: Int, forUserIds: Array<Int>) {
-		if (distribution.slots == null) return false;
-		if (distribution.slotsMode == "solo-only") return false;
-		if (!distribution.voluntaryUsers.exists(userId)) return false;
+	/**
+	 * MIGRATION IN PROGRESS
+	 */
+	public function updateVoluntary(userId:Int, forUserIds:Array<Int>) {
+		if (distribution.slots == null)
+			return false;
+		if (distribution.slotsMode == "solo-only")
+			return false;
+		if (!distribution.voluntaryUsers.exists(userId))
+			return false;
 
 		distribution.lock();
-		var oldForUserIds =  distribution.voluntaryUsers.get(userId)
-			.filter(ui -> forUserIds.indexOf(ui) == -1);
+		var oldForUserIds = distribution.voluntaryUsers.get(userId).filter(ui -> forUserIds.indexOf(ui) == -1);
 		distribution.voluntaryUsers.set(userId, oldForUserIds.concat(forUserIds));
 		distribution.update();
 
 		return true;
 	}
 
-	public function registerInNeedUser(userId: Int, allowed: Array<String>) {
-		if (distribution.slots == null) return false;
-		if (distribution.slotsMode == "solo-only") return false;
-		if (distribution.inNeedUserIds == null) return false;
-		if (userIsAlreadyAdded(userId)) return false;
-		if (distribution.inNeedUserIds.exists(userId)) return false;
+	public function registerInNeedUser(userId:Int, allowed:Array<String>) {
+		if (distribution.slots == null)
+			return false;
+		if (distribution.slotsMode == "solo-only")
+			return false;
+		if (distribution.inNeedUserIds == null)
+			return false;
+		if (userIsAlreadyAdded(userId))
+			return false;
+		if (distribution.inNeedUserIds.exists(userId))
+			return false;
 
 		distribution.lock();
 		distribution.inNeedUserIds.set(userId, allowed);
@@ -338,11 +383,13 @@ class TimeSlotsService{
 	}
 
 	/**
-   * MIGRATION IN PROGRESS
-   */
-	public function registerUserToSlot(userId: Int, slotIds: Array<Int>) {
-		if (distribution.slots == null) return false;
-		if (userIsAlreadyAdded(userId)) return false;
+	 * MIGRATION IN PROGRESS
+	 */
+	public function registerUserToSlot(userId:Int, slotIds:Array<Int>) {
+		if (distribution.slots == null)
+			return false;
+		if (userIsAlreadyAdded(userId))
+			return false;
 
 		distribution.lock();
 		distribution.slots = distribution.slots.map(slot -> {
@@ -355,9 +402,14 @@ class TimeSlotsService{
 		return true;
 	}
 
-	public function updateUserToSlot(userId: Int, slotIds: Array<Int>) {
-		if (distribution.slots == null) return false;
-		if (!userIsAlreadyAdded(userId)) return false;
+	/**
+	 * MIGRATION IN PROGRESS
+	 */
+	public function updateUserToSlot(userId:Int, slotIds:Array<Int>) {
+		if (distribution.slots == null)
+			return false;
+		if (!userIsAlreadyAdded(userId))
+			return false;
 
 		distribution.lock();
 		distribution.slots = distribution.slots.map(slot -> {
@@ -373,21 +425,15 @@ class TimeSlotsService{
 		distribution.update();
 		return true;
 	}
-
-	
-
-
-
 }
 
-
 typedef Slot = {
-	id: Int,
-  distribId: Int,
-  selectedUserIds: Array<Int>,
-	registeredUserIds: Array<Int>,
-	start: Date,
-  end: Date
+	id:Int,
+	distribId:Int,
+	selectedUserIds:Array<Int>,
+	registeredUserIds:Array<Int>,
+	start:Date,
+	end:Date
 }
 
 // typedef SlotResolver = {
@@ -396,18 +442,21 @@ typedef Slot = {
 //   potentialUserIds: Array<Int>,
 // }
 
+/**
+ * MIGRATION IN PROGRESS
+ */
 class SlotResolver {
-	public var id(default, null): Int;
-	public var potentialUserIds(default, null): Array<Int>;
-	public var selectedUserIds(default, null): Array<Int>;
+	public var id(default, null):Int;
+	public var potentialUserIds(default, null):Array<Int>;
+	public var selectedUserIds(default, null):Array<Int>;
 
-	public function new (id: Int, potentialUserIds: Array<Int>, ?selectedUserIds: Array<Int>) {
+	public function new(id:Int, potentialUserIds:Array<Int>, ?selectedUserIds:Array<Int>) {
 		this.id = id;
 		this.potentialUserIds = potentialUserIds;
 		this.selectedUserIds = (selectedUserIds == null) ? new Array<Int>() : selectedUserIds;
 	}
 
-	public function selectUser(userId: Int) {
+	public function selectUser(userId:Int) {
 		var founded = false;
 		this.potentialUserIds = this.potentialUserIds.filter(id -> {
 			if (userId == id) {
@@ -416,11 +465,12 @@ class SlotResolver {
 			}
 			return true;
 		});
-		if (founded == null) return;
+		if (founded == null)
+			return;
 		this.selectedUserIds.push(userId);
 	}
 
-	public function removePotentialUser(userId: Int) {
+	public function removePotentialUser(userId:Int) {
 		this.potentialUserIds = this.potentialUserIds.filter(id -> id != userId);
 	}
 
