@@ -30,7 +30,6 @@
                         <th>Obligation de commander à chaque distribution</th>
                         <th>Minimum de commande par distribution</th>
                         <th>Minimum de commandes sur la durée du contrat</th>
-                        <th>Dépassement autorisé</th>                        
                     </tr>
                     <tr style="text-align: center;">
                         <td style="vertical-align: middle;">
@@ -54,13 +53,7 @@
                                 Aucun
                             ::end::
                         </td>
-                        <td style="vertical-align: middle;">
-                            ::if catalog.allowedOverspend != null::
-                                ::catalog.allowedOverspend::&nbsp;::currency()::
-                            ::else::
-                                Aucun
-                            ::end::
-                        </td>
+                        
                     </tr>
                 </table>
 			</div>
@@ -174,7 +167,15 @@
                                                 <a href="/contractAdmin/subscriptions/edit/::subscription.id::">
                                                     <i class="icon icon-edit"></i> ::_("Edit")::
                                                 </a>
-                                            </li>                                    
+                                            </li>
+                                            
+                                            ::if(catalog.hasAbsencesManagement())::
+                                            <li>
+                                                <a href="/subscriptions/absences/::subscription.id::?returnUrl=/contractAdmin/subscriptions/::catalog.id::">
+                                                    <i class="icon icon-vacation"></i> Absences
+                                                </a>
+                                            </li>
+                                            ::end::
                                             
                                             ::if(hasPayments)::
                                             <li>

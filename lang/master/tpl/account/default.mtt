@@ -129,7 +129,7 @@
 									<th class="text-center col-md-2">Période d'engagement</th>
 									::if subscription.getAbsencesNb() != 0 ::
 										<th class="text-center col-md-1">Nombre max de distributions</th>
-										<th class="text-center col-md-1">Nombre d'absences</th>
+										<th class="text-center col-md-1">Jours d'absence</th>
 									::end::
 									<th class="text-center col-md-2">Nombre de distributions</th>
 									<th class="text-center col-md-1">Total commandé</th>
@@ -172,10 +172,10 @@
 											::subscriptionService.getSubscriptionDistribsNb(subscription, null, false)::
 										</td>
 										<td style="vertical-align: middle;">
-											&nbsp;&nbsp;::absencesNb::
-											<a ::cond subscriptionService.canAbsencesBeEdited( catalog ):: href="/subscriptions/absences/::subscription.id::?returnUrl=/account" class="btn btn-default btn-sm" style="border-style: none;">
-												<i class="icon icon-edit"></i>
-											</a>
+											::absencesNb::<br/>
+											::if(subscriptionService.canAbsencesBeEdited( catalog ))::
+												$$edit(Modifier,/subscriptions/absences/::subscription.id::?returnUrl=/account)
+											::end::
 										</td>
 									::end::
 									<td style="vertical-align: middle;">

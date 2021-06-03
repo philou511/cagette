@@ -532,8 +532,8 @@ class ContractAdmin extends Controller
 
 				nc.orderEndHoursBeforeDistrib = catalog.orderEndHoursBeforeDistrib;
 				nc.absentDistribsMaxNb = catalog.absentDistribsMaxNb;
-				nc.absencesStartDate = catalog.absencesStartDate;
-				nc.absencesEndDate = catalog.absencesEndDate;
+				// nc.absencesStartDate = catalog.absencesStartDate;
+				// nc.absencesEndDate = catalog.absencesEndDate;
 
 				if ( nc.type == Catalog.TYPE_VARORDER ) {
 
@@ -785,5 +785,8 @@ class ContractAdmin extends Controller
 		view.md = md;
 		view.tmpBaskets = db.TmpBasket.manager.search($multiDistrib == md,false);
 	}
+
+
+	
 	
 }
