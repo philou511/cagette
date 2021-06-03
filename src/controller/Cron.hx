@@ -364,7 +364,7 @@ class Cron extends Controller
 
 		app.event(DailyCron(this.now));
 
-		var task = new TransactionWrappedTask("Warn CSA members about absences dates to define, 7 days before deadline");
+		/*var task = new TransactionWrappedTask("Warn CSA members about absences dates to define, 7 days before deadline");
 		task.setTask(function(){
 			//look at next month
 			var from = new Date(this.now.getFullYear(),this.now.getMonth()+1,1,0,0,0);
@@ -399,7 +399,7 @@ class Cron extends Controller
 				}
 			}
 		});
-		task.execute(!App.config.DEBUG);
+		task.execute(!App.config.DEBUG);*/
 		
 		var task = new TransactionWrappedTask( "Send errors to admin by email", function() {
 			var n = Date.now();
