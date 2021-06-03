@@ -320,14 +320,14 @@ $$browserDetection()
 
 				::if(status.isResolved)::
 				<!-- resolved -->
-
-				<p>
-					<b style="text-decoration:underline;">
-						Merci de bien vouloir venir chercher votre commande entre 
-						TODO PARSE DATE
-						<!-- ::hHour(slots[status.selectedSlotId].start):: et ::hHour(slots[status.selectedSlotId].end):: -->
-					</b>									
-				</p>
+					::if(status.selectedSlotId)::
+					<p>
+						<b style="text-decoration:underline;">
+							Merci de bien vouloir venir chercher votre commande entre 
+							::hHour(tsService.getSlotById(status.selectedSlotId).start):: et ::hHour(tsService.getSlotById(status.selectedSlotId).end)::
+						</b>									
+					</p>
+					::end::
 
 				::else::
 				<!-- not resolved -->
@@ -338,8 +338,7 @@ $$browserDetection()
 						Créneaux choisis : <br/>
 
 						::foreach slotId status.registeredSlotIds::
-						<b>TODO PARSE DATE -- ::slotId::</b><br />
-						<!-- <b>de ::hHour(tsService.getSlotById(slotId).start):: à ::hHour(tsService.getSlotById(slotId).end)::.</b><br/> -->
+						<b>de ::hHour(tsService.getSlotById(slotId).start):: à ::hHour(tsService.getSlotById(slotId).end)::.</b><br/>
 						::end::
 					</p>
 					<p>
