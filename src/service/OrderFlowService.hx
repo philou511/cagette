@@ -49,7 +49,7 @@ class OrderFlowService {
 				var distrib = tmpBasket.multiDistrib;
 
 				if (distrib.timeSlots != null) {
-					var ts = new TimeSlotsService2(distrib);
+					var ts = new TimeSlotsService(distrib);
 					var status = ts.userStatus(tmpBasket.user.id);
 		
 

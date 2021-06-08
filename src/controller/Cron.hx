@@ -570,7 +570,7 @@ class Cron extends Controller
 						//time slots
 						var status = null;
 						var timeSlotService = function(d:db.MultiDistrib){
-							return new service.TimeSlotsService2(d);
+							return new service.TimeSlotsService(d);
 						};
 
 						m.setHtmlBody( app.processTemplate("mail/orderNotif.mtt", { text:text,group:group,multiDistrib:u.distrib,user:u.user,hHour:Formatting.hHour,timeSlotService:timeSlotService } ) );

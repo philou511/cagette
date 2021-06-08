@@ -120,7 +120,7 @@ class Main extends Controller {
 		}
 
 		view.timeSlotService = function(d:db.MultiDistrib) {
-			return new service.TimeSlotsService2(d);
+			return new service.TimeSlotsService(d);
 		}
 
 		view.visibleDocuments = group.getVisibleDocuments(isMemberOfGroup);
