@@ -96,7 +96,6 @@ class DateTool {
 
 		if (utcTime < offsetRanges[0][0] || utcTime > offsetRanges[offsetRanges.length - 1][1]) {
 			throw new Error(500, "DateTool.fromJs out of range");
-			return null;
 		}
 
 		var founded = Lambda.find(offsetRanges, function(range) {
