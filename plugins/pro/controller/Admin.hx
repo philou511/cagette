@@ -1638,4 +1638,34 @@ class Admin extends controller.Controller {
 			invalids: invalids
 		});
 	}
+
+	public function doTimeSlotsSync() {
+		var distribs = db.MultiDistrib.manager.search($slots != null);
+		for (distrib in distribs) {
+			distrib.lock();
+
+			var slots: Array<Dynamic> = [];
+
+			Lambda.foreach(distrib.slots, function(slot) {
+				var selectedUserIds = slot.selectedUserIds;
+				if (distrib.inNeedUserIds != null) {
+					for (inNeedUserId in distrib.inNeedUserIds.keys()) {
+						selectedUserIds.push(inNeedUserId);
+					}
+				}
+				slots.push({
+					id: slot.id,
+					selectedUserIds: selectedUserIds,
+					registeredUserIds: slot.registeredUserIds,
+					start: slot.start,
+					end: slot.end,
+				});
+				return true;
+			});
+
+			distrib.timeSlots = Json.stringify(slots);
+			distrib.update();
+		}
+		Sys.print("ok");
+	}
 }
