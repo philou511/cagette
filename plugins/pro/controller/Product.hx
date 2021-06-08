@@ -222,42 +222,4 @@ class Product extends controller.Controller
 		view.step = step;
 	}
 	
-
-	/*@tpl('plugin/pro/product/addimage.mtt')
-	function doAddImage(product:pro.db.PProduct) {
-		
-		view.image = product.image;
-		
-		var request = sugoi.tools.Utils.getMultipart(1024 * 1024 * 12); //12Mb
-		
-		if (request.exists("image")) {
-			
-			//Image
-			var image = request.get("image");
-			if (image != null && image.length > 0) {
-				var img : sugoi.db.File = null;
-				if ( Sys.systemName() == "Windows") {
-					img = sugoi.db.File.create(request.get("image"), request.get("image_filename"));
-				}else {
-					img = sugoi.tools.UploadedImage.resizeAndStore(request.get("image"), request.get("image_filename"), 400, 400);	
-				}
-				
-				product.lock();
-				product.image = img;
-				product.update();
-				
-				
-				//if offers are in catalogs, update the lastUpdate field of the catalog (for synch purpose)
-				var offersId = Lambda.map(product.getOffers(false), function(o) return o.id);
-				var coffers = pro.db.PCatalogOffer.manager.search($offerId in offersId, false);
-				var catalogs = pro.db.PCatalog.manager.search( $id in Lambda.map(coffers, function(x) return x.catalog.id) , true);
-				for ( c in catalogs) c.toSync();		
-				
-				
-				throw Ok('/p/pro/product#product' + product.id,'Image mise à jour');
-			}
-		}
-		
-		view.title = 'Importer une photo pour "${product.name}"';
-	}*/
 }

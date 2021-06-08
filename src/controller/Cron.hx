@@ -248,37 +248,6 @@ class Cron extends Controller
 		task.setTask(distribValidationNotif.bind(task));
 		task.execute(!App.config.DEBUG);
 
-		//time slot assignement when orders are closing
-		var task = new TransactionWrappedTask("Time slots assignement");
-		task.setTask(function(){
-			var range = tools.DateTool.getLastHourRange( now );
-			task.log('Get distribs whith order ending between ${range.from} and ${range.to}');
-			var distribs = MultiDistrib.manager.search($orderEndDate >= range.from && $orderEndDate < range.to && $slots!=null ,true);
-			for( d in distribs){
-				if(d.slots==null) continue; //d.slots can be a 'serialized null'
-				var s = new service.TimeSlotsService(d);
-				var slots = s.resolveSlots();
-				var group = d.getGroup();
-				task.log('Resolve slots for '+group.name);
-
-				//send an email to group admins
-				var admins = group.getGroupAdmins().filter(ug-> return ug.isGroupManager() );
-				try{
-					var m = new Mail();
-					m.setSender(App.config.get("default_email"), "Cagette.net");
-					for ( u in admins )	m.addRecipient(u.user.email, u.user.getName());
-					m.setSubject( '[${group.name}] Créneaux horaires pour la distribution du '+Formatting.hDate(d.distribStartDate) );
-					var text = 'La commande vient de fermer, les créneaux horaires ont été attribués en fonction des choix des membres du groupe : <a href="https://${App.config.HOST}/distribution/timeSlots/${d.id}">Voir le récapitulatif des créneaux horaires</a>.';
-					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
-					App.sendMail(m , d.getGroup() );	
-				}catch (e:Dynamic){
-					task.warning(e);
-					app.logError(e); //email could be invalid
-				}
-			}
-		});
-		task.execute(!App.config.DEBUG);
-
 		var task = new TransactionWrappedTask( 'Default automated orders for CSA variable contracts with compulsory ordering' );
 		task.setTask( function() {
 
@@ -364,7 +333,7 @@ class Cron extends Controller
 
 		app.event(DailyCron(this.now));
 
-		var task = new TransactionWrappedTask("Warn CSA members about absences dates to define, 7 days before deadline");
+		/*var task = new TransactionWrappedTask("Warn CSA members about absences dates to define, 7 days before deadline");
 		task.setTask(function(){
 			//look at next month
 			var from = new Date(this.now.getFullYear(),this.now.getMonth()+1,1,0,0,0);
@@ -399,7 +368,7 @@ class Cron extends Controller
 				}
 			}
 		});
-		task.execute(!App.config.DEBUG);
+		task.execute(!App.config.DEBUG);*/
 		
 		var task = new TransactionWrappedTask( "Send errors to admin by email", function() {
 			var n = Date.now();
@@ -600,11 +569,11 @@ class Cron extends Controller
 						
 						//time slots
 						var status = null;
-						if(u.distrib.slots!=null){
-							status = new service.TimeSlotsService(u.distrib).userStatus(u.user.id);
-						} 
+						var timeSlotService = function(d:db.MultiDistrib){
+							return new service.TimeSlotsService(d);
+						};
 
-						m.setHtmlBody( app.processTemplate("mail/orderNotif.mtt", { text:text,group:group,multiDistrib:u.distrib,user:u.user,status:status,hHour:Formatting.hHour } ) );
+						m.setHtmlBody( app.processTemplate("mail/orderNotif.mtt", { text:text,group:group,multiDistrib:u.distrib,user:u.user,hHour:Formatting.hHour,timeSlotService:timeSlotService } ) );
 						App.sendMail(m , u.distrib.group);	
 
 						if(App.config.DEBUG){
