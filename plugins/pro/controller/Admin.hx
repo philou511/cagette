@@ -1648,6 +1648,8 @@ class Admin extends controller.Controller {
 			Sys.print("no distribs");
 			return;
 		}
+		
+		var parsed = [];
 
 		for (distrib in distribs) {
 			if (distrib.slots != null && distrib.slots.length > 0) {
@@ -1670,9 +1672,10 @@ class Admin extends controller.Controller {
 				};
 				distrib.timeSlots = Json.stringify(slots);
 				distrib.update();
+				parsed.push(distrib);
 			}
 		}
 
-		Sys.print(Json.stringify(distribs));
+		Sys.print(Json.stringify(parsed));
 	}
 }
