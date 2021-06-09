@@ -1650,9 +1650,9 @@ class Admin extends controller.Controller {
 		}
 		
 		var parsed = [];
-		// var slotsNull = [];
-		// var slotsLength0 = [];
-		// var others = [];
+		var slotsNull = [];
+		var slotsLength0 = [];
+		var others = [];
 
 		for (distrib in distribs) {
 			if (distrib.slots != null && distrib.slots.length > 0) {
@@ -1675,24 +1675,27 @@ class Admin extends controller.Controller {
 				};
 				distrib.timeSlots = Json.stringify(slots);
 				distrib.update();
-				// parsed.push(distrib);
+				parsed.push(distrib);
 			} else {
-				// if (distrib.slots == null) {
-				// 	slotsNull.push(distrib);
-				// } else if (distrib.slots.length == 0) {
-				// 	slotsLength0.push(distrib);
-				// } else {
-				// 	others.push(distrib);
-				// }
+				if (distrib.slots == null) {
+					slotsNull.push(distrib);
+				} else if (distrib.slots.length == 0) {
+					slotsLength0.push(distrib);
+				} else {
+					others.push(distrib);
+				}
 			}
 		}
 
 		Sys.print(Json.stringify({
 			v: 3,
-			// nbParsed: parsed.length,
-			parsed: parsed,
+			nbParsed: parsed.length,
+			// parsed: parsed,
+			nbSlotsNull: slotsNull.length,
 			// slotsNull: slotsNull,
+			nbSlotsLength0: slotsLength0.length,
 			// slotsLength0: slotsLength0,
+			nbOthers: others.length
 			// others: others
 		}));
 	}
