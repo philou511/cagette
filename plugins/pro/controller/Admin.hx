@@ -1644,9 +1644,9 @@ class Admin extends controller.Controller {
 		for (distrib in distribs) {
 			distrib.lock();
 
-			var slots: Array<Dynamic> = [];
+			var slots:Array<Dynamic> = [];
 
-			Lambda.foreach(distrib.slots, function(slot) {
+			for (slot in distrib.slots) {
 				var selectedUserIds = slot.selectedUserIds;
 				if (distrib.inNeedUserIds != null) {
 					for (inNeedUserId in distrib.inNeedUserIds.keys()) {
@@ -1660,7 +1660,6 @@ class Admin extends controller.Controller {
 					start: slot.start,
 					end: slot.end,
 				});
-				return true;
 			});
 
 			distrib.timeSlots = Json.stringify(slots);
