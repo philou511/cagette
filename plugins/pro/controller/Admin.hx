@@ -1672,7 +1672,7 @@ class Admin extends controller.Controller {
 				distrib.update();
 			}
 		}
-		
-		Sys.print("ok");
+
+		Sys.print(Json.stringify(distribs));
 	}
 }
