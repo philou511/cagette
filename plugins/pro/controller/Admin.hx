@@ -1639,9 +1639,10 @@ class Admin extends controller.Controller {
 		});
 	}
 
+	@admin
 	public function doTimeSlotsSync() {
 		// var distribs = db.MultiDistrib.manager.search($slots != null && $timeSlots == null, {limit: 100});
-		var distribs = db.MultiDistrib.manager.unsafeObjects("SELECT * FROM MultiDistrib WHERE slots IS NULL AND timeSlots IS NOT NULL LIMIT 100", true);
+		var distribs = db.MultiDistrib.manager.unsafeObjects("SELECT * FROM MultiDistrib WHERE slots IS NULL AND timeSlots IS NOT NULL LIMIT 500", true);
 
 		if (distribs.length == 0) {
 			Sys.print("no distribs");
@@ -1649,7 +1650,7 @@ class Admin extends controller.Controller {
 		}
 
 		for (distrib in distribs) {
-			if (distrib.slots != null) {
+			if (distrib.slots != null && distrib.slots.length > 0) {
 				// distrib.lock();
 				var slots:Array<Dynamic> = [];
 				for (slot in distrib.slots) {
@@ -1669,10 +1670,9 @@ class Admin extends controller.Controller {
 				};
 				distrib.timeSlots = Json.stringify(slots);
 				distrib.update();
-			} else {
-				Sys.print("no slots for this ditrsib: " + distrib.id);
 			}
 		}
+		
 		Sys.print("ok");
 	}
 }
