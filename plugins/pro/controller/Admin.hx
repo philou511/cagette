@@ -1676,6 +1676,9 @@ class Admin extends controller.Controller {
 			}
 		}
 
-		Sys.print(Json.stringify(parsed));
+		Sys.print(Json.stringify({
+			nbParsed: parsed.length,
+			parsed: parsed,
+		}));
 	}
 }
