@@ -1640,7 +1640,9 @@ class Admin extends controller.Controller {
 	}
 
 	public function doTimeSlotsSync() {
-		var distribs = db.MultiDistrib.manager.search($slots != null && $timeSlots == null, {limit: 100});
+		// var distribs = db.MultiDistrib.manager.search($slots != null && $timeSlots == null, {limit: 100});
+		var distribs = db.MultiDistrib.manager.unsafeObjects("SELECT * FROM MultiDistrib WHERE slots IS NULL AND timeSlots IS NOT NULL LIMIT 100",
+			true);
 
 		if (distribs.length == 0) {
 			Sys.print("no distribs");
@@ -1648,7 +1650,7 @@ class Admin extends controller.Controller {
 		}
 
 		for (distrib in distribs) {
-			distrib.lock();
+			// distrib.lock();
 			var slots:Array<Dynamic> = [];
 
 			if (distrib.slots != null) {
