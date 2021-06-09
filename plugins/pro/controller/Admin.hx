@@ -1642,7 +1642,7 @@ class Admin extends controller.Controller {
 	@admin
 	public function doTimeSlotsSync() {
 		// var distribs = db.MultiDistrib.manager.search($slots != null && $timeSlots == null, {limit: 100});
-		var distribs = db.MultiDistrib.manager.unsafeObjects("SELECT * FROM MultiDistrib WHERE slots IS NULL AND timeSlots IS NOT NULL LIMIT 500", true);
+		var distribs = db.MultiDistrib.manager.unsafeObjects("SELECT * FROM MultiDistrib WHERE slots IS NOT NULL AND timeSlots IS NULL LIMIT 500", true);
 
 		if (distribs.length == 0) {
 			Sys.print("no distribs");
