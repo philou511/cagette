@@ -1650,9 +1650,9 @@ class Admin extends controller.Controller {
 		}
 		
 		var parsed = [];
-		var slotsNull = [];
-		var slotsLength0 = [];
-		var others = [];
+		// var slotsNull = [];
+		// var slotsLength0 = [];
+		// var others = [];
 
 		for (distrib in distribs) {
 			if (distrib.slots != null && distrib.slots.length > 0) {
@@ -1677,22 +1677,23 @@ class Admin extends controller.Controller {
 				distrib.update();
 				parsed.push(distrib);
 			} else {
-				if (distrib.slots == null) {
-					slotsNull.push(distrib);
-				} else if (distrib.slots.length == 0) {
-					slotsLength0.push(distrib);
-				} else {
-					others.push(distrib);
-				}
+				// if (distrib.slots == null) {
+				// 	slotsNull.push(distrib);
+				// } else if (distrib.slots.length == 0) {
+				// 	slotsLength0.push(distrib);
+				// } else {
+				// 	others.push(distrib);
+				// }
 			}
 		}
 
 		Sys.print(Json.stringify({
-			nbParsed: parsed.length,
+			v: 2,
+			// nbParsed: parsed.length,
 			parsed: parsed,
-			slotsNull: slotsNull,
-			slotsLength0: slotsLength0,
-			others: others
+			// slotsNull: slotsNull,
+			// slotsLength0: slotsLength0,
+			// others: others
 		}));
 	}
 }
