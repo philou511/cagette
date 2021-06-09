@@ -101,7 +101,7 @@ jobs:
         run: |
           az login --service-principal -u ${{ secrets.REGISTRY_USERNAME }} \
              -p ${{ secrets.REGISTRY_PASSWORD }} --tenant francoisalilo.onmicrosoft.com
-          for tag in $(az acr repository show-tags -n alilo --repository $APP_NAME --orderby time_asc --output tsv | grep ^${{ env.project_name }} | tail --lines=+$KEEP_AT_MOST_IMAGES )
+          for tag in $(az acr repository show-tags -n alilo --repository $APP_NAME --orderby time_asc --output tsv | grep ^${{ env.project_name }} | perl -E "my @l = <STDIN>;  while (@l > $KEEP_AT_MOST_IMAGES) { print shift @l };" )
           do
               echo "Deleting image $APP_NAME:$tag"
               az acr repository delete -n alilo --yes --image $APP_NAME:$tag
