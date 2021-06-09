@@ -1640,27 +1640,35 @@ class Admin extends controller.Controller {
 	}
 
 	public function doTimeSlotsSync() {
-		var distribs = db.MultiDistrib.manager.search($slots != null);
-		for (distrib in distribs) {
-			distrib.lock();
+		var distribs = db.MultiDistrib.manager.search($slots != null, true);
 
+		if (distribs.length == 0) {
+			Sys.print("no distribs");
+			return;
+		}
+
+		for (distrib in distribs) {
 			var slots:Array<Dynamic> = [];
 
-			for (slot in distrib.slots) {
-				var selectedUserIds = slot.selectedUserIds;
-				if (distrib.inNeedUserIds != null) {
-					for (inNeedUserId in distrib.inNeedUserIds.keys()) {
-						selectedUserIds.push(inNeedUserId);
+			if (distrib.slots != null) {
+				for (slot in distrib.slots) {
+					var selectedUserIds = slot.selectedUserIds;
+					if (distrib.inNeedUserIds != null) {
+						for (inNeedUserId in distrib.inNeedUserIds.keys()) {
+							selectedUserIds.push(inNeedUserId);
+						}
 					}
-				}
-				slots.push({
-					id: slot.id,
-					selectedUserIds: selectedUserIds,
-					registeredUserIds: slot.registeredUserIds,
-					start: slot.start,
-					end: slot.end,
-				});
-			};
+					slots.push({
+						id: slot.id,
+						selectedUserIds: selectedUserIds,
+						registeredUserIds: slot.registeredUserIds,
+						start: slot.start,
+						end: slot.end,
+					});
+				};
+			} else {
+				Sys.print("no slots for this ditrsib: " + distrib.id);
+			}
 
 			distrib.timeSlots = Json.stringify(slots);
 			distrib.update();
