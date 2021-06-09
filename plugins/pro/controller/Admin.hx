@@ -1642,7 +1642,7 @@ class Admin extends controller.Controller {
 	@admin
 	public function doTimeSlotsSync() {
 		// var distribs = db.MultiDistrib.manager.search($slots != null && $timeSlots == null, {limit: 100});
-		var distribs = db.MultiDistrib.manager.unsafeObjects("SELECT * FROM MultiDistrib WHERE slots IS NOT NULL AND timeSlots IS NULL LIMIT 500", true);
+		var distribs = db.MultiDistrib.manager.unsafeObjects("SELECT * FROM MultiDistrib WHERE slots IS NOT NULL AND timeSlots IS NULL LIMIT 20", true);
 
 		if (distribs.length == 0) {
 			Sys.print("no distribs");
@@ -1675,7 +1675,7 @@ class Admin extends controller.Controller {
 				};
 				distrib.timeSlots = Json.stringify(slots);
 				distrib.update();
-				parsed.push(distrib);
+				// parsed.push(distrib);
 			} else {
 				// if (distrib.slots == null) {
 				// 	slotsNull.push(distrib);
@@ -1688,7 +1688,7 @@ class Admin extends controller.Controller {
 		}
 
 		Sys.print(Json.stringify({
-			v: 2,
+			v: 3,
 			// nbParsed: parsed.length,
 			parsed: parsed,
 			// slotsNull: slotsNull,
