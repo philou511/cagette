@@ -1660,7 +1660,7 @@ class Admin extends controller.Controller {
 					start: slot.start,
 					end: slot.end,
 				});
-			});
+			};
 
 			distrib.timeSlots = Json.stringify(slots);
 			distrib.update();
