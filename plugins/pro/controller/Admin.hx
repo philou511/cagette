@@ -1688,7 +1688,8 @@ class Admin extends controller.Controller {
 		}
 
 		Sys.print(Json.stringify({
-			v: 3,
+			v: 4,
+			nbDistribs: distribs.length,
 			nbParsed: parsed.length,
 			// parsed: parsed,
 			nbSlotsNull: slotsNull.length,
