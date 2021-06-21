@@ -1,5 +1,6 @@
 package pro.controller;
 
+import db.User;
 import haxe.DynamicAccess;
 import db.MultiDistrib;
 import crm.CrmService;
@@ -1644,7 +1645,7 @@ class Admin extends controller.Controller {
 		for (distrib in distribs) {
 			distrib.lock();
 
-			var slots: Array<Dynamic> = [];
+			var slots:Array<Dynamic> = [];
 
 			Lambda.foreach(distrib.slots, function(slot) {
 				var selectedUserIds = slot.selectedUserIds;
@@ -1667,5 +1668,42 @@ class Admin extends controller.Controller {
 			distrib.update();
 		}
 		Sys.print("ok");
+	}
+
+	public function doTimeSlotsSyncInfo() {
+		var now = Date.fromString("2020-01-01");
+
+		var sql = "SELECT * FROM MultiDistrib 
+		WHERE slots IS NOT NULL
+		AND timeSlots IS NOT NULL 
+		AND slotsMode <> 'y7:default'
+		AND inNeedUserIds <> 'qh'
+		AND distribStartDate > '"+ now + "' ";
+		var distribs = db.MultiDistrib.manager.unsafeObjects(sql, false);
+
+		var res = [];
+
+		for (distrib in distribs) {
+			var it = distrib.inNeedUserIds.keys();
+			while (it.hasNext()) {
+				var userId = it.next();
+
+				var user = User.manager.get(userId);
+
+				res.push({
+					distribId: distrib.id,
+					distribStartDate: distrib.distribStartDate,
+					userId: userId,
+					email: user.email
+				});
+			}
+		}
+
+		Sys.print(Json.stringify({
+			status: "success",
+			sql: sql,
+			nbDistribsToProcess: distribs.length,
+			res: res,
+		}));
 	}
 }
