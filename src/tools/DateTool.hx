@@ -7,6 +7,33 @@ import tink.core.Error;
  * @author fbarbut
  */
 class DateTool {
+	private static var utcFrOffsetRanges = [
+		[
+			new Date(2019, 3 - 1, 31, 1, 0, 0).getTime(),
+			new Date(2019, 10 - 1, 27, 1, 0, 0).getTime()
+		],
+		[
+			new Date(2020, 3 - 1, 29, 1, 0, 0).getTime(),
+			new Date(2020, 10 - 1, 25, 1, 0, 0).getTime()
+		],
+		[
+			new Date(2021, 3 - 1, 28, 1, 0, 0).getTime(),
+			new Date(2021, 10 - 1, 31, 1, 0, 0).getTime()
+		],
+		[
+			new Date(2022, 3 - 1, 27, 1, 0, 0).getTime(),
+			new Date(2022, 10 - 1, 30, 1, 0, 0).getTime()
+		],
+		[
+			new Date(2023, 3 - 1, 26, 1, 0, 0).getTime(),
+			new Date(2023, 10 - 1, 29, 1, 0, 0).getTime()
+		],
+		[
+			new Date(2024, 3 - 1, 31, 1, 0, 0).getTime(),
+			new Date(2024, 10 - 1, 27, 1, 0, 0).getTime()
+		],
+	];
+
 	public static function now():Date {
 		return Date.now();
 	}
@@ -67,39 +94,12 @@ class DateTool {
 		d = d.substr(0, d.indexOf("."));
 		var utcTime = Date.fromString(d).getTime();
 
-		var offsetRanges = [
-			[
-				new Date(2019, 3 - 1, 31, 1, 0, 0).getTime(),
-				new Date(2019, 10 - 1, 27, 1, 0, 0).getTime()
-			],
-			[
-				new Date(2020, 3 - 1, 29, 1, 0, 0).getTime(),
-				new Date(2020, 10 - 1, 25, 1, 0, 0).getTime()
-			],
-			[
-				new Date(2021, 3 - 1, 28, 1, 0, 0).getTime(),
-				new Date(2021, 10 - 1, 31, 1, 0, 0).getTime()
-			],
-			[
-				new Date(2022, 3 - 1, 27, 1, 0, 0).getTime(),
-				new Date(2022, 10 - 1, 30, 1, 0, 0).getTime()
-			],
-			[
-				new Date(2023, 3 - 1, 26, 1, 0, 0).getTime(),
-				new Date(2023, 10 - 1, 29, 1, 0, 0).getTime()
-			],
-			[
-				new Date(2024, 3 - 1, 31, 1, 0, 0).getTime(),
-				new Date(2024, 10 - 1, 27, 1, 0, 0).getTime()
-			],
-		];
-
-		if (utcTime < offsetRanges[0][0] || utcTime > offsetRanges[offsetRanges.length - 1][1]) {
+		if (utcTime < DateTool.utcFrOffsetRanges[0][0] || utcTime > DateTool.utcFrOffsetRanges[DateTool.utcFrOffsetRanges.length - 1][1]) {
 			throw new Error(500, "DateTool.fromJs out of range");
 			return null;
 		}
 
-		var founded = Lambda.find(offsetRanges, function(range) {
+		var founded = Lambda.find(DateTool.utcFrOffsetRanges, function(range) {
 			return utcTime > range[0] && utcTime < range[1];
 		});
 		var hourToAdd = 1;
@@ -108,5 +108,28 @@ class DateTool {
 		}
 
 		return Date.fromTime(utcTime + (hourToAdd * 3600 * 1000));
+	}
+
+	public static function toJs(value:Date) {
+		var time = value.getTime();
+
+		if (time < DateTool.utcFrOffsetRanges[0][0] || time > DateTool.utcFrOffsetRanges[DateTool.utcFrOffsetRanges.length - 1][1]) {
+			throw new Error(500, "DateTool.toJs out of range");
+			return null;
+		}
+
+		var founded = Lambda.find(DateTool.utcFrOffsetRanges, function(range) {
+			return time > range[0] && time < range[1];
+		});
+		var hourToSub = 1;
+		if (founded != null) {
+			hourToSub = 2;
+		}
+
+		var utc = Date.fromTime(time - (hourToSub * 3600 * 1000));
+
+		var reg = ~/ /;
+
+		return reg.replace(utc.toString(), "T") + "000Z";
 	}
 }
