@@ -135,6 +135,6 @@ class DateTool {
 
 		var reg = ~/ /;
 
-		return reg.replace(utc.toString(), "T") + "000Z";
+		return reg.replace(utc.toString(), "T") + ".000Z";
 	}
 }

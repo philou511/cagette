@@ -1642,13 +1642,18 @@ class Admin extends controller.Controller {
 
 	@admin
 	public function doTimeSlotsSync() {
-		// var distribs = db.MultiDistrib.manager.search($slots != null && $timeSlots == null, {limit: 100});
-		var distribs = db.MultiDistrib.manager.unsafeObjects("SELECT * FROM MultiDistrib WHERE slots IS NOT NULL AND slots != 'n' AND timeSlots IS NULL LIMIT 500", true);
+		var limit = app.params.get("limit") != null ? Std.parseInt(app.params.get("limit")) : 500;
+		var offset = app.params.get("offset") != null ? Std.parseInt(app.params.get("offset")) : 0;
+		var sql = "SELECT * FROM MultiDistrib 
+			WHERE slots IS NOT NULL 
+			AND slots != 'n' 
+			LIMIT "+limit+" OFFSET "+offset+" ";
+		var distribs = db.MultiDistrib.manager.unsafeObjects(sql, true);
 
-		if (distribs.length == 0) {
-			Sys.print("no distribs");
-			return;
-		}
+		// if (distribs.length == 0) {
+		// 	Sys.print("no distribs");
+		// 	return;
+		// }
 		
 		var parsed = [];
 		var slotsNull = [];
@@ -1670,8 +1675,8 @@ class Admin extends controller.Controller {
 						id: slot.id,
 						selectedUserIds: selectedUserIds,
 						registeredUserIds: slot.registeredUserIds,
-						start: slot.start,
-						end: slot.end,
+						start: DateTool.toJs(slot.start),
+						end: DateTool.toJs(slot.end),
 					});
 				};
 				distrib.timeSlots = Json.stringify(slots);
@@ -1689,16 +1694,22 @@ class Admin extends controller.Controller {
 		}
 
 		Sys.print(Json.stringify({
-			v: 4,
-			nbDistribs: distribs.length,
-			nbParsed: parsed.length,
-			// parsed: parsed,
-			nbSlotsNull: slotsNull.length,
-			// slotsNull: slotsNull,
-			nbSlotsLength0: slotsLength0.length,
-			// slotsLength0: slotsLength0,
-			nbOthers: others.length
-			// others: others
+			v: 5,
+			infos: {
+				nbDistribs: distribs.length,
+				nbParsed: parsed.length,
+				// parsed: parsed,
+				nbSlotsNull: slotsNull.length,
+				// slotsNull: slotsNull,
+				nbSlotsLength0: slotsLength0.length,
+				// slotsLength0: slotsLength0,
+				nbOthers: others.length
+				// others: others
+			},
+			sql: sql,
+			offset: offset,
+			nextHttp: "http://" + App.config.HOST + "/p/pro/admin/timeSlotsSync?limit="+limit+"&offset="+(offset + limit),
+			nextHttps: "https://" + App.config.HOST + "/p/pro/admin/timeSlotsSync?limit="+limit+"&offset="+(offset + limit)
 		}));
 	}
 
@@ -1736,6 +1747,15 @@ class Admin extends controller.Controller {
 			sql: sql,
 			nbDistribsToProcess: distribs.length,
 			res: res,
+		}));
+	}
+
+	function doTest() {
+		var offset = app.params.get("offset");
+
+		Sys.print(Json.stringify({
+			status: "succes",
+			offset: offset,
 		}));
 	}
 }
