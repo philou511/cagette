@@ -41,7 +41,9 @@ class Vendor extends Controller
 	function doEdit(vendor:db.Vendor) {
 		
 		if( vendor.getGroups().length > 1 && vendor.companyNumber!=null){
-			throw Error("/contractAdmin",t._("You can't edit this vendor profile because he's active in more than one group. If you want him to update his profile, please ask him to do so."));
+			if(app.user.email!=vendor.email){
+				throw Error("/contractAdmin",t._("You can't edit this vendor profile because he's active in more than one group. If you want him to update his profile, please ask him to do so."));
+			}
 		}
 
 		if(vendor.email=="jean@cagette.net" || vendor.email=="galinette@cagette.net"){

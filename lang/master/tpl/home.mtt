@@ -315,8 +315,8 @@ $$browserDetection()
 
 		<div class="content">
 			<div class="alert alert-danger text-center">
-				<img height="36" src="/img/virus.svg" style="width:22px;" alt="" />
-				&nbsp;&nbsp;<b>Précautions et entraide pendant la crise sanitaire :</b><br />
+				<!--<img height="36" src="/img/virus.svg" style="width:22px;" alt="" />
+				&nbsp;&nbsp;<b>Précautions et entraide pendant la crise sanitaire :</b><br />-->
 
 				::if(status.isResolved)::
 				<!-- resolved -->
@@ -335,7 +335,7 @@ $$browserDetection()
 					::if(status.registered)::
 					<!-- registered -->
 					<p>
-						Créneaux choisis : <br/>
+						Créneaux horaire choisis : <br/>
 
 						::foreach slotId status.registeredSlotIds::
 						<b>de ::hHour(tsService.getSlotById(slotId).start):: à ::hHour(tsService.getSlotById(slotId).end)::.</b><br/>
@@ -373,23 +373,21 @@ $$browserDetection()
 					<a href="/distribution/volunteersSummary/::d.id::" class="btn btn-default btn-sm"><i
 							class="icon icon-user"></i> ::_("Duty period details")::</a>
 				</p>
-
 			</div>
 
 			::set vacantVolunteerRoles = d.getVacantVolunteerRoles()::
 			<div class="alert alert-danger text-center" ::cond roles.length==0 && vacantVolunteerRoles !=null &&
 				vacantVolunteerRoles.length !=0::>
 				<i class="icon icon-alert"></i>
-				::raw __("We need <b>::rolesNum::</b> volunteer(s) for the following
-				roles:",{rolesNum:vacantVolunteerRoles.length})::<br />
+				::raw __("We need <b>::rolesNum::</b> volunteer(s) for the following roles:",{rolesNum:vacantVolunteerRoles.length})::<br />
 				<div>
 					::foreach role vacantVolunteerRoles::
 					<b>::role.name::</b>,
 					::end::
 				</div>
 				<p style="margin-top:12px;">
-					<a href="/distribution/volunteersSummary/::d.id::" class="btn btn-danger btn-sm"><i
-							class="icon icon-chevron-right"></i> Inscription</a>
+					<a href="/distribution/volunteersSummary/::d.id::" class="btn btn-danger btn-sm">
+						<i class="icon icon-chevron-right"></i> Inscription</a>
 				</p>
 			</div>
 		</div>
