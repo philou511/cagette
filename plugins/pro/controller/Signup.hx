@@ -101,8 +101,8 @@ class Signup extends controller.Controller
 
 		if (form.isValid()) {
 
-
-			var task = new TransactionWrappedTask("vendorRegister",function(){
+			var task = new TransactionWrappedTask("vendorRegister");
+			task.setTask(function(){
 
 				if(form.getValueOf("isagri")!=true || form.getValueOf("cgv")!=true || form.getValueOf("formation")!=true ){
 					throw Error(sugoi.Web.getURI(),"Vous devez cocher toutes les cases.");
@@ -147,7 +147,8 @@ class Signup extends controller.Controller
 			task.printLog = false;
 			task.execute();
 
-			var task = new TransactionWrappedTask("crmSync",function(){
+			var task = new TransactionWrappedTask("crmSync");
+			task.setTask(function(){
 				//sync to CRM 
 				CrmService.syncToHubspot(vendor);
 				CrmService.syncToSiB(app.user,true,"vendor_register");
