@@ -1,5 +1,6 @@
 package pro.controller;
 
+import db.User;
 import haxe.DynamicAccess;
 import db.MultiDistrib;
 import crm.CrmService;
@@ -1642,7 +1643,7 @@ class Admin extends controller.Controller {
 	@admin
 	public function doTimeSlotsSync() {
 		// var distribs = db.MultiDistrib.manager.search($slots != null && $timeSlots == null, {limit: 100});
-		var distribs = db.MultiDistrib.manager.unsafeObjects("SELECT * FROM MultiDistrib WHERE slots IS NOT NULL AND timeSlots IS NULL LIMIT 500", true);
+		var distribs = db.MultiDistrib.manager.unsafeObjects("SELECT * FROM MultiDistrib WHERE slots IS NOT NULL AND slots != 'n' AND timeSlots IS NULL LIMIT 500", true);
 
 		if (distribs.length == 0) {
 			Sys.print("no distribs");
@@ -1650,9 +1651,9 @@ class Admin extends controller.Controller {
 		}
 		
 		var parsed = [];
-		// var slotsNull = [];
-		// var slotsLength0 = [];
-		// var others = [];
+		var slotsNull = [];
+		var slotsLength0 = [];
+		var others = [];
 
 		for (distrib in distribs) {
 			if (distrib.slots != null && distrib.slots.length > 0) {
@@ -1677,23 +1678,64 @@ class Admin extends controller.Controller {
 				distrib.update();
 				parsed.push(distrib);
 			} else {
-				// if (distrib.slots == null) {
-				// 	slotsNull.push(distrib);
-				// } else if (distrib.slots.length == 0) {
-				// 	slotsLength0.push(distrib);
-				// } else {
-				// 	others.push(distrib);
-				// }
+				if (distrib.slots == null) {
+					slotsNull.push(distrib);
+				} else if (distrib.slots.length == 0) {
+					slotsLength0.push(distrib);
+				} else {
+					others.push(distrib);
+				}
 			}
 		}
 
 		Sys.print(Json.stringify({
-			v: 2,
-			// nbParsed: parsed.length,
-			parsed: parsed,
+			v: 4,
+			nbDistribs: distribs.length,
+			nbParsed: parsed.length,
+			// parsed: parsed,
+			nbSlotsNull: slotsNull.length,
 			// slotsNull: slotsNull,
+			nbSlotsLength0: slotsLength0.length,
 			// slotsLength0: slotsLength0,
+			nbOthers: others.length
 			// others: others
+		}));
+	}
+
+	public function doTimeSlotsSyncInfo() {
+		var now = Date.fromString("2020-01-01");
+
+		var sql = "SELECT * FROM MultiDistrib 
+		WHERE slots IS NOT NULL
+		AND timeSlots IS NOT NULL 
+		AND slotsMode <> 'y7:default'
+		AND inNeedUserIds <> 'qh'
+		AND distribStartDate > '"+ now + "' ";
+		var distribs = db.MultiDistrib.manager.unsafeObjects(sql, false);
+
+		var res = [];
+
+		for (distrib in distribs) {
+			var it = distrib.inNeedUserIds.keys();
+			while (it.hasNext()) {
+				var userId = it.next();
+
+				var user = User.manager.get(userId);
+
+				res.push({
+					distribId: distrib.id,
+					distribStartDate: distrib.distribStartDate,
+					userId: userId,
+					email: user.email
+				});
+			}
+		}
+
+		Sys.print(Json.stringify({
+			status: "success",
+			sql: sql,
+			nbDistribsToProcess: distribs.length,
+			res: res,
 		}));
 	}
 }
