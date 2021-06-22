@@ -393,6 +393,7 @@ class Distribution extends Controller {
 
 				// do not launch event, avoid notifs for now
 				d = DistributionService.editAttendance(d, md, d.orderStartDate, d.orderEndDate, false);
+				
 			} catch (e:tink.core.Error) {
 				throw Error(sugoi.Web.getURI(), e.message);
 			}
