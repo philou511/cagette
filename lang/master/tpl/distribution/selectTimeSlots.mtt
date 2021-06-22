@@ -1,7 +1,7 @@
 ::use 'design.mtt'::
 
 
-<div class="col-md-12" style="height: 800px;">
+<div class="col-md-12">
     <div id="distrib-time-slot::distribution.id::"></div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
