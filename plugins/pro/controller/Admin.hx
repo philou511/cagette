@@ -1,5 +1,8 @@
 package pro.controller;
 
+import db.User;
+import haxe.DynamicAccess;
+import db.MultiDistrib;
 import crm.CrmService;
 import db.Group.BetaFlags;
 import tools.DateTool;
@@ -1635,45 +1638,104 @@ class Admin extends controller.Controller {
 			nbInvalid: nbInvalid,
 			invalids: invalids
 		});
+	}
 
-		// var distribs = sys.db.Manager.cnx.request('SELECT id, slots, slotsMode  FROM MultiDistrib where orderEndDate > "2021-01-01" and orderEndDate < "2021-06-01" and slots IS NOT NULL');
+	@admin
+	public function doTimeSlotsSync() {
+		// var distribs = db.MultiDistrib.manager.search($slots != null && $timeSlots == null, {limit: 100});
+		var distribs = db.MultiDistrib.manager.unsafeObjects("SELECT * FROM MultiDistrib WHERE slots IS NOT NULL AND slots != 'n' AND timeSlots IS NULL LIMIT 500", true);
 
-		// var nbDefaultSlotsModes = 0;
-		// var nbSoloSlotModes = 0;
-		// var nbInvalid = 0;
-		// var invalids = [];
+		if (distribs.length == 0) {
+			Sys.print("no distribs");
+			return;
+		}
+		
+		var parsed = [];
+		var slotsNull = [];
+		var slotsLength0 = [];
+		var others = [];
 
-		// var counterMap = new Map<String, Int>();
+		for (distrib in distribs) {
+			if (distrib.slots != null && distrib.slots.length > 0) {
+				// distrib.lock();
+				var slots:Array<Dynamic> = [];
+				for (slot in distrib.slots) {
+					var selectedUserIds = slot.selectedUserIds;
+					if (distrib.inNeedUserIds != null) {
+						for (inNeedUserId in distrib.inNeedUserIds.keys()) {
+							selectedUserIds.push(inNeedUserId);
+						}
+					}
+					slots.push({
+						id: slot.id,
+						selectedUserIds: selectedUserIds,
+						registeredUserIds: slot.registeredUserIds,
+						start: slot.start,
+						end: slot.end,
+					});
+				};
+				distrib.timeSlots = Json.stringify(slots);
+				distrib.update();
+				parsed.push(distrib);
+			} else {
+				if (distrib.slots == null) {
+					slotsNull.push(distrib);
+				} else if (distrib.slots.length == 0) {
+					slotsLength0.push(distrib);
+				} else {
+					others.push(distrib);
+				}
+			}
+		}
 
-		// for (distrib in distribs) {
-		// 	// var mode = distrib.slotsMode.split(":")[1];
+		Sys.print(Json.stringify({
+			v: 4,
+			nbDistribs: distribs.length,
+			nbParsed: parsed.length,
+			// parsed: parsed,
+			nbSlotsNull: slotsNull.length,
+			// slotsNull: slotsNull,
+			nbSlotsLength0: slotsLength0.length,
+			// slotsLength0: slotsLength0,
+			nbOthers: others.length
+			// others: others
+		}));
+	}
 
-		// 	Sys.println('oo' + distrib.slotsMode.split(":"));
+	public function doTimeSlotsSyncInfo() {
+		var now = Date.fromString("2020-01-01");
 
-		// 	// Sys.println('oo' + distrib.slotsMode + " exist ?" + counterMap.exists(distrib.slotsMode));
-		// 	// if (!counterMap.exists(distrib.slotsMode)) {
-		// 	// 	counterMap.set(distrib.slotsMode, 1);
-		// 	// } else {
-		// 	// 	counterMap.set(distrib.slotsMode, counterMap.get(distrib.slotsMode) + 1);
-		// 	// }
+		var sql = "SELECT * FROM MultiDistrib 
+		WHERE slots IS NOT NULL
+		AND timeSlots IS NOT NULL 
+		AND slotsMode <> 'y7:default'
+		AND inNeedUserIds <> 'qh'
+		AND distribStartDate > '"+ now + "' ";
+		var distribs = db.MultiDistrib.manager.unsafeObjects(sql, false);
 
-		// 	// if (mode == "default") {
-		// 	// 	nbDefaultSlotsModes += 1;
-		// 	// } else if (mode == "solo-only") {
-		// 	// 	nbSoloSlotModes += 1;
-		// 	// } else {
-		// 	// 	nbInvalid += 1;
-		// 	// 	invalids.push(mode.toString());
-		// 	// }
-		// }
+		var res = [];
 
-		// json({
-		// 	"nbDistribsWithSlots": distribs.length,
-		// 	// "counterMap": counterMap,
-		// 	"nb slotsMode = default": nbDefaultSlotsModes,
-		// 	"nb slotsMode = solo-only": nbSoloSlotModes,
-		// 	"nb slotsMode invalid": nbInvalid,
-		// 	"invalids": invalids
-		// });
+		for (distrib in distribs) {
+			var it = distrib.inNeedUserIds.keys();
+			while (it.hasNext()) {
+				var userId = it.next();
+
+				var user = User.manager.get(userId);
+
+				res.push({
+					distribId: distrib.id,
+					distribStartDate: distrib.distribStartDate,
+					userId: userId,
+					email: user.email
+				});
+			}
+		}
+
+		Sys.print(Json.stringify({
+			status: "success",
+			sql: sql,
+			nbDistribsToProcess: distribs.length,
+			res: res,
+		}));
 	}
 }

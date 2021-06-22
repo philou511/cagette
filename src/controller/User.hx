@@ -1,4 +1,5 @@
 package controller;
+import pro.db.VendorStats;
 import sugoi.form.elements.Checkbox;
 import pro.db.CagettePro;
 import haxe.crypto.Md5;
@@ -83,6 +84,15 @@ class User extends Controller
 		view.vendors = vendors;
 
 		view.isBlocked = pro.db.PUserCompany.getUserCompanies(app.user).find(uc -> return uc.disabled) != null;
+
+		//find free or invited vendor
+		var vendor = db.Vendor.manager.select($email==app.user.email,false);
+		if(vendor!=null){
+			var vs = VendorStats.getOrCreate(vendor);
+			if( vs.type == VTFree || vs.type == VTInvited || vs.type == VTInvitedPro ){
+				view.displayFormationPromo = true;
+			}
+		}		
 		#end
 
 		view.isGroupAdmin = app.user.getUserGroups().find(ug -> return ug.isGroupManager()) != null;

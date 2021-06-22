@@ -240,7 +240,7 @@
 			_.overlay("/data/disabled.mtt","");
 			::end::
 
-/*
+			::if(displayFormationPromo)::
 			//promo formation 2021-09 tout les 3 jours
 			var dateString = localStorage.cagetteProTestWindow;
 			var date = null;
@@ -257,8 +257,8 @@
 				_.overlay("/data/formation-2021-09.html","");
 			}else{
 				console.log("no popup for now");
-			}*/
-			
+			}
+			::end::
 			
 
 			//]]>

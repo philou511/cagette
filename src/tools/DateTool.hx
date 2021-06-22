@@ -89,14 +89,19 @@ class DateTool {
 		return deltaDays(new Date(year, month, 1 + 7 * n, 0, 0, 0), -new Date(year, month, 8 - (dayOfWeek + 1), 0, 0, 0).getDay() - 1);
 	}
 
+	// convert UTC JS date to Haxe french date
 	public static function fromJs(value:String) {
+		//no need to convert
+		if( value.indexOf("T")==-1){
+			return Date.fromString(value);
+		}
+
 		var d = value.split("T").join(" ");
 		d = d.substr(0, d.indexOf("."));
 		var utcTime = Date.fromString(d).getTime();
 
 		if (utcTime < DateTool.utcFrOffsetRanges[0][0] || utcTime > DateTool.utcFrOffsetRanges[DateTool.utcFrOffsetRanges.length - 1][1]) {
 			throw new Error(500, "DateTool.fromJs out of range");
-			return null;
 		}
 
 		var founded = Lambda.find(DateTool.utcFrOffsetRanges, function(range) {

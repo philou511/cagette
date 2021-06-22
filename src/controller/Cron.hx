@@ -1,4 +1,5 @@
 package controller;
+import sys.db.Mysql;
 import db.Catalog;
 import service.GraphService;
 import haxe.CallStack;
@@ -248,37 +249,6 @@ class Cron extends Controller
 		task.setTask(distribValidationNotif.bind(task));
 		task.execute(!App.config.DEBUG);
 
-		//time slot assignement when orders are closing
-		var task = new TransactionWrappedTask("Time slots assignement");
-		task.setTask(function(){
-			var range = tools.DateTool.getLastHourRange( now );
-			task.log('Get distribs whith order ending between ${range.from} and ${range.to}');
-			var distribs = MultiDistrib.manager.search($orderEndDate >= range.from && $orderEndDate < range.to && $slots!=null ,true);
-			for( d in distribs){
-				if(d.slots==null) continue; //d.slots can be a 'serialized null'
-				var s = new service.TimeSlotsService(d);
-				var slots = s.resolveSlots();
-				var group = d.getGroup();
-				task.log('Resolve slots for '+group.name);
-
-				//send an email to group admins
-				var admins = group.getGroupAdmins().filter(ug-> return ug.isGroupManager() );
-				try{
-					var m = new Mail();
-					m.setSender(App.config.get("default_email"), "Cagette.net");
-					for ( u in admins )	m.addRecipient(u.user.email, u.user.getName());
-					m.setSubject( '[${group.name}] Créneaux horaires pour la distribution du '+Formatting.hDate(d.distribStartDate) );
-					var text = 'La commande vient de fermer, les créneaux horaires ont été attribués en fonction des choix des membres du groupe : <a href="https://${App.config.HOST}/distribution/timeSlots/${d.id}">Voir le récapitulatif des créneaux horaires</a>.';
-					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
-					App.sendMail(m , d.getGroup() );	
-				}catch (e:Dynamic){
-					task.warning(e);
-					app.logError(e); //email could be invalid
-				}
-			}
-		});
-		task.execute(!App.config.DEBUG);
-
 		var task = new TransactionWrappedTask( 'Default automated orders for CSA variable contracts with compulsory ordering' );
 		task.setTask( function() {
 
@@ -348,6 +318,41 @@ class Cron extends Controller
 		});
 		task.execute(!App.config.DEBUG);
 
+		//clean files that are not linked to anything
+		var task = new TransactionWrappedTask( "Clean unused db.File entities");
+		task.setTask(function() {
+			var maxId = sys.db.Manager.cnx.request("select max(id) from File").getIntResult(0);
+			var rd = Std.random(Math.round(maxId/1000));
+
+			var files =  sugoi.db.File.manager.search($id > (rd*1000) && $id < ((rd+1)*1000) ,true);
+			task.log('get ${files.length} files with id from ${rd*1000} to ${(rd+1)*1000}');
+
+			for( f in files){
+				//product file
+				if(db.Product.manager.select($image==f)!=null) continue;
+
+				//entity file 
+				if(sugoi.db.EntityFile.manager.select($file==f)!=null) continue;	
+				
+				//TODO : remove entityFiles related to unexisting entities
+				
+				//vendor logo
+				if(db.Group.manager.select($image==f)!=null) continue;
+
+				//group logo
+				if(db.Vendor.manager.select($image==f)!=null) continue;
+
+				#if plugins
+				if(pro.db.PProduct.manager.select($image==f)!=null) continue;
+				if(pro.db.POffer.manager.select($image==f)!=null) continue;
+				#end
+				
+				task.log("delete "+f.toString());
+				f.delete();
+			}
+		});
+		task.execute(false);
+
 		/**
 			orders notif in cpro, should be sent AFTER default automated orders
 		**/
@@ -362,46 +367,10 @@ class Cron extends Controller
 	public function doDaily() {
 		if (!canRun()) return;
 
-		app.event(DailyCron(this.now));
-
-		/*var task = new TransactionWrappedTask("Warn CSA members about absences dates to define, 7 days before deadline");
-		task.setTask(function(){
-			//look at next month
-			var from = new Date(this.now.getFullYear(),this.now.getMonth()+1,1,0,0,0);
-			var to   = new Date(this.now.getFullYear(),this.now.getMonth()+1,31,0,0,0);
-			var inOneWeek = new Date(this.now.getFullYear(),this.now.getMonth(),now.getDate()+7,0,0,0);
-			//catalog having absences starting in one month
-			var catalogs = db.Catalog.manager.search($absencesStartDate>=from && $absencesStartDate<to && $absentDistribsMaxNb>0);
-			task.log("catalogs having absencesStartDate between "+from+" and "+to);
-			for( c in catalogs){
-				if(c.group.hasShopMode()) continue;				
-				var limitDate = service.SubscriptionService.getLastDistribBeforeAbsences( c ).date;
-				if(limitDate.toString().substr(0,10)==inOneWeek.toString().substr(0,10)){
-					task.log("- "+c.name+" : deadline in one week ("+limitDate+")");
-
-					var m = new Mail();
-					m.setSender(App.config.get("default_email"), "Cagette.net");
-					if(c.contact!=null) m.setReplyTo(c.contact.email, c.contact.getName());
-					for( sub in service.SubscriptionService.getCatalogSubscriptions(c)){
-						if(sub.getAbsentDistribIds().length>0){
-							m.addRecipient(sub.user.email);
-							if(sub.user.email2!=null) m.addRecipient(sub.user.email2);
-						}
-					}					
-					m.setSubject( 'Pensez à définir vos dates d\'absence pour le contrat "${c.name}"' );
-					var text = 'Il vous reste une semaine pour définir vos dates d\'absence pour le contrat <b>"${c.name}"</b>.<br/>';
-					text += 'Vous avez jusqu\'au ${Formatting.dDate(limitDate)} pour définir vos absences et permettre au producteur de s\'organiser.<br/>';
-					m.setHtmlBody( app.processTemplate("mail/message.mtt", { 
-						text:text,
-						group:c.group
-					} ) );
-					App.sendMail(m , c.group);	
-				}
-			}
-		});
-		task.execute(!App.config.DEBUG);*/
+		app.event(DailyCron(this.now));		
 		
-		var task = new TransactionWrappedTask( "Send errors to admin by email", function() {
+		var task = new TransactionWrappedTask( "Send errors to admin by email");
+		task.setTask(function() {
 			var n = Date.now();
 			var yest24h = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
 			var yest0h = DateTools.delta(yest24h, -1000 * 60 * 60 * 24);
@@ -424,7 +393,8 @@ class Cron extends Controller
 		});
 		task.execute(!App.config.DEBUG);
 		
-		var task = new TransactionWrappedTask( "Old datas cleaning", function() {
+		var task = new TransactionWrappedTask( "Old datas cleaning");
+		task.setTask(function() {
 			task.log("Delete old sessions");
 			sugoi.db.Session.clean();
 			task.log("Delete old demo catalogs");
@@ -438,7 +408,8 @@ class Cron extends Controller
 		
 		
 		//Delete old documents of catalogs that have ended 18 months ago
-		var task = new TransactionWrappedTask( "Delete old documents", function() {
+		var task = new TransactionWrappedTask( "Delete old documents");
+		task.setTask(function() {
 			var eighteenMonthsAgo = DateTools.delta( Date.now(), -1000.0 * 60 * 60 * 24 * 30 * 18 );
 			var oneDayBefore = DateTools.delta( eighteenMonthsAgo, -1000 * 60 * 60 * 24 );
 			task.log('Catalogs that have ended between $oneDayBefore and $eighteenMonthsAgo');
@@ -458,15 +429,18 @@ class Cron extends Controller
 		task.execute(!App.config.DEBUG);
 
 		//stats
-		var task = new TransactionWrappedTask( "Stats", function() {
+		var task = new TransactionWrappedTask( "Stats");
+		task.setTask(function() {
 			var yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate()-1, 0, 0, 0);
-
 			for( k in GraphService.getAllGraphKeys()){
 				GraphService.getDay(k,yesterday);
 			}
 
 		});
 		task.execute();
+
+		
+	
 	}
 	
 	/**
@@ -600,11 +574,11 @@ class Cron extends Controller
 						
 						//time slots
 						var status = null;
-						if(u.distrib.slots!=null){
-							status = new service.TimeSlotsService(u.distrib).userStatus(u.user.id);
-						} 
+						var timeSlotService = function(d:db.MultiDistrib){
+							return new service.TimeSlotsService(d);
+						};
 
-						m.setHtmlBody( app.processTemplate("mail/orderNotif.mtt", { text:text,group:group,multiDistrib:u.distrib,user:u.user,status:status,hHour:Formatting.hHour } ) );
+						m.setHtmlBody( app.processTemplate("mail/orderNotif.mtt", { text:text,group:group,multiDistrib:u.distrib,user:u.user,hHour:Formatting.hHour,timeSlotService:timeSlotService } ) );
 						App.sendMail(m , u.distrib.group);	
 
 						if(App.config.DEBUG){
