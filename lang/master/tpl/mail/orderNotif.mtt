@@ -3,10 +3,12 @@
 
 ::raw text::
 
-::if(multiDistrib!=null)::
+::if(multiDistrib!=null && tsService!=null)::
 
 ::set tsService = timeSlotService(multiDistrib)::
 ::set status = tsService.userStatus(user.id)::
+
+:: if(status!=null)::
 
 <p>
     <b>Précautions et entraide pendant la crise sanitaire :</b><br/>
@@ -26,6 +28,8 @@
     ::end::
 
 </p>
+
+::end::
 
 ::end::
 
