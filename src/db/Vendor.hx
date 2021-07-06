@@ -167,7 +167,7 @@ class Vendor extends Object
 		};
 
 		if(this.profession!=null){
-			out.profession = Lambda.find(service.VendorService.getVendorProfessions(),function(x) return x.id==this.profession).name;
+			out.profession = getProfession();
 		}
 
 		if(withImages){
@@ -181,6 +181,10 @@ class Vendor extends Object
 			out.images.farm4 = file(images.farm4);
 		}
 		return out;
+	}
+
+	public function getProfession():String {
+		return Lambda.find(service.VendorService.getVendorProfessions(), x -> x.id==this.profession).name;
 	}
 
 	public function getGroups():Array<db.Group>{

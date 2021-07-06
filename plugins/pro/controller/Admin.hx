@@ -1758,4 +1758,51 @@ class Admin extends controller.Controller {
 			offset: offset,
 		}));
 	}
+
+
+	/**
+		2021-07-05
+		trouver combien de producteurs sont dans les amaps ET dans les groupes en mode boutique
+	**/
+	function doAmapStats(){
+
+		var out = {
+			onlyShop:0,
+			onlyAMAP:0,
+			both:0
+		};
+
+		for ( vs in VendorStats.manager.search($active==true,false)){
+			var v = vs.vendor;
+
+			var groups = v.getActiveContracts().map( c -> c.group ).array();
+			groups = ObjectListTool.deduplicate(groups);
+
+			var groupTypes = {
+				amap:0,
+				shop:0
+			};
+
+			for( g in groups ){
+
+				if(g.hasShopMode()){
+					groupTypes.shop++;
+				}else{
+					groupTypes.amap++;
+				}
+			}
+
+			if(groupTypes.amap==0 && groupTypes.shop>0){
+				out.onlyShop++;
+			}else if ( groupTypes.shop==0 && groupTypes.amap>0 ){
+				out.onlyAMAP++;
+			}else if ( groupTypes.shop>0 && groupTypes.amap>0 ){
+				out.both++;
+			}
+
+		}
+
+		Sys.print(Json.stringify(out));
+
+	}
 }
