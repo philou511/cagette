@@ -100,64 +100,11 @@ class TimeSlotsService {
 		return this.timeSlots;
 	}
 
-	public function updateUserToSlot(userId: Int, slotIds: Array<Int>) {
-		if (distribution.slots == null) return false;
-		if (!userIsAlreadyAdded(userId)) return false;
-
-		distribution.lock();
-		distribution.slots = distribution.slots.map(slot -> {
-			slot.registeredUserIds = slot.registeredUserIds.filter(id -> id != userId);
-			return slot;
-		});
-		distribution.slots = distribution.slots.map(slot -> {
-			if (slotIds.indexOf(slot.id) != -1) {
-				slot.registeredUserIds.push(userId);
-			}
-			return slot;
-		});
-		distribution.update();
-		return true;
-	}
-
-	
-
-
-
-}
-
-
-typedef Slot = {
-	id: Int,
-  	distribId: Int,
-  	selectedUserIds: Array<Int>,
-	registeredUserIds: Array<Int>,
-	start: Date,
-  	end: Date
-}
-
-// typedef SlotResolver = {
-// 	id: Int,
-// 	selectedUserIds: Array<Int>,
-//   potentialUserIds: Array<Int>,
-// }
-
-class SlotResolver {
-	public var id(default, null): Int;
-	public var potentialUserIds(default, null): Array<Int>;
-	public var selectedUserIds(default, null): Array<Int>;
-
-	public function new (id: Int, potentialUserIds: Array<Int>, ?selectedUserIds: Array<Int>) {
-		this.id = id;
-		this.potentialUserIds = potentialUserIds;
-		this.selectedUserIds = (selectedUserIds == null) ? new Array<Int>() : selectedUserIds;
-	}
-
-	public function selectUser(userId: Int) {
-		var founded = false;
-		this.potentialUserIds = this.potentialUserIds.filter(id -> {
-			if (userId == id) {
-				founded = true;
-				return false;
+	public function getSlotById(slotId:Int) {
+		var founded = null;
+		Lambda.foreach(this.timeSlots, function(slot) {
+			if (slot.id == slotId) {
+				founded = slot;
 			}
 			return true;
 		});
