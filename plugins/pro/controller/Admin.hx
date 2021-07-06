@@ -1,5 +1,8 @@
 package pro.controller;
 
+import db.User;
+import haxe.DynamicAccess;
+import db.MultiDistrib;
 import crm.CrmService;
 import db.Group.BetaFlags;
 import tools.DateTool;
@@ -1634,45 +1637,171 @@ class Admin extends controller.Controller {
 			nbInvalid: nbInvalid,
 			invalids: invalids
 		});
+	}
 
-		// var distribs = sys.db.Manager.cnx.request('SELECT id, slots, slotsMode  FROM MultiDistrib where orderEndDate > "2021-01-01" and orderEndDate < "2021-06-01" and slots IS NOT NULL');
+	@admin
+	public function doTimeSlotsSync() {
+		var limit = app.params.get("limit") != null ? Std.parseInt(app.params.get("limit")) : 500;
+		var offset = app.params.get("offset") != null ? Std.parseInt(app.params.get("offset")) : 0;
+		var sql = "SELECT * FROM MultiDistrib 
+			WHERE slots IS NOT NULL 
+			AND slots != 'n' 
+			LIMIT "+limit+" OFFSET "+offset+" ";
+		var distribs = db.MultiDistrib.manager.unsafeObjects(sql, true);
 
-		// var nbDefaultSlotsModes = 0;
-		// var nbSoloSlotModes = 0;
-		// var nbInvalid = 0;
-		// var invalids = [];
-
-		// var counterMap = new Map<String, Int>();
-
-		// for (distrib in distribs) {
-		// 	// var mode = distrib.slotsMode.split(":")[1];
-
-		// 	Sys.println('oo' + distrib.slotsMode.split(":"));
-
-		// 	// Sys.println('oo' + distrib.slotsMode + " exist ?" + counterMap.exists(distrib.slotsMode));
-		// 	// if (!counterMap.exists(distrib.slotsMode)) {
-		// 	// 	counterMap.set(distrib.slotsMode, 1);
-		// 	// } else {
-		// 	// 	counterMap.set(distrib.slotsMode, counterMap.get(distrib.slotsMode) + 1);
-		// 	// }
-
-		// 	// if (mode == "default") {
-		// 	// 	nbDefaultSlotsModes += 1;
-		// 	// } else if (mode == "solo-only") {
-		// 	// 	nbSoloSlotModes += 1;
-		// 	// } else {
-		// 	// 	nbInvalid += 1;
-		// 	// 	invalids.push(mode.toString());
-		// 	// }
+		// if (distribs.length == 0) {
+		// 	Sys.print("no distribs");
+		// 	return;
 		// }
+		
+		var parsed = [];
+		var slotsNull = [];
+		var slotsLength0 = [];
+		var others = [];
 
-		// json({
-		// 	"nbDistribsWithSlots": distribs.length,
-		// 	// "counterMap": counterMap,
-		// 	"nb slotsMode = default": nbDefaultSlotsModes,
-		// 	"nb slotsMode = solo-only": nbSoloSlotModes,
-		// 	"nb slotsMode invalid": nbInvalid,
-		// 	"invalids": invalids
-		// });
+		for (distrib in distribs) {
+			if (distrib.slots != null && distrib.slots.length > 0) {
+				// distrib.lock();
+				var slots:Array<Dynamic> = [];
+				for (slot in distrib.slots) {
+					var selectedUserIds = slot.selectedUserIds;
+					if (distrib.inNeedUserIds != null) {
+						for (inNeedUserId in distrib.inNeedUserIds.keys()) {
+							selectedUserIds.push(inNeedUserId);
+						}
+					}
+					slots.push({
+						id: slot.id,
+						selectedUserIds: selectedUserIds,
+						registeredUserIds: slot.registeredUserIds,
+						start: DateTool.toJs(slot.start),
+						end: DateTool.toJs(slot.end),
+					});
+				};
+				distrib.timeSlots = Json.stringify(slots);
+				distrib.update();
+				parsed.push(distrib);
+			} else {
+				if (distrib.slots == null) {
+					slotsNull.push(distrib);
+				} else if (distrib.slots.length == 0) {
+					slotsLength0.push(distrib);
+				} else {
+					others.push(distrib);
+				}
+			}
+		}
+
+		Sys.print(Json.stringify({
+			v: 5,
+			infos: {
+				nbDistribs: distribs.length,
+				nbParsed: parsed.length,
+				// parsed: parsed,
+				nbSlotsNull: slotsNull.length,
+				// slotsNull: slotsNull,
+				nbSlotsLength0: slotsLength0.length,
+				// slotsLength0: slotsLength0,
+				nbOthers: others.length
+				// others: others
+			},
+			sql: sql,
+			offset: offset,
+			nextHttp: "http://" + App.config.HOST + "/p/pro/admin/timeSlotsSync?limit="+limit+"&offset="+(offset + limit),
+			nextHttps: "https://" + App.config.HOST + "/p/pro/admin/timeSlotsSync?limit="+limit+"&offset="+(offset + limit)
+		}));
+	}
+
+	public function doTimeSlotsSyncInfo() {
+		var now = Date.fromString("2020-01-01");
+
+		var sql = "SELECT * FROM MultiDistrib 
+		WHERE slots IS NOT NULL
+		AND timeSlots IS NOT NULL 
+		AND slotsMode <> 'y7:default'
+		AND inNeedUserIds <> 'qh'
+		AND distribStartDate > '"+ now + "' ";
+		var distribs = db.MultiDistrib.manager.unsafeObjects(sql, false);
+
+		var res = [];
+
+		for (distrib in distribs) {
+			var it = distrib.inNeedUserIds.keys();
+			while (it.hasNext()) {
+				var userId = it.next();
+
+				var user = User.manager.get(userId);
+
+				res.push({
+					distribId: distrib.id,
+					distribStartDate: distrib.distribStartDate,
+					userId: userId,
+					email: user.email
+				});
+			}
+		}
+
+		Sys.print(Json.stringify({
+			status: "success",
+			sql: sql,
+			nbDistribsToProcess: distribs.length,
+			res: res,
+		}));
+	}
+
+	function doTest() {
+		var offset = app.params.get("offset");
+
+		Sys.print(Json.stringify({
+			status: "succes",
+			offset: offset,
+		}));
+	}
+
+
+	/**
+		2021-07-05
+		trouver combien de producteurs sont dans les amaps ET dans les groupes en mode boutique
+	**/
+	function doAmapStats(){
+
+		var out = {
+			onlyShop:0,
+			onlyAMAP:0,
+			both:0
+		};
+
+		for ( vs in VendorStats.manager.search($active==true,false)){
+			var v = vs.vendor;
+
+			var groups = v.getActiveContracts().map( c -> c.group ).array();
+			groups = ObjectListTool.deduplicate(groups);
+
+			var groupTypes = {
+				amap:0,
+				shop:0
+			};
+
+			for( g in groups ){
+
+				if(g.hasShopMode()){
+					groupTypes.shop++;
+				}else{
+					groupTypes.amap++;
+				}
+			}
+
+			if(groupTypes.amap==0 && groupTypes.shop>0){
+				out.onlyShop++;
+			}else if ( groupTypes.shop==0 && groupTypes.amap>0 ){
+				out.onlyAMAP++;
+			}else if ( groupTypes.shop>0 && groupTypes.amap>0 ){
+				out.both++;
+			}
+
+		}
+
+		Sys.print(Json.stringify(out));
+
 	}
 }

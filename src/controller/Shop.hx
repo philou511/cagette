@@ -274,6 +274,13 @@ class Shop extends Controller
 	**/
 	function doConfirm(tmpBasket:db.TmpBasket){
 		if(tmpBasket!=null){
+			
+			if(tmpBasket.user==null){				
+				tmpBasket.lock();
+				tmpBasket.user = app.user;
+				tmpBasket.update();
+			}
+
 			OrderService.confirmTmpBasket(tmpBasket);
 			throw Ok("/contract", t._("Your order has been confirmed") );
 		}else{

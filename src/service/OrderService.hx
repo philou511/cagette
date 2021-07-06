@@ -759,7 +759,7 @@ class OrderService
 	/**
 		Create or update orders for variable catalogs
 	**/ 
-	public static function createOrUpdateOrders( user : db.User, multiDistrib : db.MultiDistrib, catalog : db.Catalog, ordersData:Array<{id:Int, productId:Int, qt:Float, paid:Bool}> ) : Array<db.UserOrder> {
+	public static function createOrUpdateOrders( user:db.User, multiDistrib:db.MultiDistrib, catalog:db.Catalog, ordersData:Array<{id:Int, productId:Int, qt:Float, paid:Bool}> ) : Array<db.UserOrder> {
 
 		if ( multiDistrib == null && catalog == null ) {
 			throw new Error('You should provide at least a catalog or a multiDistrib');

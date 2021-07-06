@@ -18,7 +18,7 @@
 	<br/>( Plus d'explications dans <a href="http://r.sib.cagette.net/mk/mr/3ec6isWJSaecmldXKXB6lxfdyAyunnfxt2-PnkMb3ILG5Z4tOOp9aC69DiRV3OT6pspWN96jlWMRgmPteVSqQVJ-_zqr40kua1nR" target="_blank">notre email du 22 Octobre</a> envoyé à tous les coordinateurs de groupes. )
 	<br/> Contactez-nous sur support@cagette.net si vous avez des questions.	
 	</div>
-	::end::-->
+	::end::
 
 	::if (!group.hasShopMode())::
 	<div class="alert alert-warning"> 
@@ -26,8 +26,7 @@
 		Cela permet aux coordinateurs de contrats de tester à leur rythme cette nouvelle fonctionnalité.<br/>
 		Attention, tous les <b>nouveaux contrats</b> sont obligatoirement <b>avec</b> gestion des paiements.
 	</div>
-	::end::
-
+	::end::-->
 	
 	<div class="article" id="contracts">
 		<h2>

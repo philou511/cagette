@@ -5,8 +5,15 @@ import Common;
 using tools.ObjectListTool;
 using Lambda;
 import haxe.Json;
-import service.TimeSlotsService;
 
+typedef Slot = {
+	id:Int,
+	distribId:Int,
+	selectedUserIds:Array<Int>,
+	registeredUserIds:Array<Int>,
+	start:Date,
+	end:Date
+}
 
 /**
  * MultiDistrib represents a global distributions with many vendors. 	
@@ -27,6 +34,7 @@ class MultiDistrib extends Object
 	@hideInForms public var slots : SNull<SData<Array<Slot>>>;
 	@hideInForms public var inNeedUserIds : SNull<SData<Map<Int, Array<String>>>>;
 	@hideInForms public var voluntaryUsers : SNull<SData<Map<Int, Array<Int>>>>;
+	@hideInForms public var timeSlots : SNull<SText>; // IN JSON
 	
 	@hideInForms public var timeSlotData : SText; //JSON
 
@@ -599,15 +607,5 @@ class MultiDistrib extends Object
 			}
 		}
 		return null;
-	}
-
-		
-
-	public function resolveSlots() {
-		return new service.TimeSlotsService(this).resolveSlots();
-	}
-
-	private function userIsAlreadyAdded(userId: Int) {
-		return new service.TimeSlotsService(this).userIsAlreadyAdded(userId);
 	}
 }

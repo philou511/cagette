@@ -180,7 +180,7 @@ class PaymentService {
 		Can handle orders happening on different multidistribs.
 		Orders are supposed to be from the same user.
 	 */
-	public static function onOrderConfirm( orders : Array<db.UserOrder> ) : Array<db.Operation> { 
+	public static function onOrderConfirm( orders:Array<db.UserOrder> ) : Array<db.Operation> { 
 
 		var out = [];
 	

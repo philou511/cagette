@@ -31,7 +31,7 @@ class PCatalogService{
 			//log.push( "<h4>" + /*contract.name+" - " +*/ contract.amap.name /*+(fullUpdate?"[Full]":"[Light]")*/ + "</h4>" );
 			log.push( "<h4>" +  contract.group.name + "</h4>" );
 
-			syncContract(contract,catalog);
+			syncCatalog(contract,catalog);
 			
 			//sync cpro products to group products
 			var groupProducts = contract.getProducts(false);
@@ -233,76 +233,70 @@ class PCatalogService{
 	}*/
 
 	/**
-	 *  Create or sync the contract
-	 *  @param contract - 
-	 *  @param catalog - 
-	 *  @param contact - 
-	 *  @param group - 
-	 *  @param vendor - 
+	 *  Create or sync a catalog ( from a vendor catalog (PCatalog) to a group catalog (Catalog) )
 	 */
-	public static function syncContract(contract:db.Catalog,catalog:pro.db.PCatalog, ?contact:db.User,?group:db.Group){
+	public static function syncCatalog(groupCatalog:db.Catalog,proCatalog:pro.db.PCatalog, ?contact:db.User,?group:db.Group){
 
-		if(catalog==null) throw "catalog cannot be null";
-		if(contract==null){
+		if(proCatalog==null) throw "catalog cannot be null";
+		if(groupCatalog==null){
 
 			if(group==null) throw "you should provide a group";
 			if(contact==null) throw "you should provide a contact";
-			if(catalog.company.vendor==null) throw "catalog should be linked to a CagettePro/Vendor accound";
+			if(proCatalog.company.vendor==null) throw "catalog should be linked to a CagettePro/Vendor accound";
 
 			//create it
-			contract = new db.Catalog();
-			contract.vendor = catalog.company.vendor;
-			contract.type = db.Catalog.TYPE_VARORDER;
-			contract.group = group;
-			contract.flags.set(db.Catalog.CatalogFlags.UsersCanOrder);
-			contract.contact = contact;
+			groupCatalog = new db.Catalog();
+			groupCatalog.vendor = proCatalog.company.vendor;
+			groupCatalog.type = db.Catalog.TYPE_VARORDER;
+			groupCatalog.group = group;
+			groupCatalog.flags.set(db.Catalog.CatalogFlags.UsersCanOrder);
+			groupCatalog.contact = contact;
 		
 		}else{
 			//just sync it
-			contract.lock();
+			groupCatalog.lock();
 		}
 		
-		contract.startDate = catalog.startDate;
-		contract.endDate = catalog.endDate;
-		if(catalog.contractName!=null) {
-			contract.name = catalog.contractName;
+		groupCatalog.startDate = proCatalog.startDate;
+		groupCatalog.endDate = proCatalog.endDate;
+		groupCatalog.flags.set(db.Catalog.CatalogFlags.StockManagement);
+		if(proCatalog.contractName!=null) {
+			groupCatalog.name = proCatalog.contractName;
 		}else{
-			contract.name = "Commande "+contract.vendor.name;
+			groupCatalog.name = "Commande "+groupCatalog.vendor.name;
 		}
 
 				
 		//vendor
-		if( catalog.vendor==null){
-			if(catalog.company.vendor==null) throw "catalog "+catalog.id+" company has no vendor";
-			contract.vendor = catalog.company.vendor;
+		if( proCatalog.vendor==null){
+			if(proCatalog.company.vendor==null) throw "catalog "+proCatalog.id+" company has no vendor";
+			groupCatalog.vendor = proCatalog.company.vendor;
 		}else{
-			if(catalog.vendor==null) throw "catalog "+catalog.id+" vendor is null";
-			contract.vendor = catalog.vendor;	
+			if(proCatalog.vendor==null) throw "catalog "+proCatalog.id+" vendor is null";
+			groupCatalog.vendor = proCatalog.vendor;	
 		}
 		
-		if(contract.id==null){
-			contract.insert();
+		if(groupCatalog.id==null){
+			groupCatalog.insert();
 		}else{
-			contract.update();
+			groupCatalog.update();
 		}
 
 		//check that the farmer can access the contract in the group
-		for( user in catalog.company.getUsers() ){
-			var ua = db.UserGroup.getOrCreate(user, contract.group);
-			if(catalog.company.captiveGroups){
+		for( user in proCatalog.company.getUsers() ){
+			var ua = db.UserGroup.getOrCreate(user, groupCatalog.group);
+			if(proCatalog.company.captiveGroups){
 				//cagette pro users are admin in all groups if captiveGroups is activated
 				ua.giveRight(Right.GroupAdmin);
 				ua.giveRight(Right.Membership);
 				ua.giveRight(Right.Messages);
 				ua.giveRight(Right.ContractAdmin());
 			}else{
-				ua.giveRight(Right.ContractAdmin(contract.id));
+				ua.giveRight(Right.ContractAdmin(groupCatalog.id));
 			}
-			
-			
 		}
 
-		return contract;
+		return groupCatalog;
 	}
 
 	/**
@@ -328,7 +322,7 @@ class PCatalogService{
 		var contact = db.User.manager.get(remoteUserId);
 		
 		//create contract		
-		var contract = syncContract(null,catalog,contact,clientGroup);
+		var contract = syncCatalog(null,catalog,contact,clientGroup);
 
 		//if CSA contract with constant orders
 		if(contractType==db.Catalog.TYPE_CONSTORDERS && !clientGroup.hasShopMode()){
