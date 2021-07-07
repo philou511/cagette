@@ -83,6 +83,10 @@
 			  
 			})
 		</script>
+
+		::foreach script getNeoModuleScripts()::
+			<script src="::script::"></script>
+		::end::
 		
 	</body>
 </html>
