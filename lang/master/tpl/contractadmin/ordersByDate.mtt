@@ -22,7 +22,7 @@
 		<div class="text-center">
 
 			<a class="btn btn-default btn-sm"
-				onclick="_.initOrderBox(null, ::distrib.id::, null, 1,'::escapeJS(hDate(date))::','::escapeJS(place.toString())::', null, '::currency()::', ::user.getGroup().hasPayments()::, '/contractAdmin/ordersByDate/::date::/::place.id::')">
+				onclick="_.initOrderBox(null, ::distrib.id::, null, 1,'::escapeJS(hDate(date))::','::escapeJS(place.toString())::', null, '::currency()::', ::user.getGroup().hasPayments()::, '/contractAdmin/ordersByDate/::date::/::place.id::', ::user.getGroup().hasCagette2()::, ::user.getGroup().id::)">
 				<i class="icon icon-plus"></i>
 				::_("New order")::
 			</a>
@@ -70,7 +70,7 @@
 							::set contractTotal = 0::
 
 							<a class="btn btn-default btn-xs pull-right"
-						onclick="_.initOrderBox( ::m.userId::, ::distrib.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(m.userName)::','::currency()::', ::user.getGroup().hasPayments()::,'/contractAdmin/ordersByDate/::date::/::place.id::')">
+						onclick="_.initOrderBox( ::m.userId::, ::distrib.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(m.userName)::','::currency()::', ::user.getGroup().hasPayments()::,'/contractAdmin/ordersByDate/::date::/::place.id::', ::user.getGroup().hasCagette2()::)">
 							<i class="icon icon-edit"></i>
 								::_("Edit")::
 						</a>	
