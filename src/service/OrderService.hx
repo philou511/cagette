@@ -434,7 +434,14 @@ class OrderService
 			x.catalogId = c.id;
 			x.catalogName = c.name;
 			x.canModify = o.canModify(); 
+			// Sys.print("A : "+x.total+"<br>");
 			
+			//recreate a clean float to prevent a strange bug in neko
+			//if I dont do that 1.665 will round to 1.66 instead of 1.67
+			x.total = Std.string(x.total).parseFloat();
+
+			x.total = Math.round(x.total*100)/100;
+			// Sys.print("B : "+x.total+"<br>");
 			out.push(x);
 		}
 		

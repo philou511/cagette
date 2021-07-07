@@ -1,0 +1,23 @@
+::use 'admin/design.mtt'::
+
+<h2>Vérification de la consistence entre commandes et opérations de paiement</h2>
+
+<p>
+    Groupe : <b>::group.name::</b><br/>
+    Période du <b>::hDate(from)::</b> au <b>::hDate(to)::</b>
+</p>
+
+
+::foreach md mds::
+
+    <h4>::md.md::</h4>
+    ::foreach msg md.messages::
+    <p>::msg::</p>
+    ::end::
+
+
+::end::
+
+<a href="::getURI()::/1" class="btn btn-primary">Fix it</a>
+
+::end::

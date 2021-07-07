@@ -90,7 +90,7 @@ class View extends sugoi.BaseView {
 			return "";
 
 		// round with 2 digits after comma
-		var out = Std.string(roundTo(n, 2));
+		var out = Std.string( Math.round(n*100)/100 );
 
 		// add a zero, 1,8-->1,80
 		if (out.indexOf(".") != -1 && out.split(".")[1].length == 1)

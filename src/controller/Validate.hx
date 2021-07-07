@@ -22,11 +22,6 @@ class Validate extends controller.Controller
 		var place = multiDistrib.getPlace();
 		var date = multiDistrib.getDate();
 		
-		if (!app.user.getGroup().hasShopMode()){
-			//get last operations and check balance
-			view.operations = db.Operation.getLastOperations(user,place.group,10);
-			
-		}
 		var ug = db.UserGroup.get(user, place.group);
 		view.balance = ug==null ? null : ug.balance;
 		var b = db.Basket.get(user, multiDistrib);			
