@@ -201,6 +201,11 @@ class Main extends Controller {
 		d.dispatch(new controller.Member());
 	}
 
+	function doHistory(d:Dispatch) {
+		addBc("history", "Historique", "/history");
+		d.dispatch(new controller.History());
+	}
+
 	function doAccount(d:Dispatch) {
 		addBc("account", "Mon compte", "/account");
 		d.dispatch(new controller.Account());
