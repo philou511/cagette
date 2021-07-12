@@ -19,7 +19,7 @@
 					<th colspan="6" class="text-center">Commande</th>
 					<th colspan="3" class="text-center">
 						<a class="btn btn-default btn-xs"
-						onclick="_.initOrderBox( ::member.id::, ::md.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(member.getName())::','::currency()::', ::user.getGroup().hasPayments()::, '/validate/::md.id::/::member.id::')">
+						onclick="_.initOrderBox( ::member.id::, ::md.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(member.getName())::','::currency()::', ::user.getGroup().hasPayments()::, '/validate/::md.id::/::member.id::', ::user.getGroup().hasCagette2()::, ::user.getGroup().id::)">
 							<i class="icon icon-edit"></i>
 								::_("Edit")::
 						</a>			
