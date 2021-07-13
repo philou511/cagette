@@ -483,6 +483,11 @@ class App {
         req.request();
     }
 
+    public function resetGroupInSession(groupId:Int) {
+        var req = new haxe.Http("/account/quitGroup/"+groupId);
+        req.request();
+    }
+
 }
 
 
