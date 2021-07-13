@@ -105,12 +105,12 @@ class Main extends Controller {
 
 		// message if phone is required
 		if (app.user != null && group.flags.has(db.Group.GroupFlags.PhoneRequired) && app.user.phone == null) {
-			app.session.addMessage(t._("Members of this group should provide a phone number. <a href='/account/edit'>Please click here to update your account</a>."),
+			app.session.addMessage(t._("Members of this group should provide a phone number. <a href='/account'>Please click here to update your account</a>."),
 				true);
 		}
 		// message if address is required
 		if (app.user != null && group.flags.has(db.Group.GroupFlags.AddressRequired) && app.user.city == null) {
-			app.session.addMessage(t._("Members of this group should provide an address. <a href='/account/edit'>Please click here to update your account</a>."),
+			app.session.addMessage(t._("Members of this group should provide an address. <a href='/account'>Please click here to update your account</a>."),
 				true);
 		}
 

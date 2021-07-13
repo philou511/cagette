@@ -1193,7 +1193,7 @@ msgid ""
 "edit'>Please click here to update your account</a>."
 msgstr ""
 "Mitglieder dieser Gruppe sollten eine Telefonnummer angeben. <a href='/"
-"account/edit'>Bitte klicken Sie hier, um Ihr Konto zu aktualisieren </a>."
+"account'>Bitte klicken Sie hier, um Ihr Konto zu aktualisieren </a>."
 
 #: src/controller/Shop.hx:4178
 msgid "In order to confirm your order, You need to authenticate."

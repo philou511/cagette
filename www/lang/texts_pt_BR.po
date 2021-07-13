@@ -1225,11 +1225,11 @@ msgstr "Frango"
 
 #: ../src/controller/Shop.hx:761 ../src/controller/Main.hx:3066 ../src/controller/Main.hx:6086
 msgid ""
-"Members of this group should provide a phone number. <a href='/account/edit'>Please "
+"Members of this group should provide a phone number. <a href='/account'>Please "
 "click here to update your account</a>."
 msgstr ""
 "Os membros deste grupo devem fornecer um número de telefone. <a href='/"
-"account/edit'>Clique aqui para atualizar sua conta</a>."
+"account'>Clique aqui para atualizar sua conta</a>."
 
 #: ../src/controller/Shop.hx:4848
 msgid "In order to confirm your order, You need to authenticate."
@@ -1581,10 +1581,10 @@ msgstr "O link \"::link::\"não existe."
 
 #: ../src/controller/Main.hx:3367 ../src/controller/Main.hx:6387
 msgid ""
-"Members of this group should provide an address. <a href='/account/edit'>Please "
+"Members of this group should provide an address. <a href='/account'>Please "
 "click here to update your account</a>."
 msgstr ""
-"Os membros deste grupo devem fornecer um endereço. <a href='/account/edit'>"
+"Os membros deste grupo devem fornecer um endereço. <a href='/account'>"
 "Clique aqui para atualizar sua conta</a>."
 
 #: ../src/controller/Account.hx:586 ../src/controller/Account.hx:777
