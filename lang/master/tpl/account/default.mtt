@@ -2,23 +2,6 @@
 <div class="col-md-12">
 
 	<h3>::_("Profile")::</h3>
-	<!-- <div class="article">
-		
-		<p>
-			$$contact(::user::)	
-		</p>
-		
-		
-		<div class="pull-right">
-			<a href="::user.getQuitGroupLink(user.getGroup())::" class="btn btn-default btn-sm">
-				<i class="icon icon-delete"></i>
-				::_("Leave this group")::
-			</a>
-		</div>
-		
-		$$edit(::_("Edit")::,/account/edit)
-		
-	</div> -->
 
 	<div>
 		<div id="neo-container"></div>
@@ -48,6 +31,15 @@
 					::langText::
 				</b>
 			</p>
+		</div>
+	</div>
+
+	<h3>Suppression du compte</h3>
+	<div class="MuiPaper-root MuiCard-root MuiPaper-elevation1 MuiPaper-rounded" style="margin-bottom: 16px">
+		<div style="padding: 16px">
+			<a href='https://wiki.cagette.net/user:supprimer' class="btn btn-default btn-sm">
+				Comment supprimer mon compte  ?
+			</a>
 		</div>
 	</div>
 </div>
