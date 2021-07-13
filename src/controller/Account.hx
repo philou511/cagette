@@ -23,17 +23,13 @@ class Account extends Controller
 	 */
 	@logged
 	@tpl("account/default.mtt")
-	function doDefault(?args: { editNotif:Bool } ) {
+	function doDefault() {
 
 		var group =  app.user.getGroup();
 		if (group!=null) {
 			view.groupId = group.id;
 		}
 
-		if (args!=null && args.editNotif!=null) {
-			view.openNotificationTab = true;
-		}
-		
 		//Create the list of links to change the language
 		var langs = App.config.get("langs").split(";");
 		var langNames = App.config.get("langnames").split(";");
