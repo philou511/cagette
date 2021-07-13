@@ -2,7 +2,7 @@
 <div class="col-md-12">
 
 	<h3>::_("Profile")::</h3>
-	<div class="article">
+	<!-- <div class="article">
 		
 		<p>
 			$$contact(::user::)	
@@ -18,23 +18,37 @@
 		
 		$$edit(::_("Edit")::,/account/edit)
 		
+	</div> -->
+
+	<div>
+		<div id="neo-container"></div>
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function(event) {
+				neo.createNeoModule("neo-container", "userAccount", {
+						currentGroupId: ::groupId::,
+					});
+			});
+		</script>
 	</div>
 
 	<h3>::_("Language")::</h3>
-	<div class="article">
-		::_("Display the interface in another language"):: (beta)
-		:
-		<ul>
+	<div class="MuiPaper-root MuiCard-root MuiPaper-elevation1 MuiPaper-rounded" style="margin-bottom: 16px">
+		<div style="padding: 16px">
+			::_("Display the interface in another language"):: (beta)
+			:
+			<ul>
 
-			::raw langLinks::
-			
-		</ul>
-		<p>
-			::_("Current language is")::
-			<b>
-				::langText::
-			</b>
-		</p>
+				::raw langLinks::
+				
+			</ul>
+			<p>
+				::_("Current language is")::
+				<b>
+					::langText::
+				</b>
+			</p>
+		</div>
 	</div>
 </div>
 ::end::

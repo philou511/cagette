@@ -24,6 +24,11 @@ class Account extends Controller
 	@logged
 	@tpl("account/default.mtt")
 	function doDefault() {
+
+		var group =  app.user.getGroup();
+		if (group!=null) {
+			view.groupId = group.id;
+		}
 		
 		//Create the list of links to change the language
 		var langs = App.config.get("langs").split(";");
@@ -127,6 +132,15 @@ class Account extends Controller
 		}
 		
 		view.form = form;
+	}
+
+	public function doQuitGroup(groupId:Int) {
+		if (App.current.session.data.amapId == groupId) {
+			App.current.session.data.amapId = null;
+			Sys.println("Deleted");
+		} 
+
+		Sys.println("Not deleted");
 	}
 	
 }
