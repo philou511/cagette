@@ -4,9 +4,12 @@
 	
 	<div class="article">
         <h2>Quitter le groupe "::group.name::"</h2>
-        <p>
-            Votre compte : <b>::member.getName()::</b> ( ::member.email:: )
-        </p>
+        ::if member!=null::
+            <p>
+                Votre compte : <b>::member.getName()::</b> ( ::member.email:: )
+            </p>
+        ::end::
+        
         <p>
             Si vous quittez ce groupe :
             <ul>
