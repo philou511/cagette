@@ -61,32 +61,7 @@ class Account extends Controller
 		}
 
 		view.member = user;
-
-		var form = db.User.getForm(user);
-		form.removeElement(form.getElement("firstName"));
-		form.removeElement(form.getElement("lastName"));
-		form.removeElement(form.getElement("email"));
-		form.removeElement(form.getElement("phone"));
-		form.removeElement(form.getElement("firstName2"));
-		form.removeElement(form.getElement("lastName2"));
-		form.removeElement(form.getElement("email2"));
-		form.removeElement(form.getElement("phone2"));
-		form.removeElement(form.getElement("address1"));
-		form.removeElement(form.getElement("address2"));
-		form.removeElement(form.getElement("zipCode"));
-		form.removeElement(form.getElement("city"));
-		form.removeElement(form.getElement("birthDate"));
-		form.removeElement(form.getElement("nationality"));
-		form.removeElement(form.getElement("countryOfResidence"));
-		
-		if (form.isValid()) {
-			var url = app.user==null ? "/user/" : "/user/choose?show=1";
-			form.toSpod(user); 
-			user.update();
-			throw Ok(url, t._("Your account has been updated"));
-		}
-		
-		view.form = form;
+		view.controlKey = key;
 	}
 
 	public function doQuitGroup(groupId:Int) {

@@ -3,16 +3,17 @@
 <div class="col-md-3"></div>
 <div class="col-md-6">
 	
-	<div class="article">
-        <h2>Gérer vos préférences de notification</h2>
-        <p>
-            Votre compte : <b>::member.getCoupleName()::</b> ( ::member.email:: ::if member.email2!=null:: et ::member.email2:: ::end:: )
-        </p>
-       
-        <p class="text-center">
-            ::raw form::
-        </p>
+	<div style="margin-bottom: 16px">
+		<div id="neo-container"></div>
 		
+		<script>
+			document.addEventListener("DOMContentLoaded", function(event) {
+				neo.createNeoModule("neo-container", "editNotifications", {
+						userId: ::member.id::,
+						controlKey: "::controlKey::"
+					});
+			});
+		</script>
 	</div>
 	
 </div>
