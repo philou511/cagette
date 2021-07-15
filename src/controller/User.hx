@@ -344,9 +344,11 @@ class User extends Controller
 			throw Error("/","Lien invalide");
 		}
 
-		view.group = group;
-		view.member = app.user;
-		view.controlKey = haxe.crypto.Sha1.encode(App.config.KEY+group.id+app.user.id);
+		view.groupId = group.id;
+		if (app.user!=null) {
+			view.userId = app.user.id;
+			view.controlKey = haxe.crypto.Sha1.encode(App.config.KEY+group.id+app.user.id);
+		}
 	}
 
 	@tpl('form.mtt')

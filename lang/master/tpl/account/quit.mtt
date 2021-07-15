@@ -8,8 +8,8 @@
 		<script>
 			document.addEventListener("DOMContentLoaded", function(event) {
 				neo.createNeoModule("neo-container", "quitGroup", {
-						userId: ::member.id::,
-						groupId: ::group.id::,
+						userId: ::userId::,
+						groupId: ::groupId::,
 						controlKey: "::controlKey::"
 					});
 			});
