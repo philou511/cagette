@@ -346,18 +346,7 @@ class User extends Controller
 
 		view.group = group;
 		view.member = app.user;
-
-		if (checkToken()){
-			var url = app.user==null ? "/user/" : "/user/choose?show=1";
-			var name = group.name;
-			var ua = db.UserGroup.get(app.user, group,true);
-			if(ua==null){
-				throw Ok(url, "Vous ne faisiez plus partie du groupe "+name);	
-			}
-			ua.delete();
-			App.current.session.data.amapId = null;
-			throw Ok(url, t._("You left the group ::groupName::", {groupName:name}));
-		}
+		view.controlKey = haxe.crypto.Sha1.encode(App.config.KEY+group.id+app.user.id);
 	}
 
 	@tpl('form.mtt')
