@@ -67,10 +67,7 @@ class Account extends Controller
 	public function doQuitGroup(groupId:Int) {
 		if (App.current.session.data.amapId == groupId) {
 			App.current.session.data.amapId = null;
-			Sys.println("Deleted");
 		} 
-
-		Sys.println("Not deleted");
 	}
 	
 }
