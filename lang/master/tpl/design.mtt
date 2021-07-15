@@ -9,7 +9,7 @@
 		::end::
 
 		<div class="row header" style="margin-top:10px;">
-			<div class="col-md-8">
+			<div class="col-md-7">
 				::set groupName = getCurrentGroup()::
 				::if groupName!=null && noGroup!=true::
 					<h1>::groupName::</h1>
@@ -22,7 +22,7 @@
 				::end::
 			</div>
 			
-			<div class="col-md-4 accountBlock">					
+			<div class="col-md-5 accountBlock">					
 				$$userMenu(::user::)
 			</div>				
 		</div>

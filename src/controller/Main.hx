@@ -217,6 +217,12 @@ class Main extends Controller {
 		d.dispatch(new controller.Vendor());
 	}
 
+	@logged
+	function doNotifications(d:Dispatch) {
+		addBc("notifications", "Notifications", "/notifications");
+		d.dispatch(new controller.Notifications());
+	}
+
 	/**
 		update without auth
 	**/

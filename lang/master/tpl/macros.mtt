@@ -42,6 +42,13 @@
 			</div>
 		::end::
 
+		<!-- Notifications -->
+		<div class="dropdown pull-right text-right" >
+			<a class="" href="/notifications" >
+				<i class="icon icon-world"></i> ::_("Notifications")::
+			</a>
+		</div>
+
 		<!-- Help -->
 		<div class="dropdown pull-right text-right" id="helpMenu">
 					
@@ -69,7 +76,6 @@
 				<i class="icon icon-chevron-left"></i> ::_("Home")::
 			</a>
 		</div>
-
 			
 
 			
