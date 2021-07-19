@@ -382,7 +382,7 @@ class Main extends Controller {
 	}
 
 	@tpl('invite.mtt')
-	function doInvite(hash:String, userEmail:String, group:db.Group){
+	function doInvite(hash:String, userEmail:String, group:db.Group, ?user:db.User){
 
 		if (haxe.crypto.Sha1.encode(App.config.KEY+userEmail) != hash){
 			throw Error("/","Lien invalide");
@@ -390,8 +390,13 @@ class Main extends Controller {
 
 		app.session.data.amapId = group.id;
 
-		service.UserService.prepareLoginBoxOptions(view, group);
-		view.invitedUserEmail = userEmail;
-		view.invitedGroupId = group.id;
+		if (user!=null) {
+			db.UserGroup.getOrCreate(user,group);
+			throw Ok("/", t._("You're now a member of \"::group::\" ! You'll receive an email as soon as next order will open", {group:group.name}));
+		} else {
+			service.UserService.prepareLoginBoxOptions(view, group);
+			view.invitedUserEmail = userEmail;
+			view.invitedGroupId = group.id;
+		}
 	}
 }
