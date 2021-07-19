@@ -298,7 +298,7 @@
 	::end::
 	
 	
-	::if user.isAmapManager()::
+	<!-- ::if user.isAmapManager()::
 	<h3>::_("Tutorials")::</h3>
 	<div class="article">
 		<table class="table">
@@ -336,7 +336,7 @@
 			</script>
 			::end::		
 	</div>	
-	::end::	
+	::end::	 -->
 	
 </div>
 

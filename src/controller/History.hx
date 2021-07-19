@@ -8,7 +8,7 @@ import sugoi.form.elements.StringSelect;
 import db.Operation;
 import Common;
 using Std;
-import plugin.Tutorial;
+// import plugin.Tutorial;
 
 class History extends Controller
 {
@@ -47,42 +47,42 @@ class History extends Controller
 		view.distribs = distribs;
 		view.prepare = OrderService.prepare;
 		
-		// tutorials
-		if (app.user.isAmapManager()) {
+		// // tutorials
+		// if (app.user.isAmapManager()) {
 			
-			//actions
-			if (app.params.exists('startTuto') ) {
+		// 	//actions
+		// 	if (app.params.exists('startTuto') ) {
 				
-				//start a tuto
-				app.user.lock();
-				var t = app.params.get('startTuto'); 
-				app.user.tutoState = {name:t,step:0};
-				app.user.update();
-			}
+		// 		//start a tuto
+		// 		app.user.lock();
+		// 		var t = app.params.get('startTuto'); 
+		// 		app.user.tutoState = {name:t,step:0};
+		// 		app.user.update();
+		// 	}
 		
-			//tuto state
-			var tutos = new Array<{name:String,completion:Float,key:String}>();
+		// 	//tuto state
+		// 	var tutos = new Array<{name:String,completion:Float,key:String}>();
 			
-			for ( k in Tutorial.all().keys() ) {	
-				var t = Tutorial.all().get(k);
+		// 	for ( k in Tutorial.all().keys() ) {	
+		// 		var t = Tutorial.all().get(k);
 				
-				var completion = null;
-				if (app.user.tutoState!=null && app.user.tutoState.name == k) completion = app.user.tutoState.step / t.steps.length;
+		// 		var completion = null;
+		// 		if (app.user.tutoState!=null && app.user.tutoState.name == k) completion = app.user.tutoState.step / t.steps.length;
 				
-				tutos.push( { name:t.name, completion:completion , key:k } );
-			}
+		// 		tutos.push( { name:t.name, completion:completion , key:k } );
+		// 	}
 			
-			view.tutos = tutos;
-		}
+		// 	view.tutos = tutos;
+		// }
 		
-		//should be able to stop tuto in any case
-		if (app.params.exists('stopTuto')) {
-			//stopped tuto from a tuto window
-			app.user.lock();
-			app.user.tutoState = null;
-			app.user.update();	
-			view.stopTuto = true;
-		}
+		// //should be able to stop tuto in any case
+		// if (app.params.exists('stopTuto')) {
+		// 	//stopped tuto from a tuto window
+		// 	app.user.lock();
+		// 	app.user.tutoState = null;
+		// 	app.user.update();	
+		// 	view.stopTuto = true;
+		// }
 		
 		checkToken();
 		view.userGroup = ua;

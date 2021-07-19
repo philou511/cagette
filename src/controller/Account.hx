@@ -8,7 +8,6 @@ import sugoi.form.elements.StringSelect;
 import db.Operation;
 import Common;
 using Std;
-import plugin.Tutorial;
 
 class Account extends Controller
 {
