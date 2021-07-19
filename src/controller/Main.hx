@@ -380,4 +380,18 @@ class Main extends Controller {
 		}
 		Sys.print(haxe.Json.stringify(json));
 	}
+
+	@tpl('invite.mtt')
+	function doInvite(hash:String, userEmail:String, group:db.Group){
+
+		if (haxe.crypto.Sha1.encode(App.config.KEY+userEmail) != hash){
+			throw Error("/","Lien invalide");
+		}
+
+		app.session.data.amapId = group.id;
+
+		service.UserService.prepareLoginBoxOptions(view, group);
+		view.invitedUserEmail = userEmail;
+		view.invitedGroupId = group.id;
+	}
 }
