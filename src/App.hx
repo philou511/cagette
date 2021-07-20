@@ -193,6 +193,8 @@ class App extends sugoi.BaseApp {
 		out.set("CagetteNetwork", "Lister ce groupe sur la carte Cagette.net et sur les annuaires partenaires");
 		out.set("HasPayments", "Gestion des paiements");
 		out.set("Show3rdCategoryLevel", "Classer les produits de la boutique par catégorie de troisième niveau");	
+
+		out.set("Cagette2", "Cagette 2.0");	
 	
 
 		out.set("ref", "Référence");

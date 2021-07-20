@@ -24,7 +24,8 @@ class User extends Object {
 	public var id : SId;
 	public var lang : SString<2>;
 	//@:skip public var name(get, set) : String;
-	public var pass : STinyText;
+	public var pass : STinyText; //hashed in MD5
+	public var pass2 : STinyText; //hashed en Bcrypt
 	public var rights : SFlags<RightSite>;
 	
 	public var firstName:SString<32>;
@@ -100,8 +101,9 @@ class User extends Object {
 		form.removeElement(form.getElement("rights"));
 		form.removeElement(form.getElement("cdate"));
 		form.removeElement(form.getElement("ldate"));
-		form.removeElement( form.getElement("apiKey") );
+		form.removeElement(form.getElement("apiKey") );
 		form.removeElement(form.getElement("nationality"));
+		form.removeElement(form.getElement("pass2"));
 		
 		form.addElement(new sugoi.form.elements.StringSelect("nationality", t._("Nationality"), getNationalities(), user.nationality), 15);
 		form.removeElement(form.getElement("countryOfResidence"));

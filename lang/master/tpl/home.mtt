@@ -427,9 +427,8 @@ $$browserDetection()
 			ainsi que des nouvelles des producteurs !
 		</p>
 
-		::if (user==null)::
-		<a href="#" class="btn btn-primary"
-			onclick="_.registerBox('/user/joingroup',null,::loginBoxOptions.phoneRequired::,::loginBoxOptions.addressRequired::)">
+		::if (user==null)::		
+		<a href="#" class="btn btn-primary" onclick="_.registerBox('/user/joingroup','::loginBoxOptions.sid::',null,::loginBoxOptions.phoneRequired::,::loginBoxOptions.addressRequired::)">
 			<span class="glyphicon glyphicon-plus"></span>
 			M'inscrire à ce groupe
 		</a>

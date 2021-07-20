@@ -300,6 +300,7 @@ class Shop extends Controller
 
 			app.session.data.tmpBasketId = tmpBasket.id;
 			view.redirect = sugoi.Web.getURI();
+			view.sid = App.current.session.sid;
 			view.group = tmpBasket.multiDistrib.getGroup();
 			view.register = true;
 			view.message =  t._("In order to confirm your order, You need to authenticate.");
@@ -329,6 +330,10 @@ class Shop extends Controller
 
 	public function doAddTmpBasketId(tmpBasketId:Int) {
 		app.session.data.tmpBasketId = tmpBasketId;
+	}
+
+	public function doCheckTmpBasketId() {
+		Sys.print( haxe.Json.stringify( { tmpBasketId: app.session.data.tmpBasketId } ) );		
 	}
 
 }

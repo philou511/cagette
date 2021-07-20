@@ -197,27 +197,40 @@ class App {
 		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
 	
-	public function initOrderBox(userId : Int, multiDistribId : Int, catalogId : Int, catalogType : Int, date : String, place : String, userName : String, currency : String, hasPayments : Bool, callbackUrl : String) {
-        // //initSentry();
-
-		var node = js.Browser.document.createDivElement();
-		node.id = "ordersdialog-container";
-		js.Browser.document.body.appendChild(node);
-		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
-	
-		var store = createOrderBoxReduxStore();
-		ReactDOM.render(jsx('
-			<ReduxProvider store=${store}>
-				<MuiThemeProvider theme=${CagetteTheme.get()}>
-					<>
-						<CssBaseline />
-						<OrdersDialog userId=$userId multiDistribId=$multiDistribId catalogId=$catalogId catalogType=$catalogType
-						date=$date place=$place userName=$userName callbackUrl=$callbackUrl currency=$currency hasPayments=$hasPayments />							
-					</>
-				</MuiThemeProvider>
-			</ReduxProvider>
-		'), node );
-
+	public function initOrderBox(userId : Int, multiDistribId : Int, catalogId : Int, catalogType : Int, date : String, place : String, userName : String, currency : String, hasPayments : Bool, callbackUrl : String, hasCagette2 : Bool, groupId : Int) {
+        var node = js.Browser.document.createDivElement();
+        node.id = "ordersdialog-container";
+        js.Browser.document.body.appendChild(node);
+        ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
+       
+        if (!hasCagette2) { 
+            var store = createOrderBoxReduxStore();
+            ReactDOM.render(jsx('
+                <ReduxProvider store=${store}>
+                    <MuiThemeProvider theme=${CagetteTheme.get()}>
+                        <>
+                            <CssBaseline />
+                            <OrdersDialog userId=$userId multiDistribId=$multiDistribId catalogId=$catalogId catalogType=$catalogType
+                            date=$date place=$place userName=$userName callbackUrl=$callbackUrl currency=$currency hasPayments=$hasPayments />							
+                        </>
+                    </MuiThemeProvider>
+                </ReduxProvider>
+            '), node );
+        } else {
+            var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+            neo.createNeoModule(node.id, "ordersDialog", {
+                userId: userId,
+                multiDistribId: multiDistribId,
+                catalogId: catalogId,
+                groupId: groupId,
+                date: date,
+                place: place,
+                userName: userName,
+                callbackUrl: callbackUrl,
+                currency: currency,
+                hasPayments: hasPayments,
+            });
+        }
 	}
 
 	private function createOrderBoxReduxStore() {
@@ -261,43 +274,28 @@ class App {
 	/**
 	 * Displays a login box
 	 */
-	public function loginBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {	
-        // //initSentry();
-
-		var modalElement = Browser.document.getElementById("myModal");
-		modalElement.querySelector(".modal-title").innerHTML = "S'identifier";
-		modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
-		var modal = new bootstrap.Modal(modalElement);
-		modal.show();
-
-		ReactDOM.render(
-			jsx('<$LoginBox redirectUrl=$redirectUrl message=$message phoneRequired=$phoneRequired addressRequired=$addressRequired/>'),
-			js.Browser.document.querySelector('#myModal .modal-body')
-		);
-		return false;
+	public function loginBox(redirectUrl:String,sid:String,?message:String,?phoneRequired=false,?addressRequired=false,?openRegistration=false) {	
+        var node = js.Browser.document.createDivElement();
+		node.id = "login-registration-container";
+		js.Browser.document.body.appendChild(node);
+		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
+        
+        var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+        neo.createNeoModule(node.id, "loginRegistration", {
+            redirectUrl: redirectUrl,
+            sid: sid,
+			message: message,
+			phoneRequired: phoneRequired,
+			addressRequired: addressRequired,
+            openRegistration: openRegistration
+        });
 	}
 
 	/**
 	 *  Displays a sign up box
 	 */
-	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false,?tmpBasketId:Int) {
-        //initSentry();
-
-		var modalElement = Browser.document.getElementById("myModal");
-		modalElement.querySelector(".modal-title").innerHTML = "S'inscrire";
-		modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
-		var modal = new bootstrap.Modal(modalElement);
-        modal.show();
-        modalElement.addEventListener('hide.bs.modal', function() {
-            if (tmpBasketId!=null){
-                js.Browser.window.location.href = "/transaction/tmpBasket/"+tmpBasketId;
-            }
-        });
-		ReactDOM.render(
-			jsx('<$RegisterBox redirectUrl=$redirectUrl message=$message phoneRequired=$phoneRequired addressRequired=$addressRequired/>'),
-			js.Browser.document.querySelector('#myModal .modal-body')
-		);
-		return false;
+	public function registerBox(redirectUrl:String,sid:String,?message:String,?phoneRequired=false,?addressRequired=false) {
+        loginBox(redirectUrl, sid, message, phoneRequired, addressRequired, true);
 	}
 
 	public function membershipBox(userId:Int,userName:String,groupId:Int,?callbackUrl:String,?distributionId:Int){

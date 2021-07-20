@@ -339,4 +339,8 @@ class View extends sugoi.BaseView {
 	public function enumIndex(e:EnumValue) {
 		return EnumValueTools.getIndex(e);
 	}
+
+	public function getSid():String {
+		return App.current.session.sid;
+	}
 }

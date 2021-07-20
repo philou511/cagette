@@ -35,6 +35,8 @@ class Amap extends Controller
 		var form = form.CagetteForm.fromSpod(group);
 
 		form.removeElementByName("betaFlags");
+		// var flags = form.getElement("betaFlags");
+		// untyped flags.excluded = [0];
 
 		//remove "membership", "shop mode", "marge a la place des %", "unused" from flags
 		var flags = form.getElement("flags");
@@ -61,28 +63,6 @@ class Amap extends Controller
 
 			//keep shop mode
 			if(shopMode) group.flags.set(db.Group.GroupFlags.ShopMode);
-
-			//switch to payment enabled in CSA mode
-			// if(!shopMode && !hasPayments && group.hasPayments()){
-			// 	for ( c in group.getActiveContracts(true)){
-			// 		for ( sub in SubscriptionService.getCatalogSubscriptions(c)){
-			// 			//create operation
-			// 			SubscriptionService.createOrUpdateTotalOperation( sub );
-			// 		}
-			// 	}				
-			// }
-
-			/*if(group.betaFlags.has(db.Group.BetaFlags.ShopV2) && group.flags.has(db.Group.GroupFlags.CustomizedCategories)){
-				App.current.session.addMessage("Vous ne pouvez pas activer les catégories personnalisées et la nouvelle boutique. La nouvelle boutique ne fonctionne pas avec les catégories personnalisées.",true);
-				group.flags.unset(db.Group.GroupFlags.CustomizedCategories);
-				group.update();
-			}*/
-
-			if(!group.betaFlags.has(db.Group.BetaFlags.ShopV2) && group.flags.has(db.Group.GroupFlags.Show3rdCategoryLevel)){
-				App.current.session.addMessage("Vous ne pouvez classer la boutique par catégorie de troisième niveau seulement avec la nouvelle boutique.",true);
-				group.flags.unset(db.Group.GroupFlags.Show3rdCategoryLevel);
-				group.update();
-			}
 
 			if (group.extUrl != null){
 				if ( group.extUrl.indexOf("http://") ==-1 &&  group.extUrl.indexOf("https://") ==-1 ){

@@ -8,6 +8,7 @@ import sugoi.form.Form;
 import sugoi.form.elements.IntInput;
 import sugoi.form.elements.StringInput;
 import sugoi.form.validators.EmailValidator;
+import sugoi.Web;
 import ufront.mail.*;
 
 class User extends Controller
@@ -31,6 +32,8 @@ class User extends Controller
 		}
 
 		service.UserService.prepareLoginBoxOptions(view);
+
+		view.sid = App.current.session.sid;
 		
 		//if its needed to redirect after login
 		if (app.params.exists("redirect")){
@@ -100,7 +103,10 @@ class User extends Controller
 	}
 	
 	function doLogout() {
+		service.BridgeService.logout(App.current.user);
+
 		App.current.session.delete();
+
 		throw Redirect('/');
 	}
 	

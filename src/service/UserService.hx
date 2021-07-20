@@ -98,6 +98,7 @@ class UserService
 		if (group != null && group.regOption == db.Group.RegOption.Open){
 			user.makeMemberOf(group);	
 		}
+		
 		if(group!=null){
 
 			if(group.flags.has(PhoneRequired) && (phone==null || phone=="") ){
@@ -206,6 +207,9 @@ class UserService
 		} 
 		if(group.flags.has(PhoneRequired)) loginBoxOptions.phoneRequired = true;
 		if(group.flags.has(AddressRequired)) loginBoxOptions.addressRequired = true;
+
+		loginBoxOptions.sid = App.current.session.sid;
+
 		view.loginBoxOptions = loginBoxOptions;
 	}
 

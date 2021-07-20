@@ -20,6 +20,7 @@ class Main extends controller.Controller
 
 		//hack into breadcrumb
 		if(vendor!=null){
+			vendor.checkIsolate();
 			App.current.breadcrumb[0] = {id:"v"+vendor.id,name:"Cagette Pro : "+vendor.name,link:"/p/pro"};
 		}
 		

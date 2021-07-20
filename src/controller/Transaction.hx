@@ -274,6 +274,7 @@ class Transaction extends controller.Controller
 		}
 		#end
 
+		view.group = app.getCurrentGroup();
 		view.tmpBasket = tmpBasket;		
 	}
 	

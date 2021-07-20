@@ -31,11 +31,11 @@
 <script language="javascript">
 	::if(register==true)::
 	document.addEventListener("DOMContentLoaded", function(event) {
-		_.registerBox('::raw redirect::','::raw message::',::phoneRequired::, false, ::tmpBasketId::);	
+		_.registerBox('::raw redirect::','::raw sid::','::raw message::',::phoneRequired::, false, ::tmpBasketId::);	
 	});
 	::else::
 	document.addEventListener("DOMContentLoaded", function(event) {
-		_.loginBox('::raw redirect::','::raw message::',::phoneRequired::);	
+		_.loginBox('::raw redirect::','::raw sid::','::raw message::',::phoneRequired::);	
 	});
 	::end::
 	
