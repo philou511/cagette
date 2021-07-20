@@ -59,6 +59,8 @@ class Main extends controller.Controller
 				throw Error("/", "Vous ne pouvez pas gérer ce compte");
 			}
 
+			if(app.session.data==null) app.session.data = {};
+
 			//disabled "covid" cagette pro test (2020-10-01)			
 			for (uc in pro.db.PUserCompany.manager.search($user == app.user, false)){
 				if(uc.company.vendor.id==vendor.id){

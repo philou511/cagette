@@ -70,6 +70,7 @@ class User extends Controller
 		if (args!=null && args.group!=null) {
 			//select a group
 			var which = app.session.data==null ? 0 : app.session.data.whichUser ;
+			if(app.session.data==null) app.session.data = {};
 			app.session.data.order = null;
 			app.session.data.newGroup = null;
 			app.session.data.amapId = args.group.id;
