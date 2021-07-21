@@ -104,6 +104,11 @@ class User extends Controller
 	
 	function doLogout() {
 		service.BridgeService.logout(App.current.user);
+		Web.setHeader("Set-Cookie", [
+			"Authentication=; HttpOnly; Path=/; Max-Age=0",
+			"Refresh=; HttpOnly; Path=/; Max-Age=0", 
+			"Set-Cookie", "Auth_sid=; HttpOnly; Path=/; Max-Age=0"
+		]);
 
 		App.current.session.delete();
 
