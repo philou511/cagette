@@ -70,6 +70,7 @@ class User extends Controller
 		if (args!=null && args.group!=null) {
 			//select a group
 			var which = app.session.data==null ? 0 : app.session.data.whichUser ;
+			if(app.session.data==null) app.session.data = {};
 			app.session.data.order = null;
 			app.session.data.newGroup = null;
 			app.session.data.amapId = args.group.id;
@@ -104,11 +105,9 @@ class User extends Controller
 	
 	function doLogout() {
 		service.BridgeService.logout(App.current.user);
-		Web.setHeader("Set-Cookie", [
-			"Authentication=; HttpOnly; Path=/; Max-Age=0",
-			"Refresh=; HttpOnly; Path=/; Max-Age=0", 
-			"Set-Cookie", "Auth_sid=; HttpOnly; Path=/; Max-Age=0"
-		]);
+		Web.setHeader("Set-Cookie", "Authentication=; HttpOnly; Path=/; Max-Age=0");
+		Web.setHeader("Set-Cookie", "Refresh=; HttpOnly; Path=/; Max-Age=0");
+		Web.setHeader("Set-Cookie", "Auth_sid=; HttpOnly; Path=/; Max-Age=0");
 
 		App.current.session.delete();
 

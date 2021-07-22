@@ -136,6 +136,7 @@ class Basket extends Object
 
 	/**
 	 * Returns the total amount of all the orders in this basket
+	 /!\ never forget to round each order line 
 	 */
 	public function getOrdersTotal(?type:Int) : Float {
 		/*var total = 0.0;
@@ -145,7 +146,12 @@ class Basket extends Object
 		return total;
 		*/
 		return getOrders(type).fold( 
-			(order,total)-> return total + order.quantity * (order.productPrice * (1+order.feesRate/100))
+			(order,total)-> {
+				var a = order.quantity * (order.productPrice * (1+order.feesRate/100));
+				//neko float bug
+				a = Std.string(a).parseFloat();
+				return total + Math.round(a*100)/100;
+			}
 		, 0.0);
 	}
 	

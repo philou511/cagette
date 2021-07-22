@@ -311,4 +311,11 @@ class Formatting
 			return value;
 		}
 	}
+
+	/**
+		strange float bug in neko : creates a new and clean float
+	**/
+	public static function cleanFloat(f:Float):Float{
+		return Std.string(f).parseFloat();
+	}
 }

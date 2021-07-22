@@ -94,8 +94,13 @@ class PaymentService {
 
 		var _amount = 0.0;
 		for (o in orders) {
-			var t = o.quantity * o.productPrice;
-			_amount += t + t * (o.feesRate / 100);
+			var a = o.quantity * o.productPrice;
+			//plus fees
+			a = a + a * (o.feesRate / 100);
+			//neko float bug
+			a = Std.string(a).parseFloat();
+			//round
+			_amount += Math.round(a*100)/100;
 		}
 
 		var op = new db.Operation();
@@ -130,10 +135,16 @@ class PaymentService {
 		op.lock();
 		var t = sugoi.i18n.Locale.texts;
 
+		//dont forget to round !!
 		var _amount = 0.0;
 		for (o in orders) {
 			var a = o.quantity * o.productPrice;
-			_amount += a + a * (o.feesRate / 100);
+			//plus fees
+			a = a + a * (o.feesRate / 100);
+			//neko float bug
+			a = Std.string(a).parseFloat();
+			//round
+			_amount += Math.round(a*100)/100;
 		}
 
 		var contract = orders[0].product.catalog;

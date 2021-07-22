@@ -27,17 +27,12 @@
 					::set o = l.countRunningOrders()::
 					::set d = l.countOrdersToDeliver()::
 					
-					
-					::if (d > 0)::
-					
-					<i class="fa fa-circle" style="color:#0A0;" data-toggle="tooltip" title=" ::o:: commandes en cours dont ::d:: prêtes à livrer" ></i>
-					
+					::if (d > 0)::				
+						<i class="fa fa-circle" style="color:#0A0;" data-toggle="tooltip" title=" ::o:: commandes en cours dont ::d:: prêtes à livrer" ></i>
 					::elseif ( o  > 0)::
-					
-					<i class="fa fa-circle" style="color:#F80;" data-toggle="tooltip" title=" ::o:: commandes en cours dont ::d:: prêtes à livrer"></i>
-					
+						<i class="fa fa-circle" style="color:#F80;" data-toggle="tooltip" title=" ::o:: commandes en cours dont ::d:: prêtes à livrer"></i>
 					::else::
-					<i class="fa fa-circle-thin" style="color:#666;" data-toggle="tooltip" title=" Aucune commande en cours "></i>
+						<i class="fa fa-circle-thin" style="color:#666;" data-toggle="tooltip" title=" Aucune commande en cours "></i>
 					::end::
 					
 				</td>

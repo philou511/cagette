@@ -30,6 +30,10 @@
 						::foreach o basket.getOrders(null)::
 							<li>::o.quantity:: x ::o._product.getName()::</li>
 						::end::						
+						<!--<pre>::foreach po prepare(basket.getOrders(null))::
+::po.productName:: : ::po.quantity:: x ::po.productPrice:: = ::po.total::€
+							::end::
+						</pre>-->
 						</ul>
 					::end::
 					

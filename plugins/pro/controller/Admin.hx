@@ -1,5 +1,6 @@
 package pro.controller;
 
+import service.DistributionService;
 import db.User;
 import haxe.DynamicAccess;
 import db.MultiDistrib;
@@ -991,8 +992,55 @@ class Admin extends controller.Controller {
 		}*/
 	}
 
-	@admin
-	function doFixes() {}
+	/**
+		check and recompute payments ops
+	**/
+	@admin @tpl('plugin/pro/admin/checkOperations.mtt')
+	function doCheckOperations(group:db.Group,from:Date,to:Date,?autoFix=false) {
+
+		// var g = db.Group.manager.get(6598);
+		var out = [];
+
+		// for ( md in db.MultiDistrib.getFromTimeRange(g,new Date(2021,3,1,0,0,0), new Date(2021,11,30,0,0,0))){
+		for ( md in db.MultiDistrib.getFromTimeRange(group,from,to) ){
+			
+			var msgs = [];
+			for( b in md.getBaskets()){
+				
+				var op = b.getOrderOperation(false);
+				var ordersTotal = Formatting.cleanFloat(0 - b.getOrdersTotal());
+				var opAmount = Formatting.cleanFloat(op.amount);
+
+				if(autoFix){
+					if(!group.hasShopMode()) throw "cette page ne marche que pour les groupes en mode boutique";
+					service.PaymentService.onOrderConfirm( b.getOrders() );
+				}else{
+					if(op==null){
+						msgs.push('${b.user.getName()} , total commande : ${ordersTotal} != aucune operation');
+						
+					} else if( ordersTotal != opAmount ){
+						msgs.push('${b.user.getName()} , total commande : ${ordersTotal} != opération : ${opAmount}');
+						if(autoFix) service.PaymentService.onOrderConfirm( b.getOrders() );
+					}
+				}
+			}
+
+			out.push({
+				md : md.toString(),
+				messages : msgs
+			});
+		}
+
+		if(autoFix) {			
+			throw Ok('/p/pro/admin/checkOperations/${group.id}/$from/$to',"Operations corrigées");
+		}
+
+		view.mds = out;
+		view.group = group;
+		view.from = from;
+		view.to = to;
+
+	}
 
 	@admin
 	function doPreprod() {
@@ -1005,7 +1053,7 @@ class Admin extends controller.Controller {
 	}
 
 	/**
-	 * create a cagette pro account
+	 * Create a cagette pro account
 	 */
 	function doCreateCpro(vendor:db.Vendor) {
 		if (pro.db.CagettePro.getFromVendor(vendor) != null)
