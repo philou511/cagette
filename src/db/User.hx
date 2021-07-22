@@ -105,6 +105,7 @@ class User extends Object {
 		form.removeElement(form.getElement("apiKey") );
 		form.removeElement(form.getElement("nationality"));
 		form.removeElement(form.getElement("pass2"));
+		form.removeElement(form.getElement("currentRefreshToken"));
 		
 		form.addElement(new sugoi.form.elements.StringSelect("nationality", t._("Nationality"), getNationalities(), user.nationality), 15);
 		form.removeElement(form.getElement("countryOfResidence"));
