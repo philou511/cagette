@@ -25,6 +25,11 @@ class Member extends Controller
 	@logged
 	@tpl('member/default.mtt')
 	function doDefault(?args: { ?search:String, ?list:String } ) {
+		var group = app.user.getGroup();
+		if (group==null) {
+			throw Redirect("/");
+		}
+		
 		// Set view.token to pass it to Neolithic componant
 		checkToken();
 	}
@@ -68,9 +73,12 @@ class Member extends Controller
 	
 	@tpl("member/view.mtt")
 	function doView(member:db.User) {
-		
+		var group = app.user.getGroup();
+		if (group==null) {
+			throw Redirect("/");
+		}
 		view.member = member;
-		var userGroup = db.UserGroup.get(member, app.user.getGroup());
+		var userGroup = db.UserGroup.get(member, group);
 		if (userGroup == null) throw Error("/member", t._("This person does not belong to your group"));
 		
 		view.userGroup = userGroup; 
