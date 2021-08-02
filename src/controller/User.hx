@@ -119,7 +119,7 @@ class User extends Controller
 	 * when password is forgotten
 	 */
 	@tpl("user/forgottenPassword.mtt")
-	function doForgottenPassword(?key:String, ?u:db.User){
+	function doForgottenPassword(?key:String, ?u:db.User, ?definePassword:Bool){
 		
 		//STEP 1
 		var step = 1;
@@ -220,6 +220,8 @@ class User extends Controller
 		
 		view.step = step;
 		view.error = error;
+		view.title = definePassword == null ? "Changement de mot de passe" : t._("Create a password for your account");
+
 	}
 	
 	
@@ -272,14 +274,16 @@ class User extends Controller
 		if (uid == null || uid==0) throw Error('/user/login', t._("Your invitation is invalid or expired ($k)"));
 		var user = db.User.manager.get(uid, true);
 		
-		db.User.login(user, user.email);
-		
 		var groups = user.getGroups();
 		if(groups.length>0)	app.session.data.amapId = groups[0].id;
 		
 		sugoi.db.Cache.destroy("validation" + k);
+
+		// Create change password token
+		var token = haxe.crypto.Md5.encode("chp"+Std.random(1000000000));
+		sugoi.db.Cache.set(token, user.id, 60 * 60 * 24 * 30);
 	
-		throw Ok("/user/definePassword", t._("Congratulations ::userName::, your account is validated!", {userName:user.getName()}));
+		throw Ok('http://' + App.config.HOST + '/user/forgottenPassword/'+token+'/'+user.id+'/true', t._("Congratulations ::userName::, your account is validated!", {userName:user.getName()}) + " Définissez un mot de passe puis connectez-vous pour finaliser votre inscription.");
 	}
 
 	/**
