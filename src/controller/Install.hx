@@ -145,7 +145,6 @@ class Install extends controller.Controller
 				d.insert();
 				
 				App.current.user = null;
-				App.current.session.setUser(user);
 				App.current.session.data.amapId  = amap.id;
 				
 				throw Ok("/", t._("Group and user 'admin' created. Your email is 'admin@cagette.net' and your password is 'admin'"));
