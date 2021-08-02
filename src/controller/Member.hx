@@ -145,7 +145,7 @@ class Member extends Controller
 		if (member.isAdmin() && !app.user.isAdmin()) throw Error("/", t._("You cannot modify the account of an administrator"));
 		
 		var form = db.User.getForm(member);
-		
+		form.removeElement( form.getElement("pass") );
 		
 		var isReg = member.isFullyRegistred();
 		var groupNum = db.UserGroup.manager.count($userId == member.id);
@@ -155,15 +155,6 @@ class Member extends Controller
 			form.removeElementByName("email");
 			form.removeElementByName("email2");
 			app.session.addMessage(t._("For security reasons, you cannot modify the e-mail of this person because this person is a member of more than 1 group."));
-		}
-		
-		//an administrator can modify a user's pass only if he's a not registred user.
-		if (!isReg){
-			app.session.addMessage(t._("This person did not define yet a password. You are exceptionaly authorized to do it. Please don't forget to tell this person."));
-			//form.getElement("pass").required = false;
-			form.addElement(new sugoi.form.elements.StringInput("pass",t._("Password")));
-		}else{
-			form.removeElement( form.getElement("pass") );
 		}
 		
 		if (form.checkToken()) {
