@@ -36,10 +36,6 @@ class UserService
 		return u;
 	}
 
-	public static function getByEmail(email:String):db.User{
-		return db.User.manager.select($email == email || $email2 == email, true);
-	}
-
 	/**
 	 *  get users belonging to a group
 	 *  @param group - 
@@ -47,21 +43,6 @@ class UserService
 	 */
 	public static function getFromGroup(group:db.Group):Array<db.User>{
 		return Lambda.array( group.getMembers() );
-	}
-
-	public static function isBanned(){		
-		var ip = sugoi.Web.getClientIP();
-		var badTries:Int = sugoi.db.Cache.get("ip-ban-"+ip);
-		if(badTries==null) return false;
-		if(badTries>=5) return true;
-		return false;
-	}
-
-	public static function recordBadLogin(){
-		var ip = sugoi.Web.getClientIP();
-		var badTries:Int = sugoi.db.Cache.get("ip-ban-"+ip);
-		if(badTries==null) badTries = 0;
-		sugoi.db.Cache.set("ip-ban-"+ip,badTries+1, 60 * 10);
 	}
 
 	/**
@@ -89,14 +70,5 @@ class UserService
 
 		view.loginBoxOptions = loginBoxOptions;
 	}
-
-	/*public static function getListBrowseFunction(listId:String){
-		switch(listId){
-			case "allUsers" : 
-
-
-		}
-	}*/
-
 	
 }
