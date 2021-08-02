@@ -11,7 +11,7 @@ import sugoi.form.Form;
 import sugoi.form.elements.Selectbox;
 import sugoi.form.validators.EmailValidator;
 import sugoi.tools.Utils;
-
+import haxe.Http;
 
 class Member extends Controller
 {
@@ -100,7 +100,8 @@ class Member extends Controller
 	/**
 	 * Admin : Log in as this user for debugging purpose
 	 */	
-	function doLoginas(member:db.User) {
+	 @tpl('member/loginAs.mtt')
+	 function doLoginas(member:db.User) {
 	
 		if (!app.user.isAdmin()){
 			if (!app.user.isAmapManager()) return;
@@ -108,18 +109,11 @@ class Member extends Controller
 			if ( db.UserGroup.manager.count($userId == member.id) > 1 ) return;			
 		}
 
-		var token = service.BridgeService.getAuthToken(member);		
-				
+		view.userId = member.id;
+		view.groupId = App.current.session.data.amapId;
+
 		App.current.session.setUser(member);
 		App.current.session.data.amapId = null;
-		if(token==null){
-			
-			throw Error("/" , "Erreur Bridge "+token );
-		}else{
-			App.current.session.addMessage("Vous êtes connecté sur le compte de "+member.getName());
-			Sys.println('<html><body>Connexion au compte de ${member.getName()}...<script>localStorage.token = "${token}";document.location.href="/"</script></body></html>');
-		}
-		
 	}
 	
 	@tpl('member/lastMessages.mtt')
