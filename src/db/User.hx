@@ -149,7 +149,7 @@ class User extends Object {
 	}
 	
 	public function isFullyRegistred(){
-		return pass != null && pass != "";
+		return (pass != null && pass != "") || (pass2 != null && pass2 != "");
 	}
 	
 	public function makeMemberOf(group:db.Group){
