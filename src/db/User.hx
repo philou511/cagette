@@ -81,18 +81,6 @@ class User extends Object {
 	public function isAdmin() {
 		return rights.has(Admin) || id==1;
 	}
-	
-	public static function login(user:db.User, email:String) {
-		
-		user.lock();
-		user.ldate = Date.now();
-		user.update();
-		
-		App.current.session.setUser(user);
-		if (App.current.session.data == null) App.current.session.data = {};
-		App.current.session.data.whichUser = (email == user.email) ? 0 : 1; 	
-		
-	}
 
 	public static function getForm(user:db.User){
 		var t = sugoi.i18n.Locale.texts;
