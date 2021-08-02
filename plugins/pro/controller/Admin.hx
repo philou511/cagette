@@ -1852,4 +1852,117 @@ class Admin extends controller.Controller {
 		Sys.print(Json.stringify(out));
 
 	}
+
+	/**
+		stats pour https://docs.google.com/spreadsheets/d/131YGMLCBD22JFgANv6Y2QjYKncHvd_lpaG8_ujSlh4c/edit#gid=404041288
+	**/
+	function doCastats(?to:Date){
+
+		var from = new Date(2020,5,1,0,0,0);
+		if(to==null) to = new Date(2020,6,1,0,0,0);
+
+		var turnovers = [];
+
+		var createdFrom = new Date(2020,5,1,0,0,0);
+		var createdTo = new Date(2020,5,30,23,59,59);
+
+		for( v in Vendor.manager.search($cdate>=createdFrom && $cdate<createdTo ,false)){
+
+			var vs = VendorStats.getOrCreate(v);
+			if(vs.type==VendorType.VTCpro) continue;
+			if(vs.type==VendorType.VTStudent) continue;
+			if(vs.type==VendorType.VTCproStudent) continue;
+			if(vs.type==VendorType.VTDiscovery) continue;
+
+			var cids = v.getContracts().array().map(v -> v.id);
+			var turnover = 0.0;
+			for( d in db.Distribution.manager.search($date >= from && $date < to && ($catalogId in cids), false)){
+				turnover += d.getTurnOver();
+			}
+
+			turnovers.push( Math.round(turnover) );
+		}
+
+		//besoin de compter les producteurs par tranche de c.a
+		var vendors = new Map<String,Int>();
+		vendors.set("0-250",0);
+		vendors.set("250-500",0);
+		vendors.set("500-750",0);
+		vendors.set("750-1000",0);
+		vendors.set("1000-1250",0);
+		vendors.set("1250-1500",0);
+		vendors.set("1500-1750",0);
+		vendors.set("1750-2000",0);
+		vendors.set("2000-3000",0);
+		vendors.set("3000-5000",0);
+		vendors.set("5000-10000",0);
+		vendors.set("10000-20000",0);
+		vendors.set("20000-30000",0);
+		vendors.set("30000-40000",0);
+		vendors.set("40000",0);
+
+		// var inc = function(k:String){
+		// 	var v = vendors.get(k);
+		// 	vendors.get
+		// }
+
+		for( t in turnovers){
+
+			if(t< 250){
+				vendors["0-250"]++;
+			}else if (t >= 250 && t< 500){
+				vendors["250-500"]++;
+			}else if (t >= 500 && t< 750){
+				vendors["500-750"]++;
+			}else if (t >= 750 && t< 1000){
+				vendors["750-1000"]++;
+			}else if (t >= 1000 && t< 1250){
+				vendors["1000-1250"]++;
+			}else if (t >= 1250 && t< 1500){
+				vendors["1250-1500"]++;
+			}else if (t >= 1500 && t< 1750){
+				vendors["1500-1750"]++;
+			}else if (t >= 1750 && t< 2000){
+				vendors["1750-2000"]++;
+			}else if (t >= 2000 && t< 3000){
+				vendors["2000-3000"]++;
+			}else if (t >= 3000 && t< 5000){
+				vendors["3000-5000"]++;
+			}else if (t >= 5000 && t< 10000){
+				vendors["5000-10000"]++;
+			}else if (t >= 10000 && t< 20000){
+				vendors["10000-20000"]++;
+			}else if (t >= 20000 && t< 30000){
+				vendors["20000-30000"]++;
+			}else if (t >= 30000 && t< 40000){
+				vendors["30000-40000"]++;
+			}else if (t >= 40000){
+				vendors["40000"]++;
+			}
+		}
+
+		Sys.print("from "+from.toString()+" to "+to.toString()+"<br/>");
+		Sys.print("<table>");
+
+		var keys = [];
+		for( k in vendors.keys()){
+			keys.push(k);
+		}
+
+		keys.sort(function(a,b){
+			return a.split("-")[0].parseInt() - b.split("-")[0].parseInt();
+		});
+
+		for( k in keys ){
+			Sys.print("<tr>");
+			Sys.print("<td>"+k+"</td><td>"+vendors[k]+"</td>");
+			Sys.print("</tr>");
+		}
+
+		Sys.print("</table>");
+
+
+
+
+	}
 }
