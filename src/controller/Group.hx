@@ -33,11 +33,12 @@ class Group extends controller.Controller
 		group.getMainPlace(); //just to update cache
 
 		var isMemberOfGroup = app.user == null ? false : app.user.isMemberOf(group); 
-		if ( app.user == null ) {
+		view.isInWaitingList = app.user == null ? false : db.WaitingList.manager.select($amapId == group.id && $user == app.user);
 
+		if ( app.user == null ) {
 			service.UserService.prepareLoginBoxOptions(view,group);
 		}	
-
+		view.user = app.user;
 		view.isMember = isMemberOfGroup;
 
 		// Documents
@@ -48,7 +49,6 @@ class Group extends controller.Controller
 			visibleCatalogsDocuments.set( catalog.id, catalog.getVisibleDocuments( app.user ) );
 		}
 		view.visibleCatalogsDocuments = visibleCatalogsDocuments;
-
 	}
 	
 	/**
@@ -57,6 +57,9 @@ class Group extends controller.Controller
 	 */
 	@tpl('form.mtt')
 	function doList(group:db.Group){
+		if ( app.user==null ) {
+			throw Redirect("/group/"+group.id);
+		}
 		
 		//checks
 		if (group.regOption != db.Group.RegOption.WaitingList) throw Redirect("/group/" + group.id);
@@ -70,21 +73,11 @@ class Group extends controller.Controller
 		
 		//build form
 		var form = new sugoi.form.Form("reg");				
-		if (app.user == null){
-			form.addElement(new StringInput("userFirstName", t._("Your firstname"),"",true));
-			form.addElement(new StringInput("userLastName", t._("Your lastname") ,"",true));
-			form.addElement(new StringInput("userEmail", t._("Your e-mail"), "", true));		
-		}
+		
 		form.addElement(new sugoi.form.elements.TextArea("msg", t._("Leave a message")));
 		
 		if (form.isValid()){
 			try{
-				if (app.user == null){
-					var f = form;
-					var user = service.UserService.softRegistration(f.getValueOf("userFirstName"),f.getValueOf("userLastName"), f.getValueOf("userEmail") );
-					db.User.login(user, user.email);				
-				}			
-				
 				WaitingListService.registerToWl(app.user,group,form.getValueOf("msg"));
 				throw Ok("/group/" + group.id,t._("Your subscription to the waiting list has been recorded. You will receive an e-mail as soon as your request is processed.") );
 			}catch(e:tink.core.Error){

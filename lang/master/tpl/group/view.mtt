@@ -65,12 +65,30 @@
 							<p>
 								::_("This group accepts subscriptions on waiting list. A coordinator will contact you.")::
 							</p>
-							<p>
-							<a href="/group/list/::group.id::"  class="btn btn-primary">
-								<i class="icon icon-chevron-right"></i>
-								::_("Subscription on waiting list")::
-							</a>
-							</p>
+							::if isInWaitingList::
+								<p>
+									::__("Request sent on ::date::",{ date:hDate(isInWaitingList.date) })::
+								</p>
+								<p>
+									<a href="/group/listCancel/::isInWaitingList._group.id::" class="btn btn-primary"><i class="icon icon-delete"></i> ::_("Cancel")::</a>
+								</p>
+							::else::
+								::if user==null::
+								<p>
+									<a href="#" class="btn btn-primary" onclick="_.registerBox('/group/list/::group.id::','::loginBoxOptions.sid::',null,::loginBoxOptions.phoneRequired::,::loginBoxOptions.addressRequired::)">
+									<i class="icon icon-chevron-right"></i>
+										::_("Subscription on waiting list")::
+									</a>
+								</p>
+								::else::
+								<p>
+									<a href="/group/list/::group.id::"  class="btn btn-primary">
+									<i class="icon icon-chevron-right"></i>
+										::_("Subscription on waiting list")::
+									</a>
+								</p>
+								::end::
+							::end::
 							
 						::case::
 							<p>
