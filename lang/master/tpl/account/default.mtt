@@ -15,31 +15,34 @@
 		</script>
 	</div>
 
-	<h3>::_("Language")::</h3>
-	<div class="MuiPaper-root MuiCard-root MuiPaper-elevation1 MuiPaper-rounded" style="margin-bottom: 16px">
-		<div style="padding: 16px">
-			::_("Display the interface in another language"):: (beta)
-			:
-			<ul>
+	<div class="col-md-6">
+		<h3>::_("Language")::</h3>
+		<div class="MuiPaper-root MuiCard-root MuiPaper-elevation1 MuiPaper-rounded" style="margin-bottom: 16px">
+			<div style="padding: 16px">
+				::_("Display the interface in another language"):: (beta)
+				:
+				<ul>
 
-				::raw langLinks::
-				
-			</ul>
-			<p>
-				::_("Current language is")::
-				<b>
-					::langText::
-				</b>
-			</p>
+					::raw langLinks::
+					
+				</ul>
+				<p>
+					::_("Current language is")::
+					<b>
+						::langText::
+					</b>
+				</p>
+			</div>
 		</div>
 	</div>
-
-	<h3>Suppression du compte</h3>
-	<div class="MuiPaper-root MuiCard-root MuiPaper-elevation1 MuiPaper-rounded" style="margin-bottom: 16px">
-		<div style="padding: 16px">
-			<a href='https://wiki.cagette.net/user:supprimer' class="btn btn-default btn-sm">
-				Comment supprimer mon compte  ?
-			</a>
+	<div class="col-md-6">
+		<h3>Suppression du compte</h3>
+		<div class="MuiPaper-root MuiCard-root MuiPaper-elevation1 MuiPaper-rounded" style="margin-bottom: 16px">
+			<div style="padding: 16px">
+				<a href='https://wiki.cagette.net/user:supprimer' class="btn btn-default btn-sm">
+					Comment supprimer mon compte  ?
+				</a>
+			</div>
 		</div>
 	</div>
 </div>
