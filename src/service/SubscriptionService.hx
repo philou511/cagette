@@ -710,7 +710,8 @@ class SubscriptionService
 	}
 
 	/**
-		Update an existing subscription
+		Update an existing subscription.
+		Optionnaly updates recurrent order(CONST) or default order(VAR) with ordersData param
 	**/
 	public function updateSubscription( subscription:db.Subscription, startDate:Date, endDate:Date, ?ordersData:Array<CSAOrder>) {
 
@@ -725,8 +726,8 @@ class SubscriptionService
 		subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
 		
-		//check secondary user
-		if(ordersData!=null){
+		//check secondary user for CONSTORDERS
+		if(subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS && ordersData!=null){
 			var userId2 = checkUser2(ordersData);
 			if(userId2!=null){
 				subscription.user2 = db.User.manager.get(userId2,false);
@@ -737,12 +738,14 @@ class SubscriptionService
 
 		subscription.update();
 
-		if( subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
-			//CONST
-			createCSARecurrentOrders( subscription, ordersData );
-		}else{
-			//VAR
-			updateDefaultOrders( subscription, ordersData );			
+		if(ordersData!=null){
+			if( subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
+				//CONST
+				createCSARecurrentOrders( subscription, ordersData );
+			}else{
+				//VAR
+				updateDefaultOrders( subscription, ordersData );			
+			}
 		}
 	}
 
@@ -1085,8 +1088,8 @@ class SubscriptionService
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );		
 		if( !subscription.catalog.requiresOrdering ) return;
-		if ( subscription.catalog.requiresOrdering && (defaultOrders.length==0 || defaultOrders==null) ) {
-			throw new Error( "La commande par défaut ne peut pas être vide.");
+		if ( subscription.catalog.requiresOrdering && (defaultOrders==null || defaultOrders.length==0 ) ) {
+			throw new Error('La commande par défaut ne peut pas être vide. (Souscription de ${subscription.user.getName()})');
 		}
 
 		if( subscription.catalog.type==Catalog.TYPE_CONSTORDERS) return;

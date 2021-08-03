@@ -482,7 +482,7 @@ class DistributionService
 				for ( sub in subscriptions ){
 					//if the subscription is closing before the new date, extends it
 					if(sub.endDate.getTime() < newMd.getDate().getTime()){
-						subscriptionService.updateSubscription( sub, sub.startDate, newMd.getDate(), null );
+						subscriptionService.updateSubscription( sub, sub.startDate, newMd.getDate() );
 					}					
 				}
 				/**
