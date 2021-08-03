@@ -247,7 +247,7 @@ class Distribution extends Controller {
 	}
 
 	/**
-		Delete a distribution
+		Cancel a vendor participation to a multidistrib (delete a db.Distribution)
 	**/
 	function doDelete(d:db.Distribution) {
 		if (!app.user.isContractManager(d.catalog))
@@ -258,7 +258,7 @@ class Distribution extends Controller {
 		} catch (e:tink.core.Error) {
 			throw Error("/contractAdmin/distributions/" + contractId, e.message);
 		}
-		throw Ok("/contractAdmin/distributions/" + contractId, "Ce producteur ne participe plus à la distribution");
+		throw Ok('/contractAdmin/distributions/${contractId}?_from=${app.params.get("_from")}&_to=${app.params.get("_to")}', "Ce producteur ne participe plus à la distribution");
 	}
 
 	// same as above but from distribution page
