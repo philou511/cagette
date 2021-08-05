@@ -2,7 +2,8 @@
 	
 	<div class=" article">
 		<h3>::vendor.name::</h3>
-		<p>::raw nl2br(vendor.desc)::</p>
+		<h4 class="disabled">Producteur n° ::vendor.id::</h4>
+		
 		<p>
 			$$edit(Modifier les propriétés,/p/pro/company/edit)
 			::if(company!=null)::
