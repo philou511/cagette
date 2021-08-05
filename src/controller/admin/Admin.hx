@@ -2,7 +2,7 @@ package controller.admin;
 import sugoi.db.Variable;
 import db.TxpProduct;
 import db.BufferedJsonMail;
-import hosted.db.Hosting;
+import hosted.db.GroupStats;
 import tools.Timeframe;
 import service.GraphService;
 import db.Catalog;
@@ -266,15 +266,11 @@ class Admin extends Controller {
 		group by vs.type
 		order by type').results();
 
-		view.activeGroups = Hosting.manager.count($active);
-		view.activeUsers = sys.db.Manager.cnx.request('SELECT sum(h.membersNum) FROM `Group` g, Hosting h where g.id=h.id and h.active=1').getIntResult(0);
+		view.activeGroups = GroupStats.manager.count($active);
+		view.activeUsers = sys.db.Manager.cnx.request('SELECT sum(h.membersNum) FROM `Group` g, GroupStats gs where gs.groupId=g.id and gs.active=1').getIntResult(0);
 		view.newUsers = sys.db.Manager.cnx.request('SELECT count(id) FROM `User` where cdate > "${from.toString()}" and cdate <= "${to.toString()}"').getIntResult(0);
 		view.newGroups = db.Group.manager.count($cdate >= from && $cdate < to);
 	}
-
-	
-
-	
 
 	public static function addUserToGroup( email : String, group : db.Group ) {
 
@@ -372,7 +368,7 @@ class Admin extends Controller {
 		*/
 
 		var sql = "SELECT g.*,h.membersNum,h.cproContractNum,h.contractNum";		
-		sql += " FROM `Group` g LEFT JOIN  Hosting h ON g.id=h.id WHERE h.active=1";
+		sql += " FROM `Group` g LEFT JOIN  GroupStats gs ON g.id=gs.groupId WHERE gs.active=1";
 		sql += " ORDER BY g.id ASC";
 
 		var groups = db.Group.manager.unsafeObjects(sql,false);
@@ -440,45 +436,6 @@ class Admin extends Controller {
 		view.title = "Messages";
 		view.form = f;
 	}
-
-
-
-
-	/*function doOldshop(){
-
-		var sql = "SELECT g.*,h.membersNum,h.cproContractNum,h.contractNum";		
-		sql += " FROM `Group` g LEFT JOIN  Hosting h ON g.id=h.id WHERE h.active=1";
-		sql += " ORDER BY g.id ASC";
-
-		var groups = db.Group.manager.unsafeObjects(sql,false);
-
-		for( g in groups){
-			if(!g.betaFlags.has(ShopV2) && g.flags.has(ShopMode)){
-				if(g.contact!=null){
-					Sys.print(g.name+","+g.contact.email+"<br/>");
-				}
-			}
-		}
-	}*/
-
-	/*function doPaul(){
-
-		var sql = "SELECT g.*,h.membersNum,h.cproContractNum,h.contractNum";		
-		sql += " FROM `Group` g LEFT JOIN  Hosting h ON g.id=h.id WHERE h.active=1";
-		sql += " ORDER BY g.id ASC";
-
-		var groups = db.Group.manager.unsafeObjects(sql,false);
-
-		for( g in groups){
-			for ( c in g.getActiveContracts()){
-				if(who.db.WConfig.isActive(c)!=null){
-					Sys.print(g.id+","+g.name+"<br/>");
-					continue;
-				}
-
-			}
-		}
-	}*/
 
 	function doGroups(){
 		for ( g in db.Group.manager.all(true)){

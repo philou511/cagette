@@ -577,15 +577,6 @@ class Admin extends controller.Controller {
 					ua.giveRight(Right.GroupAdmin);
 				}
 
-				// hosting
-				/*var h = hosted.db.Hosting.get(group.id, true);
-					if (h.aboType == null || h.aboType < 1){
-						h.aboEnd = Date.fromString("2016-12-31 00:00:00");
-						h.aboType = 1;
-						h.cdate = Date.now();
-						h.update();
-				}*/
-
 				// contract coordinator
 				var contact = service.UserService.getOrCreate(p[5], p[6], p[7]);
 				if (contact.phone == null) {
@@ -1352,7 +1343,7 @@ class Admin extends controller.Controller {
 
 		// get client list
 		var data = [];
-		var gids = tools.ObjectListTool.getIds(hosted.db.Hosting.manager.search($active, false));
+		var gids = tools.ObjectListTool.getIds(hosted.db.GroupStats.manager.search($active, false));
 		var groups = db.Group.manager.search($id in gids, false);
 
 		for (g in groups) {
