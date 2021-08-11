@@ -289,6 +289,7 @@ class Vendor extends Object
 	}
 
 	public function isDisabled(){
+		if(email=="galinette@cagette.net" || email=="jean@cagette.net") return false;
 		return disabled!=null;
 	}
 

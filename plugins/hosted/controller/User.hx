@@ -106,7 +106,7 @@ class User extends sugoi.BaseController
 		var users = [];
 		for ( g in db.Group.manager.all()) {
 		
-			var h = hosted.db.Hosting.getOrCreate(g.id);
+			var h = hosted.db.GroupStats.getOrCreate(g.id);
 			if(!h.active) continue;
 
 			if(type=="AMAP"){

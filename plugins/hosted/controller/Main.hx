@@ -193,13 +193,10 @@ class Main extends controller.Controller
 	@admin @tpl("plugin/pro/hosted/default.mtt")
 	public function doDefault() {
 		
-		var groups = db.Group.manager.unsafeObjects("select a.name,a.groupType,h.* from `Group` a,Hosting h where h.id=a.id ", false);		
+		var groups = db.Group.manager.unsafeObjects("select g.name, g.groupType, gs.* from `Group` g,GroupStats gs where g.id=gs.groupId ", false);		
 		view.groups = groups;
-		
-		var hosted = hosted.db.Hosting.manager.search($active == true);
-		
+		var hosted = hosted.db.GroupStats.manager.search($active == true);
 		var acp = 0;
-		
 
 		//compteurs
 		view.active = hosted.length;
@@ -227,7 +224,7 @@ class Main extends controller.Controller
 	@admin
 	function doRefresh(group:db.Group){
 		
-		var h = hosted.db.Hosting.getOrCreate(group.id, true);
+		var h = hosted.db.GroupStats.getOrCreate(group.id, true);
 		var o = h.updateVisible();
 		
 		var str = "ACTIF : " + o.active+", VISIBLE : " + o.visible+" ( CagetteNetwork : " + o.cagetteNetwork + ", distributions : " + o.distributions + ", geoloc : " + o.geoloc + ", MembersNum : " + o.members+" )";
@@ -511,7 +508,7 @@ class Main extends controller.Controller
 
 			if( !g.flags.has(ShopMode) && g.flags.has(HasPayments) ){
 
-				var h = hosted.db.Hosting.getOrCreate(g.id,true);
+				var h = hosted.db.GroupStats.getOrCreate(g.id,true);
 				h.updateVisible();
 				if(h.active){
 					Sys.print(g.id+" "+g.name+" <br>");
@@ -576,7 +573,7 @@ class Main extends controller.Controller
 		
 		/*for ( a in db.Group.manager.all(true)){
 			
-			var h = hosted.db.Hosting.getOrCreate(a.id, true);
+			var h = hosted.db.GroupStats.getOrCreate(a.id, true);
 			h.updateVisible();
 			h.update();
 			

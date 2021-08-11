@@ -2,13 +2,13 @@ package hosted.db ;
 import sys.db.Types;
 using tools.ObjectListTool;
 /**
- * Stores stats on groups
+ * GroupStats
  */
 @:index(active,visible)
-class Hosting extends sys.db.Object
+class GroupStats extends sys.db.Object
 {
-	public var id : SId; //meme id que l'Amap	
-	public var cdate : SNull<SDateTime>; // le jour ou il est passé en abo payant	
+	public var id : SId;
+	@:relation(groupId) public var group : db.Group;	
 	public var active : SBool; // distrib en cours
 	public var visible : SBool; // visible sur les cartes et annuaires
 	public var membersNum: SInt; //nbre de membres
@@ -25,13 +25,12 @@ class Hosting extends sys.db.Object
 		cproContractNum  = 0;
 	}
 
-	public static function getOrCreate(amapId:Int,?lock=false) {
-		var  o =  manager.get(amapId, lock);
+	public static function getOrCreate(groupId:Int,?lock=false) {
+		var  o =  manager.get(groupId, lock);
 		if (o == null) {
-			o = new hosted.db.Hosting();
-			o.id = amapId;
+			o = new hosted.db.GroupStats();
+			o.groupId = groupId;
 			o.membersNum = o.getMembersNum();
-			o.cdate = Date.now();
 			o.insert();
 		}
 		return o;
@@ -44,31 +43,6 @@ class Hosting extends sys.db.Object
 	public function getMembersNum():Int {
 		return db.UserGroup.manager.count($groupId == this.id);
 	}
-	
-	/*public function isAboOk(?plusOne=false):Bool {
-	
-		var members = getMembersNum();
-		if (plusOne) members++;
-		
-		//abo null ou expiré ?
-		if (aboEnd == null || Date.now().getTime() > (aboEnd.getTime() + (1000*60*60*24))) {
-			
-			//mode free ?
-			if (members <= hosted.HostedPlugIn.ABO_MAX_MEMBERS[0]) return true;
-			
-			return false;
-		}else {
-			//abo valable
-			return (members <= hosted.HostedPlugIn.ABO_MAX_MEMBERS[aboType]); 
-			
-		}
-		
-		return false;
-	}*/
-	
-	/*public function getMaxMembers(){
-		return hosted.HostedPlugIn.ABO_MAX_MEMBERS[aboType];
-	}*/
 	
 	/**
 	 * Detect if this group can be visible on the map + directories.

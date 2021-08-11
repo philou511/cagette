@@ -81,7 +81,7 @@ class AmapAdmin extends Controller
 		
 		//visible on map
 		#if plugins
-		var h = hosted.db.Hosting.getOrCreate(group.id, true);
+		var h = hosted.db.GroupStats.getOrCreate(group.id, true);
 		var o = h.updateVisible();
 		
 		var str = "";
