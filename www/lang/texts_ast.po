@@ -892,7 +892,7 @@ msgstr ""
 
 #: src/controller/Main.hx:2009 src/controller/Shop.hx:659
 msgid ""
-"Members of this group should provide a phone number. <a href='/account/edit'>Please "
+"Members of this group should provide a phone number. <a href='/account'>Please "
 "click here to update your account</a>."
 msgstr ""
 
