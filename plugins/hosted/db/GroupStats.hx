@@ -26,7 +26,7 @@ class GroupStats extends sys.db.Object
 	}
 
 	public static function getOrCreate(groupId:Int,?lock=false) {
-		var  o =  manager.get(groupId, lock);
+		var  o =  manager.select($groupId==groupId, lock);
 		if (o == null) {
 			o = new hosted.db.GroupStats();
 			o.groupId = groupId;
@@ -37,11 +37,11 @@ class GroupStats extends sys.db.Object
 	}
 	
 	public function getAmap() {
-		return db.Group.manager.get(id);
+		return this.group;
 	}
 	
 	public function getMembersNum():Int {
-		return db.UserGroup.manager.count($groupId == this.id);
+		return db.UserGroup.manager.count($groupId == this.group.id);
 	}
 	
 	/**

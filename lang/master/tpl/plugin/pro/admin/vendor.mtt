@@ -125,17 +125,18 @@
 	<div class="alert alert-danger">
 		<i class="icon icon-alert"></i> Compte désactivé : ::vendor.getDisabledReason()::<br />			
 	</div>
-	::end::
+::end::
+
 ::if(cpro!=null)::
 <p>
 	<h4>Utilisateurs ayant accès au Cagette Pro</h4>
 	<table class="table table-bordered">
 		::foreach uc cpro.getUserCompany()::
 		<tr>
-			<td>::uc.userId::</td>
 			<td>
-				::uc._user.getName()::
+				<a href="/p/hosted/user/view/::uc.userId::">::uc._user.getName()::</a>
 			</td>
+			<td>::uc._user.email::</td>
 			<td>
 				::if(uc.disabled)::
 				<p class="alert alert-danger">Accès coupé (cagette pro test non inscrit en formation)</p>
@@ -163,6 +164,7 @@
 		<tr>
 			<th>Type</th>
 			<th>Groupe</th>
+			<th>Mode du groupe</th>
 			<th>Catalogue</th>
 			<th>Dates</th>
 			<th>Actions</th>
@@ -178,9 +180,16 @@
 				<td>::if(isCproCatalog(c)):: 
 				Cagette PRO
 				::else::
-				Invité					
+				Catalogue invité					
 				::end::</td>
 				<td><a href="/p/hosted/group/::c._group.id::">::c._group.name::</a></td>
+				<td>
+					::if(c._group.hasShopMode())::
+					Boutique
+					::else::
+					AMAP
+					::end::
+				</td>
 				<td>::c.name::</td>
 				<td>du ::sDate(c.startDate):: au ::sDate(c.endDate)::</td>
 				<td>
@@ -188,9 +197,7 @@
 					<a href="/p/pro/admin/contractToCatalog/::c.id::/::cpro.id::" class="btn btn-danger btn-xs">Copier dans Cagette Pro</a>
 					::end::
 				</td>
-
 			</tr>
-		
 		::end::
 		</table>
 </p>
