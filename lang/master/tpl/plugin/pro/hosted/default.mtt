@@ -37,8 +37,8 @@
 				</tr>
 				::foreach a groups::
 				<tr>
-					<td>::a.id::</td>
-					<td><a href="/p/hosted/group/::a.id::">::a.name::</a></td>
+					<td>::a.groupId::</td>
+					<td><a href="/p/hosted/group/::a.groupId::">::a.name::</a></td>
 					<td>
 						::if a.groupType==null::
 						::elseif a.groupType==0:: AMAP
