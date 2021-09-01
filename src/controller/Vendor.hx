@@ -69,17 +69,10 @@ class Vendor extends Controller
 
 		view.form = form;
 	}
-
-	
-
 	
 	@tpl('vendor/addimage.mtt')
 	function doAddImage(vendor:db.Vendor) {
 		
-		/*if(vendor.getGroups().length>1){
-			throw Error("/contractAdmin",t._("You can't edit this vendor profile because he's active in more than one group. If you want him to update his profile, please ask him to do so."));
-		} */
-
 		if(vendor.email != null && vendor.email.indexOf("@cagette.net")>-1) throw Error("/contractAdmin","Il est impossible de modifier ce producteur");
 
 		#if plugins
@@ -87,28 +80,7 @@ class Vendor extends Controller
 		#end
 
 		view.vendor = vendor;
-		view.image = vendor.image;		
-		var request = sugoi.tools.Utils.getMultipart(1024 * 1024 * 12); //12Mb
-		
-		if (request.exists("image")) {
-			
-			//Image
-			var image = request.get("image");
-			if (image != null && image.length > 0) {
-				var img : sugoi.db.File = null;
-				img = sugoi.tools.UploadedImage.resizeAndStore(request.get("image"), request.get("image_filename"), 400, 400);	
-								
-				vendor.lock();				
-				if (vendor.image != null) {
-					//efface ancienne
-					vendor.image.lock();
-					vendor.image.delete();
-				}				
-				vendor.image = img;
-				vendor.update();
-				throw Ok('/contractAdmin/', t._("Image updated"));
-			}
-		}
-	}	
+		view.image = vendor.image;
+	}
 	
 }
