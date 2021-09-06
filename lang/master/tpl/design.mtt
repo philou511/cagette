@@ -50,7 +50,12 @@
 							</li>
 							<li ::attr class if(category=="history" ) 	'active' ::>
 								<a href="/history">
-									<i class="icon icon-user"></i> ::if user.getGroup().hasShopMode():: Historique ::else:: Mes Contrats ::end::
+									 
+									::if user.getGroup().hasShopMode():: 
+									<i class="icon icon-list"></i> Historique 
+									::else:: 
+									<i class="icon icon-book"></i> Mes Contrats
+									::end::
 								</a>
 							</li>
 							<li ::attr class if(category=="amap") 		'active' ::>

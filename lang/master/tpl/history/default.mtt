@@ -6,9 +6,9 @@
 
 	<h2>
 		::if hasShopMode::
-			::_("Last orders")::
+			Historique de commande
 		::else::
-			Mes souscriptions
+			Mes contrats
 		::end::
 	</h2>
 	
@@ -296,6 +296,10 @@
 		<br/>
 	</div>
 	::end::
+
+	<div class="alert alert-warning">
+		<i class="icon icon-info"></i> La page <b>Mon compte</b> a été déplacée. Vous pouvez maintenant y accéder en cliquant sur votre nom, en haut à droite de l'écran.
+	</div>
 	
 	
 	<!-- ::if user.isAmapManager()::
