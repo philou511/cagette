@@ -13,7 +13,7 @@
 				
 				$$edit(::_("Edit properties")::,/amap/edit)
 				
-				<a class="btn btn-default btn-sm" onclick="_.openImageUploader('group', ::user.getGroup().id::, 300, 300)">
+				<a class="btn btn-default btn-sm" onclick="_.openImageUploader('group', ::user.getGroup().id::, 400, 400)">
 					<i class="icon icon-image"></i> ::_("Choose a logo")::
 				</a>
 			</p>
@@ -65,7 +65,7 @@
 		
 		<div class="col-md-6">			
 			::if user.getGroup()._image!=null::
-			<img src="::file(user.getGroup()._image)::" style="width: 100%;" class="thumbnail" />
+			<img src="::file(user.getGroup()._image)::" style="width: 100%; max-width: 400px" class="thumbnail" />
 			::end::
 		</div>
 
