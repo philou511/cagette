@@ -59,7 +59,7 @@
                 });
             </script>
             ::else::
-            <a class="btn btn-default" href="/account/basket/::basket.id::?print=1" target="_blank"><i class="icon icon-print"></i> Imprimer ma commande</a>
+            <a class="btn btn-default" href="/history/basket/::basket.id::?print=1" target="_blank"><i class="icon icon-print"></i> Imprimer ma commande</a>
             ::end::
             
         </td>

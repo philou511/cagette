@@ -30,6 +30,7 @@
 					<li><a href="/admin"><i class="icon icon-cog"></i> ::_("Admin")::</a></li>
 					<li><a href="/db"><i class="icon icon-cog"></i> ::_("Database")::</a></li>
 					::end::
+					<li><a href="/account"><i class="icon icon-user"></i> ::_("My account")::</a></li>
 					<li><a href="/user/logout"><i class="icon icon-delete"></i> ::_("Log out")::</a></li>
 				</ul>
 				

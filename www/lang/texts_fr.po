@@ -1301,7 +1301,7 @@ msgid ""
 "edit'>Please click here to update your account</a>."
 msgstr ""
 "Les membres de ce groupe doivent fournir un numéro de téléphone. <a href='/"
-"account/edit'>Cliquez ici pour mettre à jour votre compte</a>."
+"account'>Cliquez ici pour mettre à jour votre compte</a>."
 
 #: ../src/controller/Shop.hx:6184
 msgid "In order to confirm your order, You need to authenticate."

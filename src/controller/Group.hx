@@ -33,11 +33,12 @@ class Group extends controller.Controller
 		group.getMainPlace(); //just to update cache
 
 		var isMemberOfGroup = app.user == null ? false : app.user.isMemberOf(group); 
-		if ( app.user == null ) {
+		view.isInWaitingList = app.user == null ? false : db.WaitingList.manager.select($amapId == group.id && $user == app.user);
 
+		if ( app.user == null ) {
 			service.UserService.prepareLoginBoxOptions(view,group);
 		}	
-
+		view.user = app.user;
 		view.isMember = isMemberOfGroup;
 
 		// Documents
@@ -48,7 +49,6 @@ class Group extends controller.Controller
 			visibleCatalogsDocuments.set( catalog.id, catalog.getVisibleDocuments( app.user ) );
 		}
 		view.visibleCatalogsDocuments = visibleCatalogsDocuments;
-
 	}
 	
 	/**
@@ -57,6 +57,9 @@ class Group extends controller.Controller
 	 */
 	@tpl('form.mtt')
 	function doList(group:db.Group){
+		if ( app.user==null ) {
+			throw Redirect("/group/"+group.id);
+		}
 		
 		//checks
 		if (group.regOption != db.Group.RegOption.WaitingList) throw Redirect("/group/" + group.id);
@@ -70,21 +73,11 @@ class Group extends controller.Controller
 		
 		//build form
 		var form = new sugoi.form.Form("reg");				
-		if (app.user == null){
-			form.addElement(new StringInput("userFirstName", t._("Your firstname"),"",true));
-			form.addElement(new StringInput("userLastName", t._("Your lastname") ,"",true));
-			form.addElement(new StringInput("userEmail", t._("Your e-mail"), "", true));		
-		}
+		
 		form.addElement(new sugoi.form.elements.TextArea("msg", t._("Leave a message")));
 		
 		if (form.isValid()){
 			try{
-				if (app.user == null){
-					var f = form;
-					var user = service.UserService.softRegistration(f.getValueOf("userFirstName"),f.getValueOf("userLastName"), f.getValueOf("userEmail") );
-					db.User.login(user, user.email);				
-				}			
-				
 				WaitingListService.registerToWl(app.user,group,form.getValueOf("msg"));
 				throw Ok("/group/" + group.id,t._("Your subscription to the waiting list has been recorded. You will receive an e-mail as soon as your request is processed.") );
 			}catch(e:tink.core.Error){
@@ -108,70 +101,6 @@ class Group extends controller.Controller
 		}
 		throw Ok("/group/" + group.id,t._("You've been removed from the waiting list"));
 	}
-	
-	
-	/**
-	 * 	Register direclty in an open group
-	 * 
-	 * 	the user can be logged or not !
-	
-	@tpl('form.mtt')
-	function doRegister(group:db.Group){
-		
-		if (group.regOption != db.Group.RegOption.Open) throw Redirect("/group/" + group.id);
-		if (app.user != null){			
-			if ( db.UserGroup.manager.select($amapId == group.id && $user == app.user) != null) throw Error("/group/" + group.id, t._("You are already member of this group."));			
-		}
-		
-		var form = new sugoi.form.Form("reg");	
-		form.submitButtonLabel = t._("Join the group");
-		form.addElement(new sugoi.form.elements.Html("html",t._("Confirm your subscription to \"::groupName::\"", {groupName:group.name})));
-		if (app.user == null){
-			form.addElement(new StringInput("userFirstName", t._("Your firstname"),"",true));
-			form.addElement(new StringInput("userLastName", t._("Your lastname"), "", true));
-			var em = new StringInput("userEmail", t._("Your e-mail"), "", true);
-			em.addValidator(new EmailValidator());
-			form.addElement(em);		
-			form.addElement(new StringInput("address", t._("Address"), "", true));					
-			form.addElement(new StringInput("zipCode", t._("Zip code"), "", true));		
-			form.addElement(new StringInput("city", t._("City"), "", true));		
-			form.addElement(new StringInput("phone", t._("Phone"), "", true));		
-		}
-		
-		if (form.isValid()){
-			
-			if (app.user == null){
-				var f = form;
-				var user = new db.User();
-				user.email = f.getValueOf("userEmail");
-				user.firstName = f.getValueOf("userFirstName");
-				user.lastName = f.getValueOf("userLastName");
-				user.address1 = f.getValueOf("address");
-				user.zipCode = f.getValueOf("zipCode");
-				user.city = f.getValueOf("city");
-				user.phone = f.getValueOf("phone");
-				
-				if ( db.User.getSameEmail(user.email).length > 0 ) {
-					throw Ok("/user/login",t._("You already subscribed to Cagette.net, please log in on this page"));
-				}
-				
-				user.insert();				
-				app.session.setUser(user);
-				
-			}			
-			
-			var w = new db.UserGroup();
-			w.user = app.user;
-			w.amap = group;
-			w.insert();
-			
-			throw Ok("/user/choose", t._("Your subscription has been taken into account"));
-		}
-		
-		view.title = t._("Subscription to \"::groupName::\"", {groupName:group.name});
-		view.form = form;
-		
-	}*/
 	
 	/**
 	 * create a new group
