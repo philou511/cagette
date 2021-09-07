@@ -32,7 +32,7 @@ class Contract extends Controller
 	//retrocompat
 	@logged
 	public function doDefault(){
-		throw Redirect("/account");
+		throw Redirect("/history");
 	}
 
 	/**
@@ -697,7 +697,7 @@ class Contract extends Controller
 			
 			app.event(MakeOrder(orders_out));
 				
-			throw Ok("/account", t._("Your order has been updated"));
+			throw Ok("/history", t._("Your order has been updated"));
 		}
 	}
 

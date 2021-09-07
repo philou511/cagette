@@ -27,7 +27,7 @@
 			</p>
 		
 			<p>
-				<a href="/account" class="btn btn-default">
+				<a href="/history" class="btn btn-default">
 				<i class="icon icon-chevron-right"></i> ::_("Check my orders")::</a>
 
 				<a href="/history/payments" class="btn btn-default">
