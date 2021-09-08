@@ -155,7 +155,6 @@ class Member extends Controller
 		var form = db.User.getForm(member);
 		form.removeElement( form.getElement("pass") );
 		
-		var isReg = member.isFullyRegistred();
 		var groupNum = db.UserGroup.manager.count($userId == member.id);
 		
 		//an administrator can modify a user's email only if he's not member elsewhere
@@ -194,8 +193,6 @@ class Member extends Controller
 					throw Error("/member/edit/" + member.id, str);	
 				}
 			}	
-			
-			if (!isReg) member.setPass(form.getValueOf("pass"));
 			
 			member.update();
 			
