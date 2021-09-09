@@ -43,7 +43,7 @@ class App extends sugoi.BaseApp {
 		eventDispatcher = new hxevents.Dispatcher<Event>();
 		plugins = [];
 		//internal plugins
-		plugins.push(new plugin.Tutorial());
+		// plugins.push(new plugin.Tutorial());
 		
 		//optionnal plugins
 		#if plugins
