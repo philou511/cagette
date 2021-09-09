@@ -12,7 +12,7 @@ class Formatting
 
 	/** smart quantity filter : display easier-to-read quantity when it's floats
 	 * 
-	 * 0.33 x Lemon 12kg => 2kg Lemon
+	 * 0.33 x Lemon 12kg => 4kg Lemon
 	 */ 
 	public static function smartQt(orderQt:Float,productQt:Float,unit:Unit):String{
 		return formatNum(orderQt * productQt) + "&nbsp;" + Formatting.unit(unit);

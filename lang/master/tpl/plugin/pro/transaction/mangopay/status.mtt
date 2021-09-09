@@ -9,6 +9,7 @@
 				
 					<!-- ERROR -->
 					<div class="alert alert-danger">
+						<h4>Erreur</h4>
 						<p>$$bool(false) ::errormessage::</p>					
 					</div>
 					

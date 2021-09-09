@@ -250,11 +250,9 @@ class Mangopay
 		return callService("users/" + mangopayUserId + "/bankaccounts/iban/", "POST", params);
 	}
 
-	static public function getIBANBankAccount(mangopayUserId: Int) : IBANBankAccount {
-		//TODO : should use bandAccountId in MangopayLegalUser !!!!
-		var allBankAccounts : Array<IBANBankAccount> = callService("users/" + mangopayUserId + "/bankaccounts/");
-		var activeBankAccounts = Lambda.filter(allBankAccounts, function(x) return x.Active == true);
-		return Lambda.array(activeBankAccounts)[0];
+	static public function getIBANBankAccount(mangopayLegalUser:MangopayLegalUser) : IBANBankAccount {		
+		var allBankAccounts : Array<IBANBankAccount> = callService("users/" + mangopayLegalUser.mangopayUserId + "/bankaccounts/");
+		return allBankAccounts.find( account -> account.Active==true && Std.string(account.Id) == Std.string(mangopayLegalUser.bankAccountId) );
 	}
 
 	static public function deactivateIBANBankAccount(mangopayUserId: Int, bankAccountId: String) : IBANBankAccount {

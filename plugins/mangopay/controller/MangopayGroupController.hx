@@ -30,11 +30,13 @@ class MangopayGroupController extends controller.Controller
 		
 		//If the legal user doesn't exist already in the mapping table it means that 
 		//we haven't created yet a legal user in Mangopay
-		var legalUserId : Int = null;
 		var wallet = null;
+		var mgpLegalUser = null;
 		try{
-			legalUserId = MangopayPlugin.getGroupLegalUserId(group);
-			wallet = Mangopay.getOrCreateGroupWallet(legalUserId,group);
+			var groupConfig = MangopayPlugin.getGroupConfig(group);
+			mgpLegalUser = groupConfig.legalUser;						
+			wallet = Mangopay.getOrCreateGroupWallet(mgpLegalUser.mangopayUserId,group);
+
 		}catch(error:tink.core.Error){
 			throw Error("/amapadmin",error.message);
 		}
@@ -57,14 +59,14 @@ class MangopayGroupController extends controller.Controller
 
 		//trigger a transfer
 		if(checkToken()){
-			
+			var bankAccount = Mangopay.getIBANBankAccount(mgpLegalUser);
 			var mdid = Std.parseInt(app.params.get("md"));
 			if(mdid==null) throw "md cannot be null";
 			var md = db.MultiDistrib.manager.get(mdid);
 			if(md==null) throw "md is null";
 			if(md.getGroup()!=app.getCurrentGroup()) throw "bad md";
 
-			if(Mangopay.getIBANBankAccount(legalUserId)==null) {
+			if(bankAccount==null) {
 				throw Error(pageUrl, "Vous devez définir votre IBAN.");
 			}
 
@@ -99,8 +101,8 @@ class MangopayGroupController extends controller.Controller
 					Amount: 0
 				},
 				DebitedWalletId: wallet.Id,
-				AuthorId: legalUserId,
-				BankAccountId: Mangopay.getIBANBankAccount(legalUserId).Id,
+				AuthorId: mgpLegalUser.mangopayUserId,
+				BankAccountId: bankAccount.Id,
 				BankWireRef: "dist"+md.getDate().toString().substr(0,10)
 			};
 
