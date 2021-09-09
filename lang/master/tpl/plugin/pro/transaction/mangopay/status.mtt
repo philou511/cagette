@@ -23,7 +23,7 @@
 						<p>$$bool(true) Le paiement s'est bien déroulé.</p>					
 					</div>
 					
-					<a href="/account" class="btn btn-primary">Voir mon récapitulatif de commande</a>
+					<a href="/history" class="btn btn-primary">Voir mon récapitulatif de commande</a>
 			
 				::end::
 				
