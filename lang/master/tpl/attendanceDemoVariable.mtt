@@ -1,0 +1,19 @@
+::use 'design.mtt'::
+
+<div id="content" class="col-md-8" style="margin-top: 16px;margin-bottom: 32px;">
+
+
+  <div id="attendance-container"></div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function (event) {
+      neo.createNeoModule("attendance-container", "variableContractAttendance", {
+        catalogId: 2,
+        distributionId: 5
+      });
+    });
+  </script>
+
+
+</div>
+::end::

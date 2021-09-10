@@ -399,4 +399,12 @@ class Main extends Controller {
 			view.invitedGroupId = group.id;
 		}
 	}
+
+	@tpl('attendanceDemoClassic.mtt')
+	function doAttendanceDemoClassic(){
+	}
+
+	@tpl('attendanceDemoVariable.mtt')
+	function doAttendanceDemoVariable(){
+	}
 }
