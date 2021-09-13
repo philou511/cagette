@@ -400,11 +400,4 @@ class Main extends Controller {
 		}
 	}
 
-	@tpl('attendanceDemoClassic.mtt')
-	function doAttendanceDemoClassic(){
-	}
-
-	@tpl('attendanceDemoVariable.mtt')
-	function doAttendanceDemoVariable(){
-	}
 }
