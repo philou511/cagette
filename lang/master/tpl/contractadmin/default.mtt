@@ -36,6 +36,7 @@
 			::_("Catalogs")::
 			::end::
 		</h2>
+		
 		<table class="table">
 			::foreach c contracts::
 				::if c.endDate!=null && c.endDate.getTime() < now().getTime()::
@@ -47,19 +48,52 @@
 				::end::
 				<tr  class="::class::" >
 					<td>
-						::if c.type == TYPE_CONSTORDERS::
-							<div class="tag big" style="background-color:#e5d3bf;" data-toggle="tooltip" title="Contrat AMAP classique">
-								<i class="icon icon-refresh"></i>
-							</div>
-						::else::
-							::set title = "Catalogue standard (commande variable)"::
-							::if !c._group.hasShopMode() ::
-								::set title = "Contrat AMAP variable"::
+						::if !group.hasShopMode() ::
+						<!-- CSA MODE GROUP -->	
+							::if c.type == TYPE_CONSTORDERS::
+								<div class="tag big" style="background-color:#e5d3bf;" data-toggle="tooltip" title="Contrat AMAP classique">
+									<i class="icon icon-refresh"></i>
+								</div>
+							::else::
+								::set title = "Catalogue standard (commande variable)"::
+								
+									::set title = "Contrat AMAP variable"::
+								
+								<div class="tag big" style="background-color:#e5d3bf" data-toggle="tooltip" title="::title::">
+									<i class="icon icon-basket"></i>
+								</div>
 							::end::
-							<div class="tag big" style="background-color:#e5d3bf" data-toggle="tooltip" title="::title::">
-								<i class="icon icon-basket"></i>
+
+						::else::
+
+
+						<!-- SHOP MODE GROUP -->
+
+							::set stats = c._vendor.getStats()::
+
+							::if stats.type==0::
+							<!--cpro-->
+							<div class="vendorStatus" style="color:#84BD55;border-color:#84BD55" data-toggle="tooltip" data-placement="right" title="Producteur Membre du réseau - Chiffre d'affaire illimité">
+								<i class="icon icon-farmer-pro"></i>
 							</div>
+							::else::
+
+								::if(stats.shopTurnover12months > 1000)::
+								<div class="vendorStatus" style="color:#e28f84;border-color:#e28f84" data-toggle="tooltip" data-placement="right" 
+								title="Producteur invité - Chiffre d'affaire limité à 1000€ par à partir du 2 Nov. - Attention, ce producteur dépasse les 1000€ de C.A sur un an.">
+									<i class="icon icon-farmer"></i>
+								</div>
+								::else::
+								<div class="vendorStatus" style="color:#f1d577;border-color:#f1d577" data-toggle="tooltip" data-placement="right" 
+								title="Producteur invité - Chiffre d'affaire limité à 1000€ par à partir du 2 Nov. - Ce producteur ne dépasse pas les 1000€ de C.A sur un an.">
+									<i class="icon icon-farmer"></i>
+								</div>
+								::end::
+							::end::
+
+
 						::end::
+						
 					</td>
 					<td>
 						<div class="productImg" style="background-image:url('::c._vendor.getImage()::');width:48px;height:48px;margin:0" ></div>
