@@ -80,12 +80,12 @@
 
 								::if(stats.shopTurnover12months > 1000)::
 								<div class="vendorStatus" style="color:#e28f84;border-color:#e28f84" data-toggle="tooltip" data-placement="right" 
-								title="Producteur invité - Chiffre d'affaire limité à 1000€ par à partir du 2 Nov. - Attention, ce producteur dépasse les 1000€ de C.A sur un an.">
+								title="Producteur invité - Chiffre d'affaire limité à 1000€ par an à partir du 2 Novembre - Attention, ce producteur dépasse les 1000€ de C.A sur un an.">
 									<i class="icon icon-farmer"></i>
 								</div>
 								::else::
 								<div class="vendorStatus" style="color:#f1d577;border-color:#f1d577" data-toggle="tooltip" data-placement="right" 
-								title="Producteur invité - Chiffre d'affaire limité à 1000€ par à partir du 2 Nov. - Ce producteur ne dépasse pas les 1000€ de C.A sur un an.">
+								title="Producteur invité - Chiffre d'affaire limité à 1000€ par an à partir du 2 Novembre - Ce producteur ne dépasse pas les 1000€ de C.A sur un an.">
 									<i class="icon icon-farmer"></i>
 								</div>
 								::end::
