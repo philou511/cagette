@@ -73,19 +73,19 @@
 
 							::if stats.type==0::
 							<!--cpro-->
-							<div class="vendorStatus" style="color:#84BD55;border-color:#84BD55" data-toggle="tooltip" data-placement="right" title="Producteur Membre du réseau - Chiffre d'affaire illimité">
+							<div class="vendorStatus" style="color:#84BD55;border-color:#84BD55" data-toggle="tooltip" data-placement="right" title="Ce producteur est membre du réseau. Il a son propre compte producteur. Il peut vendre en illimité">
 								<i class="icon icon-farmer-pro"></i>
 							</div>
 							::else::
 
 								::if(stats.shopTurnover12months > 1000)::
 								<div class="vendorStatus" style="color:#e28f84;border-color:#e28f84" data-toggle="tooltip" data-placement="right" 
-								title="Producteur invité - Chiffre d'affaire limité à 1000€ par an à partir du 2 Novembre - Attention, ce producteur dépasse les 1000€ de C.A sur un an.">
+								title="Ce producteur n'a pas de compte producteur : ses ventes seront limitées à 1000€/an à partir du 02/11/2021. - Depuis un an il a vendu pour plus de 1000€.">
 									<i class="icon icon-farmer"></i>
 								</div>
 								::else::
 								<div class="vendorStatus" style="color:#f1d577;border-color:#f1d577" data-toggle="tooltip" data-placement="right" 
-								title="Producteur invité - Chiffre d'affaire limité à 1000€ par an à partir du 2 Novembre - Ce producteur ne dépasse pas les 1000€ de C.A sur un an.">
+								title="Ce producteur n'a pas de compte producteur : ses ventes seront limitées à 1000€/an à partir du 02/11/2021. - Depuis un an, il a vendu pour moins de 1000€.">
 									<i class="icon icon-farmer"></i>
 								</div>
 								::end::
