@@ -516,7 +516,6 @@ class Subscriptions extends controller.Controller
 			operation.setPaymentData({type:form.getValueOf("Mtype")});
 			operation.group = group;
 			operation.user = subscription.user;
-			operation.date = Date.now();
 			operation.subscription = subscription;
 			operation.insert();
 			service.PaymentService.updateUserBalance( subscription.user, group );

@@ -60,7 +60,7 @@ class PProductService
 		//import
 		if (csvData != null){
 			csv = new sugoi.tools.Csv();
-			csv.setHeaders( ["productName", "ref", "desc", "unit", "organic", "floatQt", "txp" ,"offerName", "offerRef","qt", "price", "vat","active","imageUrl","imageDate"] );
+			csv.setHeaders( ["productName", "ref", "desc", "unit", "organic", "bulk", "txp" ,"offerName", "offerRef","qt", "price", "vat","active","imageUrl","imageDate"] );
 			datas = csv.importDatasAsMap( csvData );
 			datas.shift(); //remove second header
 			try{ App.current.session.data.csvImportedData = datas;}catch(e:Dynamic){}
@@ -109,7 +109,7 @@ class PProductService
 				}
 				
 				product.organic = p["organic"] == "1";
-				// product.hasFloatQt = p["floatQt"] == "1";
+				product.bulk = p["bulk"] == "1";
 				product.active = if (p["active"] == null || p["active"] == "" || p["active"]=="1") true else false;
 
 				//image
@@ -179,6 +179,8 @@ class PProductService
 			offer.ref = p["offerRef"];
 			offer.name = p["offerName"];
 			offer.active = if (p["active"] == null || p["active"] == "" || p["active"] == "1") true else false;
+
+			if(lastProduct.bulk) offer.smallQt = 0.1;
 			
 			//if (offer.ref == "CS-0212-1" ) trace(p + "----" + offer.htPrice);
 			offer.quantity = fv.filterString(p["qt"]);

@@ -374,6 +374,7 @@ enum Event {
 /* 
  * Tutorials
  */
+/*
 enum TutoAction {
 	TAPage(uri:String);
 	TANext;
@@ -472,13 +473,7 @@ class TutoDatas {
 						action: TANext,
 						placement : TPBottom
 
-					}/*,{
-					element:"#places",
-					   text:t._("Here you can manage the list of <b>delivery places</b>.<br/>Don't forget to key-in the complete address as a map will be displayed based on this address"),
-					   action: TANext,
-					   placement : TPTop
-
-				   }*/,{
+					},{
 					   element:"#contracts table .btn",
 					   text:t._("Let's look closer at how to manage a catalog. <b>Click on this button</b>"),
 					   action: TAPage("/contractAdmin/view/*"),
@@ -559,7 +554,7 @@ class TutoDatas {
 	
 	
 
-}
+}*/
 
 /**
  * Order Reports

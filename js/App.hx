@@ -71,35 +71,10 @@ class App {
     }
     
 
-    /*var sentryInited:Bool;
-
-    public function initSentry(){
-
-        if(sentryInited) return;
-
-        sentry.Sentry.init({
-            dsn: "https://505d95e8dea34941be60ceb06195de50@o394906.ingest.sentry.io/5245923",
-            release: App.VERSION.toString()
-        });
-
-        if(this.userEmail!=null){
-            untyped sentry.Sentry.configureScope(function(scope) {
-                scope.setUser({
-                    "email": this.userEmail,
-                    "userName" : this.userName,
-                    "id" : this.userId,
-                });
-            });
-        }
-
-        sentryInited = true;
-    }*/
-
-
-	public function getTuto(name:String, step:Int) {
-        // //initSentry();
-		new Tuto(name,step);
-	}
+	// public function getTuto(name:String, step:Int) {
+    
+	// 	new Tuto(name,step);
+	// }
 	
 	/**
 	 * remove method for IE compat
@@ -110,11 +85,8 @@ class App {
 	}
 	
 	public function getVATBox(ttcprice:Float,currency:String,rates:String,vat:Float,formName:String){
-		// //initSentry();
 		var input = js.Browser.document.querySelector('form input[name="${formName}_price"]');
-		
-		remove( js.Browser.document.querySelector('form input[name="${formName}_vat"]').parentElement.parentElement );
-		
+		remove( js.Browser.document.querySelector('form input[name="${formName}_vat"]').parentElement.parentElement );		
 		ReactDOM.render(jsx('<$VATBox ttc=${ttcprice} currency=${currency} vatRates=${rates} vat=${vat} formName=${formName} />'),  input.parentElement);
 	}
 
@@ -132,7 +104,6 @@ class App {
 			//dirty stuff to remove "real" input, and replace it by the react one
 			remove(Browser.document.querySelector("form input[name='"+formName+"_name']").parentElement.parentElement);
 			remove(Browser.document.querySelector("form select[name='" + formName+"_txpProductId']").parentElement.parentElement);
-
 			ReactDOM.render(jsx('<$ProductInput productName=${productName} txpProductId=${txpProductId} formName=${formName}/>'),  js.Browser.document.getElementById(divId));
 		});
 	}
@@ -145,8 +116,6 @@ class App {
 	public function getVendorPage(divId:String, vendorId:Int, catalogId:Int ) {
         
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
-
-            // //initSentry();
 
 			//Load data from API
 			var vendorInfo:VendorInfos = null;
@@ -182,7 +151,6 @@ class App {
 	}
 
 	public function openImageUploader( uploadURL : String, uploadedImageURL : String, width:Int, height:Int, ?formFieldName: String ) {
-        //initSentry();
 		var node = js.Browser.document.createDivElement();
 		js.Browser.document.body.appendChild(node);
 		ReactDOM.unmountComponentAtNode(node); 
@@ -193,7 +161,6 @@ class App {
 	}
 	
 	public function initReportHeader(){
-        // //initSentry();
 		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
 	
@@ -301,8 +268,6 @@ class App {
 	}
 
 	public function membershipBox(userId:Int,userName:String,groupId:Int,?callbackUrl:String,?distributionId:Int){
-        //initSentry();
-
 		var node = js.Browser.document.createDivElement();
 		node.id = "membershipBox-container";
 		js.Browser.document.body.appendChild(node);

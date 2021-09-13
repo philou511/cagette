@@ -47,11 +47,11 @@ class View extends sugoi.BaseView {
 		super.init();
 
 		// tuto widget display
-		var u = App.current.user;
+		/*var u = App.current.user;
 		if (u != null && u.tutoState != null) {
 			// trace("view init "+u.tutoState.name+" , "+u.tutoState.step);
 			this.displayTuto(u.tutoState.name, u.tutoState.step);
-		}
+		}*/
 	}
 
 	function getCurrentGroup() {
@@ -254,7 +254,7 @@ class View extends sugoi.BaseView {
 		return service.OrderService.prepare(orders);
 	}
 
-	public function displayTuto(tuto:String, step:Int) {
+	/*public function displayTuto(tuto:String, step:Int) {
 		if (tuto == null)
 			return;
 		var t = plugin.Tutorial.all().get(tuto);
@@ -273,7 +273,7 @@ class View extends sugoi.BaseView {
 			}
 		}
 		this.tuto = {name: tuto, step: step};
-	}
+	}*/
 
 	/**
 	 * renvoie 0 si c'est user.firstName qui est connecté,
