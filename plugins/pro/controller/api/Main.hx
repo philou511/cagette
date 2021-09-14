@@ -63,13 +63,6 @@ class Main extends sugoi.BaseController
 	}
 	
 	/**
-		Vendor infos via API
-	**/
-	public function doVendor(d:haxe.web.Dispatch){
-		d.dispatch(new pro.controller.api.Vendor());
-	}
-
-	/**
 		Catalog infos via API
 	**/
 	public function doCatalog(c:pro.db.PCatalog){
