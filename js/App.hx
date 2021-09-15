@@ -107,45 +107,13 @@ class App {
 		});
 	}
 
-	/**
-	 * TO DO
-	 * @param	divId
-	 * @param	vendorId
-	 */
-	public function getVendorPage(divId:String, vendorId:Int, catalogId:Int ) {
-        
+	public function getVendorPage(divId:String, vendorId:Int, ?catalogId:Int ) {
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
-
-			//Load data from API
-			var vendorInfo:VendorInfos = null;
-			var catalogProducts:Array<ProductInfo> = null;
-			var nextDistributions:Array<DistributionInfos> = null;
-
-			var promises = [];
-			promises.push( utils.HttpUtil.fetch("/api/pro/vendor/"+vendorId, GET, null, JSON) );
-			promises.push(  utils.HttpUtil.fetch("/api/pro/vendor/nextDistributions/"+vendorId, GET, null, JSON) );
-			if(catalogId!=null) promises.push( utils.HttpUtil.fetch("/api/pro/catalog/"+catalogId, GET, null, JSON) );			
-			
-			var initRequest = js.Promise.all(promises).then(
-				function(data:Dynamic) {
-					vendorInfo = data[0];
-					nextDistributions = data[1];
-					catalogProducts = data[2]==null ? [] : data[2].products;
-					
-					ReactDOM.render(jsx('
-						<MuiThemeProvider theme=${CagetteTheme.get()}>
-							<>
-								<CssBaseline />
-								<$VendorPage vendorInfo=${vendorInfo} catalogProducts=${catalogProducts} nextDistributions=${nextDistributions} />
-							</>
-						</MuiThemeProvider>'),  js.Browser.document.getElementById(divId));
-			}
-			).catchError (
-				function(error) {
-					throw error;
-				}
-			);
-
+            var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+            neo.createNeoModule(divId, "vendorPublicPage", {
+                vendorId: vendorId,
+                pCatalogId: catalogId
+            });
 		});
 	}
 
