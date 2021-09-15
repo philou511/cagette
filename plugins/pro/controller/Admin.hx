@@ -1003,7 +1003,7 @@ class Admin extends controller.Controller {
 				var opAmount = Formatting.cleanFloat(op.amount);
 
 				if(autoFix){
-					if(!group.hasShopMode()) throw "cette page ne marche que pour les groupes en mode boutique";
+					if(!group.hasShopMode()) throw "cette page ne marche que pour les groupes en mode Marché";
 					service.PaymentService.onOrderConfirm( b.getOrders() );
 				}else{
 					if(op==null){
