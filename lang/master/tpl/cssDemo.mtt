@@ -5,16 +5,6 @@
 	::users.get("bob")::
 
 	<div class="row">
-		<div class="col-md-12">
-			<script>
-				_.getCategorySelector('categorySelector');
-			</script>
-			<div id="categorySelector"></div>
-
-		</div>
-	</div>
-	
-	<div class="row">
 		<div id="content" class="col-md-12">			
 			<div class="alert alert-danger">				
 				<span class="glyphicon glyphicon-exclamation-sign"></span>

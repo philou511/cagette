@@ -103,7 +103,13 @@ class App {
 			//dirty stuff to remove "real" input, and replace it by the react one
 			remove(Browser.document.querySelector("form input[name='"+formName+"_name']").parentElement.parentElement);
 			remove(Browser.document.querySelector("form select[name='" + formName+"_txpProductId']").parentElement.parentElement);
-			ReactDOM.render(jsx('<$ProductInput productName=${productName} txpProductId=${txpProductId} formName=${formName}/>'),  js.Browser.document.getElementById(divId));
+
+            var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+            neo.createNeoModule(divId, "ProductCategorizer", {
+                productName: userId,
+                txpProductId: txpProductId,
+                formName: formName
+            });
 		});
 	}
 
