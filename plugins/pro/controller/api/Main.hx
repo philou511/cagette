@@ -87,15 +87,4 @@ class Main extends sugoi.BaseController
 		d.dispatch(new pro.controller.api.DFC());
 	}
 
-	public function doProduct(d:haxe.web.Dispatch){
-		d.dispatch(new pro.controller.api.Product());
-	}
-
-	public function doOffer(d:haxe.web.Dispatch){
-		d.dispatch(new pro.controller.api.Offer());
-	}
-
-	public function doCompany(d:haxe.web.Dispatch){
-		d.dispatch(new pro.controller.api.Company());
-	}
 }

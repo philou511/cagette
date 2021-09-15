@@ -22,7 +22,6 @@ import redux.thunk.ThunkMiddleware;
 import redux.react.Provider as ReduxProvider;
 
 //custom components
-import react.file.ImageUploaderDialog;
 import react.order.OrdersDialog;
 import react.product.*;
 import react.map.*;
@@ -150,14 +149,24 @@ class App {
 		});
 	}
 
-	public function openImageUploader( uploadURL : String, uploadedImageURL : String, width:Int, height:Int, ?formFieldName: String ) {
-		var node = js.Browser.document.createDivElement();
-		js.Browser.document.body.appendChild(node);
-		ReactDOM.unmountComponentAtNode(node); 
-		ReactDOM.render(jsx('
-			<div>
-				<ImageUploaderDialog uploadURL=$uploadURL uploadedImageURL=$uploadedImageURL width=$width height=$height formFieldName=$formFieldName />
-			</div>'), node);
+	public function openImageUploader( imageUploaderContext : String, entityId: Int, width:Int, height:Int, ?imageType: String, ?currentCagetteProId: Int ) {
+		var nodeId = "image-uploader-container";
+        var node = js.Browser.document.getElementById(nodeId);
+        if (node == null) {
+            node = js.Browser.document.createDivElement();
+            node.id = nodeId;
+            js.Browser.document.body.appendChild(node);
+        }
+
+        var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+        neo.createNeoModule(node.id, "imageUploaderDialog", {
+            context: imageUploaderContext,
+            entityId: entityId,
+            width: width,
+            height: height,
+            imageType: imageType,
+            currentCagetteProId: currentCagetteProId
+        });
 	}
 	
 	public function initReportHeader(){
