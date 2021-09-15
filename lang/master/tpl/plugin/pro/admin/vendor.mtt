@@ -6,6 +6,9 @@
 		<h4>Producteur #::vendor.id::</h4>
 
 		<h2><a href="::vendor.getLink()::" target="_blank">::vendor.name::</a></h2>
+		::if(vendor.peopleName!=null)::
+		<p>Nom exploitant(s) : <b>::vendor.peopleName::</b></p>
+		::end::
 
 		<p>
 			Charte Producteurs : $$check(::vendor.vendorPolicy::)<br/>			

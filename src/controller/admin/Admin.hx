@@ -267,7 +267,7 @@ class Admin extends Controller {
 		order by type').results();
 
 		view.activeGroups = GroupStats.manager.count($active);
-		view.activeUsers = sys.db.Manager.cnx.request('SELECT sum(h.membersNum) FROM `Group` g, GroupStats gs where gs.groupId=g.id and gs.active=1').getIntResult(0);
+		view.activeUsers = sys.db.Manager.cnx.request('SELECT sum(gs.membersNum) FROM `Group` g, GroupStats gs where gs.groupId=g.id and gs.active=1').getIntResult(0);
 		view.newUsers = sys.db.Manager.cnx.request('SELECT count(id) FROM `User` where cdate > "${from.toString()}" and cdate <= "${to.toString()}"').getIntResult(0);
 		view.newGroups = db.Group.manager.count($cdate >= from && $cdate < to);
 	}

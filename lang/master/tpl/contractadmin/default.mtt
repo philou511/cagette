@@ -27,6 +27,13 @@
 		Attention, tous les <b>nouveaux contrats</b> sont obligatoirement <b>avec</b> gestion des paiements.
 	</div>
 	::end::-->
+
+	::if (group.hasShopMode())::
+	<div class="alert alert-warning"> 
+		<i class="icon icon-alert"></i> <b>Statut des producteurs</b><br/>
+		Suite à l'<a href="https://wiki.cagette.net/nouvellesregles" target="_blank">annonce des nouvelles règles</a>, des icônes jaunes, rouges ou vertes s'affichent dans la liste des catalogues pour vous informer sur le statut de vos producteurs.
+	</div>
+	::end::
 	
 	<div class="article" id="contracts">
 		<h2>

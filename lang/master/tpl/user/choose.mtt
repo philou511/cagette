@@ -237,12 +237,12 @@
 			});*/
 
 			::if(isBlocked)::
-			_.overlay("/data/disabled.mtt","");
+			_.overlay("/data/disabled.html","");
 			::end::
 
 			::if(displayFormationPromo)::
 			//promo formation 2021-09 tout les 3 jours
-			var dateString = localStorage.cagetteProTestWindow;
+			/*var dateString = localStorage.cagetteProTestWindow;
 			var date = null;
 			var now = new Date();
 			if(dateString!=null){
@@ -257,8 +257,23 @@
 				_.overlay("/data/formation-2021-09.html","");
 			}else{
 				console.log("no popup for now");
-			}
+			}*/
 			::end::
+
+			::if(isFreeVendor || isGroupAdmin)::
+			document.addEventListener("DOMContentLoaded", function(event) {
+
+				if(localStorage.nouvelleReglesCount==null ){
+					localStorage.nouvelleReglesCount=0;
+				}
+				if(localStorage.nouvelleReglesCount < 5 ){
+					_.overlay("/data/nouvellesregles2021.html","");
+					localStorage.nouvelleReglesCount++;
+				}
+				
+			});
+			::end::
+			
 			
 
 			//]]>

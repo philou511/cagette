@@ -94,9 +94,10 @@ class User extends Controller
 		if(vendor!=null){
 			var vs = VendorStats.getOrCreate(vendor);
 			if( vs.type == VTFree || vs.type == VTInvited || vs.type == VTInvitedPro ){
-				view.displayFormationPromo = true;
+				view.isFreeVendor = true;
 			}
-		}		
+		}	
+		
 		#end
 
 		view.isGroupAdmin = app.user.getUserGroups().find(ug -> return ug.isGroupManager()) != null;
