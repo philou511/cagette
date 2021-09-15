@@ -115,28 +115,29 @@ class Group extends controller.Controller
 		
 		//group type
 		var data = [
-			{ 
-				label:t._("CSA"),
-				value:"0",
-				desc : "Commandes en <a href='https://wiki.cagette.net/admin:admin_boutique#mode_amap' target='_blank'>Mode AMAP</a> ( contrats AMAP classiques ou variables ), groupe fermé avec liste d'attente et gestion des adhésions."
-			},
 			{
+				label:"Mode marché",
+				value:"2",
+				desc : "Drive de producteurs sans engagement. Groupe ouvert : n'importe qui peut s'inscrire et commander. <a data-toggle='tooltip' title='En savoir plus' href='https://wiki.cagette.net/admin:admin_boutique#mode_marche' target='_blank'><i class='icon icon-info'></i></a>"
+			},
+			{ 
+				label:"Mode AMAP",
+				value:"0",
+				desc : "Gérer des contrats AMAP classiques ou variables. Groupe fermé avec liste d'attente et gestion des adhésions. <a data-toggle='tooltip' title='En savoir plus' href='https://wiki.cagette.net/admin:admin_boutique#mode_amap' target='_blank'><i class='icon icon-info'></i></a>"
+			},
+		/*	{
 				label:t._("Grouped orders"),
 				value:"1",
 				desc : "Commandes en <a href='https://wiki.cagette.net/admin:admin_boutique#mode_boutique' target='_blank'>Mode Boutique</a>, groupe fermé avec liste d'attente et gestion des adhésions."
-			},
-			{
-				label:"En direct d'un collectif de producteurs",
-				value:"2",
-				desc : "Commandes en <a href='https://wiki.cagette.net/admin:admin_boutique#mode_boutique' target='_blank'>Mode Boutique</a>, groupe ouvert : n'importe qui peut commander."
-			},
-			{
+			},*/
+			
+			/*{
 				label:"En direct d'un producteur",
 				value:"3",
 				desc : "Commandes en <a href='https://wiki.cagette.net/admin:admin_boutique#mode_boutique' target='_blank'>Mode Boutique</a>, groupe ouvert : n'importe qui peut commander."
-			},
+			},*/
 		];	
-		var gt = new sugoi.form.elements.RadioGroup("type", t._("Group type"), data ,"1", Std.string( db.Catalog.TYPE_VARORDER ), true, true, true);
+		var gt = new sugoi.form.elements.RadioGroup("type", t._("Group type"), data ,"2", Std.string( db.Catalog.TYPE_VARORDER ), true, true, true);
 		f.addElement(gt);
 		
 		if (f.checkToken()) {
@@ -158,6 +159,8 @@ class Group extends controller.Controller
 				g.flags.set(HasPayments);
 				g.hasMembership=true;
 				g.regOption = WaitingList;
+
+				if(!user.isAdmin()) throw Redirect('/group/csa?name='+g.name);
 				
 			case GroupedOrders :
 				g.flags.set(ShopMode);
@@ -353,6 +356,14 @@ class Group extends controller.Controller
 		
 	// 	view.addr = view.escapeJS(addr);
 	// }
+
+	@tpl("group/csa.mtt")
+	public function doCsa(args:{name:String}){
+
+		view.groupName = args.name;
+
+	}
+
 
 	@tpl("group/map.mtt")
 	public function doMap(?args:{?lat:Float,?lng:Float,?address:String}){
