@@ -3,6 +3,15 @@
 	Use it with with bootstrap 3
 */
 @import url("https://fonts.googleapis.com/css?family=Cabin:400,500,700");
+i.icon {
+  position: relative;
+  display: inline-block;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  vertical-align: middle;
+  min-width: 1em;
+  text-align: center; }
+
 html {
   font-size: 16px !important; }
 
