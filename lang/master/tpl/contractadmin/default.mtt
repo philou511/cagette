@@ -29,9 +29,9 @@
 	::end::-->
 
 	::if (group.hasShopMode())::
-	<div class="alert alert-warning"> 
-		<i class="icon icon-alert"></i> <b>Statut des producteurs</b><br/>
-		Suite à l'<a href="https://wiki.cagette.net/nouvellesregles" target="_blank">annonce des nouvelles règles</a>, des icônes jaunes, rouges ou vertes s'affichent dans la liste des catalogues pour vous informer sur le statut de vos producteurs.
+	<div class="alert alert-danger"> 
+		<i class="icon icon-alert"></i> <b>IMPORTANT - Nouvelles règles de fonctionnement</b><br/>
+		<a href="https://wiki.cagette.net/nouvellesregles" target="_blank">Retrouvez ici toutes les infos</a>. Les icones jaunes, rouges et vertes vous informent sur le statut de vos producteurs par rapport à ces nouvelles règles.
 	</div>
 	::end::
 	
@@ -79,10 +79,10 @@
 							::set stats = c._vendor.getStats()::
 
 							::if stats.type==0::
-							<!--cpro-->
-							<div class="vendorStatus" style="color:#84BD55;border-color:#84BD55" data-toggle="tooltip" data-placement="right" title="Ce producteur est membre du réseau. Il a son propre compte producteur. Il peut vendre en illimité">
-								<i class="icon icon-farmer-pro"></i>
-							</div>
+								<!--cpro-->
+								<div class="vendorStatus" style="color:#84BD55;border-color:#84BD55" data-toggle="tooltip" data-placement="right" title="Ce producteur est membre du réseau. Il a son propre compte producteur. Il peut vendre en illimité">
+									<i class="icon icon-farmer-pro"></i>
+								</div>
 							::else::
 
 								::if(stats.shopTurnover12months > 1000)::
@@ -103,7 +103,7 @@
 						
 					</td>
 					<td>
-						<div class="productImg" style="background-image:url('::c._vendor.getImage()::');width:48px;height:48px;margin:0" ></div>
+						<div class="productImg" style="background-image:url('::c._vendor.getImage()::?v=2');width:48px;height:48px;margin:0" ></div>
 					</td>
 					<td>::c._vendor.name::</td>
 					
