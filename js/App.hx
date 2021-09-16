@@ -106,8 +106,8 @@ class App {
 
             var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
             neo.createNeoModule(divId, "ProductCategorizer", {
-                productName: productName,
-                txpProductId: txpProductId,
+                originalProductName: productName,
+                originalTxpProductId: txpProductId,
                 formName: formName
             });
 		});
