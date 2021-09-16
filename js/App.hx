@@ -106,7 +106,7 @@ class App {
 
             var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
             neo.createNeoModule(divId, "ProductCategorizer", {
-                productName: userId,
+                productName: productName,
                 txpProductId: txpProductId,
                 formName: formName
             });
