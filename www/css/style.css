@@ -3,98 +3,6 @@
 	Use it with with bootstrap 3
 */
 @import url("https://fonts.googleapis.com/css?family=Cabin:400,500,700");
-/*
-  Group map on /group/map
-*/
-.group-map {
-  height: 100vh;
-  width: 100%;
-  /*
- 		AUTOCOMPLETE 
-  */ }
-  .group-map .groups {
-    width: 100%;
-    height: calc(100vh - 130px);
-    overflow-y: scroll; }
-    .group-map .groups .groupBlock {
-      cursor: pointer; }
-      .group-map .groups .groupBlock img {
-        width: 92px;
-        float: left;
-        margin-right: 12px; }
-  .group-map #mapContainer {
-    padding: 0; }
-  .group-map .form-group-container {
-    padding-top: 35px; }
-    .group-map .form-group-container .form-group {
-      display: inline-block;
-      width: 50%;
-      /*margin-left: auto;
-      margin-right: auto;
-      margin-top: 5rem;
-      */ }
-  .group-map #logo {
-    background-image: url(/img/logo3.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    height: 130px; }
-  .group-map .leaflet-container {
-    height: calc(100vh - 130px); }
-  .group-map .leaflet-popup-content .groupName {
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.2em;
-    font-family: Cabin,Helvetica,Arial,sans-serif;
-    margin-top: 8px; }
-  .group-map .leaflet-popup-content .groupImage {
-    max-width: 120px;
-    max-height: 120px;
-    display: block;
-    margin: auto; }
-  .group-map .leaflet-popup-content a {
-    color: #3c763d; }
-  .group-map .autocomplete-input,
-  .group-map .autocomplete-input:focus,
-  .group-map .autocomplete-input:active {
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
-    border: honeydew;
-    display: block;
-    width: 100%;
-    padding: 16px;
-    font-size: 16px;
-    border-radius: 2px;
-    outline: none; }
-  .group-map .autocomplete-results {
-    position: fixed;
-    width: 50%;
-    border-bottom: honeydew;
-    border-left: honeydew;
-    border-right: honeydew;
-    border-top: 1px solid #e6e6e6;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    border-radius: 0 0 2px 2px;
-    z-index: 1001; }
-  .group-map .autocomplete-item {
-    padding: 4px;
-    text-align: left; }
-  .group-map .autocomplete-icon {
-    margin-right: 8px; }
-  .group-map .fa.fa-map-marker.header {
-    color: #e53935; }
-  .group-map .icon {
-    cursor: pointer; }
-  .group-map .popup {
-    cursor: pointer; }
-
-i.icon {
-  position: relative;
-  display: inline-block;
-  font-style: normal;
-  -webkit-font-smoothing: antialiased;
-  vertical-align: middle;
-  min-width: 1em;
-  text-align: center; }
-
 html {
   font-size: 16px !important; }
 
@@ -629,6 +537,18 @@ div.reportHeader {
     font-weight: bold;
     line-height: 48px;
     padding: 0; }
+
+.vendorStatus {
+  font-size: 1.7em;
+  width: 48px;
+  height: 48px;
+  color: #e6cb9c;
+  padding: 4px;
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid #e6cb9c;
+  line-height: 48px;
+  text-align: center; }
 
 .tag.active {
   padding: 12px;

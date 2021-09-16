@@ -69,7 +69,7 @@ class Group extends Object
 	public var betaFlags:SFlags<BetaFlags>;
 	@hideInForms public var hasMembership:SBool;
 
-	public var groupType:SNull<SEnum<GroupType>>;
+	@hideInForms public var groupType:SNull<SEnum<GroupType>>;
 	
 	@hideInForms @:relation(imageId)
 	public var image : SNull<sugoi.db.File>;

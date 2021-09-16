@@ -1,4 +1,5 @@
 package db;
+import pro.db.VendorStats;
 import sugoi.form.validators.EmailValidator;
 import sys.db.Object;
 import sys.db.Types;
@@ -362,5 +363,9 @@ class Vendor extends Object
 	override function update(){
 		check();
 		super.update();
+	}
+
+	function getStats():VendorStats{
+		return VendorStats.getOrCreate(this);
 	}
 }
