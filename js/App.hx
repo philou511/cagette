@@ -22,7 +22,6 @@ import redux.thunk.ThunkMiddleware;
 import redux.react.Provider as ReduxProvider;
 
 //custom components
-import react.file.ImageUploaderDialog;
 import react.order.OrdersDialog;
 import react.product.*;
 import react.map.*;
@@ -104,60 +103,44 @@ class App {
 			//dirty stuff to remove "real" input, and replace it by the react one
 			remove(Browser.document.querySelector("form input[name='"+formName+"_name']").parentElement.parentElement);
 			remove(Browser.document.querySelector("form select[name='" + formName+"_txpProductId']").parentElement.parentElement);
-			ReactDOM.render(jsx('<$ProductInput productName=${productName} txpProductId=${txpProductId} formName=${formName}/>'),  js.Browser.document.getElementById(divId));
+
+            var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+            neo.createNeoModule(divId, "ProductCategorizer", {
+                originalProductName: productName,
+                originalTxpProductId: txpProductId,
+                formName: formName
+            });
 		});
 	}
 
-	/**
-	 * TO DO
-	 * @param	divId
-	 * @param	vendorId
-	 */
-	public function getVendorPage(divId:String, vendorId:Int, catalogId:Int ) {
-        
+	public function getVendorPage(divId:String, vendorId:Int, ?catalogId:Int ) {
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
-
-			//Load data from API
-			var vendorInfo:VendorInfos = null;
-			var catalogProducts:Array<ProductInfo> = null;
-			var nextDistributions:Array<DistributionInfos> = null;
-
-			var promises = [];
-			promises.push( utils.HttpUtil.fetch("/api/pro/vendor/"+vendorId, GET, null, JSON) );
-			promises.push(  utils.HttpUtil.fetch("/api/pro/vendor/nextDistributions/"+vendorId, GET, null, JSON) );
-			if(catalogId!=null) promises.push( utils.HttpUtil.fetch("/api/pro/catalog/"+catalogId, GET, null, JSON) );			
-			
-			var initRequest = js.Promise.all(promises).then(
-				function(data:Dynamic) {
-					vendorInfo = data[0];
-					nextDistributions = data[1];
-					catalogProducts = data[2]==null ? [] : data[2].products;
-					
-					ReactDOM.render(jsx('
-						<MuiThemeProvider theme=${CagetteTheme.get()}>
-							<>
-								<CssBaseline />
-								<$VendorPage vendorInfo=${vendorInfo} catalogProducts=${catalogProducts} nextDistributions=${nextDistributions} />
-							</>
-						</MuiThemeProvider>'),  js.Browser.document.getElementById(divId));
-			}
-			).catchError (
-				function(error) {
-					throw error;
-				}
-			);
-
+            var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+            neo.createNeoModule(divId, "vendorPublicPage", {
+                vendorId: vendorId,
+                pCatalogId: catalogId
+            });
 		});
 	}
 
-	public function openImageUploader( uploadURL : String, uploadedImageURL : String, width:Int, height:Int, ?formFieldName: String ) {
-		var node = js.Browser.document.createDivElement();
-		js.Browser.document.body.appendChild(node);
-		ReactDOM.unmountComponentAtNode(node); 
-		ReactDOM.render(jsx('
-			<div>
-				<ImageUploaderDialog uploadURL=$uploadURL uploadedImageURL=$uploadedImageURL width=$width height=$height formFieldName=$formFieldName />
-			</div>'), node);
+	public function openImageUploader( imageUploaderContext : String, entityId: Int, width:Int, height:Int, ?imageType: String, ?currentCagetteProId: Int ) {
+		var nodeId = "image-uploader-container";
+        var node = js.Browser.document.getElementById(nodeId);
+        if (node == null) {
+            node = js.Browser.document.createDivElement();
+            node.id = nodeId;
+            js.Browser.document.body.appendChild(node);
+        }
+
+        var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+        neo.createNeoModule(node.id, "imageUploaderDialog", {
+            context: imageUploaderContext,
+            entityId: entityId,
+            width: width,
+            height: height,
+            imageType: imageType,
+            currentCagetteProId: currentCagetteProId
+        });
 	}
 	
 	public function initReportHeader(){

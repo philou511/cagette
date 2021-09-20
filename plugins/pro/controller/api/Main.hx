@@ -63,13 +63,6 @@ class Main extends sugoi.BaseController
 	}
 	
 	/**
-		Vendor infos via API
-	**/
-	public function doVendor(d:haxe.web.Dispatch){
-		d.dispatch(new pro.controller.api.Vendor());
-	}
-
-	/**
 		Catalog infos via API
 	**/
 	public function doCatalog(c:pro.db.PCatalog){
@@ -87,15 +80,4 @@ class Main extends sugoi.BaseController
 		d.dispatch(new pro.controller.api.DFC());
 	}
 
-	public function doProduct(d:haxe.web.Dispatch){
-		d.dispatch(new pro.controller.api.Product());
-	}
-
-	public function doOffer(d:haxe.web.Dispatch){
-		d.dispatch(new pro.controller.api.Offer());
-	}
-
-	public function doCompany(d:haxe.web.Dispatch){
-		d.dispatch(new pro.controller.api.Company());
-	}
 }
