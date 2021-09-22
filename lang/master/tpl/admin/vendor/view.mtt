@@ -2,19 +2,25 @@
 
 
 <div class="row">
-	<div class="col-md-8">
+	<div class="col-md-12">
 		<h4>Producteur #::vendor.id::</h4>
 
 		<h2><a href="::vendor.getLink()::" target="_blank">::vendor.name::</a></h2>
-		::if(vendor.peopleName!=null)::
-		<p>Nom exploitant(s) : <b>::vendor.peopleName::</b></p>
-		::end::
-
+		
 		<p>
-			Charte Producteurs : $$check(::vendor.vendorPolicy::)<br/>			
+			::if(vendor.peopleName!=null)::
+				Nom exploitant(s) : <b>::vendor.peopleName::</b><br/>
+			::end::
+			<!--Charte Producteurs : $$check(::vendor.vendorPolicy::)-->
 			Profession : ::if(profession!=null)::<b>::profession.name::</b>::else:: ??? ::end::<br/>
 		</p>
-		<hr/>
+	</div>
+
+	<div class="col-md-12">
+		<h4>Infos légales</h4>
+	</div>
+	
+	<div class="col-md-6">
 		<p>
 			Siret : <a href="https://entreprise.data.gouv.fr/sirene/::vendor.companyNumber::" target="_blank">::vendor.companyNumber::</a><br/>
 			Statut juridique : ::vendor.getLegalStatus(true)::<br/>
@@ -22,7 +28,8 @@
 			NAF : ::vendor.activityCode:: ::if(activityCode!=null)::,  <i>::activityCode.name::</i> ::end::
 			::end::
 		</p>
-		<hr/>
+	</div>
+	<div class="col-md-6">
 		<p>Adresse : 
 			$$nullSafe(::vendor.address1::)<br/>
 			$$nullSafe(::vendor.address2::)<br/>
@@ -85,14 +92,16 @@
 			</ul>
 		</div>
 	</div>
-	
-	
 </p>
-<div class="row">
-	<div class="col-md-6">
-	
 
-		Type <b>$$vendorType(::enumIndex(stats._type)::)</b>
+<div class="row">
+
+	<div class="col-md-12">
+		<h4>Statut Cagette</h4>
+	</div>
+
+	<div class="col-md-6">
+		Type de compte : <b>$$vendorType(::enumIndex(stats._type)::)</b>
 		
 		::if(cpro!=null)::
 			(# <a href="/db/pro.db.CagettePro/edit/::cpro.id::" target="_blank">::cpro.id::</a>)
@@ -108,13 +117,9 @@
 		Sur Cagette depuis le ::sDate(vendor.cdate)::<br/>
 		::if(cpro!=null)::Cagette Pro depuis le ::sDate(cpro.cdate)::::end::<br/>
 
-		Lien pour mettre à jour le compte : <a href="::editLink::">::editLink::</a>
-
-		
+		<!--Lien pour mettre à jour le compte : <a href="::editLink::">::editLink::</a>-->
 	
 	</div>
-
-	
 
 	<div class="col-md-6">
 		C.A Total : ::formatNum(stats.turnoverTotal):: &euro;<br/>
@@ -122,18 +127,37 @@
 		C.A 12 mois en mode marché : ::formatNum(stats.shopTurnover12months):: &euro;<br/>
 		<span class="disabled">Dernière mise à jour des stats : ::hDate(stats.ldate)::  <a href='?refresh=1' class="btn btn-default btn-xs">Rafraichir</a></span><br/>
 	</div>
-	
 </div>
 
-::if(vendor.disabled!=null)::
-	<div class="alert alert-danger">
-		<i class="icon icon-alert"></i> Compte désactivé : ::vendor.getDisabledReason()::<br />			
+<hr/>
+
+<div class="row">
+	<div class="col-md-12">
+	::if(vendor.disabled!=null)::
+		<div class="alert alert-danger">
+			<i class="icon icon-alert"></i> Compte bloqué : ::vendor.getDisabledReason():: 
+			<a href="/admin/vendor/ban/::vendor.id::?unban=1" class="btn btn-default btn-xs">Débloquer</a>			
+		</div>
+	::else::
+		<div class="dropdown">
+			<button class="btn btn-default  btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				<i class="icon icon-delete"></i> Bloquer
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+				<li><a href="/admin/vendor/ban/::vendor.id::?reason=0">Informations légales incomplètes</a></li>
+				<li><a href="/admin/vendor/ban/::vendor.id::?reason=1">Producteur incompatible avec la charte producteur de Cagette.net</a></li>
+				<li><a href="/admin/vendor/ban/::vendor.id::?reason=2">Producteur bloqué par les administrateurs</a></li>
+				<!--<li><a href="/admin/vendor/ban/::vendor.id::?reason=3">Ce producteur a atteind sa limite de chiffre d'affaire annuel</a></li>-->			
+			</ul>
+		</div>
+	::end::
 	</div>
-::end::
+</div>
 
 ::if(cpro!=null)::
 <p>
-	<h4>Utilisateurs ayant accès au Cagette Pro</h4>
+	<h4>Utilisateurs ayant accès au compte producteur</h4>
 	<table class="table table-bordered">
 		::foreach uc cpro.getUserCompany()::
 		<tr>
@@ -218,7 +242,6 @@
 			<td>
 				Du ::sDate(c._course.date):: au ::sDate(c._course.end)::
 			</td> 
-			
 		</tr>
 		::end::
 	</table>

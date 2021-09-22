@@ -90,8 +90,8 @@ class Admin extends Controller {
 		view.form = f;
 	}
 	
-	function doPlugins(d:Dispatch) {
-		d.dispatch(new controller.admin.Plugins());
+	function doVendor(d:haxe.web.Dispatch) {
+		d.dispatch(new controller.admin.Vendor());
 	}
 	
 	/**
