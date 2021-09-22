@@ -37,7 +37,7 @@
 		</p>
 	</div>
 	<div class="col-md-4">
-		<div ::cond(vendor._image!=null):: style="background-image:url('::file(vendor._image)::');width:200px;height:200px;" class="productImg" /> 
+		<div ::cond(vendor.imageId!=null):: style="background-image:url('::file(vendor.imageId)::');width:200px;height:200px;" class="productImg" /> 
 	</div>
 </div>
 

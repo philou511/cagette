@@ -52,14 +52,14 @@ class PProduct extends Object
 	 * Returns the URL of the product image
 	 */
 	public function getImage() {
-		if (image == null) {
+		if (imageId == null) {
 			if (txpProduct != null){				
 				return "/img/taxo/grey/" + txpProduct.subCategory.category.image + ".png";
 			}else{
 				return "/img/taxo/grey/fruits-legumes.png";
 			}			
 		}else {
-			return App.current.view.file(image);
+			return App.current.view.file(imageId);
 		}
 	}
 	

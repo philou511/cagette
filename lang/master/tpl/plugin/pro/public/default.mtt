@@ -24,8 +24,8 @@
 		::set c = catalog._vendor::
 	::end::
 	
-	::if c._image!=null::
-	<img src="::file(c._image)::" style="width: 100%;" class="thumbnail" />
+	::if c.imageId!=null::
+	<img src="::file(c.imageId)::" style="width: 100%;" class="thumbnail" />
 	::end::
 	
 	<h3>::c.name::</h3>

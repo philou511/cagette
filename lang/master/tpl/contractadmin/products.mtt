@@ -123,8 +123,8 @@
 				<div class="btn-group" role="group">
 					$$edit(::_("Edit")::,/product/edit/::p.id::)
 					
-					::if(p._image!=null)::
-						::set img = "\""+file(p._image)+"\""::
+					::if(p.imageid!=null)::
+						::set img = "\""+file(p.imageid)+"\""::
 					::else::
 						::set img = null::
 					::end::

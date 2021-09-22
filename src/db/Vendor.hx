@@ -128,10 +128,10 @@ class Vendor extends Object
 	}
 
 	public function getImage():String{
-		if (image == null) {
+		if (imageId == null) {
 			return "/img/vendor.png";
 		}else {
-			return App.current.view.file(image);
+			return App.current.view.file(imageId);
 		}
 	}
 
@@ -150,25 +150,25 @@ class Vendor extends Object
 		var files = sugoi.db.EntityFile.getByEntity("vendor",this.id);
 		for( f in files ){
 			switch(f.documentType){				
-				case "logo" 	: out.logo 		= f.file;
-				case "portrait" : out.portrait 	= f.file;
-				case "banner" 	: out.banner 	= f.file;
-				case "farm1" 	: out.farm1 	= f.file;
-				case "farm2" 	: out.farm2 	= f.file;
-				case "farm3" 	: out.farm3 	= f.file;
-				case "farm4" 	: out.farm4 	= f.file;
+				case "logo" 	: out.logo 		= f.getFileId();
+				case "portrait" : out.portrait 	= f.getFileId();
+				case "banner" 	: out.banner 	= f.getFileId();
+				case "farm1" 	: out.farm1 	= f.getFileId();
+				case "farm2" 	: out.farm2 	= f.getFileId();
+				case "farm3" 	: out.farm3 	= f.getFileId();
+				case "farm4" 	: out.farm4 	= f.getFileId();
 			}
 		}
 
-		if(out.logo==null) out.logo = this.image;
+		if(out.logo==null) out.logo = this.imageId;
 
 		return out;
 	}
 
 	public function getInfos(?withImages=false):VendorInfos{
 
-		var file = function(f){
-			return if(f==null)  null else App.current.view.file(f);
+		var file = function(fId: Int){
+			return if(fId==null)  null else App.current.view.file(fId);
 		}
 		var vendor = this;
 		var out : VendorInfos = {
@@ -177,7 +177,7 @@ class Vendor extends Object
 			profession:null,
 			email:vendor.email,
 			offCagette:offCagette,
-			image : file(vendor.image),
+			image : file(vendor.imageId),
 			images : cast {},
 			address1: vendor.address1,
 			address2: vendor.address2,

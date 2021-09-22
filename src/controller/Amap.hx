@@ -23,6 +23,7 @@ class Amap extends Controller
 			if( c.vendor.isDisabled()) contracts.remove(c);
 		}
 		view.contracts = contracts;
+		view.group = app.user.getGroup();
 	}
 	
 	@tpl("form.mtt")
