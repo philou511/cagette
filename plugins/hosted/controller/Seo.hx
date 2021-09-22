@@ -29,7 +29,7 @@ class Seo extends sugoi.BaseController
 				vendor.phone,
 				vendor.email,
 				escape(vendor.desc),
-				"https://app.cagette.net"+view.file(vendor.imageId)
+				"https://app.cagette.net"+view.file(vendor.getImageId())
 			]);
 
 		}

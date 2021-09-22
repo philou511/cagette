@@ -368,4 +368,8 @@ class Vendor extends Object
 	function getStats():VendorStats{
 		return VendorStats.getOrCreate(this);
 	}
+
+	public function getImageId(){
+        return this.imageId;
+    }
 }
