@@ -3,7 +3,7 @@
 <div class="col-md-12">
 	<div class="article">
 
-		<h2>::_("Select a vendor")::</h2>		
+		<h2>Chercher un producteur</h2>		
 		
 		<div class="row">
 			::if(vendors.length>0)::
@@ -17,7 +17,7 @@
 					::set cpro = v.getCpro()::
 
 					::if(cpro!=null)::
-					<div class="blockIconBadge" data-toggle="tooltip" title="Producteur équipé de Cagette Pro">
+					<div class="blockIconBadge" data-toggle="tooltip" title="Compte Producteur illimité">
 						<i class="icon icon-farmer-pro"></i>
 					</div>					
 					::end::

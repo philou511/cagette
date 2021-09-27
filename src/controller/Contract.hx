@@ -1,4 +1,5 @@
 package controller;
+import sugoi.form.elements.Checkbox;
 import sugoi.form.elements.IntInput;
 import haxe.display.Display.GotoDefinitionResult;
 import form.CagetteDatePicker;
@@ -56,22 +57,36 @@ class Contract extends Controller
 	function doDefineVendor(?type=1){
 		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
 		
-		view.title = t._("Define a vendor");
-		view.text = t._("Before creating a record for the vendor you want to work with, let's search our database to check if he's not already referenced.");
+		view.title = "Chercher un producteur";
+		// view.text = t._("Before creating a record for the vendor you want to work with, let's search our database to check if he's not already referenced.");
 
 		var f = new sugoi.form.Form("defVendor");
-		f.addElement(new sugoi.form.elements.StringInput("name",t._("Vendor or farm name"),null,true));
-		f.addElement(new sugoi.form.elements.StringInput("email",t._("Vendor email"),null,false));
-		//f.addElement(new sugoi.form.elements.IntInput("zipCode",t._("zip code"),null,true));
+		f.addElement(new sugoi.form.elements.StringInput("name",t._("Vendor or farm name"),null,false));
+		// f.addElement(new sugoi.form.elements.StringInput("email","Email du producteur",null,false));
+		var place = app.getCurrentGroup().getMainPlace();
+		if(place!=null){
+			f.addElement(new sugoi.form.elements.Checkbox('geoloc','A proximité de "${place.name}" ',true,false));
+		}
+
+		//profession
+		f.addElement(new sugoi.form.elements.IntSelect('profession',t._("Profession"),sugoi.form.ListData.fromSpod(service.VendorService.getVendorProfessions()),null,false));
 
 		if(f.isValid()){
 			
 			//look for identical names
-			var vendors = service.VendorService.findVendors( f.getValueOf('name') , f.getValueOf('email') );
+			var vendors = service.VendorService.findVendors( {
+				name:f.getValueOf('name'),
+				email:null/*f.getValueOf('email')*/,
+				geoloc : f.getValueOf("geoloc"),
+				profession:f.getValueOf("profession"),
+				fromLng: if(place!=null) place.lng else null, 
+				fromLat: if(place!=null) place.lat else null,
+				
+			});
 
 			app.setTemplate('contractadmin/defineVendor.mtt');
 			view.vendors = vendors;
-			view.email = f.getValueOf('email');
+			// view.email = f.getValueOf('email');
 			view.name = f.getValueOf('name');
 		}
 		

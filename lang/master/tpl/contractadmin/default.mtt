@@ -127,7 +127,7 @@
 	
 		
 		::if user.canManageAllContracts():: 
-			$$insert(::_("Create of find a catalog")::,/contract/defineVendor/)
+		<a href="/contract/defineVendor/" class="btn btn-default btn-sm"><i class="icon icon-search"></i> Chercher un producteur</a>		
 		::end::
 
 		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> Anciens catalogues</a>

@@ -83,35 +83,57 @@ class VendorService{
 	}
 
 	/**
-		Search vendor by name or email
+		Search vendors.
 	**/
-	public static function findVendors(name:String,?email:String){
+	public static function findVendors(search:{?name:String,?email:String,?geoloc:Bool,?profession:Int,?fromLat:Float,?fromLng:Float}){
 		var vendors = [];
-		for( n in name.split(" ")){
-			n = n.toLowerCase();
-			if(Lambda.has(["le","la","les","du","de","l'","a","à","au","en","sur","qui","ferme","GAEC","EARL","SCEA","jardin","jardins"],n)) continue;
-			//search for each term
-			//var search = Lambda.array(db.Vendor.manager.unsafeObjects('SELECT * FROM Vendor WHERE name LIKE "%$n%" LIMIT 20',false));
-			var search = Lambda.array(db.Vendor.manager.search( $name.like('%$n%'),{limit:20},false));
-			vendors = vendors.concat(search);
-		}
-
-		//search by mail
-		if(email!=null){
-			vendors = vendors.concat(Lambda.array(db.Vendor.manager.search($email==email,false)));
+		var names = [];
+		var where = [];
+		if(search.name!=null){
+			for( n in search.name.split(" ")){
+				n = n.toLowerCase();
+				if(Lambda.has(["le","la","les","du","de","l'","a","à","au","en","sur","qui","ferme","GAEC","EARL","SCEA","jardin","jardins"],n)) continue;
+				if(Lambda.has(["create","delete","drop","select","count"],n)) continue; //no SQL injection !
+			
+				names.push(n);
+			}
+			where.push('(' + names.map(n -> 'name LIKE "%$n%"').join(' OR ') + ')');
 		}
 		
-		vendors = tools.ObjectListTool.deduplicate(vendors);
+
+		//search by mail
+		// if(search.email!=null){
+		// 	where.push('email LIKE "${search.email}"');
+		// }
+
+		//search by profession
+		if(search.profession!=null){
+			where.push('profession = ${search.profession}');
+		}
+		
+		var selectDist = '';
+		var orderBy = "";
+
+		if(search.geoloc && search.fromLat!=null){
+			orderBy = "ORDER BY dist ASC";
+			selectDist = ',SQRT(POW(lat-${search.fromLat},2) + POW(lng-${search.fromLng},2)) as dist';
+			where.push("lat is not null");
+		}
+
+		//search for each term
+		vendors = Lambda.array(db.Vendor.manager.unsafeObjects('SELECT * $selectDist FROM Vendor WHERE ${where.join(' AND ')} $orderBy LIMIT 30',false));
+
+		// vendors = tools.ObjectListTool.deduplicate(vendors);
 
 		#if plugins
 		//cpro first
 		for( v in vendors.copy() ){
 			var cpro = v.getCpro();
-			if( cpro !=null ){
+			if( cpro !=null && cpro.disabled){
 				vendors.remove(v);
 				//do not display students cpro accounts !
-				if(cpro.disabled) continue;
-				vendors.unshift(v);
+				// if(cpro.disabled) continue;
+				// vendors.unshift(v);
 			} 
 		}
 		#end
