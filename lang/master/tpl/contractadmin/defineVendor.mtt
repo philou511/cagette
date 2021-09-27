@@ -28,7 +28,10 @@
 								<div class="productImg xl" style="background-image:url('::v.getImage()::');"></div>								
 							</div>
 							<div class="col-md-8">
-									<h4>::v.name::</h4>
+								
+									<h4>
+										<a href="::v.getLink()::" target="_blank">::v.name::</a>
+									</h4>
 									::v.zipCode:: ::v.city::
 									<p ::cond(v.desc!=null):: style="color:#999;font-size:0.9em;">
 										::short(v.desc,80)::
