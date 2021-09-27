@@ -63,14 +63,14 @@ class Product extends Object
 	 * Returns product image URL
 	 */
 	public function getImage() {
-		if (image == null) {
+		if (imageId == null) {
 			if (txpProduct != null){				
 				return "/img/taxo/grey/" + txpProduct.subCategory.category.image + ".png";
 			}else{
 				return "/img/taxo/grey/legumes.png";
 			}			
 		}else {
-			return App.current.view.file(image);
+			return App.current.view.file(imageId);
 		}
 	}
 	

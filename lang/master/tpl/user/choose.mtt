@@ -144,8 +144,8 @@
 				</div>
 				<a class="clickable proBlock" href="/p/pro/?vendor=::v.id::">
 					
-					::if v._image!=null::
-					<img src="::file(v._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
+					::if v.imageId!=null::
+					<img src="::file(v.imageId)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
 					::end::						
 					<h4>::v.name::</h4>
 					
@@ -168,8 +168,8 @@
 						<i class="icon icon-map-marker"></i>
 					</div>
 					<a class="clickable groupBlock"  href="/user/choose?group=::group.id::">					
-						::if group._image!=null::
-						<img src="::file(group._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
+						::if group.imageId!=null::
+						<img src="::file(group.imageId)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
 						::end::						
 						
 						<h4>::group.name::</h4>

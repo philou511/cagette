@@ -13,8 +13,8 @@
 					::foreach v vendors::
 					<div class="col-md-4 col-sm-6">
 						<a href="/p/pro/company/linkVendor/::v.id::" class="clickable groupBlock" style="height:200px">					
-							::if v._image!=null::
-							<img src="::file(v._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
+							::if v.imageId!=null::
+							<img src="::file(v.imageId)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
 							::end::
 							<p>
 								<b>::v.name::</b>

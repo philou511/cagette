@@ -13,8 +13,8 @@
 			::foreach v vendors::
 			<tr>
 				<td>						
-					::if v._image!=null::
-						<img src="::file(v._image)::" class="img-thumbnail" style="height:64px;" />
+					::if v.imageId!=null::
+						<img src="::file(v.imageId)::" class="img-thumbnail" style="height:64px;" />
 					::end::
 				</td>
 				<td>::v.name::</td>

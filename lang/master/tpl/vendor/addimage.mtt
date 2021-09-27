@@ -11,9 +11,9 @@
 		</div>
 	</div>
 
-	<div class="col-md-6" ::cond image!=null:: >
+	<div class="col-md-6" ::cond vendor.imageId!=null:: >
 		<div class="article">
-			<img src="::file(image)::" class="img-thumbnail" />
+			<img src="::file(vendor.imageId)::" class="img-thumbnail" />
 		</div>
 	</div>
 

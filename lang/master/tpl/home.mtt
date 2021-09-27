@@ -36,8 +36,8 @@ $$browserDetection()
 		<div class="col-md-4 col-sm-6">
 			<a href="/contract/view/::c.id::" class="clickable groupBlock">
 				::set v = c._vendor::
-				::if v._image!=null::
-				<div style="background-image:url('::file(v._image)::');float:left;margin-right:12px;" class="productImg" />
+				::if v.imageId!=null::
+				<div style="background-image:url('::file(v.imageId)::');float:left;margin-right:12px;" class="productImg" />
 				::end::
 
 				<b>::c.name::</b>
@@ -441,12 +441,12 @@ $$browserDetection()
 
 	<div class="block">
 
-		::if amap._image!=null::
+		::if amap.imageId!=null::
 		::if amap.extUrl!=null && amap.extUrl!=""::
-		<a href="::amap.extUrl::"><img src="::file(amap._image)::" style="margin:auto;display: block;width: 100%;"
+		<a href="::amap.extUrl::"><img src="::file(amap.imageId)::" style="margin:auto;display: block;width: 100%;"
 				class="thumbnail" /><br /></a>
 		::else::
-		<img src="::file(amap._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br />
+		<img src="::file(amap.imageId)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br />
 		::end::
 		::end::
 
@@ -466,7 +466,7 @@ $$browserDetection()
 		<h4>Documents</h4>
 		<div>
 			::foreach doc visibleDocuments::
-			<i class="icon icon-file-pdf"></i><a href="::file(doc._file)::" target="_blank"> ::doc._file.name::</a><br />
+			<i class="icon icon-file-pdf"></i><a href="::file(doc.fileId)::" target="_blank"> ::doc._file.name::</a><br />
 			::end::
 		</div>
 	</div>

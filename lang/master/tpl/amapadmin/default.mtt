@@ -64,8 +64,8 @@
 		</div>
 		
 		<div class="col-md-6">			
-			::if user.getGroup()._image!=null::
-			<img src="::file(user.getGroup()._image)::" style="width: 100%; max-width: 400px" class="thumbnail" />
+			::if user.getGroup().imageId!=null::
+			<img src="::file(user.getGroup().imageId)::" style="width: 100%; max-width: 400px" class="thumbnail" />
 			::end::
 		</div>
 

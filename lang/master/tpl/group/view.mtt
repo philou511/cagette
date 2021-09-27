@@ -26,12 +26,12 @@
 				<div class="col-md-4">
 					<p>
 						
-					::if group._image!=null::
+					::if group.imageid!=null::
 
 					   ::if group.extUrl!=null && group.extUrl!=""::
-					   <a href="::group.extUrl::"><img src="::file(group._image)::" class="img-responsive img-thumbnail" /></a><br/>
+					   <a href="::group.extUrl::"><img src="::file(group.imageid)::" class="img-responsive img-thumbnail" /></a><br/>
 					   ::else::
-					   <img src="::file(group._image)::" class="img-responsive img-thumbnail" /><br/>
+					   <img src="::file(group.imageid)::" class="img-responsive img-thumbnail" /><br/>
 					   ::end::
 
 					::end::
@@ -169,7 +169,7 @@
 						<h3>Documents</h3>
 						<div>
 							::foreach doc visibleGroupDocuments::
-								<i class="icon icon-file-pdf"></i><a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a><br/>					
+								<i class="icon icon-file-pdf"></i><a href="::file(doc.fileId)::" target="_blank">  ::doc._file.name::</a><br/>					
 							::end::
 						</div>
 						<hr/>													
@@ -196,7 +196,7 @@
 							<div class="row">
 								<div style="padding-left:15px;">									
 									::foreach doc visibleCatalogsDocuments.get( catalog.id )::
-										<i class="icon icon-file-pdf"></i><a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a><br/>					
+										<i class="icon icon-file-pdf"></i><a href="::file(doc.fileId)::" target="_blank">  ::doc._file.name::</a><br/>					
 									::end::
 								</div>
 							</div>	

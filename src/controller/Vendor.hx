@@ -80,7 +80,6 @@ class Vendor extends Controller
 		#end
 
 		view.vendor = vendor;
-		view.image = vendor.image;
 	}
 	
 }
