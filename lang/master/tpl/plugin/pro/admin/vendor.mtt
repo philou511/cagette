@@ -6,6 +6,9 @@
 		<h4>Producteur #::vendor.id::</h4>
 
 		<h2><a href="::vendor.getLink()::" target="_blank">::vendor.name::</a></h2>
+		::if(vendor.peopleName!=null)::
+		<p>Nom exploitant(s) : <b>::vendor.peopleName::</b></p>
+		::end::
 
 		<p>
 			Charte Producteurs : $$check(::vendor.vendorPolicy::)<br/>			
@@ -34,7 +37,7 @@
 		</p>
 	</div>
 	<div class="col-md-4">
-		<div ::cond(vendor._image!=null):: style="background-image:url('::file(vendor._image)::');width:200px;height:200px;" class="productImg" /> 
+		<div ::cond(vendor.imageId!=null):: style="background-image:url('::file(vendor.imageId)::');width:200px;height:200px;" class="productImg" /> 
 	</div>
 </div>
 
@@ -116,6 +119,7 @@
 	<div class="col-md-6">
 		C.A Total : ::formatNum(stats.turnoverTotal):: &euro;<br/>
 		C.A 3 mois : ::formatNum(stats.turnover90days):: &euro;<br/>
+		C.A 12 mois en mode marché : ::formatNum(stats.shopTurnover12months):: &euro;<br/>
 		<span class="disabled">Dernière mise à jour des stats : ::hDate(stats.ldate)::  <a href='?refresh=1' class="btn btn-default btn-xs">Rafraichir</a></span><br/>
 	</div>
 	

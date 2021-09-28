@@ -13,16 +13,15 @@ import sugoi.plugin.*;
  * 
  * 
  */
-class Tutorial extends PlugIn implements IPlugIn
+/*class Tutorial extends PlugIn implements IPlugIn
 {
 	public function new() {
 		super();	
 		App.current.eventDispatcher.add(onEvent);		
 	}
 	
-	/**
-	 * catch events
-	 */
+
+	// catch events
 	public function onEvent(e:Event) {
 		//no need to continue if tutos are disabled
 		if ( App.current.user==null || App.current.user.tutoState==null ) return;
@@ -75,9 +74,7 @@ class Tutorial extends PlugIn implements IPlugIn
 		}
 	}
 
-	/**
-	 * to know if the current uri matches with the tuto step uri
-	 */
+	// to know if the current uri matches with the tuto step uri
 	public static function match(pattern:String, uri:String):Bool {
 		
 		if (pattern.indexOf("*") > -1) {
@@ -106,4 +103,4 @@ class Tutorial extends PlugIn implements IPlugIn
 	
 	
 	
-}
+}*/

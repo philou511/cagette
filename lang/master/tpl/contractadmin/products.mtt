@@ -123,13 +123,13 @@
 				<div class="btn-group" role="group">
 					$$edit(::_("Edit")::,/product/edit/::p.id::)
 					
-					::if(p._image!=null)::
-						::set img = "\""+file(p._image)+"\""::
+					::if(p.imageid!=null)::
+						::set img = "\""+file(p.imageid)+"\""::
 					::else::
 						::set img = null::
 					::end::
 					
-					<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/product/image/::p.id::', ::img::, 300, 300)">
+					<a class="btn btn-default btn-sm" onclick="_.openImageUploader('product', ::p.id::, 300, 300)">
 						<i class="icon icon-image"></i> ::_("Picture")::
 					</a>
 					

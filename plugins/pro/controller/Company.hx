@@ -179,7 +179,7 @@ class Company extends controller.Controller
 			var name : String = f.getValueOf('name');
 			var email : String = f.getValueOf('email');
 			
-			var vendors = service.VendorService.findVendors( name , email );
+			var vendors = service.VendorService.findVendors( {name:name , email:email} );
 			app.setTemplate('plugin/pro/company/defineVendor.mtt');
 			view.vendors = vendors;
 			view.email = email;

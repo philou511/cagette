@@ -6,7 +6,7 @@ import Common;
  * Tutorial javascript widget 
  * @author fbarbut<francois.barbut@gmail.com>
  */
-class Tuto
+/*class Tuto
 {
 	var name:String;
 	var step:Int;
@@ -20,10 +20,8 @@ class Tuto
 		TutoDatas.get(name, init);
 	}
 	
-	/**
-	 * asyn init
-	 * @param	tuto
-	 */
+
+	// asyn init
 	function init(tuto) 
 	{
 		var s = tuto.steps[step];
@@ -37,9 +35,8 @@ class Tuto
 
 		
 		if (s == null) {
-			/**
-			 * tutorial is finished : display a modal window
-			 */
+			
+			// tutorial is finished : display a modal window
 			var modalElement = Browser.document.getElementById("myModal");
 			var modal = new bootstrap.Modal(modalElement);
 			modal.show();
@@ -59,9 +56,8 @@ class Tuto
 			};
 			modalElement.querySelector(".modal-footer").append(btn);			
 		} else if (s.element == null) {
-			/**
-			 * no element, make a modal window (usually its the first step of the tutorial)
-			 */
+			
+			// no element, make a modal window (usually its the first step of the tutorial)
 			var modalElement = Browser.document.getElementById("myModal");
 			var modal = new bootstrap.Modal(modalElement);
 			modal.show();
@@ -172,4 +168,4 @@ class Tuto
 
 		return btn;
 	}
-}
+}*/

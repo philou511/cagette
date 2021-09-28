@@ -47,7 +47,7 @@
 						<h4><i class="icon icon-file-pdf"></i> Documents</h4>
 						<ul>
 							::foreach doc visibleDocuments::
-								<li><a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a><br/>					</li>
+								<li><a href="::file(doc.fileId)::" target="_blank">  ::doc._file.name::</a><br/>					</li>
 							::end::
 						</ul>
 					</div>

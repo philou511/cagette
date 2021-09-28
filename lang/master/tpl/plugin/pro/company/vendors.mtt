@@ -13,8 +13,8 @@
 			::foreach v vendors::
 			<tr>
 				<td>						
-					::if v._image!=null::
-						<img src="::file(v._image)::" class="img-thumbnail" style="height:64px;" />
+					::if v.imageId!=null::
+						<img src="::file(v.imageId)::" class="img-thumbnail" style="height:64px;" />
 					::end::
 				</td>
 				<td>::v.name::</td>
@@ -22,7 +22,7 @@
 					<div class="btn-group">
 						$$edit(Gestion,/p/pro/company/editVendor/::v.id::)
 
-						<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/pro/company/addVendorImage/::v.id::', '::file(v._image)::', 300, 300, 'logo')">
+						<a class="btn btn-default btn-sm" onclick="_.openImageUploader('vendor', ::v.id::, 300, 300)">
 							<i class="icon icon-image"></i> Photo
 						</a>
 

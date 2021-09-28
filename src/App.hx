@@ -43,7 +43,7 @@ class App extends sugoi.BaseApp {
 		eventDispatcher = new hxevents.Dispatcher<Event>();
 		plugins = [];
 		//internal plugins
-		plugins.push(new plugin.Tutorial());
+		// plugins.push(new plugin.Tutorial());
 		
 		//optionnal plugins
 		#if plugins
@@ -185,7 +185,7 @@ class App extends sugoi.BaseApp {
 		out.set("desc", "Description");
 		
 		//group options
-		out.set("ShopMode", "Mode boutique");
+		out.set("ShopMode", "Mode Marché");
 		out.set("CustomizedCategories", "Catégories personnalisées");
 		out.set("HidePhone", "Masquer le téléphone du responsable sur la page publique");
 		out.set("PhoneRequired", "Saisie du numéro de téléphone obligatoire");

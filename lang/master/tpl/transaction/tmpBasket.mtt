@@ -58,8 +58,8 @@
                         </td>
                         <td>
                             ::if(o.product!=null)::  
-                                ::if(o.product._image!=null)::                      
-                                <img src="::file(o.product._image)::" style="width:32px;height:32px;" />
+                                ::if(o.product.imageId!=null)::                      
+                                <img src="::file(o.product.imageId)::" style="width:32px;height:32px;" />
                                 ::end::
                                 
                                 ::o.product.name::                        
