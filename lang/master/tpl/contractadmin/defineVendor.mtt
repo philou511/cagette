@@ -14,12 +14,17 @@
 
 				::foreach v vendors::
 				<div class="col-md-4 col-sm-6">
+					::set stats = v.getStats()::
 					::set cpro = v.getCpro()::
 
-					::if(cpro!=null)::
-					<div class="blockIconBadge" data-toggle="tooltip" title="Compte Producteur illimité">
+					::if stats.type==0::
+					<div class="blockIconBadge" style="color:#84BD55;border-color:#84BD55" data-toggle="tooltip" title="Compte Producteur illimité">
 						<i class="icon icon-farmer-pro"></i>
-					</div>					
+					</div>
+					::else::		
+					<div class="blockIconBadge" style="color:#f1d577;border-color:#f1d577" data-toggle="tooltip" title="Producteur invité">
+						<i class="icon icon-farmer"></i>
+					</div>
 					::end::
 
 					<div class="boxed" style="height:300px">					
@@ -52,17 +57,17 @@
 										</a>&nbsp;
 									::end::
 									
-									::if shopMode::
-										<!-- even if the vendor is cpro, we can create a catalog for him/her -->
+									<!--::if shopMode::
+										 even if the vendor is cpro, we can create a catalog for him/her 
 										<a href="/contract/insert/::v.id::" class="btn btn-default btn-sm">
 											<i class="icon icon-plus"></i> Nouveau catalogue
 										</a>
 									::else::
-										<!-- even if the vendor is cpro, we can create a catalog for him/her -->
+										<!-- even if the vendor is cpro, we can create a catalog for him/her
 										<a href="/contract/insertChoose/::v.id::" class="btn btn-default btn-sm">
 											<i class="icon icon-plus"></i> Nouveau catalogue
 										</a>
-									::end::
+									::end::-->
 							
 							::else::
 

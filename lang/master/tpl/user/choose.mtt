@@ -266,7 +266,7 @@
 				if(localStorage.nouvelleReglesCount==null ){
 					localStorage.nouvelleReglesCount=0;
 				}
-				if(localStorage.nouvelleReglesCount < 3 ){
+				if(localStorage.nouvelleReglesCount < 1 ){
 					_.overlay("/data/nouvellesregles2021.html","");
 					localStorage.nouvelleReglesCount++;
 				}

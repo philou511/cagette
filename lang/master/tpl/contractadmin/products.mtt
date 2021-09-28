@@ -3,8 +3,14 @@
 	<h3>::_("Products")::</h3>
 		
 	$$insert(::_("New product")::,/product/insert/::c.id::)
-	<a href="/product/import/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-upload"></i> ::_("Import from Excel/CSV")::</a>
-		
+
+	
+	
+	<div class="btn-group" role="group" style="display: inline-block;">
+		<a href="/product/import/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-upload"></i> ::_("Import from Excel/CSV")::</a>
+		<a href="/product/export/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-download"></i> Export CSV</a>
+	</div>
+
 	<div class="btn-group" role="group" style="display: inline-block;">
 		<a onclick="check();" class="btn btn-default btn-sm btn-noAntiDoubleClick"> ::_("Check all")::</a>
 		<a class="btn btn-default btn-sm" onclick="enableProducts()">
