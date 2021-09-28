@@ -119,7 +119,7 @@ class User extends Controller
 	 * when password is forgotten
 	 */
 	@tpl("user/forgottenPassword.mtt")
-	function doForgottenPassword(?key:String, ?u:db.User){
+	function doForgottenPassword(?key:String, ?u:db.User, ?definePassword:Bool){
 		
 		//STEP 1
 		var step = 1;
@@ -220,6 +220,8 @@ class User extends Controller
 		
 		view.step = step;
 		view.error = error;
+		view.title = definePassword == null ? "Changement de mot de passe" : t._("Create a password for your account");
+
 	}
 	
 	
@@ -272,14 +274,16 @@ class User extends Controller
 		if (uid == null || uid==0) throw Error('/user/login', t._("Your invitation is invalid or expired ($k)"));
 		var user = db.User.manager.get(uid, true);
 		
-		db.User.login(user, user.email);
-		
 		var groups = user.getGroups();
 		if(groups.length>0)	app.session.data.amapId = groups[0].id;
 		
 		sugoi.db.Cache.destroy("validation" + k);
+
+		// Create change password token
+		var token = haxe.crypto.Md5.encode("chp"+Std.random(1000000000));
+		sugoi.db.Cache.set(token, user.id, 60 * 60 * 24 * 30);
 	
-		throw Ok("/user/definePassword", t._("Congratulations ::userName::, your account is validated!", {userName:user.getName()}));
+		throw Ok('http://' + App.config.HOST + '/user/forgottenPassword/'+token+'/'+user.id+'/true', t._("Congratulations ::userName::, your account is validated!", {userName:user.getName()}) + " Définissez un mot de passe puis connectez-vous pour finaliser votre inscription.");
 	}
 
 	/**
@@ -320,23 +324,38 @@ class User extends Controller
 	@tpl('account/quit.mtt')
 	function doQuitGroup(group:db.Group,user:db.User,key:String){
 
-		if (haxe.crypto.Md5.encode(App.config.KEY+group.id+user.id) != key){
-			throw Error("/","Lien invalide");
+		if (haxe.crypto.Sha1.encode(App.config.KEY+group.id+user.id) != key){
+			// For legacy, key might still be using MD5
+			if (haxe.crypto.Md5.encode(App.config.KEY+group.id+user.id) == key){
+				key=haxe.crypto.Sha1.encode(App.config.KEY+group.id+user.id);
+			} else {
+				throw Error("/","Lien invalide");
+			}
 		}
 
 		view.group = group;
 		view.member = user;
+		view.controlKey = key;
+	}
 
-		if (checkToken()){
-			var url = app.user==null ? "/user/" : "/user/choose?show=1";
-			var name = group.name;
-			var ua = db.UserGroup.get(user, group,true);
-			if(ua==null){
-				throw Ok(url, "Vous ne faisiez plus partie du groupe "+name);	
-			}
-			ua.delete();
-			App.current.session.data.amapId = null;
-			throw Ok(url, t._("You left the group ::groupName::", {groupName:name}));
+	/**
+		Quit a group without a userId.  Should work ONLY if the user is logged in. ( link in emails footer from Messaging Service )
+	**/
+	@tpl('account/quit.mtt')
+	function doQuitGroupFromMessage(group:db.Group,key:String){
+
+		if ( app.user == null && getParam('__redirect')==null ) {
+			throw sugoi.ControllerAction.RedirectAction(Web.getURI()+"?__redirect="+Web.getURI());
+		}
+
+		if (haxe.crypto.Sha1.encode(App.config.KEY+group.id) != key){
+			throw Error("/","Lien invalide");
+		}
+
+		view.groupId = group.id;
+		if (app.user!=null) {
+			view.userId = app.user.id;
+			view.controlKey = haxe.crypto.Sha1.encode(App.config.KEY+group.id+app.user.id);
 		}
 	}
 

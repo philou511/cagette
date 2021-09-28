@@ -648,7 +648,10 @@ class ContractAdmin extends Controller
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
 
 		var now = Date.now();
-		var timeframe = new tools.Timeframe(now,DateTools.delta(now,1000.0*60*60*24*365));
+		//snap to beggining of the month , end is 3 month later 
+		var from = new Date(now.getFullYear(),now.getMonth(),1,0,0,0);
+		var to = new Date(now.getFullYear(),now.getMonth()+3,-1,23,59,59);
+		var timeframe = new tools.Timeframe(from,to);
 
 		var multidistribs =  db.MultiDistrib.getFromTimeRange(contract.group,timeframe.from , timeframe.to);
 
@@ -680,7 +683,7 @@ class ContractAdmin extends Controller
 			throw Error("/contractAdmin/distributions/"+contract.id,e.message);
 		}
 		
-		throw Ok("/contractAdmin/distributions/"+contract.id,t._("Distribution date added"));
+		throw Ok('/contractAdmin/distributions/${contract.id}?_from=${app.params.get("_from")}&_to=${app.params.get("_to")}',t._("Distribution date added"));
 	}
 	
 	@tpl("contractadmin/view.mtt")

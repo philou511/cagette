@@ -105,12 +105,12 @@ class Main extends Controller {
 
 		// message if phone is required
 		if (app.user != null && group.flags.has(db.Group.GroupFlags.PhoneRequired) && app.user.phone == null) {
-			app.session.addMessage(t._("Members of this group should provide a phone number. <a href='/account/edit'>Please click here to update your account</a>."),
+			app.session.addMessage(t._("Members of this group should provide a phone number. <a href='/account'>Please click here to update your account</a>."),
 				true);
 		}
 		// message if address is required
 		if (app.user != null && group.flags.has(db.Group.GroupFlags.AddressRequired) && app.user.city == null) {
-			app.session.addMessage(t._("Members of this group should provide an address. <a href='/account/edit'>Please click here to update your account</a>."),
+			app.session.addMessage(t._("Members of this group should provide an address. <a href='/account'>Please click here to update your account</a>."),
 				true);
 		}
 
@@ -199,6 +199,11 @@ class Main extends Controller {
 	function doMember(d:Dispatch) {
 		addBc("member", "Membres", "/member");
 		d.dispatch(new controller.Member());
+	}
+
+	function doHistory(d:Dispatch) {
+		addBc("history", "Historique", "/history");
+		d.dispatch(new controller.History());
 	}
 
 	function doAccount(d:Dispatch) {
@@ -374,5 +379,24 @@ class Main extends Controller {
 			Reflect.setField(json, v.name, v.value);
 		}
 		Sys.print(haxe.Json.stringify(json));
+	}
+
+	@tpl('invite.mtt')
+	function doInvite(hash:String, userEmail:String, group:db.Group, ?user:db.User){
+
+		if (haxe.crypto.Sha1.encode(App.config.KEY+userEmail) != hash){
+			throw Error("/","Lien invalide");
+		}
+
+		app.session.data.amapId = group.id;
+
+		if (user!=null) {
+			db.UserGroup.getOrCreate(user,group);
+			throw Ok("/", t._("You're now a member of \"::group::\" ! You'll receive an email as soon as next order will open", {group:group.name}));
+		} else {
+			service.UserService.prepareLoginBoxOptions(view, group);
+			view.invitedUserEmail = userEmail;
+			view.invitedGroupId = group.id;
+		}
 	}
 }

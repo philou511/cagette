@@ -48,9 +48,14 @@
 									<i class="icon icon-basket"></i>  Commandes
 								</a>
 							</li>
-							<li ::attr class if(category=="account" ) 	'active' ::>
-								<a href="/account">
-									<i class="icon icon-user"></i> ::_("My account")::
+							<li ::attr class if(category=="history" ) 	'active' ::>
+								<a href="/history">
+									 
+									::if user.getGroup().hasShopMode():: 
+									<i class="icon icon-list"></i> Historique 
+									::else:: 
+									<i class="icon icon-book"></i> Mes Contrats
+									::end::
 								</a>
 							</li>
 							<li ::attr class if(category=="amap") 		'active' ::>

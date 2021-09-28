@@ -26,6 +26,7 @@
 				</a>
 
 				<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuUser">
+					<li><a href="/account"><i class="icon icon-user"></i> ::_("My account")::</a></li>
 					::if(isAdmin)::
 					<li><a href="/admin"><i class="icon icon-cog"></i> ::_("Admin")::</a></li>
 					<li><a href="/db"><i class="icon icon-cog"></i> ::_("Database")::</a></li>

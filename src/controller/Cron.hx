@@ -53,33 +53,6 @@ class Cron extends Controller
 		if (!canRun()) return;
 		
 		app.event(MinutelyCron(this.now));
-
-		//managing buffered emails
-		var task = new TransactionWrappedTask("Send 100 Emails from Buffer");
-		task.setTask(sendEmailsfromBuffer.bind(100,task));
-		task.execute(!App.config.DEBUG);
-		
-		
-		//warns admin about emails that cannot be sent
-		var task = new TransactionWrappedTask("warns admin about emails that cannot be sent");
-		task.setTask(function(){
-			for( e in sugoi.db.BufferedMail.manager.search($tries>20,{limit:50,orderBy:-cdate},true)  ){
-				if(e.sender.email != App.config.get("default_email")){
-					var str = t._("Sorry, the email entitled <b>::title::</b> could not be sent.",{title:e.title});
-					App.quickMail(e.sender.email,t._("Email not sent"),str);
-				} 
-				e.delete();
-			}
-		});
-		task.execute(!App.config.DEBUG);
-
-		//Delete old emails
-		var task = new TransactionWrappedTask("Delete Old mails");
-		task.setTask(function(){
-			var threeMonthsAgo = DateTools.delta(Date.now(), -1000.0*60*60*24*30*3);
-			sugoi.db.BufferedMail.manager.delete($cdate < threeMonthsAgo);
-		});
-		task.execute(!App.config.DEBUG);
 	}
 	
 	/**
@@ -782,22 +755,6 @@ class Cron extends Controller
 		
 	}
 	
-	/**
-	 * Send emails from buffer.
-	 * 
-	 * Warning, if the cron is executed each minute, 
-	 * you should consider the right amount of emails to send each minute in order to avoid overlaping and getting in concurrency problems.
-	 * (like "SELECT * FROM BufferedMail WHERE sdate IS NULL ORDER BY cdate DESC LIMIT 100 FOR UPDATE Lock wait timeout exceeded; try restarting transaction") 
-	 */
-	function sendEmailsfromBuffer(limit:Int,task:TransactionWrappedTask){
-		//send
-		for( e in sugoi.db.BufferedMail.manager.search($sdate==null,{limit:limit,orderBy:cdate},true)  ){
-			if(e.isSent()) continue;			
-			task.log('#${e.id} - ${e.title}');
-			e.finallySend();
-		}
-	}
-
 	/**
 	 *  Email product report when orders close				
 	 **/  

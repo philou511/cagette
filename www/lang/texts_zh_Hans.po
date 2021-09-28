@@ -1132,7 +1132,7 @@ msgstr ""
 
 #: ../src/controller/Shop.hx:1639 ../src/controller/Main.hx:3419
 msgid ""
-"Members of this group should provide a phone number. <a href='/account/edit'>Please "
+"Members of this group should provide a phone number. <a href='/account'>Please "
 "click here to update your account</a>."
 msgstr ""
 
@@ -1456,7 +1456,7 @@ msgstr ""
 
 #: ../src/controller/Main.hx:3722
 msgid ""
-"Members of this group should provide an address. <a href='/account/edit'>Please "
+"Members of this group should provide an address. <a href='/account'>Please "
 "click here to update your account</a>."
 msgstr ""
 

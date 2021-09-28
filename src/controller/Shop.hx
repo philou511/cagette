@@ -68,7 +68,7 @@ class Shop extends Controller
 
 		//message if phone is required
 		// if(app.user!=null && md.getGroup().flags.has(db.Group.GroupFlags.PhoneRequired) && app.user.phone==null){
-		// 	app.session.addMessage(t._("Members of this group should provide a phone number. <a href='/account/edit'>Please click here to update your account</a>."),true);
+		// 	app.session.addMessage(t._("Members of this group should provide a phone number. <a href='/account'>Please click here to update your account</a>."),true);
 		// }
 
 		// //event for additionnal blocks on home page

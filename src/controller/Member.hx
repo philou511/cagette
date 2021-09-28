@@ -25,6 +25,11 @@ class Member extends Controller
 	@logged
 	@tpl('member/default.mtt')
 	function doDefault(?args: { ?search:String, ?list:String } ) {
+		var group = app.user.getGroup();
+		if (group==null) {
+			throw Redirect("/");
+		}
+		
 		// Set view.token to pass it to Neolithic componant
 		checkToken();
 	}
@@ -68,9 +73,12 @@ class Member extends Controller
 	
 	@tpl("member/view.mtt")
 	function doView(member:db.User) {
-		
+		var group = app.user.getGroup();
+		if (group==null) {
+			throw Redirect("/");
+		}
 		view.member = member;
-		var userGroup = db.UserGroup.get(member, app.user.getGroup());
+		var userGroup = db.UserGroup.get(member, group);
 		if (userGroup == null) throw Error("/member", t._("This person does not belong to your group"));
 		
 		view.userGroup = userGroup; 
@@ -145,9 +153,8 @@ class Member extends Controller
 		if (member.isAdmin() && !app.user.isAdmin()) throw Error("/", t._("You cannot modify the account of an administrator"));
 		
 		var form = db.User.getForm(member);
+		form.removeElement( form.getElement("pass") );
 		
-		
-		var isReg = member.isFullyRegistred();
 		var groupNum = db.UserGroup.manager.count($userId == member.id);
 		
 		//an administrator can modify a user's email only if he's not member elsewhere
@@ -155,15 +162,6 @@ class Member extends Controller
 			form.removeElementByName("email");
 			form.removeElementByName("email2");
 			app.session.addMessage(t._("For security reasons, you cannot modify the e-mail of this person because this person is a member of more than 1 group."));
-		}
-		
-		//an administrator can modify a user's pass only if he's a not registred user.
-		if (!isReg){
-			app.session.addMessage(t._("This person did not define yet a password. You are exceptionaly authorized to do it. Please don't forget to tell this person."));
-			//form.getElement("pass").required = false;
-			form.addElement(new sugoi.form.elements.StringInput("pass",t._("Password")));
-		}else{
-			form.removeElement( form.getElement("pass") );
 		}
 		
 		if (form.checkToken()) {
@@ -195,8 +193,6 @@ class Member extends Controller
 					throw Error("/member/edit/" + member.id, str);	
 				}
 			}	
-			
-			if (!isReg) member.setPass(form.getValueOf("pass"));
 			
 			member.update();
 			
@@ -317,238 +313,6 @@ class Member extends Controller
 		view.form = form;
 		
 	}
-	
-	
-	@tpl('member/import.mtt')
-	function doImport(?args: { confirm:Bool } ) {
-		
-		var step = 1;
-		var request = Utils.getMultipart(1024 * 1024 * 4); //4mb
-		
-		//on recupere le contenu de l'upload
-		var data = request.get("file");
-		if ( data != null) {
-			
-			var csv = new sugoi.tools.Csv();
-			csv.setHeaders([t._("Firstname"), t._("Lastname"), t._("E-mail"), t._("Mobile phone"), t._("Partner's firstname"), t._("Partner's lastname"), t._("Partner's e-mail"), t._("Partner's Mobile phone"), t._("Address 1"), t._("Address 2"), t._("Post code"), t._("City")]);
-			
-			//utf8 encode if needed
-			data = Formatting.utf8(data);
-			var unregistred = csv.importDatas(data);
-			
-			/*var checkEmail = function(email){
-				if ( !sugoi.form.validators.EmailValidator.check(email) ) {
-					throw Error("/member", t._("The email <b>::email::</b> is invalid, please update your CSV file",{email:email}) );
-				}
-			}*/
-
-			//cleaning
-			for ( user in unregistred.copy() ) {
-				
-				//check nom+prenom
-				if (user[0] == null || user[1] == null) {
-					throw Error("/member/import", t._("You must fill the name and the firstname of the person. This line is incomplete: ") + user);
-				}
-				if (user[2] == null) {
-					throw Error("/member/import", t._("Each person must have an e-mail to be able to log in. ::user0:: ::user1:: don't have one. ", {user0:user[0], user1:user[1]}) +user);
-				}
-				//uppercase du nom
-				if (user[1] != null) user[1] = user[1].toUpperCase();
-				if (user[5] != null) user[5] = user[5].toUpperCase();
-				//lowercase email
-				if (user[2] != null){
-					user[2] = user[2].toLowerCase();
-					//checkEmail(user[2]);
-				} 
-				if (user[6] != null){
-					user[6] = user[6].toLowerCase();
-					//checkEmail(user[6]);
-				} 
-			}
-			
-			//utf-8 check
-			for ( row in unregistred.copy()) {
-				
-				for ( i in 0...row.length) {
-					var t = row[i];
-					if (t != "" && t != null) {
-						row[i] = t;
-					}
-				}
-			}
-			
-			//put already registered people in another list
-			var registred = [];
-			for (r in unregistred.copy()) {
-				//var firstName = r[0];
-				//var lastName = r[1];
-				var email = r[2];
-
-				//var firstName2 = r[4];
-				//var lastName2 = r[5];
-				var email2 = r[6];
-				
-				var us = db.User.getSameEmail(email, email2);
-				
-				if (us.length > 0) {
-					unregistred.remove(r);
-					registred.push(r);
-				}
-			}
-			
-			
-			app.session.data.csvUnregistered = unregistred;
-			app.session.data.csvRegistered = registred;
-			
-			view.data = unregistred;
-			view.data2 = registred;
-			step = 2;
-		}
-		
-		
-		if (args != null && args.confirm) {
-			
-			//import unregistered members
-			var i : Iterable<Dynamic> = cast app.session.data.csvUnregistered;
-			for (u in i) {
-				if (u[0] == null || u[0] == "null" || u[0] == "") continue;
-								
-				var user = new db.User();
-				user.firstName = u[0];
-				user.lastName = u[1];
-				user.email = u[2];
-				if (user.email != null && user.email != "null" &&!EmailValidator.check(user.email)) {
-					throw t._("The E-mail ::useremail:: is invalid, please modify your file", {useremail:user.email});
-				}
-				user.phone = u[3];
-				
-				user.firstName2 = u[4];
-				user.lastName2 = u[5];
-				user.email2 = u[6];
-				if (user.email2 != null && user.email2 != "null" && !EmailValidator.check(user.email2)) {
-					App.log(u);
-					throw t._("The E-mail of the partner of ::userFirstName:: ::userLastName:: '::userEmail::' is invalid, please check your file", {userFirstName:user.firstName, userLastName:user.lastName, userEmail:user.email2});
-				}
-				user.phone2 = u[7];				
-				user.address1 = u[8];
-				user.address2 = u[9];
-				user.zipCode = u[10];
-				user.city = u[11];				
-				user.insert();
-				
-				var ua = new db.UserGroup();
-				ua.user = user;
-				ua.group = app.user.getGroup();
-				ua.insert();
-			}
-			
-			//import registered members
-			var i : Iterable<Array<String>> = cast app.session.data.csvRegistered;
-			for (u in i) {
-				var email = u[2];
-				var email2 = u[6];
-				
-				var us = db.User.getSameEmail(email, email2);
-				var userAmaps = db.UserGroup.manager.search($group == app.user.getGroup() && $userId in Lambda.map(us, function(u) return u.id), false);
-				
-				//member exists but is not member of this group.
-				if (userAmaps.length == 0) {					
-					var ua = new db.UserGroup();
-					ua.user = us.first();
-					ua.group = app.user.getGroup();
-					ua.insert();
-				}
-			}
-			
-			view.numImported = app.session.data.csvUnregistered.length + app.session.data.csvRegistered.length;
-			app.session.data.csvUnregistered = null;
-			app.session.data.csvRegistered = null;
-			
-			step = 3;
-		}
-		
-		if (step == 1) {
-			//reset import when back to import page
-			app.session.data.csvUnregistered = null;
-			app.session.data.csvRegistered = null;
-		}
-		
-		view.step = step;
-	}
-	
-	@tpl("user/insert.mtt")
-	public function doInsert() {
-		
-		if (!app.user.canAccessMembership()) throw Error("/", t._("Forbidden action"));
-		
-		var m = new db.User();
-		var form = db.User.getForm(m);
-		form.addElement(new sugoi.form.elements.Checkbox("warnAmapManager", t._("Send an E-mail to the person in charge of the group"), true));
-		form.getElement("email").addValidator(new EmailValidator());
-		form.getElement("email2").addValidator(new EmailValidator());
-		
-		if (form.isValid()) {
-			
-			//check doublon de User et de UserAmap
-			var userSims = db.User.getSameEmail(form.getValueOf("email"),form.getValueOf("email2"));
-			view.userSims = userSims;
-			var userAmaps = db.UserGroup.manager.search($group == app.user.getGroup() && $userId in Lambda.map(userSims, function(u) return u.id), false);
-			view.userAmaps = userAmaps;
-			
-			if (userAmaps.length > 0) {
-				//user deja enregistré dans cette amap
-				throw Error('/member/view/' + userAmaps.first().user.id, t._("This person is already member of this group"));
-				
-			}else if (userSims.length > 0) {
-				//des users existent avec ce nom , 
-				//if (userSims.length == 1) {
-					// si yen a qu'un on l'inserte
-					var ua = new db.UserGroup();
-					ua.user = userSims.first();
-					ua.group = app.user.getGroup();
-					ua.insert();	
-					throw Ok('/member/', t._("This person already had an account on Cagette.net, and is now member of your group."));
-				/*}else {
-					//demander validation avant d'inserer le userAmap
-					//TODO
-					throw Error('/member', t._("Not possible to add this person because there are already some people in the database having the same firstname and name. Please contact the administrator.")+userSims);
-				}*/
-				return;
-			}else {
-				
-				if (app.user.getGroup().flags.has(db.Group.GroupFlags.PhoneRequired) && form.getValueOf("phone") == null ){
-					throw Error("/member/insert", t._("Phone number is required in this group."));
-				}
-				
-				//insert user
-				var u = new db.User();
-				form.toSpod(u); 
-				u.lang = app.user.lang;
-				u.insert();
-				
-				//insert userAmap
-				var ua = new db.UserGroup();
-				ua.user = u;
-				ua.group = app.user.getGroup();
-				ua.insert();	
-				
-				if (form.getValueOf("warnAmapManager") == "1") {
-					var url = "http://" + App.config.HOST + "/member/view/" + u.id;
-					var text = t._("::admin:: just keyed-in contact details of a new member: <br/><strong>::newMember::</strong><br/> <a href='::url::'>See contact details</a>",{admin:app.user.getName(),newMember:u.getCoupleName(),url:url});
-					App.quickMail(
-						app.user.getGroup().contact.email,
-						app.user.getGroup().name +" - "+ t._("New member") + " : " + u.getCoupleName(),
-						app.processTemplate("mail/message.mtt", { text:text } ) 
-					);
-				}
-				
-				throw Ok('/member/', t._("This person is now member of the group"));
-				
-			}
-		}
-		
-		view.form = form;
-	}	
 	
 	/**
 	 * user payments history

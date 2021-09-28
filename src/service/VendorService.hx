@@ -9,7 +9,7 @@ typedef VendorDto = {
 	linkUrl:String,
 	companyNumber:String,
 	country:String,
-	?legalStatus:Int,//0 société,1 entr. individuelle, 2 asso
+	?legalStatus:Int,//0 société, 1 entr. individuelle, 2 asso, 3 particulier
 
 }
 
@@ -225,7 +225,7 @@ class VendorService{
 			vendor.legalStatus = -1;//particulier
 		}
 
-		//check SIRET if french and not association
+		//check SIRET if french and not association && not particulier
 		if(legalInfos && data.country=="FR" && data.legalStatus!=2 && data.legalStatus!=3){
 			//https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/82902831500010
 			var c = new sugoi.apis.linux.Curl();

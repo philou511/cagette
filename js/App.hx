@@ -274,7 +274,7 @@ class App {
 	/**
 	 * Displays a login box
 	 */
-	public function loginBox(redirectUrl:String,sid:String,?message:String,?phoneRequired=false,?addressRequired=false,?openRegistration=false) {	
+	public function loginBox(redirectUrl:String,sid:String,?message:String,?phoneRequired=false,?addressRequired=false,?openRegistration=false,?invitedUserEmail:String, ?invitedGroupId:Int) {	
         var node = js.Browser.document.createDivElement();
 		node.id = "login-registration-container";
 		js.Browser.document.body.appendChild(node);
@@ -284,18 +284,20 @@ class App {
         neo.createNeoModule(node.id, "loginRegistration", {
             redirectUrl: redirectUrl,
             sid: sid,
-			message: message,
-			phoneRequired: phoneRequired,
-			addressRequired: addressRequired,
-            openRegistration: openRegistration
+            message: message,
+            phoneRequired: phoneRequired,
+            addressRequired: addressRequired,
+            openRegistration: openRegistration,
+            invitedUserEmail: invitedUserEmail,
+            invitedGroupId: invitedGroupId
         });
 	}
 
 	/**
 	 *  Displays a sign up box
 	 */
-	public function registerBox(redirectUrl:String,sid:String,?message:String,?phoneRequired=false,?addressRequired=false) {
-        loginBox(redirectUrl, sid, message, phoneRequired, addressRequired, true);
+	public function registerBox(redirectUrl:String,sid:String,?message:String,?phoneRequired=false,?addressRequired=false, ?invitedUserEmail:String, ?invitedGroupId:Int) {
+        loginBox(redirectUrl, sid, message, phoneRequired, addressRequired, true, invitedUserEmail, invitedGroupId);
 	}
 
 	public function membershipBox(userId:Int,userName:String,groupId:Int,?callbackUrl:String,?distributionId:Int){
@@ -480,6 +482,11 @@ class App {
 
     public function addTmpBasketIdToSession(tmpBasketId:Int) {
         var req = new haxe.Http("/shop/addTmpBasketId/"+tmpBasketId);
+        req.request();
+    }
+
+    public function resetGroupInSession(groupId:Int) {
+        var req = new haxe.Http("/account/quitGroup/"+groupId);
         req.request();
     }
 

@@ -569,12 +569,12 @@
 							<!-- buttons -->
 							<tr>
 								<td colspan="5">
-									<a href="/account/subscriptionOrders/::subscription.id::" class="btn btn-default btn-sm">
+									<a href="/history/subscriptionOrders/::subscription.id::" class="btn btn-default btn-sm">
 										<i class="icon icon-basket"></i> Commandes
 									</a>
 
 									::if hasPayments::
-									<a href="/account/subscriptionPayments/::subscription.id::" class="btn btn-default btn-sm">
+									<a href="/history/subscriptionPayments/::subscription.id::" class="btn btn-default btn-sm">
 										<i class="icon icon-euro"></i> Paiements
 									</a>
 									::end::

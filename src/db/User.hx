@@ -81,18 +81,6 @@ class User extends Object {
 	public function isAdmin() {
 		return rights.has(Admin) || id==1;
 	}
-	
-	public static function login(user:db.User, email:String) {
-		
-		user.lock();
-		user.ldate = Date.now();
-		user.update();
-		
-		App.current.session.setUser(user);
-		if (App.current.session.data == null) App.current.session.data = {};
-		App.current.session.data.whichUser = (email == user.email) ? 0 : 1; 	
-		
-	}
 
 	public static function getForm(user:db.User){
 		var t = sugoi.i18n.Locale.texts;
@@ -161,7 +149,7 @@ class User extends Object {
 	}
 	
 	public function isFullyRegistred(){
-		return pass != null && pass != "";
+		return (pass != null && pass != "") || (pass2 != null && pass2 != "");
 	}
 	
 	public function makeMemberOf(group:db.Group){
@@ -544,7 +532,7 @@ class User extends Object {
 		if ( db.User.manager.count( ($email==this.email || $email2==this.email) && $id!=this.id) > 0 ){
 			throw new tink.core.Error("Le mail "+email+" est déjà utilisé par un autre compte.");
 		}
-		if ( email2!=null && db.User.manager.count( ($email==this.email2 || $email2==this.email2) && $id!=this.id) > 0 ){
+		if ( email2!=null && email2!="" && db.User.manager.count( ($email==this.email2 || $email2==this.email2) && $id!=this.id) > 0 ){
 			throw new tink.core.Error("Le mail secondaire "+email2+" est déjà utilisé par un autre compte.");
 		}
 
@@ -556,7 +544,7 @@ class User extends Object {
 	**/
 	public function getQuitGroupLink(group:db.Group){
 		var protocol = App.config.DEBUG ? "http://" : "https://";
-		return protocol+App.config.HOST+"/user/quitGroup/"+group.id+"/"+this.id+"/"+haxe.crypto.Md5.encode(App.config.KEY+group.id+this.id);
+		return protocol+App.config.HOST+"/user/quitGroup/"+group.id+"/"+this.id+"/"+haxe.crypto.Sha1.encode(App.config.KEY+group.id+this.id);
 	}
 
 	/**

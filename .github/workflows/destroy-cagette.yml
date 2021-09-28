@@ -51,7 +51,7 @@ jobs:
                 --namespace $NAMESPACE \
                 --image docker.io/bitnami/mysql:8.0 \
                 -- mysql -h SG-aliloMysql-4270-mysql-master.servers.mongodirector.com \
-                -u root --password=$DB_ROOT_PW
+                -u sgroot --password=$DB_ROOT_PW
 
       - name: remove db-pw secret
         run: |
