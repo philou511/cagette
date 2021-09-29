@@ -50,6 +50,7 @@
 	<div class="row">
 		<div class="col-md-12">			
 			<div class="alert alert-danger">
+				<i class="icon icon-alert"></i>
 				Ce compte producteur est bloqué et n'accepte plus de commandes.<br/>
 				Raison : <b>::vendor.getDisabledReason()::</b>
 			</div>

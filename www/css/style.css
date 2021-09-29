@@ -359,25 +359,22 @@ div.reportHeader {
       margin-top: -6px;
       color: #84BD55; }
   .iconBadge.farmer {
-    color: #f1d577;
-    border-color: #f1d577;
+    color: #e4ba2b;
+    border-color: #e4ba2b;
     border: 3px solid;
     background-color: white; }
     .iconBadge.farmer i.icon {
       margin-top: -6px;
-      color: #f1d577; }
+      color: #e4ba2b; }
   .iconBadge.danger {
     color: #a94442;
     border-color: #a94442;
     border: 3px solid;
     background-color: #f2dede; }
     .iconBadge.danger i.icon {
-      margin-top: -6px;
+      margin-top: -5px;
+      margin-left: 0px;
       color: #a94442; }
-  .iconBadge.withText {
-    width: auto;
-    padding-left: 12px;
-    padding-right: 12px; }
 
 .blockIconBadge {
   color: #8cb050;
@@ -748,7 +745,7 @@ div.productImg {
   div.productImg.sm, div.productImg.small {
     width: 48px;
     height: 48px;
-    border-radius: 4px; }
+    border-radius: 8px; }
   div.productImg.md, div.productImg.medium {
     width: 70px;
     height: 70px;

@@ -19,21 +19,7 @@
 	<br/> Contactez-nous sur support@cagette.net si vous avez des questions.	
 	</div>
 	::end::
-
-	::if (!group.hasShopMode())::
-	<div class="alert alert-warning"> 
-		<i class="icon icon-alert"></i> Il est maintenant possible d'activer la <b>gestion des paiements</b> en AMAP <b>contrats par contrats</b> ( bouton "Gérer", puis "modifier" sur le contrat concerné ).<br/>
-		Cela permet aux coordinateurs de contrats de tester à leur rythme cette nouvelle fonctionnalité.<br/>
-		Attention, tous les <b>nouveaux contrats</b> sont obligatoirement <b>avec</b> gestion des paiements.
-	</div>
-	::end::-->
-
-	::if (group.hasShopMode())::
-	<div class="alert alert-danger"> 
-		<i class="icon icon-alert"></i> <b>IMPORTANT - Nouvelles règles de fonctionnement</b><br/>
-		<a href="https://wiki.cagette.net/nouvellesregles" target="_blank">Retrouvez ici toutes les infos</a>. Les icones jaunes, rouges et vertes vous informent sur le statut de vos producteurs par rapport à ces nouvelles règles.
-	</div>
-	::end::
+	-->	
 	
 	<div class="article" id="contracts">
 		<h2>
@@ -73,37 +59,14 @@
 
 						::else::
 
-
-						<!-- SHOP MODE GROUP -->
-
-							::set stats = c._vendor.getStats()::
-
-							::if stats.type==0::
-								<!--cpro-->
-								<div class="vendorStatus" style="color:#84BD55;border-color:#84BD55" data-toggle="tooltip" data-placement="right" title="Ce producteur est membre du réseau. Il a son propre compte producteur. Il peut vendre en illimité">
-									<i class="icon icon-farmer-pro"></i>
-								</div>
-							::else::
-
-								::if(stats.shopTurnover12months > 1000)::
-								<div class="vendorStatus" style="color:#e28f84;border-color:#e28f84" data-toggle="tooltip" data-placement="right" 
-								title="Ce producteur n'a pas de compte producteur : ses ventes seront limitées à 1000€/an à partir du 02/11/2021. - Depuis un an il a vendu pour plus de 1000€.">
-									<i class="icon icon-farmer"></i>
-								</div>
-								::else::
-								<div class="vendorStatus" style="color:#f1d577;border-color:#f1d577" data-toggle="tooltip" data-placement="right" 
-								title="Ce producteur n'a pas de compte producteur : ses ventes seront limitées à 1000€/an à partir du 02/11/2021. - Depuis un an, il a vendu pour moins de 1000€.">
-									<i class="icon icon-farmer"></i>
-								</div>
-								::end::
-							::end::
-
-
-						::end::
+							<!-- SHOP MODE GROUP -->
+							$$vendorIcon(::c._vendor::)		
 						
+
+						::end::	
 					</td>
 					<td>
-						<div class="productImg" style="background-image:url('::c._vendor.getImage()::?v=2');width:48px;height:48px;margin:0" ></div>
+						<div class="productImg sm" style="background-image:url('::c._vendor.getImage()::?v=2');margin:0" ></div>
 					</td>
 					<td>::c._vendor.name::</td>
 					
