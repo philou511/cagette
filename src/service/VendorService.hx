@@ -1,5 +1,7 @@
 package service;
 
+import sugoi.form.elements.IntInput;
+import sugoi.form.elements.Input.InputType;
 import tink.core.Error;
 import sugoi.form.validators.EmailValidator;
 
@@ -183,18 +185,25 @@ class VendorService{
 
 		if(legalInfos){
 			form.addElement(new sugoi.form.elements.Html("html","<h4>Informations légales obligatoires</h4>"));
-
-			//form.addElement(new sugoi.form.elements.IntSelect('legalStatus',"Statut juridique",sugoi.form.ListData.fromSpod(service.VendorService.getLegalStatuses()),vendor.legalStatus,true));
-			if(vendor.legalStatus!=null){
+			
+			/*if(vendor.legalStatus!=null){
 				form.addElement(new sugoi.form.elements.Html("html",vendor.getLegalStatus(false),"Statut juridique"));
-			}else{
+				var el = new sugoi.form.elements.IntInput('legalStatus',"Statut juridique",vendor.legalStatus,true);
+				el.inputType = InputType.ITHidden;
+				form.addElement(el);
+
+			}else{*/
+				if(vendor.legalStatus!=null){
+					form.addElement(new sugoi.form.elements.Html("html",vendor.getLegalStatus(false),"Statut juridique actuel :"));
+				}
+
 				var data = [
 					{label:"Société",value:0},
 					{label:"Entreprise individuelle",value:1},
 					{label:"Association",value:2},
 					{label:"Particulier (mettez 0 comme numéro SIRET)",value:3}];
 				form.addElement(new sugoi.form.elements.IntSelect('legalStatus',"Forme juridique",data,null,true));
-			}
+			//}
 
 			form.addElement(new sugoi.form.elements.StringInput("companyNumber","Numéro SIRET (14 chiffres) ou numéro RNA pour les associations.",vendor.companyNumber,true));
 			form.addElement(new sugoi.form.elements.StringInput("vatNumber","Numéro de TVA (si assujeti)",vendor.vatNumber,false));
@@ -242,7 +251,6 @@ class VendorService{
 
 		//particulier
 		if(legalInfos && data.legalStatus==3){
-
 			vendor.legalStatus = -1;//particulier
 		}
 

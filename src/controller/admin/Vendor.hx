@@ -220,6 +220,15 @@ class Vendor extends controller.Controller
 			var naf:String = v.activityCode.split(".").join("");
 			view.activityCode = service.VendorService.getActivityCodes().find(p -> return p.id == naf);
 		}
+		view.isCorrectNAF = function(activityCode:String):Bool{
+			if(activityCode==null) return true;
+			var code = activityCode.split(".")[0].parseInt();
+			if(code==null || code==0) return true;
+			if( code==1 || code==3 || code==10 || code==11){
+				return true;
+			}
+			return false;
+		};
 
 		view.editLink = "https://app.cagette.net/vendorNoAuthEdit/"
 			+ v.id
@@ -259,8 +268,21 @@ class Vendor extends controller.Controller
 			v.disabled = args.reason;
 			v.update();
 			throw Ok("/admin/vendor/view/"+v.id,"Producteur bloqué");
+		}		
+	}
+
+
+	@tpl("form.mtt")
+	function doEdit(v:db.Vendor) {
+		var form = service.VendorService.getForm(v);
+		if (form.isValid()) {
+			v.lock();
+			service.VendorService.update(v, form.getDatasAsObject(), true);
+			v.update();
+
+			throw Ok("/admin/vendor/view/" + v.id, "Producteur mis à jour");
 		}
-		
+		view.form = form;
 	}
 	
 	

@@ -84,7 +84,7 @@
 				::set stats = getVendorStats(v)::
 				<tr>
 					<td>::v.id::</td>
-					<td><a href='/p/pro/admin/vendor/::v.id::'>::v.name::</a></td>
+					<td><a href='/admin/vendor/view/::v.id::'>::v.name::</a></td>
 					<td>$$vendorType(::enumIndex(stats._type)::)</td>
 				</tr>
 			

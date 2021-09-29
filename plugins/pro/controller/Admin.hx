@@ -278,18 +278,7 @@ class Admin extends controller.Controller {
 
 	
 
-	@tpl("form.mtt")
-	function doEditVendor(v:db.Vendor) {
-		var form = VendorService.getForm(v);
-		if (form.isValid()) {
-			v.lock();
-			VendorService.update(v, form.getDatasAsObject(), true);
-			v.update();
-
-			throw Ok("/p/pro/admin/vendor/" + v.id, "Producteur mis à jour");
-		}
-		view.form = form;
-	}
+	
 
 	/**
 	 * Massive import of groups from CSV
@@ -570,9 +559,9 @@ class Admin extends controller.Controller {
 		// vendors created since more than 1 month
 		for (v in db.Vendor.manager.search($cdate < cdate)) {
 			if (v.getContracts().length == 0) {
-				Sys.println('Vendor <a href="/p/pro/admin/vendor/${v.id}">${v.name}</a> has no catalogs ! <br/>');
+				Sys.println('Vendor <a href="/admin/vendor/view/${v.id}">${v.name}</a> has no catalogs ! <br/>');
 			} else if (v.email == null) {
-				Sys.println('Vendor <a href="/p/pro/admin/vendor/${v.id}">${v.name}</a> has no email ! <br/>');
+				Sys.println('Vendor <a href="/admin/vendor/view/${v.id}">${v.name}</a> has no email ! <br/>');
 			}
 		}
 	}
@@ -821,7 +810,7 @@ class Admin extends controller.Controller {
 	 */
 	function doCreateCpro(vendor:db.Vendor) {
 		if (pro.db.CagettePro.getFromVendor(vendor) != null)
-			throw Error("/p/pro/admin/vendor/" + vendor.id, vendor.name + " a deja un cagette Pro");
+			throw Error("/admin/vendor/view/" + vendor.id, vendor.name + " a deja un cagette Pro");
 
 		vendor.lock();
 
@@ -843,7 +832,7 @@ class Admin extends controller.Controller {
 
 		VendorStats.updateStats(vendor);
 
-		throw Ok("/p/pro/admin/vendor/" + vendor.id, "Compte Cagette Pro créé");
+		throw Ok("/admin/vendor/view/" + vendor.id, "Compte Cagette Pro créé");
 	}
 
 	function doCproTest(vendor:db.Vendor) {
@@ -871,7 +860,7 @@ class Admin extends controller.Controller {
 
 		VendorStats.updateStats(vendor);
 
-		throw Ok("/p/pro/admin/vendor/" + vendor.id, "Compte passé en Cagette Pro Test");
+		throw Ok("/admin/vendor/view/" + vendor.id, "Compte passé en Cagette Pro Test");
 	}
 
 	@tpl("form.mtt")
@@ -886,7 +875,7 @@ class Admin extends controller.Controller {
 			/*service.VendorService.getOrCreateRelatedUser(vendor);
 				service.VendorService.sendEmailOnAccountCreation(vendor,app.user,app.user.getAmap()); */
 
-			throw Ok('/p/pro/admin/vendor/' + vendor.id, t._("This supplier has been saved"));
+			throw Ok('/admin/vendor/view/' + vendor.id, t._("This supplier has been saved"));
 		}
 
 		view.title = t._("Key-in a new vendor");
@@ -1150,7 +1139,7 @@ class Admin extends controller.Controller {
 				for (cat in cpro.getCatalogs()) {
 					for (rc in connector.db.RemoteCatalog.getFromCatalog(cat)) {
 						if (rc.getContract() != null) {
-							throw Error("/p/pro/admin/vendor/" + vendor.id, "Ce Cagette Pro a encore des catalogues reliés à des groupes");
+							throw Error("/admin/vendor/view/" + vendor.id, "Ce Cagette Pro a encore des catalogues reliés à des groupes");
 						}
 					}
 				}
@@ -1167,7 +1156,7 @@ class Admin extends controller.Controller {
 
 				VendorStats.updateStats(vendor);
 
-				throw Ok("/p/pro/admin/vendor/" + vendor.id, "Cagette Pro désactivé");
+				throw Ok("/admin/vendor/view/" + vendor.id, "Cagette Pro désactivé");
 
 			case "deleteCpro":
 				var cpro = CagettePro.getFromVendor(vendor);
@@ -1177,7 +1166,7 @@ class Admin extends controller.Controller {
 				for (cat in cpro.getCatalogs()) {
 					for (rc in connector.db.RemoteCatalog.getFromCatalog(cat)) {
 						if (rc.getContract() != null) {
-							throw Error("/p/pro/admin/vendor/" + vendor.id, "Ce Cagette Pro a encore des catalogues reliés à des groupes");
+							throw Error("/admin/vendor/view/" + vendor.id, "Ce Cagette Pro a encore des catalogues reliés à des groupes");
 						}
 					}
 				}
@@ -1187,11 +1176,11 @@ class Admin extends controller.Controller {
 
 				VendorStats.updateStats(vendor);
 
-				throw Ok("/p/pro/admin/vendor/" + vendor.id, "Cagette Pro désactivé");
+				throw Ok("/admin/vendor/view/" + vendor.id, "Cagette Pro désactivé");
 
 			case "delete":
 				if (vendor.getContracts().length > 0) {
-					throw Error("/p/pro/admin/vendor/" + vendor.id, "Ce producteur a encore des catalogues dans des groupes");
+					throw Error("/admin/vendor/view/" + vendor.id, "Ce producteur a encore des catalogues dans des groupes");
 				} else {
 					vendor.lock();
 					vendor.delete();
@@ -1246,7 +1235,7 @@ class Admin extends controller.Controller {
 					off.active = p.active;
 					off.insert();
 				}
-				throw Ok("/p/pro/admin/vendor/" + catalog.vendor.id, "Catalogue copié");
+				throw Ok("/admin/vendor/view/" + catalog.vendor.id, "Catalogue copié");
 			}
 		} else {
 			f.addElement(new sugoi.form.elements.IntInput("cid", "ID du catalogue", null, true));
@@ -1356,7 +1345,7 @@ class Admin extends controller.Controller {
 			if (v.email == null)
 				continue;
 
-			Sys.println('send to <a href="/p/pro/admin/vendor/${v.id}">${v.name}</a><br/>');
+			Sys.println('send to <a href="/admin/vendor/view/${v.id}">${v.name}</a><br/>');
 
 			var m = new sugoi.mail.Mail();
 			m.setSender(App.config.get("default_email"), "Cagette.net");
@@ -1635,7 +1624,6 @@ class Admin extends controller.Controller {
 			var vs = VendorStats.getOrCreate(v);
 			if(vs.type==VendorType.VTCpro) continue;
 			if(vs.type==VendorType.VTStudent) continue;
-			if(vs.type==VendorType.VTCproStudent) continue;
 			if(vs.type==VendorType.VTDiscovery) continue;
 
 			var cids = v.getContracts().array().map(v -> v.id);

@@ -30,7 +30,7 @@
 			::foreach c companies::
 			<tr ::cond c._company!=null::>
 				<td>
-					<a href="/p/pro/admin/vendor/::c._company._vendor.id::" target="_blank">::c._company._vendor.name::</a>
+					<a href="/admin/vendor/view/::c._company._vendor.id::" target="_blank">::c._company._vendor.name::</a>
 				</td>
 				<td>
 					::if(c._company.training==true)::<span  class="glyphicon glyphicon-education" style="color:#336600"></span>::end::

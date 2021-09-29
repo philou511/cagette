@@ -346,7 +346,7 @@ class Admin extends Controller {
 			var cpro = pro.db.CagettePro.getFromVendor(v);
 			var blocked = cpro.getUserCompany().exists( uc -> uc.disabled );
 
-			Sys.print('<tr><td><a href="/p/pro/admin/vendor/${v.id}" target="_blank">${v.id} - ${v.name}</a></td>');
+			Sys.print('<tr><td><a href="/admin/vendor/view/${v.id}" target="_blank">${v.id} - ${v.name}</a></td>');
 			Sys.print('<td>${blocked?"OUI":"NON"}</a></td>');
 			Sys.print('<td>${untyped v.cprocdate}</a></td>');
 			Sys.print("</tr>");
