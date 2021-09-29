@@ -46,7 +46,7 @@
 	</div>
 	::end::
 
-
+	::if(isAdmin)::
 	<div id="stats-module-container" style="margin-bottom: 16px;"></div>
 	<script>
 		document.addEventListener("DOMContentLoaded", function () {
@@ -55,6 +55,7 @@
 			});
 		});
 	</script>
+	::end::
 
 
 	::if(vendor.isDisabled())::

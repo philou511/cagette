@@ -1,9 +1,6 @@
 package controller.admin;
-<<<<<<< HEAD
 import pro.db.VendorStats;
-=======
 
->>>>>>> 0e1a5b250939b7e4a9ea5b0ebd052f31e38c599e
 import sugoi.db.Variable;
 import db.TxpProduct;
 import db.BufferedJsonMail;
@@ -454,7 +451,6 @@ class Admin extends Controller {
 		}
 
 	}
-}
 
 	@tpl('admin/process.mtt')
 	function doProcess() {}
