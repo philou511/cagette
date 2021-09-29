@@ -72,6 +72,10 @@ class Contract extends Controller
 		f.addElement(new sugoi.form.elements.IntSelect('profession',t._("Profession"),sugoi.form.ListData.fromSpod(service.VendorService.getVendorProfessions()),null,false));
 
 		if(f.isValid()){
+
+			if(f.getValueOf('name')==null && f.getValueOf("geoloc")==false && f.getValueOf("profession")==null){
+				throw Error('/contract/defineVendor/','Vous devez au moins rechercher par nom ou par profession');
+			}
 			
 			//look for identical names
 			var vendors = service.VendorService.findVendors( {

@@ -1,4 +1,5 @@
 package controller.admin;
+import pro.db.VendorStats;
 import sugoi.db.Variable;
 import db.TxpProduct;
 import db.BufferedJsonMail;
@@ -442,6 +443,28 @@ class Admin extends Controller {
 			g.update();
 			Sys.println(g.name+"<br/>");
 		}
+	}
+
+
+	function doTerraLibra(){
+
+		var v = db.Vendor.manager.get(12535,false);
+		var catalogs = v.getActiveContracts();
+		var groups = catalogs.map(c -> c.group);
+		for( g in groups){
+
+			Sys.println("<h2>"+g.name+"</h2>");
+			Sys.println("<table border='1'>");
+			for( ve in g.getVendors()) {
+
+				var vs = VendorStats.getOrCreate(ve);
+				Sys.println('<tr> <td>${ve.id}</td> <td>${ve.name}</td> <td>${vs.type}</td> <td>${vs.shopTurnover12months}€</td></tr>');
+
+			}
+			Sys.println("</table>");
+
+		}
+
 	}
 }
 
