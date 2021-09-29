@@ -459,6 +459,62 @@ div.reportHeader{
 	}
 }
 
+/* big colored circle with white icon inside */
+.iconBadge{
+	background-color:#666;
+	width:40px;
+	height:40px;
+	border-radius:20px;
+	line-height:40px;
+	text-align:center;
+	display:inline-block;
+
+	i.icon{
+		color:white;
+		font-size: 1.5em;
+	}
+
+	&.farmer-pro{
+		color:#84BD55;
+		border-color:#84BD55;
+		border:3px solid;
+		background-color:white;
+		i.icon{
+			margin-top:-6px;//corrige l'effet du border
+			color:#84BD55;
+		}
+	}
+
+	&.farmer{
+		color:#f1d577;
+		border-color:#f1d577;
+		border:3px solid;
+		background-color:white;
+		i.icon{
+			margin-top:-6px;//corrige l'effet du border
+			color:#f1d577;
+		}
+	}
+
+
+	&.danger{
+		color:#a94442;
+		border-color:#a94442;
+		border:3px solid;
+		background-color:#f2dede;
+		i.icon{
+			margin-top:-6px;//corrige l'effet du border
+			color:#a94442;
+		}
+	}
+
+	&.withText{
+		width: auto;
+		padding-left: 12px;
+		padding-right: 12px;
+	}
+}
+
 //icon badge within Clickables
 .blockIconBadge{
 	color:darken(#bad096,20%);
@@ -1145,20 +1201,7 @@ tr.danger td div.basketNumber{
 	}
 }
 
-/* big colored circle with white icon inside */
-.iconBadge{
-	background-color:#666;
-	width:40px;
-	height:40px;
-	border-radius:20px;
-	line-height:40px;
-	text-align:center;
-	display:inline-block;
-	i.icon{
-		color:white;
-		font-size: 1.5em;
-	}
-}
+
 
 //vendor page
 .distributions-map {

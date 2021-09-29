@@ -338,6 +338,47 @@ div.reportHeader {
     background-color: lightgray;
     cursor: not-allowed; }
 
+/* big colored circle with white icon inside */
+.iconBadge {
+  background-color: #666;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  line-height: 40px;
+  text-align: center;
+  display: inline-block; }
+  .iconBadge i.icon {
+    color: white;
+    font-size: 1.5em; }
+  .iconBadge.farmer-pro {
+    color: #84BD55;
+    border-color: #84BD55;
+    border: 3px solid;
+    background-color: white; }
+    .iconBadge.farmer-pro i.icon {
+      margin-top: -6px;
+      color: #84BD55; }
+  .iconBadge.farmer {
+    color: #f1d577;
+    border-color: #f1d577;
+    border: 3px solid;
+    background-color: white; }
+    .iconBadge.farmer i.icon {
+      margin-top: -6px;
+      color: #f1d577; }
+  .iconBadge.danger {
+    color: #a94442;
+    border-color: #a94442;
+    border: 3px solid;
+    background-color: #f2dede; }
+    .iconBadge.danger i.icon {
+      margin-top: -6px;
+      color: #a94442; }
+  .iconBadge.withText {
+    width: auto;
+    padding-left: 12px;
+    padding-right: 12px; }
+
 .blockIconBadge {
   color: #8cb050;
   background-color: white;
@@ -825,19 +866,6 @@ tr.danger td div.basketNumber {
 /* payment type */
 .payment .icon {
   font-size: 200%; }
-
-/* big colored circle with white icon inside */
-.iconBadge {
-  background-color: #666;
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  line-height: 40px;
-  text-align: center;
-  display: inline-block; }
-  .iconBadge i.icon {
-    color: white;
-    font-size: 1.5em; }
 
 .distributions-map {
   height: 500px;
