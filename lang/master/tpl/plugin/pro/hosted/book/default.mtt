@@ -26,8 +26,8 @@
 			::foreach group groups::
 			<div class="col-md-4">
 			<a href="/group/::group.id::" class="clickable" style="height:110px;overflow:hidden;vertical-align:top;">
-				::if group._image!=null::
-				<img src="::file(group._image)::" class="img-responsive" style="float:left;width:92px;margin-right:12px;" />
+				::if group.imageId!=null::
+				<img src="::file(group.imageId)::" class="img-responsive" style="float:left;width:92px;margin-right:12px;" />
 				::end::						
 				
 				<h4>::group.name::</h4>

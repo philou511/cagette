@@ -64,36 +64,5 @@ class Product extends Controller
 		Sys.print(tink.Json.stringify(out));
 
 	}
-
-	
-	function doImage(product:db.Product) {
-		
-		if (!app.user.canManageContract(product.catalog)) throw t._("Forbidden access");
-		
-		var request = sugoi.tools.Utils.getMultipart(1024 * 1024 * 12); //12Mb
-		//var request = app.params;
-		
-		if (request.exists("file")) {
-			
-			//Image
-			var image = request.get("file");
-			if (image != null && image.length > 0) {
-				
-				var img = sugoi.db.File.createFromDataUrl(request.get("file"), request.get("filename"));
-
-				product.lock();
-				if (product.image != null) {
-					//efface ancienne
-					product.image.lock();
-					product.image.delete();
-				}				
-				product.image = img;
-				product.update();
-				Sys.print(haxe.Json.stringify({success:true}));
-			}
-		}else{
-			Sys.print(haxe.Json.stringify({success:false}));
-		}
-	}	
 	
 }

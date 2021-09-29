@@ -45,9 +45,9 @@
 		
 		<div class="row">
 			::set vendor = catalog._vendor::
-			<div class="col-md-3" ::cond vendor._image!=null::>
+			<div class="col-md-3" ::cond vendor.imageId!=null::>
 				
-				<img src="::file(vendor._image)::" class="img-thumbnail" />
+				<img src="::file(vendor.imageId)::" class="img-thumbnail" />
 				
 			</div>
 			<div class="col-md-5">
@@ -87,7 +87,7 @@
 				<h4>Documents associés au catalogue</h4>
 				<div>
 					::foreach doc visibleDocuments::
-						<i class="icon icon-file-pdf"></i><a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a><br/>					
+						<i class="icon icon-file-pdf"></i><a href="::file(doc.fileId)::" target="_blank">  ::doc._file.name::</a><br/>					
 					::end::
 				</div>
 			</div>

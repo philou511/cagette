@@ -114,7 +114,7 @@ class Admin extends controller.Controller {
 
 	@tpl('plugin/pro/admin/dedupInfoByName.mtt')
 	function doFindduplicatesbyname(name:String) {
-		view.vendors = VendorService.findVendors(name);
+		view.vendors = VendorService.findVendors({name:name});
 	}
 
 	@tpl('plugin/pro/admin/dedupInfoByZip.mtt')

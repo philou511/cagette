@@ -295,7 +295,7 @@ class ContractAdmin extends Controller
 	/**
 	 * Global view on orders, producer view
 	 */
-	@tpl('contractadmin/vendorsByDate.mtt')
+	/*@tpl('contractadmin/vendorsByDate.mtt')
 	function doVendorsByDate(date:Date,place:db.Place) {
 
 	    var vendorDataByVendorId = new Map<Int,Dynamic>();//key : vendor id
@@ -307,7 +307,7 @@ class ContractAdmin extends Controller
 		
 		view.orders = Lambda.array(vendorDataByVendorId);
 		view.date = date;
-	}
+	}*/
 	
 	/**
 	 * Global view on orders, producer view
