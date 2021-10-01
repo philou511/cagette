@@ -267,5 +267,10 @@ class Main extends controller.Controller
 		view.text = "En tant que producteur qui vend des produits sur Cagette.net, vous devez accepter ces conditions qui définissent les modalités d'utilisation de Cagette.net par les producteurs.";
 		view.form = form;
 	}
+
+
+	@logged @tpl("plugin/pro/upgrade.mtt")
+	public function doUpgrade(){
+	}
 	
 }

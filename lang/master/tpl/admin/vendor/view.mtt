@@ -71,7 +71,7 @@
 			::if(cpro.disabled==true):: <b>Désactivé</b> ::end::
 			<br/>
 			::if(cpro.training==true)::<i class="icon icon-student" style="color:#336600"></i> Compte pédagogique<br/> ::end::
-			::if(cpro.freeCpro==false)::<i  class="icon icon-euro" style="color:#FF6600"></i> Compte payant<br/> ::end::
+			<!--::if(cpro.freeCpro==false)::<i  class="icon icon-euro" style="color:#FF6600"></i> Compte payant<br/> ::end::-->
 			
 		::end::
 		<br/>	
