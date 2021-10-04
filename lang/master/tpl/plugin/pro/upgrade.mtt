@@ -92,7 +92,7 @@
 
 
                         <p class="text-center">
-                            <a href="" class="btn btn-primary btn-lg"><i class="icon icon-chevron-right"></i> Choisir</a>
+                            <a href="" class="btn btn-default btn-lg" disabled="disabled"><i class="icon icon-chevron-right"></i> Bientôt disponible</a>
                         </p>
                     </div>
                 </div>
@@ -126,7 +126,7 @@
                         </p>
 
                         <p class="text-center">
-                            <a href="" class="btn btn-primary btn-lg"><i class="icon icon-chevron-right"></i> Etude de financement</a>
+                            <a href="https://share.hsforms.com/1b4mPfDRnSTSyLmRUqq6OGA4f5r5" target="_blank" class="btn btn-primary btn-lg"><i class="icon icon-chevron-right"></i> Etude de financement</a>
                         </p>
 
                     </div>

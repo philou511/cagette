@@ -11,13 +11,13 @@
 					<i class="icon icon-alert"></i>
 				</div>					
 			::elseif(company.discovery==true)::
-			<a href="/">
+			<a href="/p/pro/upgrade">
 				<div class="pull-right iconBadge farmer" style="margin-top:8px" data-toggle="tooltip" title="Compte Découverte">
 					<i class="icon icon-farmer"></i>
 				</div>		
 			</a>
 			::else::
-			<a href="/">
+			<a href="/p/pro/upgrade">
 				<div class="pull-right iconBadge farmer-pro" style="margin-top:8px" data-toggle="tooltip" title="Compte Producteur illimité">
 					<i class="icon icon-farmer-pro"></i>
 				</div>
