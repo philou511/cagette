@@ -49,17 +49,17 @@
 										</a>&nbsp;
 									::end::
 									
-									<!--::if shopMode::
-										 even if the vendor is cpro, we can create a catalog for him/her 
+									::if shopMode::
+										 <!-- even if the vendor is cpro, we can create a catalog for him/her -->
 										<a href="/contract/insert/::v.id::" class="btn btn-default btn-sm">
 											<i class="icon icon-plus"></i> Nouveau catalogue
 										</a>
 									::else::
-										<!-- even if the vendor is cpro, we can create a catalog for him/her
+										<!-- even if the vendor is cpro, we can create a catalog for him/her-->
 										<a href="/contract/insertChoose/::v.id::" class="btn btn-default btn-sm">
 											<i class="icon icon-plus"></i> Nouveau catalogue
 										</a>
-									::end::-->
+									::end::
 							
 							::else::
 
