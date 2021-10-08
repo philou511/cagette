@@ -127,20 +127,24 @@
 			</td>
 			<td>
 				<div class="btn-group" role="group">
-					$$edit(::_("Edit")::,/product/edit/::p.id::)
+
+					::if(!isRemote)::
+						$$edit(::_("Edit")::,/product/edit/::p.id::)
+						
+						::if(p.imageid!=null)::
+							::set img = "\""+file(p.imageid)+"\""::
+						::else::
+							::set img = null::
+						::end::
 					
-					::if(p.imageid!=null)::
-						::set img = "\""+file(p.imageid)+"\""::
-					::else::
-						::set img = null::
+					
+						<a class="btn btn-default btn-sm" onclick="_.openImageUploader('product', ::p.id::, 300, 300)">
+							<i class="icon icon-image"></i> ::_("Picture")::
+						</a>
+						
+						
+						$$delete(::_("Del.")::,/product/delete/::p.id::?token=::token::)
 					::end::
-					
-					<a class="btn btn-default btn-sm" onclick="_.openImageUploader('product', ::p.id::, 300, 300)">
-						<i class="icon icon-image"></i> ::_("Picture")::
-					</a>
-					
-					
-					$$delete(::_("Del.")::,/product/delete/::p.id::?token=::token::)
 				</div>
 				<div id="imageUploader"></div>
 			</td>
@@ -150,6 +154,12 @@
 	</table>
 
 	</form>
+
+	::if(isRemote)::
+	<div class="alert alert-warning">
+		<i class="icon icon-info"></i> Ce catalogue n'est pas modifiable, c'est le producteur depuis son <b>compte producteur</b> qui peut le mettre à jour.
+	</div>
+	::end::
 	
 
 ::end::

@@ -8,7 +8,6 @@ using tools.ObjectListTool;
  */
 class Main extends controller.Controller
 {
-
 	var company : pro.db.CagettePro;
 	var vendor : db.Vendor;
 	
@@ -23,7 +22,6 @@ class Main extends controller.Controller
 			vendor.checkIsolate();
 			App.current.breadcrumb[0] = {id:"v"+vendor.id,name:"Cagette Pro : "+vendor.name,link:"/p/pro"};
 		}
-		
 	}
 	
 	/**
@@ -52,7 +50,6 @@ class Main extends controller.Controller
 		
 		//login to a vendor/cagettePro
 		if (args!=null && args.vendor!=null) {
-
 
 			var vendor = db.Vendor.manager.get(args.vendor,false);
 			if ( !pro.db.CagettePro.canLogIn(app.user,vendor) && !app.user.isAdmin()){
@@ -89,7 +86,7 @@ class Main extends controller.Controller
 		view.notifs = pro.db.PNotif.manager.search($company == this.company, {orderBy: -date}, false);
 		
 		//get client list
-		var remoteCatalogs = connector.db.RemoteCatalog.manager.search($remoteCatalogId in Lambda.map(company.getCatalogs(), function(x) return x.id), false); 
+		var remoteCatalogs = connector.db.RemoteCatalog.manager.search($remoteCatalogId in company.getCatalogs().map(x -> x.id), false); 
 		var clients = new Map<Int,Array<connector.db.RemoteCatalog>>();
 		for ( rc in Lambda.array(remoteCatalogs)){
 			var contract = rc.getContract();
@@ -142,10 +139,21 @@ class Main extends controller.Controller
 			return rc.getCatalog();			
 		};
 		
+		//find unlinked catalogs
+		var catalogs = vendor.getActiveContracts().array();
+		catalogs = catalogs.filter( c -> c.group.hasShopMode() );//remove CSA group
+		catalogs = catalogs.filter( c -> {
+			return remoteCatalogs.find( rc -> rc.getContract().id==c.id) == null;
+		}); //remove linked catalogs
+		view.unlinkedCatalogs = catalogs;
+
 		view.vendorId = vendor.id;
 	}
-	
-	
+
+	public function doCatalogLinker(d:haxe.web.Dispatch){
+		// checkCompanySelected();
+		d.dispatch(new pro.controller.CatalogLinker());
+	}
 	
 	@logged 
 	public function doNotif(d:haxe.web.Dispatch){

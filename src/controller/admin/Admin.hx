@@ -86,9 +86,9 @@ class Admin extends Controller {
 		d.dispatch(new controller.admin.Vendor());
 	}
 
-	function doPlugins(d:Dispatch) {
-		d.dispatch(new controller.admin.Plugins());
-	}
+	// function doPlugins(d:Dispatch) {
+	// 	d.dispatch(new controller.admin.Plugins());
+	// }
 
 	/**
 		export taxo as CSV

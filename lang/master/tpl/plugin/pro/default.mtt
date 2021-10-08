@@ -77,7 +77,7 @@
 		</div>
 	</div>
 	::end::
-	
+
 	<div class="article">
 		<h2 style="margin-top:0">Mes groupes</h2>
 
@@ -162,6 +162,24 @@
 				::end::	
 
 
+				::if(unlinkedCatalogs.length>0)::
+				
+					<div class="col-md-12">			
+						<div class="alert alert-warning">
+							<i class="icon icon-info"></i>
+							Vous avez <b>::unlinkedCatalogs.length:: catalogue(s)</b> créés dans des groupes et qui ne sont pas reliés à votre compte producteur. <br/>
+							<ul>
+								::foreach c unlinkedCatalogs::
+								<li>"::c.name::" dans le groupe <a href="/group/::c._group.id::" target="_blank">::c._group.name::</a></li>
+								::end::
+							</ul>
+								
+							<a href="/p/pro/catalogLinker" class="btn btn-default btn-sm">Cliquez-ici pour les relier</a>
+						</div>
+					</div>
+				
+				::end::	
+
 			
 			<div class="col-md-12">
 				<a href="/p/pro/group/duplicate" class="btn btn-default btn-sm">
@@ -180,6 +198,7 @@
 </div>
 
 <div class="col-md-4">
+
 	<div class=" article">
 		<h2 style="margin-top:0">Prochaines distributions</h2>	
 		::foreach d distribs::
