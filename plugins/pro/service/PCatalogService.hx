@@ -153,6 +153,74 @@ class PCatalogService{
 	}
 
 	/**
+		Link first Catalog in a cpro
+	**/
+	public static function linkRemoteCatalog(remoteCatalog:db.Catalog,cagettePro:pro.db.CagettePro){
+
+		var offers =[];
+
+		for (p in remoteCatalog.getProducts(false)) {
+			// product
+			var pp = new pro.db.PProduct();
+			pp.name = p.name;
+
+			// créé une ref si existe pas...
+			if (p.ref == null || p.ref == "") {
+				p.lock();
+				p.ref = pro.service.PProductService.generateRef(cagettePro);
+				p.update();
+			}
+			pp.ref = p.ref;
+			pp.image = p.image;
+			pp.desc = p.desc;
+			pp.company = cagettePro;
+			pp.unitType = p.unitType;
+			pp.active = p.active;
+			pp.organic = p.organic;
+			pp.txpProduct = p.txpProduct;
+			pp.bulk = p.bulk;
+			pp.multiWeight = p.multiWeight;
+			pp.variablePrice = p.variablePrice;
+			pp.insert();
+
+			// create one offer
+			var off = new pro.db.POffer();
+			off.price = p.price;
+			off.vat = p.vat;
+			off.ref = pp.ref + "-1";
+			off.product = pp;
+			off.quantity = p.qt;
+			off.active = p.active;
+			off.smallQt = p.smallQt;
+			off.insert();
+
+			offers.push(off);
+		}
+
+		//create pcatalog
+		var cat = new pro.db.PCatalog();
+		cat.name = "Mes produits en vente";
+		cat.company = cagettePro;
+		cat.visible = true;
+		var now = Date.now();
+		cat.startDate = new Date(now.getFullYear(),0,0,0,0,0);
+		cat.endDate = new Date(now.getFullYear()+10,0,0,0,0,0);
+		cat.insert();
+
+		//bind offers to this catalog
+		for(off in offers){
+			pro.db.PCatalogOffer.make(off,cat,off.price);
+		}
+
+		//create link to remote catalog
+		var rc = new connector.db.RemoteCatalog();
+		rc.id = remoteCatalog.id;
+		rc.remoteCatalogId = cat.id;
+		rc.insert();
+
+	}
+
+	/**
 	 *  SYnc categs (TERRA LIBRA)
 	 */
 	/*public static function syncCategs(p:db.Product){

@@ -1,4 +1,5 @@
 package pro.controller;
+import service.VendorService;
 import Common;
 using tools.ObjectListTool;
 
@@ -139,14 +140,9 @@ class Main extends controller.Controller
 			return rc.getCatalog();			
 		};
 		
-		//find unlinked catalogs
-		var catalogs = vendor.getActiveContracts().array();
-		catalogs = catalogs.filter( c -> c.group.hasShopMode() );//remove CSA group
-		catalogs = catalogs.filter( c -> {
-			return remoteCatalogs.find( rc -> rc.getContract().id==c.id) == null;
-		}); //remove linked catalogs
-		view.unlinkedCatalogs = catalogs;
-
+		//find unlinked catalogs		
+		view.unlinkedCatalogs = VendorService.getUnlinkedCatalogs(company);
+		
 		view.vendorId = vendor.id;
 	}
 

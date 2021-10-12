@@ -162,7 +162,8 @@
 				::end::	
 
 
-				::if(unlinkedCatalogs.length>0)::
+				
+				::if(unlinkedCatalogs.length>0 && company.getProducts().length>0)::
 				
 					<div class="col-md-12">			
 						<div class="alert alert-warning">
@@ -170,7 +171,7 @@
 							Vous avez <b>::unlinkedCatalogs.length:: catalogue(s)</b> créés dans des groupes et qui ne sont pas reliés à votre compte producteur. <br/>
 							<ul>
 								::foreach c unlinkedCatalogs::
-								<li>"::c.name::" dans le groupe <a href="/group/::c._group.id::" target="_blank">::c._group.name::</a></li>
+								<li><b>::c.name::</b> dans le groupe <a href="/group/::c._group.id::" target="_blank">::c._group.name::</a></li>
 								::end::
 							</ul>
 								

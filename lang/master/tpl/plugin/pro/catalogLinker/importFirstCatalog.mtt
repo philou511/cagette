@@ -1,0 +1,52 @@
+::use 'plugin/pro/design.mtt'::
+
+<div class="col-md-12">
+	<div class="article">
+		<h2 style="margin-top:0">Récupérer un catalogue</h2>
+
+            <p>
+                Choisissez le catalogue que vous souhaitez récupérer dans votre compte producteur :
+            </p> 
+            
+            
+                ::foreach c unlinkedCatalogs::
+
+                <div style="margin:auto;width:500px;margin-bottom: 64px;" class="text-center">
+                    <table class="table table-bordered">
+                        <tr class="darkhead">
+                            <td colspan="3">
+                                <b>::c.name::</b><br/>
+                                dans le groupe <b>::c._group.name::</b>
+                            </td>
+                        </tr>
+                        
+                        ::foreach p c.getProducts(true)::
+                        <tr>
+                            <td><img src="::p.getImage()::" style="width:32px;height:32px;" />	</td>
+                            <td>::p.getName()::</td>
+                            <td>::formatNum(p.price)::&nbsp;::currency()::</td>					
+                        </tr>
+                        ::end::
+                    </table>
+                    <a href="/p/pro/catalogLinker/importFirstCatalog/::c.id::" class="btn btn-primary">Récupérer ce catalogue</a>
+                </div>
+                
+                    
+                
+                ::end::
+            
+            
+	</div>		
+	
+</div>
+
+
+::end::
+
+
+
+	
+	
+	
+	
+	

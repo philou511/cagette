@@ -324,4 +324,16 @@ class VendorService{
 		return json;
 	}
 
+	public static function getUnlinkedCatalogs(company:pro.db.CagettePro){
+
+		var remoteCatalogs = connector.db.RemoteCatalog.manager.search($remoteCatalogId in company.getCatalogs().map(x -> x.id), false); 
+		var vendor = company.vendor;
+		var catalogs = vendor.getActiveContracts().array();
+		catalogs = catalogs.filter( c -> c.group.hasShopMode() );//remove CSA group
+		catalogs = catalogs.filter( c -> {
+			return remoteCatalogs.find( rc -> rc.getContract().id==c.id) == null;
+		}); //remove linked catalogs
+		return catalogs;
+	}
+
 }
