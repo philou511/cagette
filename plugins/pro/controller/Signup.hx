@@ -29,8 +29,40 @@ class Signup extends controller.Controller
 		}*/
 			
 		if(app.user!=null){
-			throw Redirect("/p/pro/signup/farmInfos");
+			throw Redirect("/p/pro/signup/discovery");
 		}
+	}
+
+	@logged
+	@tpl('plugin/pro/signup/discovery.mtt')
+	public function doDiscovery(?group:db.Group){
+		//checks
+		//has access to a cpro
+		var uc = PUserCompany.manager.search($user ==app.user);
+		if( uc.length>0){
+			throw Error("/","Vous avez déjà accès à un compte Cagette Pro : "+uc.map(c -> return c.company.vendor.name).join(', '));
+		}
+
+		//has same mail than a vendor
+		var vendor : db.Vendor = Vendor.manager.select($email == app.user.email || $email == app.user.email2,true);
+		if( vendor!=null ){
+
+			//is this vendor cpro
+			if(vendor.getCpro()!=null){
+				throw Error("/","Vous avez déjà accès à un compte Cagette Pro");
+			}
+
+			view.vendorId = vendor.id;
+		}
+		
+		view.userName = app.user.getName();
+		if (group!=null) {
+			view.groupName = group.name;
+			view.groupId = group.id;
+		}
+
+		// TODO :
+		// view.invitationSenderId = 
 	}
 
 	@logged
