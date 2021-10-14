@@ -7,7 +7,7 @@
 			document.addEventListener("DOMContentLoaded", function(event) {
 				neo.createNeoModule("neo-container", "vendorSignUp", {
 						name: "::userName::",
-                        groupName: "::groupName::",
+                        groupName: ::if groupName!=null:: "::groupName::" ::else:: null ::end::,
 						vendorId: ::vendorId::,
 						invitationSenderId: ::invitationSenderId::
 					});
