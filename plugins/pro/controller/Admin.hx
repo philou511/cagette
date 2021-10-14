@@ -1952,8 +1952,8 @@ class Admin extends controller.Controller {
 
 		Sys.print("</table>");
 
-
-
-
 	}
+
+	@admin @tpl('plugin/pro/admin/certification.mtt')
+	function doCertification() { }
 }

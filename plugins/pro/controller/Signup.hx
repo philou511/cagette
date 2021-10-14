@@ -29,6 +29,7 @@ class Signup extends controller.Controller
 		}*/
 			
 		if(app.user!=null){
+			// TODO : pass groupId if there is one
 			throw Redirect("/p/pro/signup/discovery");
 		}
 	}
