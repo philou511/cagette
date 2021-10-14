@@ -194,13 +194,39 @@ document.querySelector("#validate").onclick = function(){
             offerMsg(off.id,off.error);
         }else{
             offerMsg(off.id,null);
-        }
-        
+        }        
     }    
-    
+
+    //can we submit ?
+    var submit = true;
+    for( off of offers ){        
+        if(off.error!=null){
+            console.log("error on off "+off.id+", we cant submit");
+            submit = false;
+            break;
+        }
+    }
+    if(errors.length>0){
+        console.log("there is errors, we cant submit");
+        submit = false;
+    } 
+
+    if(submit==true){
+        console.log("SUBMIT !");
+
+        var req = "?";
+        var params = [];
+        for( k of linkage.keys()){
+            params.push( "p"+k+"="+linkage.get(k) );
+        }
+        params.push("token=::token::");
+        req += params.join("&");
+
+        document.location.href = "/p/pro/catalogLinker/submitLinkage/::catalog.id::"+req;
 
 
-    // msg(JSON.stringify(linkage));
+    }
+
 };   
 
 //]]>

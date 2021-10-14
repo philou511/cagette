@@ -4,40 +4,33 @@
 	<div class="article">
 		<h2 style="margin-top:0">Relier des catalogues</h2>
 
-            <p>
+        <p class="text-center" style="margin:32px;font-size:1.2em;">
                 Choisissez le catalogue que vous souhaitez récupérer dans votre compte producteur :
-            </p> 
+            </p>
             
-            
-                ::foreach c unlinkedCatalogs::
-
-                <div style="margin:auto;width:500px;margin-bottom: 64px;" class="text-center">
-                    <table class="table table-bordered">
-                        <tr class="darkhead">
-                            <td colspan="3">
-                                <b>::c.name::</b><br/>
-                                dans le groupe <b>::c._group.name::</b>
-                            </td>
-                        </tr>
-                        
-                        ::foreach p c.getProducts(true)::
-                        <tr>
-                            <td><img src="::p.getImage()::" style="width:32px;height:32px;" />	</td>
-                            <td>::p.getName()::</td>
-                            <td>::formatNum(p.price)::&nbsp;::currency()::</td>					
-                        </tr>
-                        ::end::
-                    </table>
-                    <a href="/p/pro/catalogLinker/link/::c.id::" class="btn btn-primary">Relier ce catalogue</a>
-                </div>
-                
+            ::foreach c unlinkedCatalogs::
+            <div style="margin:auto;width:500px;margin-bottom: 64px;" class="text-center">
+                <table class="table table-bordered">
+                    <tr class="darkhead">
+                        <td colspan="3">
+                            <b>::c.name::</b><br/>
+                            dans le groupe <b>::c._group.name::</b>
+                        </td>
+                    </tr>
                     
-                
-                ::end::
-            
+                    ::foreach p c.getProducts(true)::
+                    <tr>
+                        <td><img src="::p.getImage()::" style="width:32px;height:32px;" />	</td>
+                        <td>::p.getName()::</td>
+                        <td>::formatNum(p.price)::&nbsp;::currency()::</td>					
+                    </tr>
+                    ::end::
+                </table>
+                <a href="/p/pro/catalogLinker/selectPcatalog/::catalog.id::/::c.id::" class="btn btn-primary">Relier à ce catalogue</a>
+            </div>
+            ::end::
             
 	</div>		
-	
 </div>
 
 
