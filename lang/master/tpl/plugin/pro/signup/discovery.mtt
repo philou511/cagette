@@ -1,0 +1,18 @@
+::use 'design.mtt'::
+
+	<div>
+		<div id="neo-container" style="margin-bottom: 24px;"></div>
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function(event) {
+				neo.createNeoModule("neo-container", "vendorSignUp", {
+						name: "::userName::",
+                        groupName: ::if groupName!=null:: "::groupName::" ::else:: null ::end::,
+						vendorId: ::vendorId::,
+						invitationSenderId: ::invitationSenderId::
+					});
+			});
+		</script>
+	</div>
+
+::end::
