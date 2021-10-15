@@ -222,7 +222,7 @@ document.querySelector("#validate").onclick = function(){
         params.push("token=::token::");
         req += params.join("&");
 
-        document.location.href = "/p/pro/catalogLinker/submitLinkage/::catalog.id::"+req;
+        document.location.href = "/p/pro/catalogLinker/submitLinkage/::catalog.id::/::pcatalog.id::"+req;
 
 
     }

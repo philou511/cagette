@@ -26,7 +26,7 @@
                     </tr>
                     ::end::
                 </table>
-                <a href="/p/pro/catalogLinker/selectPcatalog/::catalog.id::/::c.id::" class="btn btn-primary">Relier à ce catalogue</a>
+                <a href="/p/pro/catalogLinker/selectPcatalog/::c.id::" class="btn btn-primary">Relier ce catalogue</a>
             </div>
             ::end::
             

@@ -1,4 +1,6 @@
 package pro.controller;
+import pro.service.PCatalogService;
+import pro.db.POffer;
 import connector.db.RemoteCatalog;
 import service.VendorService;
 import Common;
@@ -66,13 +68,40 @@ class CatalogLinker extends controller.Controller
 			for( k in app.params.keys()){
 				if(k.substr(0,1)=="p"){
 					linkage.push({
-						productId:k.substr(1),
-						offerId:app.params.get(k)
+						productId:k.substr(1).parseInt(),
+						offerId:app.params.get(k).parseInt()
 					});
 				}
 			}
 
-			trace(linkage);
+			//product linkage is made thru refs
+			for(l in linkage){
+
+				var offer = POffer.manager.get(l.offerId,true);
+				var product = db.Product.manager.get(l.productId,true);
+
+				//need ref
+				if(offer.ref==null || offer.ref==""){
+					offer.ref = pro.service.PProductService.generateRef(company);
+					offer.update();
+				}
+
+				product.ref = offer.ref;
+				product.update();
+
+			}
+
+			//create link to remote catalog
+			var rc = new connector.db.RemoteCatalog();
+			rc.id = remoteCatalog.id;
+			rc.remoteCatalogId = pcatalog.id;
+			rc.insert();
+
+
+			//make a sync 
+			PCatalogService.sync(pcatalog.id);
+
+			throw Ok("/p/pro/catalog" , "Le catalogue a été correctement relié");
 		}
 
 	}
