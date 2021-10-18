@@ -1,20 +1,20 @@
 package pro.controller;
 
-import sugoi.tools.TransactionWrappedTask;
 import crm.CrmService;
-import sugoi.form.elements.Html;
-import sugoi.form.elements.StringInput;
-import pro.db.VendorStats;
-import sugoi.form.elements.CheckboxGroup;
-import sugoi.form.elements.StringSelect;
-import sugoi.Web;
+import db.Vendor;
+import form.CagetteForm;
 import haxe.Json;
+import pro.db.PUserCompany;
+import pro.db.VendorStats;
+import service.VendorService;
+import sugoi.Web;
 import sugoi.apis.linux.Curl;
 import sugoi.form.elements.Checkbox;
-import db.Vendor;
-import pro.db.PUserCompany;
-import form.CagetteForm;
-import service.VendorService;
+import sugoi.form.elements.CheckboxGroup;
+import sugoi.form.elements.Html;
+import sugoi.form.elements.StringInput;
+import sugoi.form.elements.StringSelect;
+import sugoi.tools.TransactionWrappedTask;
 
 class Signup extends controller.Controller
 {
@@ -45,7 +45,7 @@ class Signup extends controller.Controller
 		}
 
 		//has same mail than a vendor
-		var vendor : db.Vendor = Vendor.manager.select($email == app.user.email || $email == app.user.email2,true);
+		var vendor : db.Vendor = Vendor.manager.select($email != null && ($email == app.user.email || $email == app.user.email2),true);
 		if( vendor!=null ){
 
 			//is this vendor cpro
