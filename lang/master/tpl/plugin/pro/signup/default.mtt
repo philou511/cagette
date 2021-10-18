@@ -7,7 +7,7 @@
 		<script language="javascript">
            
             document.addEventListener("DOMContentLoaded", function(event) {
-                _.loginBox('/p/pro/signup/farmInfos',"::getSid()::",'Que vous soyez consommateur et/ou producteur, vous pouvez utiliser la même adresse email pour vous identifier.\n• Si vous avez déjà un ompte utilisateur, identifiez-vous.\n• Si c\'est votre première visite sur Cagette.net, inscrivez-vous.',true);	
+                _.loginBox('/p/pro/signup/discovery',"::getSid()::",'Que vous soyez consommateur et/ou producteur, vous pouvez utiliser la même adresse email pour vous identifier.\n• Si vous avez déjà un ompte utilisateur, identifiez-vous.\n• Si c\'est votre première visite sur Cagette.net, inscrivez-vous.',true);	
             });           
             
         </script>
