@@ -183,7 +183,7 @@ class Product extends Controller
 	public function doExport(c:db.Catalog){
 
 		var data = new Array<Dynamic>();
-		for (p in c.getProducts()) {
+		for (p in c.getProducts(false)) {
 			data.push({
 				"id": p.id,
 				"name": p.name,
