@@ -165,11 +165,11 @@ class PCatalogService{
 			pp.name = p.name;
 
 			// créé une ref si existe pas...
-			if (p.ref == null || p.ref == "") {
+			// if (p.ref == null || p.ref == "") {
 				p.lock();
 				p.ref = pro.service.PProductService.generateRef(cagettePro);
 				p.update();
-			}
+			// }
 			pp.ref = p.ref;
 			pp.image = p.image;
 			pp.desc = p.desc;

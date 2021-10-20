@@ -1,4 +1,5 @@
 package pro.controller;
+import pro.db.PCatalog;
 import pro.service.PCatalogService;
 import pro.db.POffer;
 import connector.db.RemoteCatalog;
@@ -81,10 +82,10 @@ class CatalogLinker extends controller.Controller
 				var product = db.Product.manager.get(l.productId,true);
 
 				//need ref
-				if(offer.ref==null || offer.ref==""){
+				// if(offer.ref==null || offer.ref==""){
 					offer.ref = pro.service.PProductService.generateRef(company);
 					offer.update();
-				}
+				// }
 
 				product.ref = offer.ref;
 				product.update();
@@ -103,6 +104,74 @@ class CatalogLinker extends controller.Controller
 
 			throw Ok("/p/pro/catalog" , "Le catalogue a été correctement relié");
 		}
+
+	}
+
+
+	/**
+		rest service
+	**/
+	function doCreateNewOffer(product:db.Product,pcatalog:pro.db.PCatalog){
+
+		if(product==null || pcatalog==null){
+			json({
+				error : "mauvais produit ou mauvais catalogue"
+			});
+			return;
+		}
+
+		if( company.getActiveCatalogs().find( cat -> return cat.id==pcatalog.id )==null ){
+			json({
+				error : "Ce catalogue ne vous appartient pas"
+			});
+			return;
+		}
+
+		//create product+offer
+		var pp = new pro.db.PProduct();
+		var p = product;
+		pp.name = p.name;
+		// créé une ref si existe pas...
+		// if (p.ref == null || p.ref == "") {
+			p.lock();
+			p.ref = pro.service.PProductService.generateRef(company);
+			p.update();
+		// }
+		pp.ref = p.ref;
+		pp.image = p.image;
+		pp.desc = p.desc;
+		pp.company = this.company;
+		pp.unitType = p.unitType;
+		pp.active = p.active;
+		pp.organic = p.organic;
+		pp.txpProduct = p.txpProduct;
+		pp.bulk = p.bulk;
+		pp.multiWeight = p.multiWeight;
+		pp.variablePrice = p.variablePrice;
+		pp.insert();
+
+		// create one offer
+		var off = new pro.db.POffer();
+		off.price = p.price;
+		off.vat = p.vat;
+		off.ref = pp.ref + "-1";
+		off.product = pp;
+		off.quantity = p.qt;
+		off.active = p.active;
+		off.smallQt = p.smallQt;
+		off.insert();
+	
+		pro.db.PCatalogOffer.make(off,pcatalog,p.price);
+
+		json({
+			success:true,
+			offer : {
+				name: off.getName(),
+				id: off.id,
+				price: off.price
+			}
+		});
+
 
 	}
 
