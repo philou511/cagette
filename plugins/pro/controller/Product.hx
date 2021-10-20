@@ -32,25 +32,12 @@ class Product extends controller.Controller
 		view.products = products;
 		
 		
-		//global check on refs unicity
-		var refs = new Map<String,Int>();
-		for ( p in products ){
-			for ( o in p.getOffers(false)){
-				var i = refs.get(o.ref);
-				if (i == null){
-					refs.set(o.ref, 1);
-				}else{
-					refs.set(o.ref, i + 1);
-				}				
-			}
+		var duplicateRefs = pro.db.POffer.getRefDuplicates(company);
+		if(duplicateRefs.length>0){
+			App.current.session.addMessage("Attention, plusieurs offres ont la même référence : <b>"+duplicateRefs.join(" ")+"</b>. ",true);
 		}
-		for ( k in refs.keys()){
-			if(refs.get(k)>1) App.current.session.addMessage("Attention, plusieurs offres ont la même référence : "+k+". ",true);
-		}
-
-
-		view.unlinkedCatalogs = service.VendorService.getUnlinkedCatalogs(company);
 		
+		view.unlinkedCatalogs = service.VendorService.getUnlinkedCatalogs(company);
 		
 		checkToken();
 	}

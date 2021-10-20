@@ -158,7 +158,7 @@ class Company extends controller.Controller
 	/**
 		1- define the vendor
 	**/
-	@tpl("plugin/pro/form.mtt")
+	/*@tpl("plugin/pro/form.mtt")
 	function doDefineVendor(){
 
 		if(company.getVendors().length >= PVendorCompany.MAX_VENDORS){
@@ -188,13 +188,13 @@ class Company extends controller.Controller
 		}
 
 		view.form = f;
-	}
+	}*/
 
 	/**
 	  2- create vendor
 	**/
 	@tpl("plugin/pro/form.mtt")
-	public function doInsertVendor(email:String,name:String) {
+	/*public function doInsertVendor(email:String,name:String) {
 				
 		var vendor = new db.Vendor();
 		var form = VendorService.getForm(vendor);
@@ -220,20 +220,20 @@ class Company extends controller.Controller
 		view.title = t._("Key-in a new vendor");
 		//view.text = t._("We will send him/her an email to explain that your group is going to organize orders for him very soon");
 		view.form = form;
-	}
+	}*/
 
 
 	/**
 	3 - link vendor to this cagettePro
 	**/	
-	public function doLinkVendor(vendor:db.Vendor){
+/*	public function doLinkVendor(vendor:db.Vendor){
 		view.nav.push("vendors");
 		
 		pro.db.PVendorCompany.make(vendor,company);
 
 		throw Ok("/p/pro/company/vendors", "Nouveau producteur référencé");
 		
-	}
+	}*/
 	
 	public function doDeleteVendor(v:db.Vendor){
 		

@@ -81,11 +81,11 @@ class CatalogLinker extends controller.Controller
 				var offer = POffer.manager.get(l.offerId,true);
 				var product = db.Product.manager.get(l.productId,true);
 
-				//need ref
-				// if(offer.ref==null || offer.ref==""){
+				//besoin d'une ref : en générer une si null ou si doublons dans cette base de produits
+				if(offer.ref==null || offer.ref=="" || pro.db.POffer.getRefDuplicates(company).length>0){
 					offer.ref = pro.service.PProductService.generateRef(company);
 					offer.update();
-				// }
+				}
 
 				product.ref = offer.ref;
 				product.update();
