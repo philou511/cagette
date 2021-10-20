@@ -177,7 +177,16 @@ class POffer extends Object
 	
 	public function getImage() {
 		if (imageId == null) {
-			return this.product.getImage();
+			if(this.product.getImageId() != null){
+				return this.product.getImage();
+			}else{				
+				if (this.product.txpProduct != null){				
+					return "/img/taxo/grey/" + this.product.txpProduct.subCategory.category.image + ".png";
+				}else{
+					return "/img/taxo/grey/legumes.png";
+				}	
+			}
+			
 		}else {
 			return App.current.view.file(imageId);
 		}

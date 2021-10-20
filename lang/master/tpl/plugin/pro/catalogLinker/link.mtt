@@ -11,10 +11,10 @@
 		<h2 style="margin-top:0">Relier des catalogues</h2>
 
         <p>
-            Afin de relier le catalogue de droite à votre catalogue producteur (à gauche), vous devez établir les correspondances de produit d'un catalogue à l'autre.
+            Afin de relier le catalogue de droite à votre catalogue producteur à gauche, vous devez établir les correspondances de produit d'un catalogue à l'autre.
         </p>
             
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="linkageTable">
             <tr style="text-decoration: underline;">
                 <td class="text-center">Catalogue de votre compte producteur :</td>
                 <td class="text-center">Catalogue à relier : </td>
@@ -43,13 +43,13 @@
                 ::foreach catOff pp.offers::
                 <tr>
                     <td style="padding-left: 48px;">
-                        ::catOff._offer.getName()::   - ::catOff.price:: &euro; (#::catOff._offer.id::)
+                        ::catOff._offer.getName()::   - ::catOff.price:: &euro;
                     </td>
                     <td class="grey">
                         <select name="offer::catOff._offer.id::" id="offer::catOff._offer.id::" class="form-control" size="1">
                             <option value="0" selected="">-</option>
                             ::foreach p catalog.getProducts(true)::
-                            <option value="::p.id::" >::p.getName():: - ::p.price:: &euro; (#::p.id::)</option>
+                            <option value="::p.id::" >::p.getName():: - ::p.price:: &euro;</option>
                             ::end::                    
                         </select>
                     </td>
@@ -63,11 +63,10 @@
 
         </table>
 
-        <div class="alert alert-warning" id="msg" style="width:75%;margin:auto;margin-bottom:24px;display: none;">
+        <div class="alert alert-danger" id="msg" style="width:75%;margin:auto;margin-bottom:24px;display: none;">
             
         </div>
-        <p class="text-center">
-            
+        <p class="text-center">            
             <a id="validate" class="btn btn-primary btn-lg">Valider</a>
         </p>
             
@@ -77,9 +76,6 @@
 
 <script>
 //<![CDATA[
-
-
-
 
 //populate offers list
 var offers = [];
@@ -125,9 +121,66 @@ var findOffer = function(id){
     return offers.find(function(p){return p.id==id});
 };
 
-// for(offer of offers){
-//     document.querySelector("#offer"+offer.id).onchange = chooseProduct;        
-// }
+
+var onChooseProduct = function(e){
+
+    var productId = e.target.value;
+    var offerId = e.target.name.substr(5);
+    if(productId==0) {
+        offerMsg(offerId,null);
+        return;
+    }    
+    
+    console.log("offer "+offerId);
+    console.log("product "+productId);
+    var product = findProduct(productId);
+    var offer = findOffer(offerId);
+
+    if(product.price != offer.price){
+        offerMsg(offerId,"Attention les prix ne concordent pas !");
+    }else{
+        offerMsg(offerId,null);
+    }
+
+};
+
+//create new offer in pcatalog from product via REST
+var createNewOffer = function(productId){
+    var pcatalogId = ::pcatalog.id::;
+    console.log("create offer for "+productId+" in pcatalog "+pcatalogId);
+
+    let req = new Request('/p/pro/catalogLinker/createNewOffer/'+productId+'/'+pcatalogId);
+
+    fetch(req).then(function(res){
+        console.log(res);
+        if (!res.ok) {
+            throw new Error(`erreur HTTP! statut: ${res.status}`);
+        }
+        return res.json();
+    }).then(function(res){
+        
+        console.log(res);
+        let offer = res.offer;
+        offers.push(offer);
+
+        var rowToClone = document.querySelectorAll("#linkageTable tr")[3];
+        var newRow = rowToClone.cloneNode(true);
+        newRow.querySelectorAll('td')[0].innerHTML = offer.name+" - "+offer.price+" &euro;";
+        let select = newRow.querySelector('td>select');
+        select.name = "offer"+offer.id;
+        select.id = "offer"+offer.id;        
+        select.value = productId;
+        document.querySelector("#linkageTable").appendChild(newRow);
+        
+    }).catch(function(err){
+        msg(err.message);
+    });
+    
+};
+
+for(offer of offers){
+    document.querySelector("#offer"+offer.id).onchange = onChooseProduct;        
+}
 
 document.querySelector("#validate").onclick = function(){
     
@@ -156,7 +209,7 @@ document.querySelector("#validate").onclick = function(){
             console.log("linkage of key "+k+" is broken");
             off.error = null;
         }else if(p.price != off.price){
-           off.error =  "Attention les prix ne concordent pas !";
+        //    off.error =  "Attention les prix ne concordent pas !";
         }else{
             console.log("no prob on key "+k);
             off.error = null;
@@ -177,7 +230,7 @@ document.querySelector("#validate").onclick = function(){
             // }            
         //}
         if(linkage.get(String(p.id))==null){
-            errors.push("Le produit <b>"+p.name+"</b> n'a été relié à une offre de votre catalogue");
+            errors.push("<p>Le produit <b>"+p.name+"</b> n'a pas été relié à une offre de votre catalogue.<br/><a href='#' onclick='createNewOffer("+p.id+")' class='btn btn-default btn-sm'>Ajouter ce produit à mon catalogue</a></p>");
             
         }
     }
@@ -189,18 +242,44 @@ document.querySelector("#validate").onclick = function(){
     }
 
     //display offer errors
-    for( off of offers ){        
-        if(off.error!=null){
-            offerMsg(off.id,off.error);
-        }else{
-            offerMsg(off.id,null);
+    // for( off of offers ){        
+    //     if(off.error!=null){
+    //         offerMsg(off.id,off.error);
+    //     }else{
+    //         offerMsg(off.id,null);
+    //     }        
+    // }    
+
+    //can we submit ?
+    var submit = true;
+    // for( off of offers ){        
+    //     if(off.error!=null){
+    //         console.log("error on off "+off.id+", we cant submit");
+    //         submit = false;
+    //         break;
+    //     }
+    // }
+    if(errors.length>0){
+        console.log("there is errors, we cant submit");
+        submit = false;
+    } 
+
+    if(submit==true){
+        console.log("SUBMIT !");
+
+        var req = "?";
+        var params = [];
+        for( k of linkage.keys()){
+            params.push( "p"+k+"="+linkage.get(k) );
         }
-        
-    }    
-    
+        params.push("token=::token::");
+        req += params.join("&");
+
+        document.location.href = "/p/pro/catalogLinker/submitLinkage/::catalog.id::/::pcatalog.id::"+req;
 
 
-    // msg(JSON.stringify(linkage));
+    }
+
 };   
 
 //]]>

@@ -266,8 +266,8 @@
 				if(localStorage.nouvelleReglesCount==null ){
 					localStorage.nouvelleReglesCount=0;
 				}
-				if(localStorage.nouvelleReglesCount < 4 ){
-					_.overlay("/data/nouvellesregles2021-2.html","Nouvelles règles à partir du 2 novembre 2021",true);
+				if(localStorage.nouvelleReglesCount < 10 ){
+					_.overlay("/data/nouvellesregles2021-3.html","Nouvelles règles à partir du 2 novembre 2021",true);
 					localStorage.nouvelleReglesCount++;
 				}
 				

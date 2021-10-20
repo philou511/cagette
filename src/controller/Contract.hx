@@ -73,7 +73,7 @@ class Contract extends Controller
 
 		if(f.isValid()){
 
-			if(f.getValueOf('name')==null && f.getValueOf("geoloc")==false && f.getValueOf("profession")==null){
+			if(f.getValueOf('name')==null && (f.getElement("geoloc")==null || f.getValueOf("geoloc")==false) && f.getValueOf("profession")==null){
 				throw Error('/contract/defineVendor/','Vous devez au moins rechercher par nom ou par profession');
 			}
 			
@@ -81,7 +81,7 @@ class Contract extends Controller
 			var vendors = service.VendorService.findVendors( {
 				name:f.getValueOf('name'),
 				email:null/*f.getValueOf('email')*/,
-				geoloc : f.getValueOf("geoloc"),
+				geoloc : f.getElement("geoloc")==null ? false : f.getValueOf("geoloc"),
 				profession:f.getValueOf("profession"),
 				fromLng: if(place!=null) place.lng else null, 
 				fromLat: if(place!=null) place.lat else null,
