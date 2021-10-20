@@ -6,8 +6,10 @@ import sys.db.Types;
 import Common;
 
 enum DisabledReason{
-	IncompleteLegalInfos; //incomplete legal infos
+	IncompleteLegalInfos; 	//incomplete legal infos
 	NotCompliantWithPolicy; //not compliant with policy (charte des producteurs)
+	Banned; //banned by network administrateurs
+	TurnoverLimitReached; //turnover limit reached
 }
 
 /**
@@ -299,6 +301,8 @@ class Vendor extends Object
 			case null : null;
 			case DisabledReason.IncompleteLegalInfos : "Informations légales incomplètes. Complétez vos informations légales pour débloquer le compte. (SIRET,capital social,numéro de TVA)";
 			case DisabledReason.NotCompliantWithPolicy : "Producteur incompatible avec la charte producteur de Cagette.net";
+			case DisabledReason.Banned : "Producteur bloqué par les administrateurs";
+			case DisabledReason.TurnoverLimitReached : "Ce producteur a atteind sa limite de chiffre d'affaire annuel";
 		};
 	}
 

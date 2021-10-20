@@ -68,20 +68,15 @@
 		$$ga()
 		  
 		<script type="text/javascript"> 
-		
-			
-		  
 			//Tooltips & popovers
-			document.addEventListener("DOMContentLoaded", function(event) {
-			  
+			/*
+			document.addEventListener("DOMContentLoaded", function(event) {			  
 				//tutorials
-				::if tuto!=null::
-				
+				::if tuto!=null::		
 				_.getTuto("::tuto.name::",::tuto.step::);
-			
-				::end::
-			  
+				::end::			  
 			})
+			*/
 		</script>
 
 		::foreach script getNeoModuleScripts()::

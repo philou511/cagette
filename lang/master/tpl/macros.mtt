@@ -1,5 +1,37 @@
 <macros>
 
+	<macro name="vendorIcon(vendor)">
+
+		::if(vendor.isDisabled())::
+			<!--disabled-->						
+			<div class="iconBadge danger" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Compte bloqué : ::vendor.getDisabledReason()::">
+				<i class="icon icon-alert"></i>
+			</div>
+		::else::
+			::set cpro = vendor.getCpro()::
+
+			::if(cpro!=null)::
+				::if(cpro.discovery)::
+				<!--découverte-->
+				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Compte Découverte">
+					<i class="icon icon-farmer"></i>
+				</div>
+				::else::
+				<!-- compte producteur -->
+				<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Compte producteur illimité">
+					<i class="icon icon-farmer-pro"></i>
+				</div>
+				::end::
+			
+			::else::
+				<!--invité-->
+				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur invité">
+					<i class="icon icon-farmer"></i>
+				</div>
+			::end::
+		::end::
+	</macro>
+
 	<macro name="jsConfirm(?text)">confirm(::if text==null::'Confirmer cette action ?'::else::'::escapeJS(text)::'::end::)</macro>
 	
 	<macro name="confirm(?text)" onclick="return $$jsConfirm(::text::)"/>
@@ -516,7 +548,7 @@
 
 	<macro name="vendorType(s)">		
 		::if(s==0)::
-			Cagette Pro				
+			Compte Producteur illimité			
 		::elseif(s==1)::
 			Gratuit
 		::elseif(s==2)::
@@ -528,9 +560,7 @@
 		::elseif(s==5)::
 			Cagette Pro pédagogique
 		::elseif(s==6)::
-			Cagette Pro inscrit à une formation
-		::elseif(s==7)::
-			Cagette Découverte
+			Compte Découverte		
 		::end::
 	</macro>
     

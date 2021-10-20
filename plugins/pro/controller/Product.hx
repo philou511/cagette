@@ -47,6 +47,9 @@ class Product extends controller.Controller
 		for ( k in refs.keys()){
 			if(refs.get(k)>1) App.current.session.addMessage("Attention, plusieurs offres ont la même référence : "+k+". ",true);
 		}
+
+
+		view.unlinkedCatalogs = service.VendorService.getUnlinkedCatalogs(company);
 		
 		
 		checkToken();

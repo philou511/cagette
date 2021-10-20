@@ -14,20 +14,12 @@
 
 				::foreach v vendors::
 				<div class="col-md-4 col-sm-6">
-					::set stats = v.getStats()::
-					::set cpro = v.getCpro()::
+					
 
-					::if stats.type==0::
-					<div class="blockIconBadge" style="color:#84BD55;border-color:#84BD55" data-toggle="tooltip" title="Compte Producteur illimité">
-						<i class="icon icon-farmer-pro"></i>
-					</div>
-					::else::		
-					<div class="blockIconBadge" style="color:#f1d577;border-color:#f1d577" data-toggle="tooltip" title="Producteur invité">
-						<i class="icon icon-farmer"></i>
-					</div>
-					::end::
-
-					<div class="boxed" style="height:300px">					
+					<div class="boxed" style="height:300px">	
+						
+						
+						
 						<div class="row">
 							<div class="col-md-4">													
 								<div class="productImg xl" style="background-image:url('::v.getImage()::');"></div>								
@@ -37,10 +29,10 @@
 									<h4>
 										<a href="::v.getLink()::" target="_blank">::v.name::</a>
 									</h4>
-									::v.zipCode:: ::v.city::
-									<p ::cond(v.desc!=null):: style="color:#999;font-size:0.9em;">
-										::short(v.desc,80)::
+									<p>
+										$$vendorIcon(::v::) ::v.zipCode:: ::v.city::
 									</p>
+									
 							</div>
 						</div>
 						

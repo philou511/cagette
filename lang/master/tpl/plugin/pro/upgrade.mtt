@@ -1,0 +1,140 @@
+::use 'plugin/pro/design.mtt'::
+
+::if(vendor.isDisabled())::
+	
+		<div class="col-md-12">			
+			<div class="alert alert-danger">
+				<i class="icon icon-alert"></i>
+				Ce compte producteur est bloqué et n'accepte plus de commandes. 
+				Raison : <b>::vendor.getDisabledReason()::</b>
+			</div>
+		</div>
+	
+::end::
+
+<div class="col-md-12">
+	<div class=" article">
+		<h2 style="margin-top:0">Votre statut : Compte découverte</h2>	
+		<p>
+            ici graphique avec C.A + limite en rouge
+        </p>
+	</div>
+</div>
+
+<style>
+    .priceBox{
+        font-size: 1.4em;
+        background-color: #f5f5f5;
+        padding: 8px 12px;
+        border-radius: 8px;
+        
+    }
+
+    .features{
+        margin:16px;
+        min-height: 120px;
+    }
+</style>
+
+<div class="col-md-12">
+	<div class=" article">
+		<h2 style="margin-top:0">Changer de formule</h2>	
+		<div class="row">
+
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h3 class="panel-title">
+                            <div class="iconBadge farmer" style="margin-right: 12px;">
+                                <i class="icon icon-farmer"></i>
+                            </div> 
+                            Compte Découverte
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        
+                        <ul class="features">
+                            <li>Compte producteur complet</li>
+                            <li><b>Ventes limitées à 1000€ /an</b><br/><span class="disabled">(hors AMAP)</span></li>
+                        </ul>
+                        
+                        <p class="text-center priceBox">
+                            Gratuit
+                        </p>
+
+                        <p class="text-center">
+                            <a href="" class="btn btn-default btn-lg" disabled="disabled"><i class="icon icon-check"></i> Votre formule actuelle</a>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <div class="iconBadge farmer-pro" style="margin-right: 12px;">
+                                <i class="icon icon-farmer-pro"></i>
+                            </div> 
+                            Compte producteur
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="features">
+                            <li>Compte producteur complet</li>
+                            <li><b>Ventes illimitées</b></li>
+                        </ul>
+                        
+                        <p class="text-center priceBox">
+                            29 €<sup style="font-size: 0.5em;">HT</sup>/mois                            
+                        </p>
+
+
+                        <p class="text-center">
+                            <a href="" class="btn btn-default btn-lg" disabled="disabled"><i class="icon icon-chevron-right"></i> Bientôt disponible</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <div class="iconBadge farmer-pro" style="margin-right: 12px;">
+                                <i class="icon icon-farmer-pro"></i>
+                            </div> 
+                            Compte producteur + formation
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+
+                        <ul class="features">
+                            <li>Compte producteur complet <b>à vie</b></li>
+                            <li><b>Ventes illimitées</b></li>
+                            <li><b>Formation "Développer sa vente directe en ligne"</b></li>                            
+                        </ul>
+                        
+                        <p class="text-center priceBox">
+                            1354 €<sup style="font-size: 0.5em;">TTC</sup>
+                            <br/>
+                            <span style="font-size: 0.7em;line-height: 0.7em;">
+                                Finançable par votre caisse de formation.<br/>
+                                <a href="">En savoir plus.</a>
+                            </span>
+                        </p>
+
+                        <p class="text-center">
+                            <a href="https://share.hsforms.com/1b4mPfDRnSTSyLmRUqq6OGA4f5r5" target="_blank" class="btn btn-primary btn-lg"><i class="icon icon-chevron-right"></i> Etude de financement</a>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+	</div>
+</div>
+
+::end::

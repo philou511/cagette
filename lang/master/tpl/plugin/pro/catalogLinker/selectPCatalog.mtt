@@ -1,0 +1,46 @@
+::use 'plugin/pro/design.mtt'::
+
+<div class="col-md-12">
+	<div class="article">
+		<h2 style="margin-top:0">Relier des catalogues</h2>
+
+            <p class="text-center" style="margin:32px;font-size:1.2em;">
+                A quel <b>catalogue de votre compte producteur</b>
+                <br/>
+                souhaitez vous relier "<b>::catalog.name::</b>" ?
+            </p>
+            
+            ::foreach c pcatalogs::
+            <div style="margin:auto;width:500px;margin-bottom: 64px;" class="text-center">
+                <table class="table table-bordered">
+                    <tr class="darkhead">
+                        <td colspan="3">
+                            <b><i class="icon icon-book"></i> ::c.name::</b>
+                        </td>
+                    </tr>
+                    
+                    ::foreach catOff c.getOffers()::
+                    <tr>
+                        <td><img src="::catOff._offer.getImage()::" style="width:32px;height:32px;" />	</td>
+                        <td>::catOff._offer.getName()::</td>
+                        <td>::formatNum(catOff._offer.price)::&nbsp;::currency()::</td>					
+                    </tr>
+                    ::end::
+                </table>
+                <a href="/p/pro/catalogLinker/link/::catalog.id::/::c.id::" class="btn btn-primary">Relier à ce catalogue</a>
+            </div>
+            ::end::
+            
+	</div>		
+</div>
+
+
+::end::
+
+
+
+	
+	
+	
+	
+	

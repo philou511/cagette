@@ -153,84 +153,72 @@ class PCatalogService{
 	}
 
 	/**
-	 *  SYnc categs (TERRA LIBRA)
-	 */
-	/*public static function syncCategs(p:db.Product){
+		Link first Catalog in a cpro
+	**/
+	public static function linkRemoteCatalog(remoteCatalog:db.Catalog,cagettePro:pro.db.CagettePro){
 
-		var getCategGroup = function(cgName:String){
-			var cg = db.CategoryGroup.manager.select($name==cgName && $amapId==p.catalog.group.id);
-			if(cg==null){
-				cg = new db.CategoryGroup();
-				cg.name = cgName;
-				cg.amap = p.catalog.group;
-				cg.insert();
-			}
-			return cg;
+		var offers =[];
+
+		for (p in remoteCatalog.getProducts(false)) {
+			// product
+			var pp = new pro.db.PProduct();
+			pp.name = p.name;
+
+			// créé une ref si existe pas...
+			// if (p.ref == null || p.ref == "") {
+				p.lock();
+				p.ref = pro.service.PProductService.generateRef(cagettePro);
+				p.update();
+			// }
+			pp.ref = p.ref;
+			pp.image = p.image;
+			pp.desc = p.desc;
+			pp.company = cagettePro;
+			pp.unitType = p.unitType;
+			pp.active = p.active;
+			pp.organic = p.organic;
+			pp.txpProduct = p.txpProduct;
+			pp.bulk = p.bulk;
+			pp.multiWeight = p.multiWeight;
+			pp.variablePrice = p.variablePrice;
+			pp.insert();
+
+			// create one offer
+			var off = new pro.db.POffer();
+			off.price = p.price;
+			off.vat = p.vat;
+			off.ref = pp.ref + "-1";
+			off.product = pp;
+			off.quantity = p.qt;
+			off.active = p.active;
+			off.smallQt = p.smallQt;
+			off.insert();
+
+			offers.push(off);
 		}
 
-		var getCateg = function(catName:String,cgName:String){
-			var cg = getCategGroup(cgName);
-			var cat = db.Category.manager.select($name==catName && $categoryGroupId==cg.id);
-			if(cat==null){
-				cat = new db.Category();
-				cat.name = catName;
-				cat.categoryGroup = cg;
-				cat.insert();
-			}
-			return cat;
+		//create pcatalog
+		var cat = new pro.db.PCatalog();
+		cat.name = "Mes produits en vente";
+		cat.company = cagettePro;
+		cat.visible = true;
+		var now = Date.now();
+		cat.startDate = new Date(now.getFullYear(),0,0,0,0,0);
+		cat.endDate = new Date(now.getFullYear()+10,0,0,0,0,0);
+		cat.insert();
+
+		//bind offers to this catalog
+		for(off in offers){
+			pro.db.PCatalogOffer.make(off,cat,off.price);
 		}
 
-		
+		//create link to remote catalog
+		var rc = new connector.db.RemoteCatalog();
+		rc.id = remoteCatalog.id;
+		rc.remoteCatalogId = cat.id;
+		rc.insert();
 
-		var txp = p.txpProduct;
-		if(txp==null) return null;
-		//var cg = getCategGroup("Types de produits");
-		var cat = getCateg(txp.category.name+" / "+txp.subCategory.name,"Types de produits");
-		db.ProductCategory.getOrCreate(p,cat);
-		
-		return "CATEG : "+cat.name+"<br/>";
-
-
-	}*/
-
-	/*public static function syncVendor(?companySource:pro.db.Company,?pvendorSource:pro.db.PVendor,target:db.Vendor){
-		if(target.id!=null) target.lock();
-
-		if(companySource!=null){
-			target.name = companySource.name;
-			target.desc = companySource.desc;
-			target.image = companySource.image;
-			target.email  = companySource.email;
-			target.phone = companySource.phone;
-			target.address1 = companySource.address1;
-			target.address2 = companySource.address2;
-			target.zipCode = companySource.zipCode;
-			target.city = companySource.city;
-			target.desc = companySource.desc;
-			target.linkText = companySource.linkText;
-			target.linkUrl = companySource.linkUrl;
-		}else{
-			target.name = pvendorSource.name;
-			target.desc = pvendorSource.desc;
-			target.image = pvendorSource.image;
-			target.email  = pvendorSource.email;
-			target.phone = pvendorSource.phone;
-			target.address1 = pvendorSource.address1;
-			target.address2 = pvendorSource.address2;
-			target.zipCode = pvendorSource.zipCode;
-			target.city = pvendorSource.city;
-			target.desc = pvendorSource.desc;
-			target.linkText = pvendorSource.linkText;
-			target.linkUrl = pvendorSource.linkUrl;
-		}
-		if(target.id!=null) {
-			target.update();
-		}else{
-			target.insert();
-		}
-
-		return target;
-	}*/
+	}
 
 	/**
 	 *  Create or sync a catalog ( from a vendor catalog (PCatalog) to a group catalog (Catalog) )
@@ -304,13 +292,13 @@ class PCatalogService{
 	 */
 	public static function linkCatalogToGroup(catalog:pro.db.PCatalog,clientGroup:db.Group,remoteUserId:Int,?contractType=1):connector.db.RemoteCatalog{
 		
-		if(catalog.company.discovery){
+		/*if(catalog.company.discovery){
 			//check if there is already one group
 			var groups = catalog.company.getGroups();
 			if(groups.length > 0 && groups[0].id!=clientGroup.id){
 				throw new tink.core.Error("<b>"+catalog.company.vendor.name+"</b> ne peut pas travailler avec plus d'un point de livraison, car il est en <b>Cagette Découverte</b>. <br/>Passez à <b>Cagette Pro</b> pour vous relier à un nombre illimité de points de livraison.");
 			}
-		}
+		}*/
 
 		//checks
 		var contracts = connector.db.RemoteCatalog.getContracts(catalog, clientGroup);

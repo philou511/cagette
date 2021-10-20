@@ -1,4 +1,5 @@
 package pro.controller;
+import service.VendorService;
 import Common;
 using tools.ObjectListTool;
 
@@ -8,7 +9,6 @@ using tools.ObjectListTool;
  */
 class Main extends controller.Controller
 {
-
 	var company : pro.db.CagettePro;
 	var vendor : db.Vendor;
 	
@@ -23,7 +23,6 @@ class Main extends controller.Controller
 			vendor.checkIsolate();
 			App.current.breadcrumb[0] = {id:"v"+vendor.id,name:"Cagette Pro : "+vendor.name,link:"/p/pro"};
 		}
-		
 	}
 	
 	/**
@@ -52,7 +51,6 @@ class Main extends controller.Controller
 		
 		//login to a vendor/cagettePro
 		if (args!=null && args.vendor!=null) {
-
 
 			var vendor = db.Vendor.manager.get(args.vendor,false);
 			if ( !pro.db.CagettePro.canLogIn(app.user,vendor) && !app.user.isAdmin()){
@@ -89,7 +87,7 @@ class Main extends controller.Controller
 		view.notifs = pro.db.PNotif.manager.search($company == this.company, {orderBy: -date}, false);
 		
 		//get client list
-		var remoteCatalogs = connector.db.RemoteCatalog.manager.search($remoteCatalogId in Lambda.map(company.getCatalogs(), function(x) return x.id), false); 
+		var remoteCatalogs = connector.db.RemoteCatalog.manager.search($remoteCatalogId in company.getCatalogs().map(x -> x.id), false); 
 		var clients = new Map<Int,Array<connector.db.RemoteCatalog>>();
 		for ( rc in Lambda.array(remoteCatalogs)){
 			var contract = rc.getContract();
@@ -142,10 +140,16 @@ class Main extends controller.Controller
 			return rc.getCatalog();			
 		};
 		
+		//find unlinked catalogs		
+		view.unlinkedCatalogs = VendorService.getUnlinkedCatalogs(company);
+		
 		view.vendorId = vendor.id;
 	}
-	
-	
+
+	public function doCatalogLinker(d:haxe.web.Dispatch){
+		// checkCompanySelected();
+		d.dispatch(new pro.controller.CatalogLinker());
+	}
 	
 	@logged 
 	public function doNotif(d:haxe.web.Dispatch){
@@ -267,6 +271,11 @@ class Main extends controller.Controller
 		view.title = "Mise à jour des conditions générales de vente "+' ( v. $tosVersion )';
 		view.text = "En tant que producteur qui vend des produits sur Cagette.net, vous devez accepter ces conditions qui définissent les modalités d'utilisation de Cagette.net par les producteurs.";
 		view.form = form;
+	}
+
+
+	@logged @tpl("plugin/pro/upgrade.mtt")
+	public function doUpgrade(){
 	}
 	
 }

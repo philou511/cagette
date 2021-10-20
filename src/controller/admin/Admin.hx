@@ -81,10 +81,14 @@ class Admin extends Controller {
 		view.title = t._("Email service configuration");
 		view.form = f;
 	}
-
-	function doPlugins(d:Dispatch) {
-		d.dispatch(new controller.admin.Plugins());
+	
+	function doVendor(d:haxe.web.Dispatch) {
+		d.dispatch(new controller.admin.Vendor());
 	}
+
+	// function doPlugins(d:Dispatch) {
+	// 	d.dispatch(new controller.admin.Plugins());
+	// }
 
 	/**
 		export taxo as CSV
@@ -333,8 +337,8 @@ class Admin extends Controller {
 			var cpro = pro.db.CagettePro.getFromVendor(v);
 			var blocked = cpro.getUserCompany().exists(uc -> uc.disabled);
 
-			Sys.print('<tr><td><a href="/p/pro/admin/vendor/${v.id}" target="_blank">${v.id} - ${v.name}</a></td>');
-			Sys.print('<td>${blocked ? "OUI" : "NON"}</a></td>');
+			Sys.print('<tr><td><a href="/admin/vendor/view/${v.id}" target="_blank">${v.id} - ${v.name}</a></td>');
+			Sys.print('<td>${blocked?"OUI":"NON"}</a></td>');
 			Sys.print('<td>${untyped v.cprocdate}</a></td>');
 			Sys.print("</tr>");
 		}

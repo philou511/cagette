@@ -1,4 +1,5 @@
 package controller;
+import connector.db.RemoteCatalog;
 import service.ProductService;
 import db.Catalog;
 import tink.core.Error;
@@ -88,20 +89,13 @@ class ContractAdmin extends Controller
 	function doProducts(contract:db.Catalog,?args:{?enable:String,?disable:String}) {
 		view.nav.push("products");
 		sendNav(contract);
-		
+
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("Access forbidden") );
 		view.c = contract;
 		
-		//checks
-		// if (app.user.getGroup().hasShopMode() && !app.user.getGroup().hasTaxonomy() ) {		
-		// 	for ( p in contract.getProducts(false)) {
-		// 		if (p.getCategories().length == 0) {
-		// 			app.session.addMessage(t._("Warning, at least one product does not have any category. <a href='/product/categorize/::contractid::'>Click here to add categories</a>", {contractid:contract.id}), true);
-		// 			break;
-		// 		}
-		// 	}			
-		// }
-		
+		var isRemote = RemoteCatalog.getFromContract(contract)!=null;
+		view.isRemote = isRemote;
+
 		//batch enable / disable products
 		if (args != null){
 			

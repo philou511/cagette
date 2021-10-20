@@ -1,28 +1,47 @@
 ﻿::use 'plugin/pro/base.mtt'::
 		
 	<div class="row header" style="margin-top:10px;">
-		<div class="col-md-8">
+		<div class="col-md-6">
 			<h1 ::cond vendor!=null:: >::vendor.name::</h1>
 		</div>
 		
-		<div class="col-md-4 accountBlock">					
+		<div class="col-md-6 accountBlock">	
+			::if(vendor.isDisabled())::
+				<div class="pull-right iconBadge danger" style="margin-top:8px" data-toggle="tooltip" title="Votre compte est bloqué">
+					<i class="icon icon-alert"></i>
+				</div>					
+			::elseif(company.discovery==true)::
+			<a href="/p/pro/upgrade">
+				<div class="pull-right iconBadge farmer" style="margin-top:8px" data-toggle="tooltip" title="Compte Découverte">
+					<i class="icon icon-farmer"></i>
+				</div>		
+			</a>
+			::else::
+			<a href="/p/pro/upgrade">
+				<div class="pull-right iconBadge farmer-pro" style="margin-top:8px" data-toggle="tooltip" title="Compte Producteur illimité">
+					<i class="icon icon-farmer-pro"></i>
+				</div>
+			</a>
+			::end::
+
 			$$userMenu(::user::)
+		
 		</div>	
 			
 	</div>
 		
-		
+
 	::if user!= null && company!=null::
 
-			<nav class="navbar navbar-default">
-					<div class="navbar-header">
-					  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#cagette-navbar">
-						<span class="sr-only">Toggle navigation</span>						
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					  </button>				  
-					</div>	
+		<nav class="navbar navbar-default">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#cagette-navbar">
+				<span class="sr-only">Toggle navigation</span>						
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				</button>				  
+			</div>	
 				
 					<div class="collapse navbar-collapse" id="cagette-navbar">
 						::set category = breadcrumb()[1]::
@@ -84,29 +103,12 @@
 
 							
 						</ul>
-
-						::if(company!=null && company.discovery==true)::
-						<ul class="nav navbar-nav navbar-right">
-							
-							<li>
-								<a href="http://www.cagette.pro" data-toggle="tooltip" title="Vous avez actuellement un compte Cagette Découverte, limité à un seul point de livraison. Débloquez tout votre potentiel en passant à Cagette Pro !" target="_blank" style="background:#d54d06;border-radius: 5px;color: white;padding: 9px;margin: 4px;">
-									<i class="icon icon-farmer-pro"></i>
-									Passez à Cagette Pro !
-								</a>								
-							</li>
-							
-						</ul>
-						::end::
-						
 					</div>
-
-					
-				
 			</nav>
 			
 	::end::
 
-	<!-- Breadcrumb -->
+	<!-- Breadcrumb 
 	<div class="row">
 		<div class="col-md-12">
 			<ol class="breadcrumb">
@@ -116,7 +118,7 @@
 				::end::
 			</ol>
 		</div>
-	</div>
+	</div>-->
 
 	<div class="row">
 		<div id="content" class="col-md-12">

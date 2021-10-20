@@ -8,8 +8,7 @@ enum VendorType {
 	VTInvitedPro;   // 3 Invité Cagette Pro
 	VTCproTest; 	// 4 Cagette Pro test (COVID19)
 	VTStudent; 		// 5 compte pro pédagogique
-	VTCproStudent; 	// 6 compte pro test/découverte inscrit à une formation
-	VTDiscovery; 	// 7 Cagette Découverte
+	VTDiscovery; 	// 6 Cagette Découverte
 }
 
 /**

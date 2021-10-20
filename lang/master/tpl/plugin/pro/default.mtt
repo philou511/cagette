@@ -62,13 +62,22 @@
 	<div class="row">
 		<div class="col-md-12">			
 			<div class="alert alert-danger">
+				<i class="icon icon-alert"></i>
 				Ce compte producteur est bloqué et n'accepte plus de commandes.<br/>
 				Raison : <b>::vendor.getDisabledReason()::</b>
+
+				::if(vendor.disabled==3)::
+				<p class="text-center" style="margin-top: 12px;">
+					<a href="/p/pro/upgrade" class="btn btn-danger">
+						<i class="icon icon-chevron-right"></i> Passer en illimité
+					</a>
+				</p>
+				::end::
 			</div>
 		</div>
 	</div>
 	::end::
-	
+
 	<div class="article">
 		<h2 style="margin-top:0">Mes groupes</h2>
 
@@ -153,6 +162,25 @@
 				::end::	
 
 
+				
+				::if(unlinkedCatalogs.length>0 && company.getProducts().length>0)::
+				
+					<div class="col-md-12">			
+						<div class="alert alert-warning">
+							<i class="icon icon-info"></i>
+							Vous avez <b>::unlinkedCatalogs.length:: catalogue(s)</b> créés dans des groupes et qui ne sont pas reliés à votre compte producteur. <br/>
+							<ul>
+								::foreach c unlinkedCatalogs::
+								<li><b>::c.name::</b> dans le groupe <a href="/group/::c._group.id::" target="_blank">::c._group.name::</a></li>
+								::end::
+							</ul>
+								
+							<a href="/p/pro/catalogLinker" class="btn btn-default btn-sm">Cliquez-ici pour les relier</a>
+						</div>
+					</div>
+				
+				::end::	
+
 			
 			<div class="col-md-12">
 				<a href="/p/pro/group/duplicate" class="btn btn-default btn-sm">
@@ -171,6 +199,7 @@
 </div>
 
 <div class="col-md-4">
+
 	<div class=" article">
 		<h2 style="margin-top:0">Prochaines distributions</h2>	
 		::foreach d distribs::

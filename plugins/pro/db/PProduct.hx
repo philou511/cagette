@@ -62,6 +62,10 @@ class PProduct extends Object
 			return App.current.view.file(imageId);
 		}
 	}
+
+	public function getImageId(){
+		return this.imageId;
+	}
 	
 	override function toString() {
 		if (name != null) {
