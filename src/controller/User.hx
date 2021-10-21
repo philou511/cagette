@@ -38,10 +38,12 @@ class User extends Controller
 		//if its needed to redirect after login
 		if (app.params.exists("redirect")){
 			view.redirect = app.params.exists("redirect");
-		}else{
-			view.redirect = "/";
+		}else if (getParam("__redirect")!=null) {
+			view.redirect = getParam("__redirect");
+		} else {
+			view.redirect = '/';
 		}
-	}
+}
 
 	/**
 	 * Choose which group to connect to.
