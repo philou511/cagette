@@ -1,25 +1,25 @@
 package controller;
-import sugoi.form.elements.Checkbox;
-import sugoi.form.elements.IntInput;
-import haxe.display.Display.GotoDefinitionResult;
-import form.CagetteDatePicker;
-import sugoi.Web;
-import tink.core.Error;
-import service.VendorService;
-import service.SubscriptionService;
-import tools.DateTool;
-import db.MultiDistrib;
+import Common;
 import db.Catalog;
+import db.MultiDistrib;
 import db.UserOrder;
 import db.VolunteerRole;
-import sugoi.form.elements.Input;
-import sugoi.form.elements.Selectbox;
-import sugoi.form.Form;
-import Common;
-import plugin.Tutorial;
-import service.OrderService;
+import form.CagetteDatePicker;
 import form.CagetteForm;
+import haxe.display.Display.GotoDefinitionResult;
+import plugin.Tutorial;
 import service.CatalogService;
+import service.OrderService;
+import service.SubscriptionService;
+import service.VendorService;
+import sugoi.Web;
+import sugoi.form.Form;
+import sugoi.form.elements.Checkbox;
+import sugoi.form.elements.Input;
+import sugoi.form.elements.IntInput;
+import sugoi.form.elements.Selectbox;
+import tink.core.Error;
+import tools.DateTool;
 
 class Contract extends Controller
 {
@@ -99,33 +99,11 @@ class Contract extends Controller
 	}
 
 	/**
-	  2- create vendor
+	  2- invite a vendor
 	**/
-	@logged @tpl("form.mtt")
-	public function doInsertVendor(email:String,name:String) {
-				
-		var form = VendorService.getForm(new db.Vendor());
-				
-		if (form.isValid()) {
-			var vendor = null;
-			try{
-				vendor = VendorService.create(form.getDatasAsObject());
-			}catch(e:Error){
-				throw Error(Web.getURI(),e.message);
-			}
-			
-			/*service.VendorService.getOrCreateRelatedUser(vendor);
-			service.VendorService.sendEmailOnAccountCreation(vendor,app.user,app.user.getGroup());*/
-			
-			throw Ok('/contract/insert/'+vendor.id, t._("This supplier has been saved"));
-		}else{
-			form.getElement("email").value = email;
-			form.getElement("name").value = name;
-		}
-
-		view.title = t._("Key-in a new vendor");
-		//view.text = t._("We will send him/her an email to explain that your group is going to organize orders for him very soon");
-		view.form = form;
+	@logged @tpl("contractadmin/inviteVendor.mtt")
+	public function doInviteVendor() {
+		view.groupId = app.user.getGroup().id;
 	}
 
 	/**
