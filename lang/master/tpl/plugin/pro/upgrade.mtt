@@ -1,23 +1,52 @@
 ::use 'plugin/pro/design.mtt'::
 
-::if(vendor.isDisabled())::
-	
-		<div class="col-md-12">			
-			<div class="alert alert-danger">
-				<i class="icon icon-alert"></i>
-				Ce compte producteur est bloqué et n'accepte plus de commandes. 
-				Raison : <b>::vendor.getDisabledReason()::</b>
-			</div>
-		</div>
-	
+::if(vendor.isDisabled())::	
+    <div class="col-md-12">			
+        <div class="alert alert-danger">
+            <i class="icon icon-alert"></i>
+            Ce compte producteur est bloqué et n'accepte plus de commandes. 
+            Raison : <b>::vendor.getDisabledReason()::</b>
+        </div>
+    </div>	
 ::end::
 
 <div class="col-md-12">
 	<div class=" article">
+        ::if(company.discovery)::
+
 		<h2 style="margin-top:0">Votre statut : Compte découverte</h2>	
-		<p>
-            ici graphique avec C.A + limite en rouge
+		<div class="row">
+            <div class="col-md-5">
+                <p>
+                    Vos ventes sont limitées à 1000€ par an.<br/>
+                    <span class="disabled">(hors ventes réalisées dans des groupes en mode AMAP)</span><br/>
+                </p>
+                <p>
+                    ::set frdate = getDate(vendor.freemiumResetDate)::
+                    La date anniversaire de remise à zéro de votre compteur<br/>
+                    est le <b>::frdate.d:: ::frdate.m::</b> 
+                </p>
+            </div>
+            <div class="col-md-7">
+                <div id="discoveryVendorTurnoverLimit"></div>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        neo.createNeoModule("discoveryVendorTurnoverLimit", "discoveryVendorTurnoverLimit", {
+                            vendorId: ::vendor.id::
+                        });
+                    }); 
+                </script>
+            </div>
+            
+        </div>
+        
+        ::else::
+        <h2 style="margin-top:0">Votre statut : Compte Producteur illimité</h2>	
+        <p>
+            Vous avez un compte Producteur illimité.
         </p>
+        ::end::
+
 	</div>
 </div>
 
@@ -63,7 +92,10 @@
                         </p>
 
                         <p class="text-center">
+                            ::if(company.discovery)::
                             <a href="" class="btn btn-default btn-lg" disabled="disabled"><i class="icon icon-check"></i> Votre formule actuelle</a>
+                            ::end::
+                            
                         </p>
 
                     </div>
@@ -126,7 +158,12 @@
                         </p>
 
                         <p class="text-center">
+                            ::if(company.discovery)::
                             <a href="https://share.hsforms.com/1b4mPfDRnSTSyLmRUqq6OGA4f5r5" target="_blank" class="btn btn-primary btn-lg"><i class="icon icon-chevron-right"></i> Etude de financement</a>
+                            ::else::
+                            <a href=""  class="btn btn-default btn-lg" disabled="disabled"><i class="icon icon-chevron-right"></i> Votre formule actuelle</a>
+                            ::end::
+                            
                         </p>
 
                     </div>

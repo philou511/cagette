@@ -45,6 +45,8 @@ class Vendor extends Object
 	
 	//public var legalStatus : SNull<SEnum<LegalStatus>>;
 	@hideInForms public var profession : SNull<SInt>;
+	@hideInForms public var production2 : SNull<SInt>;
+	@hideInForms public var production3 : SNull<SInt>;
 
 	public var email:SNull<SString<128>>;
 	public var phone:SNull<SString<19>>;
@@ -57,6 +59,7 @@ class Vendor extends Object
 	
 	public var desc : SNull<SText>;
 	@hideInForms public var cdate : SNull<SDateTime>; // date de création
+	@hideInForms public var freemiumResetDate : SDateTime;
 
 	//legal infos
 	@hideInForms public var companyNumber : SNull<SString<128>>; //SIRET

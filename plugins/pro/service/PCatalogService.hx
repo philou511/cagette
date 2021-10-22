@@ -62,7 +62,7 @@ class PCatalogService{
 			//do NOT remove them to keep previous orders.
 			for ( p in groupProducts){
 				if (p.active == false) continue;
-				log.push("Produit à désactiver : " + p.name);
+				log.push("Produit désactivé : " + p.name);
 				p.lock();
 				p.active = false;
 				p.update();

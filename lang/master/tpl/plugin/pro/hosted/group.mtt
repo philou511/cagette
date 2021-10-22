@@ -4,7 +4,16 @@
 		<h4>Groupe #::group.id::</h4>
 		<h2>::group.name::</h2>
 
-		
+		<p>
+			<b>::if(group.hasShopMode())::
+			Mode Marché
+			::else::
+			Mode AMAP
+			::end::</b>
+		</p>
+
+		<p>
+
 		créé le : ::group.cdate::<br/>
 		
 		::if group._contact!=null::
@@ -29,7 +38,7 @@
 			</div>
 		
 		::end::
-		
+		</p>
 		<hr/>
 		
 		<h3>Lieux de livraison</h3>		
