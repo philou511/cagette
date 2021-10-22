@@ -261,7 +261,7 @@
 			::end::
 
 			::if(isFreeVendor || isGroupAdmin)::
-			document.addEventListener("DOMContentLoaded", function(event) {
+			/*document.addEventListener("DOMContentLoaded", function(event) {
 
 				if(localStorage.nouvelleReglesCount==null ){
 					localStorage.nouvelleReglesCount=0;
@@ -271,7 +271,7 @@
 					localStorage.nouvelleReglesCount++;
 				}
 				
-			});
+			});*/
 			::end::
 			
 			

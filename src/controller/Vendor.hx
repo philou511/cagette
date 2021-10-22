@@ -1,4 +1,5 @@
 package controller;
+import db.Catalog;
 import haxe.crypto.Md5;
 import service.VendorService;
 import sugoi.form.Form;
@@ -80,6 +81,27 @@ class Vendor extends Controller
 		#end
 
 		view.vendor = vendor;
+	}
+
+	/**
+		check id of the user before entering vendor registration form
+	**/
+	@tpl('vendor/checkId.mtt')
+	function doCheckId(catalog:Catalog){
+		view.nav = ["contractadmin","default"];
+		view.catalog = catalog;
+		view.c = catalog;
+		var vendor = catalog.vendor;
+		view.vendor = vendor;
+
+		if(checkToken()){
+			vendor.lock();
+			vendor.email = app.user.email;
+			vendor.update();
+		}
+
+		if(catalog.vendor.email==app.user.email) throw Redirect('/p/pro/signup/discovery');
+
 	}
 	
 }

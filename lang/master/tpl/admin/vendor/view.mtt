@@ -2,7 +2,7 @@
 
 
 <div class="row">
-	<div class="col-md-12">
+	<div class="col-md-8">
 		<h4>Producteur #::vendor.id::</h4>
 
 		<h2><a href="::vendor.getLink()::" target="_blank">::vendor.name::</a></h2>
@@ -14,6 +14,9 @@
 			<!--Charte Producteurs : $$check(::vendor.vendorPolicy::)-->
 			Profession : ::if(profession!=null)::<b>::profession.name::</b>::else:: ??? ::end::<br/>
 		</p>
+	</div>
+	<div class="col-md-4">
+		<div ::cond(vendor.imageId!=null):: style="background-image:url('::file(vendor.imageId)::');width:200px;height:200px;" class="productImg" /> 
 	</div>
 
 	<div class="col-md-12">
@@ -50,9 +53,7 @@
 			Email : $$nullSafe(::vendor.email::)
 		</p>
 	</div>
-	<div class="col-md-4">
-		<div ::cond(vendor.imageId!=null):: style="background-image:url('::file(vendor.imageId)::');width:200px;height:200px;" class="productImg" /> 
-	</div>
+	
 </div>
 
 
@@ -223,9 +224,11 @@
 				<td>::c.name::</td>
 				<td>du ::sDate(c.startDate):: au ::sDate(c.endDate)::</td>
 				<td>
+					<!--
 					::if(cpro!=null && !isCproCatalog(c))::
 					<a href="/p/pro/admin/contractToCatalog/::c.id::/::cpro.id::" class="btn btn-danger btn-xs">Copier dans Cagette Pro</a>
 					::end::
+					-->
 				</td>
 			</tr>
 		::end::

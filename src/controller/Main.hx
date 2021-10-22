@@ -399,4 +399,8 @@ class Main extends Controller {
 			view.invitedGroupId = group.id;
 		}
 	}
+
+	function doDiscovery(){
+		throw Redirect('/p/pro/signup/discovery');
+	}
 }

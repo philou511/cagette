@@ -109,12 +109,17 @@
 					</p>
 					<p>
 						::set frdate = getDate(vendor.freemiumResetDate)::
-						La date anniversaire de remise à zéro du compteur<br/>
+						La date anniversaire de remise à zéro du compteur de chiffre d'affaires
 						est le <b>::frdate.d:: ::frdate.m::</b> 
 					</p>
 					<p>
-						check d'identité + lien vers 
-						p/pro/signup/discovery
+						<a href="/vendor/checkId/::c.id::" class="btn btn-primary">Ouvrir un compte Producteur Découverte</a>
+						<div class="alert alert-warning">
+							<i class="icon icon-info"></i>
+							Le compte Découverte est un compte producteur complet, avec ventes illimitées 
+						jusqu'au 1er Février 2022.<br/>
+						<a href="https://www.cagette.net/producteurs">En savoir plus</a>
+						</div>
 					</p>
 					<p>
 						<div id="discoveryVendorTurnoverLimit"></div>
