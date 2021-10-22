@@ -26,6 +26,7 @@ class ProPlugIn extends PlugIn implements IPlugIn{
 					nav.push({id:"cpro",name:"Producteurs", link:"/admin/vendor",icon:"farmer"});
 					nav.push({id:"cprodedup",name:"Déduplication Producteurs", link:"/p/pro/admin/deduplicate",icon:"farmer"});		
 					nav.push({id:"siret",name:"Producteurs Siret", link:"/p/pro/admin/siret",icon:"farmer"});		
+					nav.push({id:"certification",name:"Certification Producteurs", link:"/p/pro/admin/certification",icon:"farmer-pro"});		
 				}
 
 			case Permalink(p):

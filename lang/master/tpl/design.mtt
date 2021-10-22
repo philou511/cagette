@@ -3,9 +3,10 @@
 		::if getParam('__redirect')!=null::
 			<!-- need to login to go to this page-->
 			<script>
-			document.addEventListener("DOMContentLoaded", function(event) {
-				_.loginBox('::raw getParam("__redirect")::', "::getSid()::");
-			});</script>
+				if (window.location.pathName =! "/user/login"){
+					window.location.href = '/user/login?__redirect=::raw getParam("__redirect")::';
+				}
+			</script>
 		::end::
 
 		<div class="row header" style="margin-top:10px;">

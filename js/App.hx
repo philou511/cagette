@@ -234,7 +234,7 @@ class App {
 	/**
 	 * Displays a login box
 	 */
-	public function loginBox(redirectUrl:String,sid:String,?message:String,?phoneRequired=false,?addressRequired=false,?openRegistration=false,?invitedUserEmail:String, ?invitedGroupId:Int) {	
+	public function loginBox(redirectUrl:String,sid:String,?message:String,?phoneRequired=false,?addressRequired=false,?openRegistration=false,?invitedUserEmail:String, ?invitedGroupId:Int, ?asDialog:Bool) {	
         var node = js.Browser.document.createDivElement();
 		node.id = "login-registration-container";
 		js.Browser.document.body.appendChild(node);
@@ -249,7 +249,8 @@ class App {
             addressRequired: addressRequired,
             openRegistration: openRegistration,
             invitedUserEmail: invitedUserEmail,
-            invitedGroupId: invitedGroupId
+            invitedGroupId: invitedGroupId,
+            asDialog: asDialog
         });
 	}
 

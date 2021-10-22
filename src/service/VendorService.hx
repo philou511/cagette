@@ -110,7 +110,7 @@ class VendorService{
 
 		//search by profession
 		if(search.profession!=null){
-			where.push('profession = ${search.profession}');
+			where.push('(profession = ${search.profession} OR production2 = ${search.profession} OR production3 = ${search.profession})');
 		}
 		
 		var selectDist = '';
