@@ -9,7 +9,8 @@
 						name: "::userName::",
                         groupName: ::if groupName!=null:: "::groupName::" ::else:: null ::end::,
 						vendorId: ::vendorId::,
-						invitationSenderId: ::invitationSenderId::
+						invitationSenderId: ::invitationSenderId::,
+						sid: ::if sid!=null:: "::sid::" ::else:: null ::end::
 					});
 			});
 		</script>

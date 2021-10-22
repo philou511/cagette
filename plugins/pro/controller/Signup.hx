@@ -19,24 +19,19 @@ import sugoi.tools.TransactionWrappedTask;
 class Signup extends controller.Controller
 {
 
-	/**
-		need to login as a standard user
-	**/
-	@tpl("plugin/pro/signup/default.mtt")
-	public function doDefault(/*key:String*/){
-		/*if(key!="cak2j6d6e8i9u7q45p6o54iden") {
-			throw Error("/","Lien invalide");
-		}*/
-			
-		if(app.user!=null){
-			// TODO : pass groupId if there is one
-			throw Redirect("/p/pro/signup/discovery");
-		}
-	}
-
-	@logged
 	@tpl('plugin/pro/signup/discovery.mtt')
-	public function doDiscovery(?group:db.Group){
+	public function doDiscovery(?group:db.Group, ?invitationSender:db.User){
+		if (group!=null) {
+			view.groupName = group.name;
+			view.groupId = group.id;
+		}
+		
+		if(app.user==null) {
+			view.userName = "";
+			view.sid = App.current.session.sid;
+			return;
+		}
+		
 		//checks
 		//has access to a cpro
 		var uc = PUserCompany.manager.search($user ==app.user);
@@ -57,13 +52,10 @@ class Signup extends controller.Controller
 		}
 		
 		view.userName = app.user.getName();
-		if (group!=null) {
-			view.groupName = group.name;
-			view.groupId = group.id;
+		
+		if (invitationSender!=null) {
+			view.invitationSenderId = invitationSender.id;
 		}
-
-		// TODO :
-		// view.invitationSenderId = 
 	}
 
 	/*@admin
