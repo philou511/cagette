@@ -144,7 +144,7 @@
 			::end::
 		</table>
 		<!--$$insert(::_("New farmer")::,/vendor/insert/) -->
-		<div class="alert alert-warning text-center">Pour référencer un nouveau producteur, cliquez sur "Créer ou trouver un catalogue"</div>
+		<div class="alert alert-warning text-center">Pour référencer un nouveau producteur, cliquez sur "Chercher un producteur"</div>
 		
 	</div>	
 </div>
