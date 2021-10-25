@@ -8,7 +8,16 @@
 		<div class="row">
 			::if(vendors.length>0)::
 
-				<div class="col-md-12" style="margin-bottom:24px;">
+				::if user.getGroup().hasShopMode():: 
+				<div class="col-md-12" style="margin-bottom:16px;">
+					Si vous ne trouvez pas votre producteur :
+					<a href="/contract/inviteVendor" class="btn btn-default btn-md">
+						<i class="icon icon-mail"></i> Inviter un nouveau producteur
+					</a>
+				</div>
+				::end::
+
+				<div class="col-md-12" style="margin-bottom:8px;">
 					<p>::_("We found these vendors in our database :")::</p>
 				</div>
 
@@ -84,8 +93,17 @@
 			::else::
 				<div class="col-md-12">
 					$$empty(::_("We could not find any vendor matching your search")::)
+				</div>
+				::if user.getGroup().hasShopMode():: 
+				<div class="col-md-12" style="margin-bottom:16px; text-align: center;">
+					<a href="/contract/inviteVendor" class="btn btn-default btn-md">
+						<i class="icon icon-mail"></i> Inviter un nouveau producteur
+					</a>
+				</div>
+				::end::
+				<div class="col-md-12">
 					$$back()
-				</div>					
+				</div>
 			::end::
 		</div>
 
@@ -93,12 +111,16 @@
 	</div>
 </div>
 
-<div class="col-md-12">
-	<div class="article text-center">
-		<a href="/contract/inviteVendor" class="btn btn-default btn-lg">
-			<i class="icon icon-plus"></i> Inviter un nouveau producteur
-		</a>
+::if !user.getGroup().hasShopMode():: 
+	<div class="col-md-12">
+		<div class="article text-center">
+			<p>
+				::_("if you have not found your vendor, enter a new record")::
+			</p>
+			<a href="/contract/insertVendor/::name::" class="btn btn-default btn-lg">
+			<i class="icon icon-plus"></i> ::_("Key-in a new vendor")::</a>
+		</div>
 	</div>
-</div>
-	
+::end::
+
 ::end::

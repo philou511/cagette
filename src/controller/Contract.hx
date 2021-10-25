@@ -107,6 +107,32 @@ class Contract extends Controller
 	}
 
 	/**
+	  2- create vendor
+	**/
+	@logged @tpl("form.mtt")
+	public function doInsertVendor(?name:String) {
+		if(app.user.getGroup().hasShopMode()) throw Error("/", t._("Access forbidden"));
+
+		var form = VendorService.getForm(new db.Vendor());
+				
+		if (form.isValid()) {
+			var vendor = null;
+			try{
+				vendor = VendorService.create(form.getDatasAsObject());
+			}catch(e:Error){
+				throw Error(Web.getURI(),e.message);
+			}
+			
+			throw Ok('/contract/insert/'+vendor.id, t._("This supplier has been saved"));
+		}else{
+			form.getElement("name").value = name;
+		}
+
+		view.title = t._("Key-in a new vendor");
+		view.form = form;
+	}
+
+	/**
 		Select CSA Variable / CSA Constant Contract
 	**/
 	@tpl("contract/insertChoose.mtt")
