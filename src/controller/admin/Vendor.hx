@@ -31,11 +31,10 @@ class Vendor extends controller.Controller
 			{label: "Gratuit", value: VTFree.string()},
 			{label: "Invité", value: VTInvited.string()},
 			{label: "Invité dans un Cagette pro", value: VTInvitedPro.string()},
-			{label: "Cagette Pro formé", value: VTCpro.string()},
-			{label: "Cagette Pro en test", value: VTCproTest.string()},
-			{label: "Cagette Pro pédagogique", value: VTStudent.string()},
-			// {label:"Cagette Pro inscrit à une formation",value:"prostudent"},
-			{label: "Cagette Découverte", value: VTDiscovery.string()},
+			{label: "Offre Pro formé", value: VTCpro.string()},
+			{label: "Cagette Pro test", value: VTCproTest.string()},
+			{label: "Compte pédagogique", value: VTStudent.string()},
+			{label: "Offre Découverte", value: VTDiscovery.string()},
 		];
 		f.addElement(new sugoi.form.elements.StringSelect("type", "Type de producteur", data, VTCproTest.string(), true, ""));
 		f.addElement(new sugoi.form.elements.StringInput("zipCodes", "Saisir des numéros de département séparés par des virgules ou laisser vide."));

@@ -84,9 +84,9 @@
 					::if(cpro==null)::
 					Producteur invité
 					::elseif(cpro.discovery)::
-					Compte Producteur Découverte
+					Offre Découverte
 					::else::
-					Compte Producteur illimité
+					Offre Pro
 					::end::
 
 					::if(vendor.isDisabled())::
@@ -114,10 +114,10 @@
 					</p>
 					<p>
 						<a href="/vendor/checkId/::c.id::" class="btn btn-primary">Ouvrir un compte Producteur Découverte</a>
+
 						<div class="alert alert-warning">
 							<i class="icon icon-info"></i>
-							Le compte Découverte est un compte producteur complet, avec ventes illimitées 
-						jusqu'au 1er Février 2022.<br/>
+							L'offre Découverte donne accès à un compte producteur complet, avec ventes illimitées jusqu'au 1er Février 2022.<br/>
 						<a href="https://www.cagette.net/producteurs">En savoir plus</a>
 						</div>
 					</p>

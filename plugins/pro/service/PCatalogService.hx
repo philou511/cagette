@@ -157,20 +157,19 @@ class PCatalogService{
 	**/
 	public static function linkRemoteCatalog(remoteCatalog:db.Catalog,cagettePro:pro.db.CagettePro){
 
-		var offers =[];
+		var offers = [];
 
 		for (p in remoteCatalog.getProducts(false)) {
 			// product
 			var pp = new pro.db.PProduct();
 			pp.name = p.name;
 
-			// créé une ref si existe pas...
-			// if (p.ref == null || p.ref == "") {
-				p.lock();
-				p.ref = pro.service.PProductService.generateRef(cagettePro);
-				p.update();
-			// }
-			pp.ref = p.ref;
+			var ref = pro.service.PProductService.generateRef(cagettePro);
+			p.lock();
+			p.ref = ref+"-1";
+			p.update();
+			
+			pp.ref = ref;
 			pp.image = p.image;
 			pp.desc = p.desc;
 			pp.company = cagettePro;
@@ -187,7 +186,7 @@ class PCatalogService{
 			var off = new pro.db.POffer();
 			off.price = p.price;
 			off.vat = p.vat;
-			off.ref = pp.ref + "-1";
+			off.ref = ref + "-1";
 			off.product = pp;
 			off.quantity = p.qt;
 			off.active = p.active;

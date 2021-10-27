@@ -13,12 +13,12 @@
 			::if(cpro!=null)::
 				::if(cpro.discovery)::
 				<!--découverte-->
-				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Compte Découverte">
+				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Offre Découverte">
 					<i class="icon icon-farmer"></i>
 				</div>
 				::else::
 				<!-- compte producteur -->
-				<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Compte producteur illimité">
+				<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Offre Pro">
 					<i class="icon icon-farmer-pro"></i>
 				</div>
 				::end::
@@ -548,7 +548,7 @@
 
 	<macro name="vendorType(s)">		
 		::if(s==0)::
-			Compte Producteur illimité			
+			Offre Pro (formé)			
 		::elseif(s==1)::
 			Gratuit
 		::elseif(s==2)::
@@ -556,11 +556,11 @@
 		::elseif(s==3)::
 			Invité sur un Cagette Pro
 		::elseif(s==4)::
-			Cagette Pro en test 
+			Cagette Pro test 
 		::elseif(s==5)::
-			Cagette Pro pédagogique
+			Compte pédagogique
 		::elseif(s==6)::
-			Compte Découverte		
+			Offre Découverte		
 		::end::
 	</macro>
     

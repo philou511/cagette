@@ -14,6 +14,19 @@ class Order extends Controller
 		var catalogs = new Array<ContractInfo>();
 		var type = ( args != null && args.catalogType != null ) ? args.catalogType : null;
 		for( distrib in multiDistrib.getDistributions(type) ) {
+
+			//check if the vendor is banned
+			var vendor = distrib.catalog.vendor;
+			if(vendor.isDisabled()){
+				if(vendor.disabled==db.Vendor.DisabledReason.TurnoverLimitReached){
+					var whitelist : Array<Int> = vendor.turnoverLimitReachedDistribsWhiteList.split(",").map(Std.parseInt);
+					if(!whitelist.has(multiDistrib.id)){
+						continue;
+					}
+				}else{
+					continue;
+				}
+			}
 			
 			var image = distrib.catalog.vendor.getImageId() == null ? null : view.file( distrib.catalog.vendor.getImageId() );
 			catalogs.push( { id : distrib.catalog.id, name : distrib.catalog.name, image : image } );

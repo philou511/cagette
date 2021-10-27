@@ -14,7 +14,7 @@
 	<div class=" article">
         ::if(company.discovery)::
 
-		<h2 style="margin-top:0">Votre statut : Compte découverte</h2>	
+		<h2 style="margin-top:0">Votre statut : Offre découverte</h2>	
 		<div class="row">
             <div class="col-md-5">
                 <p>
@@ -41,7 +41,7 @@
         </div>
         
         ::else::
-        <h2 style="margin-top:0">Votre statut : Compte Producteur illimité</h2>	
+        <h2 style="margin-top:0">Votre statut : Offre Pro</h2>	
         <p>
             Vous avez un compte Producteur illimité.
         </p>
@@ -69,7 +69,7 @@
 	<div class=" article">
 		<h2 style="margin-top:0">Changer de formule</h2>	
 		<div class="row">
-
+            <div class="col-md-2"></div>
             <div class="col-md-4">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -77,14 +77,14 @@
                             <div class="iconBadge farmer" style="margin-right: 12px;">
                                 <i class="icon icon-farmer"></i>
                             </div> 
-                            Compte Découverte
+                            Offre Découverte
                         </h3>
                     </div>
                     <div class="panel-body">
                         
                         <ul class="features">
                             <li>Compte producteur complet</li>
-                            <li><b>Ventes limitées à 1000€ /an</b><br/><span class="disabled">(hors AMAP)</span></li>
+                            <li><b>Ventes limitées à 1000€ /an</b><br/><span class="disabled">(hors vente dans les groupes en mode AMAP)</span></li>
                         </ul>
                         
                         <p class="text-center priceBox">
@@ -109,7 +109,7 @@
                             <div class="iconBadge farmer-pro" style="margin-right: 12px;">
                                 <i class="icon icon-farmer-pro"></i>
                             </div> 
-                            Compte producteur
+                            Offre Pro
                         </h3>
                     </div>
                     <div class="panel-body">
@@ -119,6 +119,7 @@
                         </ul>
                         
                         <p class="text-center priceBox">
+                            <span style="font-size: 0.8em;">Abonnement</span><br/>
                             29 €<sup style="font-size: 0.5em;">HT</sup>/mois                            
                         </p>
 
@@ -130,23 +131,34 @@
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-2"></div>
+
+            
+        </div>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            <div class="iconBadge farmer-pro" style="margin-right: 12px;">
-                                <i class="icon icon-farmer-pro"></i>
-                            </div> 
-                            Compte producteur + formation
+                            Formation "Développer sa vente directe en ligne"
                         </h3>
                     </div>
                     <div class="panel-body">
 
-                        <ul class="features">
-                            <li>Compte producteur complet <b>à vie</b></li>
-                            <li><b>Ventes illimitées</b></li>
-                            <li><b>Formation "Développer sa vente directe en ligne"</b></li>                            
-                        </ul>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <img src="https://www.cagette.net/wp-content/uploads/2020/11/img_6222.jpg" style="width:250px;border-radius: 8px;"/>
+                            </div>
+                            <div class="col-md-8">
+                                <ul class="features">
+                                    <li><b>Formation en présentiel et en ligne</b> pour maîtriser Cagette.net, améliorer votre communication et améliorer votre organisation.</li>                            
+                                    <li>Compte producteur complet</li>
+                                    <li><b>Ventes illimitées</b></li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
                         
                         <p class="text-center priceBox">
                             1354 €<sup style="font-size: 0.5em;">TTC</sup>
@@ -169,7 +181,7 @@
                     </div>
                 </div>
             </div>
-
+            <div class="col-md-2"></div>
         </div>
 	</div>
 </div>
