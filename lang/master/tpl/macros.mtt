@@ -78,13 +78,15 @@
 					<a href="http://wiki.cagette.net" target="_blank"><i class="icon icon-book"></i> Documentation</a> 
 				</li>
 				<li>
-					<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank"><i class="icon icon-facebook"></i> Groupe Facebook</a> 
+					<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank"><i class="icon icon-facebook"></i> Groupe d'entraide Facebook</a> 
+				</li>
+				<li>
+					<a href="https://cagette.uservoice.com/" target="_blank"><i class="icon icon-question"></i> Support & suggestions</a> 
 				</li>
 				<li>
 					<a href="http://www.cagette.pro" target="_blank"><i class="icon icon-student"></i> Formations pour producteurs</a> 
 				</li>				
 			</ul>
-			
 		</div>
 
 		<!-- Home -->
@@ -93,10 +95,6 @@
 				<i class="icon icon-chevron-left"></i> ::_("Home")::
 			</a>
 		</div>
-
-			
-
-			
 	</macro>
 	
 	<macro name="browse(b,url)">$$browseCustom(::b::,::url::,Page ::b.page:: ::if b.pages::/::b.pages:: ::end::)</macro>

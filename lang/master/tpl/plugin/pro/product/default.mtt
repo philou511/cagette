@@ -2,12 +2,18 @@
 
 <div class="col-md-12">
 	<div class=" article">
-		<h2>Base de références</h2>	
 		
+		
+		<h2>Base de références</h2>	
+
 		<div>
 			<p>
-			$$insert(Nouveau produit,/p/pro/product/insert/)
-			<a href="/p/pro/product/import/" class="btn btn-default btn-sm"><i class="icon icon-upload"></i> Import Excel/CSV</a>				
+				$$insert(Nouveau produit,/p/pro/product/insert/)
+				<a href="/p/pro/product/import/" class="btn btn-default btn-sm"><i class="icon icon-upload"></i> Import Excel/CSV</a>				
+
+				<a href="https://formation.alilo.fr/mod/page/view.php?id=789" target="_blank" class="btn btn-warning btn-sm">
+					<i class="icon icon-youtube"></i> Tuto vidéo
+				</a>		
 			</p>
 		</div>
 

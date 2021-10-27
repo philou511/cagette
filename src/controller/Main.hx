@@ -105,13 +105,11 @@ class Main extends Controller {
 
 		// message if phone is required
 		if (app.user != null && group.flags.has(db.Group.GroupFlags.PhoneRequired) && app.user.phone == null) {
-			app.session.addMessage(t._("Members of this group should provide a phone number. <a href='/account'>Please click here to update your account</a>."),
-				true);
+			app.session.addMessage("Les membres de ce groupe doivent fournir un numéro de téléphone. <a href='/account'>Cliquez ici pour mettre à jour votre compte</a>.",true);
 		}
 		// message if address is required
 		if (app.user != null && group.flags.has(db.Group.GroupFlags.AddressRequired) && app.user.city == null) {
-			app.session.addMessage(t._("Members of this group should provide an address. <a href='/account'>Please click here to update your account</a>."),
-				true);
+			app.session.addMessage("Les membres de ce groupe doivent fournir leur adresse. <a href='/account'>Cliquez ici pour mettre à jour votre compte</a>.",true);
 		}
 
 		// Delete demo contracts

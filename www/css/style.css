@@ -873,3 +873,12 @@ tr.danger td div.basketNumber {
 
 ul#subscriptionTabs.nav.nav-tabs > li.active > a {
   background-color: white !important; }
+
+a.btn-warning {
+  color: #8a6d3b;
+  background-color: #fcf8e3;
+  border-color: #ae894a; }
+
+a.btn-warning:hover {
+  background-color: darker(#fcf8e3, 10%);
+  border-color: darker(#8a6d3b, 20%); }

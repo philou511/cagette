@@ -24,58 +24,52 @@
 				::foreach v vendors::
 				<div class="col-md-4 col-sm-6">
 					
-
 					<div class="boxed" style="height:300px">	
-						
-						
-						
 						<div class="row">
 							<div class="col-md-4">													
 								<div class="productImg xl" style="background-image:url('::v.getImage()::');"></div>								
 							</div>
-							<div class="col-md-8">
-								
-									<h4>
-										<a href="::v.getLink()::" target="_blank">::v.name::</a>
-									</h4>
-									<p>
-										$$vendorIcon(::v::) ::v.zipCode:: ::v.city::
-									</p>
-									
+							<div class="col-md-8">								
+								<h4>
+									<a href="::v.getLink()::" target="_blank">::v.name::</a>
+								</h4>
+								<p>$$vendorIcon(::v::) ::v.zipCode:: ::v.city::</p>									
 							</div>
 						</div>
 						
 						<p style="line-height: 38px;">
 						
 							::if(cpro!=null)::
+								<!-- compte producteur -->
 
-									::set catalogs = cpro.getActiveVisibleCatalogs()::
-									Catalogue(s) :
-									
-									::foreach catalog catalogs::									
-										<a href="/p/pro/public/::catalog.id::" class="btn btn-default btn-sm" target="_blank">
-											<i class="icon icon-book"></i> ::catalog.name::
-										</a>&nbsp;
-									::end::
-									
-									::if shopMode::
-										 <!-- even if the vendor is cpro, we can create a catalog for him/her -->
-										<a href="/contract/insert/::v.id::" class="btn btn-default btn-sm">
-											<i class="icon icon-plus"></i> Nouveau catalogue
-										</a>
-									::else::
-										<!-- even if the vendor is cpro, we can create a catalog for him/her-->
-										<a href="/contract/insertChoose/::v.id::" class="btn btn-default btn-sm">
-											<i class="icon icon-plus"></i> Nouveau catalogue
-										</a>
-									::end::
-							
-							::else::
-
+								::set catalogs = cpro.getActiveVisibleCatalogs()::
+								Catalogue(s) :
+								
+								::foreach catalog catalogs::									
+									<a href="/p/pro/public/::catalog.id::" class="btn btn-default btn-sm" target="_blank">
+										<i class="icon icon-book"></i> ::catalog.name::
+									</a>&nbsp;
+								::end::
+								
 								::if shopMode::
+										<!--
 									<a href="/contract/insert/::v.id::" class="btn btn-default btn-sm">
 										<i class="icon icon-plus"></i> Nouveau catalogue
+									</a> -->
+								::else::
+									<!-- even if the vendor is cpro, we can create a catalog for him/her-->
+									<a href="/contract/insertChoose/::v.id::" class="btn btn-default btn-sm">
+										<i class="icon icon-plus"></i> Nouveau catalogue
 									</a>
+								::end::
+							
+							::else::
+								<!-- NOT compte producteur -->
+								::if shopMode::
+									<!--<a href="/contract/insert/::v.id::" class="btn btn-default btn-sm">
+										<i class="icon icon-plus"></i> Nouveau catalogue
+									</a>-->
+									<div class="alert alert-warning">Ce producteur est référencé mais n'a pas de compte producteur.</div>
 								::else::
 									<a href="/contract/insertChoose/::v.id::" class="btn btn-default btn-sm">
 										<i class="icon icon-plus"></i> Nouveau catalogue
