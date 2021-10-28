@@ -275,19 +275,19 @@ class Company extends controller.Controller
 		view.nav.push("default");
 		var f = new sugoi.form.Form("vat");
 		
-		if (company.vatRates == null) {
+		if (company.vatRates2 == null) {
 			company.lock();
 			var x = new pro.db.CagettePro();
-			company.vatRates = x.vatRates;
+			company.vatRates2 = x.vatRates2;
 			company.update();
 		}
 		
 		// Storing 4  values.
 		//Get recorded values
 		var i = 1;
-		for (k in company.vatRates.keys()) {
-			f.addElement(new StringInput(i+"-k", "Nom "+i, k));
-			f.addElement(new FloatInput(i + "-v", "Taux "+i, company.vatRates.get(k) ));
+		for (vatRate in company.getVatRates()) {
+			f.addElement(new StringInput(i+"-k", "Nom "+i, vatRate.label));
+			f.addElement(new FloatInput(i + "-v", "Taux "+i, vatRate.value ));
 			i++;
 		}
 		//fill in to 4 values
@@ -299,14 +299,16 @@ class Company extends controller.Controller
 		
 		if (f.isValid()) {
 			var d = f.getData();
-			var vats = new Map<String,Float>();
+			var vats = new Array<{value:Float,label:String}>();
 			for (i in 1...5) {
 				if (d.get(i + "-k") == null) continue;
-				vats.set( d.get(i + "-k"), d.get(i + "-v") );
+				vats.push({label:d.get(i + "-k"), value: d.get(i + "-v")});
 			}
-			company.lock();
-			company.vatRates = vats;
-			company.update();
+			if (vats.length > 0) { // Prevent setting an empty array of vat rates
+				company.lock();
+				company.setVatRates(vats);
+				company.update();
+			}
 			throw Ok("/p/pro/company/", "Taux mis à jour");
 			
 		}

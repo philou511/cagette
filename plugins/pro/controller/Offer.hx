@@ -126,9 +126,9 @@ class Offer extends controller.Controller
 		}
 		
 		//for the VATBox component
-		view.rates = Lambda.array(company.getVatRates()).join("|");
+		view.rates = Lambda.map(company.getVatRates(),function(v) return v.value).join("|");
 		view.price = 0;
-		view.vat = Lambda.array(company.getVatRates())[0];
+		view.vat = company.getVatRates()[0].value;
 
 		if (f.isValid()) {
 			f.toSpod(o);
