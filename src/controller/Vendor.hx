@@ -94,6 +94,8 @@ class Vendor extends Controller
 		var vendor = catalog.vendor;
 		view.vendor = vendor;
 
+		view.groupId = app.user.getGroup().id;
+		
 		if(checkToken()){
 			vendor.lock();
 			vendor.email = app.user.email;

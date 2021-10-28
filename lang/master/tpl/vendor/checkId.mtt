@@ -49,14 +49,15 @@
                     <p>
                         Vous devez demander au producteur d'ouvrir lui-même son compte.
                     </p>
-                    <p>
-                        Pour ce faire, il doit se connecter (ou s'inscrire) à Cagette.net avec l'email <b>::vendor.email::</b><br/> et se rendre sur la page d'inscription :
-                    </p>
-                    
-                    <p class="linkToShare">
-                        https://app.cagette.net/discovery				
-                        
-                    </p>
+                    <div id="neo-container"></div>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function(event) {
+                            neo.createNeoModule("neo-container", "inviteVendor", {
+                                    groupId: ::groupId::,
+                                    existingVendorEmail: "::vendor.email::"
+                            });
+                        });
+                    </script>
                 </div>
               </div>
         </div>
