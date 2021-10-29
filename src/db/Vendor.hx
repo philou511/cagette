@@ -1,9 +1,9 @@
 package db;
+import Common;
 import pro.db.VendorStats;
 import sugoi.form.validators.EmailValidator;
 import sys.db.Object;
 import sys.db.Types;
-import Common;
 
 enum DisabledReason{
 	IncompleteLegalInfos; 	//incomplete legal infos
@@ -71,7 +71,7 @@ class Vendor extends Object
 	@hideInForms public var siretInfos : SNull<SData<SiretInfos>>; //infos from SIRET API
 	@hideInForms public var activityCode:SNull<SString<8>>;//code NAF (NAFRev2)
 	
-	public var vendorPolicy:SBool; //charte producteurs
+	@hideInForms public var vendorPolicy:SBool; //charte producteurs
 	@hideInForms public var tosVersion: SNull<SInt>; //CGV version checked
 	
 	public var linkText:SNull<SString<256>>;
@@ -252,7 +252,6 @@ class Vendor extends Object
 			"linkText" 			=> t._("Link text"),			
 			"linkUrl" 			=> t._("Link URL"),			
 			"companyNumber" 	=> "Numéro SIRET (14 chiffres)",	
-			"vendorPolicy"		=> "Ce producteur est conforme à la <a href=\"https://www.cagette.net/charte-producteurs\" target=\"_blank\">Charte Producteurs Cagette.net</a>"
 		];
 	}
 
