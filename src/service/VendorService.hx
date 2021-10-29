@@ -1,9 +1,9 @@
 package service;
 
-import sugoi.form.elements.IntInput;
 import sugoi.form.elements.Input.InputType;
-import tink.core.Error;
+import sugoi.form.elements.IntInput;
 import sugoi.form.validators.EmailValidator;
+import tink.core.Error;
 
 typedef VendorDto = {
 	name:String,
@@ -175,7 +175,7 @@ class VendorService{
 		
 		//country
 		form.removeElementByName("country");
-		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country,true));
+		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country.toUpperCase(),true));
 		
 		//profession
 		form.addElement(new sugoi.form.elements.IntSelect('profession',t._("Profession"),sugoi.form.ListData.fromSpod(service.VendorService.getVendorProfessions()),vendor.profession,true),4);
