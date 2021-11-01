@@ -12,7 +12,7 @@
 				</div>					
 			::elseif(company.discovery==true)::
 			<a href="/p/pro/upgrade">
-				<div class="pull-right">
+				<div class="pull-right" style="margin-top:8px">
 					<div id="vendor-freemium-progress-container"></div>
 				</div>
 				<script>
@@ -128,7 +128,7 @@
 </div>
 
 ::if(company.discovery==true)::
-<div id="vendor-freemium-alert-container"></div>
+<div id="vendor-freemium-alert-container" style="margin-bottom:8px"></div>
 <script>
 	document.addEventListener("DOMContentLoaded", function (event) {
 		neo.createNeoModule("vendor-freemium-alert-container", "vendorFreemiumAlert", {
