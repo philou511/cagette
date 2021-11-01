@@ -314,7 +314,7 @@ class Group extends controller.Controller
 			#if plugins
 			try{
 				//sync if this user is not cpro
-				if(service.VendorService.getVendorsFromUser(app.user).length==0){
+				if(service.VendorService.getCagetteProFromUser(app.user).length==0){
 					crm.CrmService.syncToSiB(app.user,true,"group_created",{groupName:g.name,userName:app.user.firstName});
 				}
 			}catch(e:Dynamic){

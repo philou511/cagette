@@ -7,10 +7,9 @@ import sys.db.Types;
 class RemoteCatalog extends sys.db.Object
 {
 	public var id : SId; //same ID as linked Catalog 
-	public var remoteCatalogId : SInt;  //related cpro catalog
+	public var remoteCatalogId : SInt;  //related cpro PCatalog
 	public var needSync : SBool;
 	var disabledProducts : SNull<SText>; //list of locally disabled products separated by ","
-	
 	
 	public function new(){
 		needSync = false;

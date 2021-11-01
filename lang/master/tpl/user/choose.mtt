@@ -2,7 +2,7 @@
 
 	
 <!--<div class="col-md-8 col-md-offset-2" ::cond isCovid==true::>-->
-	::if(vendors!=null && vendors.length>0)::
+	::if(cagettePros!=null && cagettePros.length>0)::
 	<div class="col-md-12" >
 		<div class="alert alert-warning" style="background-color: white;">
 			
@@ -12,9 +12,15 @@
 		
 			<div class="row">
 				<div class="col-md-3 text-center">					
+					::if(discovery)::
 					<a href="https://formation.alilo.fr/course/view.php?id=7" class="btn btn-danger" target="_blank">
 						<i class="icon icon-youtube"></i> Parcours Découverte
 					</a>
+					::else::
+					<a href="https://www.cagette.net/guide-express/" class="btn btn-danger" target="_blank">
+						<i class="icon icon-youtube"></i> Guide Express
+					</a>					
+					::end::
 					<p style="font-size: 0.9em;margin-top:12px"><b>Commencez par ici !</b><br/> Des vidéos qui vont guideront pas à pas</p>			
 				</div>
 				<div class="col-md-3 text-center">					
@@ -91,18 +97,6 @@
 	</div>
 	::end::
 
-	<!--
-	::if(isGroupAdmin || (vendors!=null && vendors.length>0))::
-	<div class="col-md-12">
-		<div class="alert alert-danger">
-			<b>Mise à jour des catégories du 26 Avril :</b> Le système de catégorisation des produits sur Cagette.net a été repensé pour plus de clarté. <br/>
-			Pensez à vérifier vos boutiques en ligne et à choisir les catégories les plus adaptées à vos produits ! <br/>
-			<a href="https://wiki.cagette.net/admin:nvllescats" target="_blank">En savoir plus</a>
-		</div>
-	</div>
-	::end::
-	-->
-
 	<div class="col-md-12">
 		<h2>::_("Hello")::
 		::if whichUser()==0::
@@ -114,14 +108,15 @@
 		</h2>				
 	</div>
 
-	<div class="col-md-12" ::cond vendors!=null && vendors.length>0::>
+	<div class="col-md-12" ::cond cagettePros!=null && cagettePros.length>0::>
 		<p>Connectez-vous à votre <b>compte producteur Cagette Pro</b> :</p>
 	</div>
 
 	<!-- cagette pro -->
-	<div class="col-md-12" ::cond vendors!=null::>
+	<div class="col-md-12" ::cond cagettePros!=null::>
 		<div class="row">
-		::foreach v vendors::
+		::foreach cp cagettePros::
+			::set v = cp._vendor::
 			<div class="col-md-4">
 				<div class="blockIconBadge" data-toggle="tooltip" title="Producteur équipé de Cagette Pro">
 					<i class="icon icon-farmer-pro"></i>
@@ -146,7 +141,7 @@
 	<!-- groups -->
 	<div class="col-md-12">
 		<div class="row">
-			::foreach group amaps::				
+			::foreach group groups::				
 				<div class="col-md-4">
 					<div class="blockIconBadge group" >
 						<i class="icon icon-map-marker"></i>
@@ -161,7 +156,7 @@
 				</div>
 			::end::
 			
-			::if amaps.length==0::
+			::if groups.length==0::
 			<div class="col-md-12">
 				<div class="article text-center">
 					<p>
@@ -224,28 +219,9 @@
 			_.overlay("/data/disabled.html","");
 			::end::
 
-			::if(displayFormationPromo)::
-			//promo formation 2021-09 tout les 3 jours
-			/*var dateString = localStorage.cagetteProTestWindow;
-			var date = null;
-			var now = new Date();
-			if(dateString!=null){
-				date = new Date(dateString); 
-				var oneDayLater = date;
-				oneDayLater.setDate(date.getDate()+3);
-			}
-			console.log(date);
-			
-			if( date==null || now.getTime() > oneDayLater.getTime() ){
-				localStorage.cagetteProTestWindow = now.toJSON();
-				_.overlay("/data/formation-2021-09.html","");
-			}else{
-				console.log("no popup for now");
-			}*/
-			::end::
-
+			/*
 			::if(isFreeVendor || isGroupAdmin)::
-			/*document.addEventListener("DOMContentLoaded", function(event) {
+			document.addEventListener("DOMContentLoaded", function(event) {
 
 				if(localStorage.nouvelleReglesCount==null ){
 					localStorage.nouvelleReglesCount=0;
@@ -255,13 +231,10 @@
 					localStorage.nouvelleReglesCount++;
 				}
 				
-			});*/
+			});
 			::end::
-			
-			
+			*/
 
 			//]]>
 	</script>
-
-
 ::end::

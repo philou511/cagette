@@ -1,5 +1,6 @@
 package service;
 
+import pro.db.CagettePro;
 import sugoi.form.elements.Input.InputType;
 import sugoi.form.elements.IntInput;
 import sugoi.form.validators.EmailValidator;
@@ -37,18 +38,19 @@ class VendorService{
 	}
 
 	/**
-		Get vendors linked to a user account
+		Get vendors accounts linked to a user account
 	**/
-	public static function getVendorsFromUser(user:db.User):Array<db.Vendor>{
+	public static function getCagetteProFromUser(user:db.User):Array<CagettePro>{
 		//get vendors linked to this account
 		//var vendors = Lambda.array( db.Vendor.manager.search($user==user,false) );
-		var vendors = [];
+		// var vendors = [];
 		#if plugins
-		var vendors2 = Lambda.array(Lambda.map(pro.db.PUserCompany.getCompanies(user),function(c) return c.vendor));
-		vendors = vendors2.concat(vendors);
-		vendors = tools.ObjectListTool.deduplicate(vendors);
+		// var vendors2 = Lambda.array(Lambda.map(pro.db.PUserCompany.getCompanies(user),function(c) return c.vendor));
+		// vendors = vendors2.concat(vendors);
+		// vendors = tools.ObjectListTool.deduplicate(vendors);
+		return pro.db.PUserCompany.getCompanies(user);
 		#end
-		return vendors;
+		// return vendors;
 	}
 
 	/**
