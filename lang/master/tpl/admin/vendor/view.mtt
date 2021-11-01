@@ -1,6 +1,5 @@
 ::use 'admin/design.mtt'::
 
-
 <div class="row">
 	<div class="col-md-8">
 		<h4>Producteur #::vendor.id::</h4>
@@ -13,8 +12,9 @@
 			::end::
 			<!--Charte Producteurs : $$check(::vendor.vendorPolicy::)-->
 			Profession : ::if(profession!=null)::<b>::profession.name::</b>::else:: ??? ::end::<br/>
+
 			::if(tmpVendorId!=null)::
-				 <a href='/p/pro/admin/certification#/::tmpVendorId::' target="_blank">Lien vers réponses au questionnaire</a><br/>
+				<a href='/p/pro/admin/certification#/::tmpVendorId::' target="_blank">Réponses au questionnaire</a><br/>
 			::end::
 		</p>
 	</div>

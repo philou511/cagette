@@ -98,10 +98,14 @@
 									Messagerie
 								</a>								
 							</li>
+						</ul>
 
-							
-
-							
+						<ul class="nav navbar-nav navbar-right">
+							<li>
+								<a href="/p/pro/upgrade#formation" target="_blank" style="background: orange;border-radius: 8px;padding: 6px 8px;margin: 8px;color: white;font-size: 0.9em;font-weight: bold;">
+									Etude de financement formation
+								</a>								
+							</li>
 						</ul>
 					</div>
 			</nav>

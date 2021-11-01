@@ -25,7 +25,7 @@ class Product extends Controller
 		
 		if (!app.user.canManageContract(product.catalog)) throw t._("Forbidden access");
 		
-		var f = ProductService.getForm(product);
+		var f = ProductService.getForm(product);		
 		
 		if (f.isValid()) {
 

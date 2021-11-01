@@ -50,6 +50,12 @@ class Amap extends Controller
 		html.docLink = "https://wiki.cagette.net/admin:admin_boutique";
 		form.addElement(html ,7);
 	
+		if(group.hasShopMode()){
+			//payment help
+			var html = new sugoi.form.elements.Html("payments","<p class='desc'><a href='https://formation.alilo.fr/mod/page/view.php?id=821' target='_blank'><i class=\"icon icon-info\"></i> En savoir plus sur la gestion des paiements</a></p>","");
+			form.addElement(html ,9);
+		}
+
 		if (form.checkToken()) {
 			
 			if(form.getValueOf("id") != app.user.getGroup().id) {

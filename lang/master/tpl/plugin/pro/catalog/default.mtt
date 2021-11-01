@@ -7,7 +7,7 @@
 		<p>
 			$$insert(Nouveau catalogue,/p/pro/catalog/insert/)
 
-			<a href="https://formation.alilo.fr/course/view.php?id=7&section=4" target="_blank" class="btn btn-warning btn-sm">
+			<a href="https://formation.alilo.fr/course/view.php?id=7&section=3" target="_blank" class="btn btn-warning btn-sm">
 				<i class="icon icon-youtube"></i> Tuto vidéo
 			</a>
 

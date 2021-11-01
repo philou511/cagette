@@ -4,6 +4,13 @@
 	<div class=" article">
 		<h2>Gestion des stocks</h2>	
 
+		<p>
+			<a href="https://formation.alilo.fr/mod/page/view.php?id=798" target="_blank" class="btn btn-warning btn-sm">
+				<i class="icon icon-youtube"></i> Tuto vidéo
+			</a>
+		</p>
+		
+
 		<form method="POST" id="stocksForm">
 		<input type="hidden" value="::token::" name="token"	/>
 		<table class="table table-condensed">
