@@ -18,7 +18,7 @@
 				<script>
 					document.addEventListener("DOMContentLoaded", function (event) {
 						neo.createNeoModule("vendor-freemium-progress-container", "vendorFreemiumProgress", {
-							vendorId: :: vendor.id::,
+							vendorId: ::vendor.id::,
 						});
 					});
 				</script>
@@ -115,104 +115,6 @@
 			
 	::end::
 
-	<!-- Breadcrumb 
-	<div class="row">
-		<div class="col-md-12">
-			<ol class="breadcrumb">
-				<li><a href="/user/choose">Accueil</a></li>
-				::foreach section breadcrumb()::
-					<li id="::section.id::"><a href="::section.link::">::section.name::</a></li>
-				::end::
-			</ol>
-		</div>
-	</div>-->
-
-	<div class="collapse navbar-collapse" id="cagette-navbar">
-		::set category = breadcrumb()[1]::
-		::if(category!=null):: ::set category=category.id:: ::end::
-		<ul class="nav navbar-nav navbar-left">
-
-			<li ::attr class if(category!=null && category=="home" ) 'active' ::>
-				<a href="/p/pro">
-					<i class="icon icon-map-marker"></i> Mes groupes
-				</a>
-			</li>
-
-			<li ::attr class if(category!=null && category=="product" ) 'active' ::>
-				<a href="/p/pro/product">
-					<i class="icon icon-products"></i> Produits
-				</a>
-			</li>
-
-			<li ::attr class if(category!=null && category=="catalog" ) 'active' ::>
-				<a href="/p/pro/catalog/">
-					<i class="icon icon-book"></i> Catalogues
-				</a>
-			</li>
-
-			<li ::attr class if(category!=null && category=="stock" ) 'active' ::>
-				<a href="/p/pro/stock/">
-					<i class="icon icon-wholesale"></i> Stocks
-				</a>
-			</li>
-
-			<li ::attr class if(category!=null && category=="delivery" ) 'active' ::>
-				<a href="/p/pro/sales">
-					<i class="icon icon-basket"></i> Vente
-				</a>
-			</li>
-
-			<li ::cond company!=null && company.network==true:: ::attr class if(category!=null && category=="network"
-				) 'active' ::>
-				<a href="/p/pro/network">
-					<i class="icon icon-users" aria-hidden="true"></i>
-					Réseau
-				</a>
-			</li>
-
-			<li ::attr class if(category!=null && category=="company" ) 'active' ::>
-				<a href="/p/pro/company">
-					<i class="icon icon-farmer"></i>
-					Producteur
-				</a>
-			</li>
-
-			<li ::attr class if(category!=null && category=="messages" ) 'active' ::>
-				<a href="/p/pro/messages">
-					<i class="icon icon-mail"></i>
-					Messagerie
-				</a>
-			</li>
-
-
-
-
-		</ul>
-
-		::if(company!=null && company.discovery==true)::
-		<ul class="nav navbar-nav navbar-right">
-
-			<li>
-				<a href="http://www.cagette.pro" data-toggle="tooltip"
-					title="Vous avez actuellement un compte Cagette Découverte, limité à un seul point de livraison. Débloquez tout votre potentiel en passant à Cagette Pro !"
-					target="_blank" style="background:#d54d06;border-radius: 5px;color: white;padding: 9px;margin: 4px;">
-					<i class="icon icon-farmer-pro"></i>
-					Passez à Cagette Pro !
-				</a>
-			</li>
-
-		</ul>
-		::end::
-
-	</div>
-
-
-
-</nav>
-
-::end::
-
-
 <!-- Breadcrumb -->
 <div class="row">
 	<div class="col-md-12">
@@ -225,14 +127,16 @@
 	</div>
 </div>
 
+::if(company.discovery==true)::
 <div id="vendor-freemium-alert-container"></div>
 <script>
 	document.addEventListener("DOMContentLoaded", function (event) {
 		neo.createNeoModule("vendor-freemium-alert-container", "vendorFreemiumAlert", {
-			vendorId: :: vendor.id::,
+			vendorId: ::vendor.id::,
 		});
 	});
 </script>
+::end::
 
 <div class="row">
 	<div id="content" class="col-md-12">
