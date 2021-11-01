@@ -95,6 +95,7 @@
 				<i class="icon icon-chevron-left"></i> ::_("Home")::
 			</a>
 		</div>
+			
 	</macro>
 	
 	<macro name="browse(b,url)">$$browseCustom(::b::,::url::,Page ::b.page:: ::if b.pages::/::b.pages:: ::end::)</macro>

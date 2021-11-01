@@ -12,9 +12,16 @@
 				</div>					
 			::elseif(company.discovery==true)::
 			<a href="/p/pro/upgrade">
-				<div class="pull-right iconBadge farmer" style="margin-top:8px" data-toggle="tooltip" title="Compte Découverte">
-					<i class="icon icon-farmer"></i>
-				</div>		
+				<div class="pull-right" style="margin-top:8px">
+					<div id="vendor-freemium-progress-container"></div>
+				</div>
+				<script>
+					document.addEventListener("DOMContentLoaded", function (event) {
+						neo.createNeoModule("vendor-freemium-progress-container", "vendorFreemiumProgress", {
+							vendorId: ::vendor.id::,
+						});
+					});
+				</script>
 			</a>
 			::else::
 			<a href="/p/pro/upgrade">
@@ -112,46 +119,57 @@
 			
 	::end::
 
-	<!-- Breadcrumb 
-	<div class="row">
-		<div class="col-md-12">
-			<ol class="breadcrumb">
-				<li><a href="/user/choose">Accueil</a></li>
-				::foreach section breadcrumb()::
-					<li id="::section.id::"><a href="::section.link::">::section.name::</a></li>
-				::end::
-			</ol>
-		</div>
-	</div>-->
-
-	<div class="row">
-		<div id="content" class="col-md-12">
-			::foreach notification getMessages()::
-			<div class="alert ::if notification.error:: alert-danger ::else:: alert-success ::end::" ::cond notification::>
-				::if notification.error::
-				<i class="icon icon-alert"></i>
-				::else::
-				<i class="icon icon-check"></i>
-				::end::
-				
-				::raw notification.text::					
-			</div>
+<!-- Breadcrumb -->
+<div class="row">
+	<div class="col-md-12">
+		<ol class="breadcrumb">
+			<li><a href="/user/choose">Accueil</a></li>
+			::foreach section breadcrumb()::
+			<li id="::section.id::"><a href="::section.link::">::section.name::</a></li>
 			::end::
-		</div>	
+		</ol>
 	</div>
-		
-	<div class="row">
-		::raw __content__::
-	</div>		
-		
-	$$footer()
-	
-	<div class="row">
-		<div class="col-md-12">			
-			<!--  SQL LOG -->
-			<table class="sqlLog table table-bordered" ::cond sqlLog::>
+</div>
+
+::if(company.discovery==true)::
+<div id="vendor-freemium-alert-container" style="margin-bottom:8px"></div>
+<script>
+	document.addEventListener("DOMContentLoaded", function (event) {
+		neo.createNeoModule("vendor-freemium-alert-container", "vendorFreemiumAlert", {
+			vendorId: ::vendor.id::,
+		});
+	});
+</script>
+::end::
+
+<div class="row">
+	<div id="content" class="col-md-12">
+		::foreach notification getMessages()::
+		<div class="alert ::if notification.error:: alert-danger ::else:: alert-success ::end::" ::cond notification::>
+			::if notification.error::
+			<i class="icon icon-alert"></i>
+			::else::
+			<i class="icon icon-check"></i>
+			::end::
+
+			::raw notification.text::
+		</div>
+		::end::
+	</div>
+</div>
+
+<div class="row">
+	::raw __content__::
+</div>
+
+$$footer()
+
+<div class="row">
+	<div class="col-md-12">
+		<!--  SQL LOG -->
+		<table class="sqlLog table table-bordered" ::cond sqlLog::>
 			::foreach r sqlLog::
-			<tr ::attr class if(r.bad) 'badSql'::>
+			<tr ::attr class if(r.bad) 'badSql' ::>
 				<td>::r.t::ms</td>
 				<td>::r.length::</td>
 				<td><a href="#" onclick="javascript:alert('::r.explain::');return false;">Exp</a></td>
@@ -159,7 +177,7 @@
 				<td>::r.sql::</td>
 			</tr>
 			::end::
-			</table>
-		</div>
+		</table>
 	</div>
+</div>
 ::end::
