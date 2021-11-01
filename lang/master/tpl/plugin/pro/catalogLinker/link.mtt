@@ -163,6 +163,14 @@ var createNewOffer = function(productId){
         let offer = res.offer;
         offers.push(offer);
 
+        //clone product row 
+        var rowToClone = document.querySelectorAll("#linkageTable tr")[2];
+        var newRow = rowToClone.cloneNode(true);
+        newRow.querySelectorAll('td')[0].innerHTML = "<b>"+offer.name+"</b>";
+        document.querySelector("#linkageTable").appendChild(newRow);
+
+
+        //clone offer row 
         var rowToClone = document.querySelectorAll("#linkageTable tr")[3];
         var newRow = rowToClone.cloneNode(true);
         newRow.querySelectorAll('td')[0].innerHTML = offer.name+" - "+offer.price+" &euro;";
@@ -171,6 +179,8 @@ var createNewOffer = function(productId){
         select.id = "offer"+offer.id;        
         select.value = productId;
         document.querySelector("#linkageTable").appendChild(newRow);
+
+        check();
         
     }).catch(function(err){
         msg(err.message);
@@ -182,7 +192,7 @@ for(offer of offers){
     document.querySelector("#offer"+offer.id).onchange = onChooseProduct;        
 }
 
-document.querySelector("#validate").onclick = function(){
+var check = function(){
     
     console.log("VALIDATE");
 
@@ -196,9 +206,7 @@ document.querySelector("#validate").onclick = function(){
     }
 
     console.log(linkage);
-
     
-
     //check prices match
     for( k of linkage.keys()){
 
@@ -230,8 +238,7 @@ document.querySelector("#validate").onclick = function(){
             // }            
         //}
         if(linkage.get(String(p.id))==null){
-            errors.push("<p>Le produit <b>"+p.name+"</b> n'a pas été relié à une offre de votre catalogue.<br/><a href='#' onclick='createNewOffer("+p.id+")' class='btn btn-default btn-sm'>Ajouter ce produit à mon catalogue</a></p>");
-            
+            errors.push("<p>Le produit <b>"+p.name+"</b> n'a pas été relié à une offre de votre catalogue.<br/><a onclick='createNewOffer("+p.id+")' class='btn btn-default btn-sm'>Ajouter ce produit à mon catalogue</a></p>");            
         }
     }
 
@@ -262,25 +269,29 @@ document.querySelector("#validate").onclick = function(){
     if(errors.length>0){
         console.log("there is errors, we cant submit");
         submit = false;
-    } 
+    }
+    
+    return {submit:submit,linkage:linkage};
+};   
 
-    if(submit==true){
+document.querySelector("#validate").onclick = function(){
+    var r = check();
+
+    if(r.submit==true){
         console.log("SUBMIT !");
 
         var req = "?";
         var params = [];
-        for( k of linkage.keys()){
-            params.push( "p"+k+"="+linkage.get(k) );
+        for( k of r.linkage.keys()){
+            params.push( "p"+k+"="+r.linkage.get(k) );
         }
         params.push("token=::token::");
         req += params.join("&");
 
         document.location.href = "/p/pro/catalogLinker/submitLinkage/::catalog.id::/::pcatalog.id::"+req;
-
-
     }
 
-};   
+};
 
 //]]>
 </script>

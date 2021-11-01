@@ -69,7 +69,15 @@
 									<!--<a href="/contract/insert/::v.id::" class="btn btn-default btn-sm">
 										<i class="icon icon-plus"></i> Nouveau catalogue
 									</a>-->
-									<div class="alert alert-warning">Ce producteur est référencé mais n'a pas de compte producteur.</div>
+									<div class="alert alert-warning">
+										<p>
+											Ce producteur est référencé mais n'a pas encore de compte producteur.
+										</p>
+										<p class="text-center">
+											<a href="/contract/inviteVendor/::v.id::" class="btn btn-primary">L'inviter à ouvrir un producteur</a>
+										</p>
+
+									</div>
 								::else::
 									<a href="/contract/insertChoose/::v.id::" class="btn btn-default btn-sm">
 										<i class="icon icon-plus"></i> Nouveau catalogue

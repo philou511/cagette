@@ -100,10 +100,13 @@ class Contract extends Controller
 
 	/**
 	  2- invite a vendor
+
+	  a Vendor can be specified if we invite a invited vendor to open a discovery vendor
 	**/
 	@logged @tpl("contractadmin/inviteVendor.mtt")
-	public function doInviteVendor() {
+	public function doInviteVendor(?vendor:db.Vendor) {
 		view.groupId = app.user.getGroup().id;
+		if(vendor!=null) view.vendor = vendor;
 	}
 
 	/**
