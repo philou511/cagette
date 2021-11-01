@@ -221,10 +221,20 @@ class App {
 		r.request();
 	}
 
+    public function modal(divId:String) {		
+
+			var modalElement = Browser.document.getElementById(divId);
+			var modal = new Modal(modalElement);
+			// modalElement.querySelector(".modal-body").innerHTML = data;
+			// if (title != null) modalElement.querySelector(".modal-title").innerHTML = title;
+			// if (!large) modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
+			modal.show();
+	}
+
 	/**
 	 * Displays a login box
 	 */
-	public function loginBox(redirectUrl:String,sid:String,?message:String,?phoneRequired=false,?addressRequired=false,?openRegistration=false,?invitedUserEmail:String, ?invitedGroupId:Int) {	
+	public function loginBox(redirectUrl:String,sid:String,?message:String,?phoneRequired=false,?addressRequired=false,?openRegistration=false,?invitedUserEmail:String, ?invitedGroupId:Int, ?asDialog:Bool) {	
         var node = js.Browser.document.createDivElement();
 		node.id = "login-registration-container";
 		js.Browser.document.body.appendChild(node);
@@ -239,7 +249,8 @@ class App {
             addressRequired: addressRequired,
             openRegistration: openRegistration,
             invitedUserEmail: invitedUserEmail,
-            invitedGroupId: invitedGroupId
+            invitedGroupId: invitedGroupId,
+            asDialog: asDialog
         });
 	}
 

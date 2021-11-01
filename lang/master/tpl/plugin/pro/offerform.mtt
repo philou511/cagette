@@ -19,7 +19,7 @@
 
 
 <script>
-	_.getVATBox(::price::,"::currency()::","::rates::",::vat::,"::form.name::");
+	_.getVATBox(::price::,"::currency()::",'::rates::',::vat::,"::form.name::");
 </script>
 
 ::end::

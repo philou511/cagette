@@ -1,7 +1,9 @@
 package service;
 
-import tink.core.Error;
+import sugoi.form.elements.Input.InputType;
+import sugoi.form.elements.IntInput;
 import sugoi.form.validators.EmailValidator;
+import tink.core.Error;
 
 typedef VendorDto = {
 	name:String,
@@ -108,7 +110,7 @@ class VendorService{
 
 		//search by profession
 		if(search.profession!=null){
-			where.push('profession = ${search.profession}');
+			where.push('(profession = ${search.profession} OR production2 = ${search.profession} OR production3 = ${search.profession})');
 		}
 		
 		var selectDist = '';
@@ -129,12 +131,11 @@ class VendorService{
 		//cpro first
 		for( v in vendors.copy() ){
 			var cpro = v.getCpro();
-			if( cpro !=null && cpro.disabled){
-				vendors.remove(v);
-				//do not display students cpro accounts !
-				// if(cpro.disabled) continue;
-				// vendors.unshift(v);
+			if( cpro !=null){
+				if (cpro.disabled) vendors.remove(v);
+				if(cpro.training) vendors.remove(v);				
 			} 
+			
 		}
 		#end
 
@@ -174,7 +175,7 @@ class VendorService{
 		
 		//country
 		form.removeElementByName("country");
-		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country,true));
+		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country.toUpperCase(),true));
 		
 		//profession
 		form.addElement(new sugoi.form.elements.IntSelect('profession',t._("Profession"),sugoi.form.ListData.fromSpod(service.VendorService.getVendorProfessions()),vendor.profession,true),4);
@@ -184,18 +185,25 @@ class VendorService{
 
 		if(legalInfos){
 			form.addElement(new sugoi.form.elements.Html("html","<h4>Informations légales obligatoires</h4>"));
-
-			//form.addElement(new sugoi.form.elements.IntSelect('legalStatus',"Statut juridique",sugoi.form.ListData.fromSpod(service.VendorService.getLegalStatuses()),vendor.legalStatus,true));
-			if(vendor.legalStatus!=null){
+			
+			/*if(vendor.legalStatus!=null){
 				form.addElement(new sugoi.form.elements.Html("html",vendor.getLegalStatus(false),"Statut juridique"));
-			}else{
+				var el = new sugoi.form.elements.IntInput('legalStatus',"Statut juridique",vendor.legalStatus,true);
+				el.inputType = InputType.ITHidden;
+				form.addElement(el);
+
+			}else{*/
+				if(vendor.legalStatus!=null){
+					form.addElement(new sugoi.form.elements.Html("html",vendor.getLegalStatus(false),"Statut juridique actuel :"));
+				}
+
 				var data = [
 					{label:"Société",value:0},
 					{label:"Entreprise individuelle",value:1},
 					{label:"Association",value:2},
 					{label:"Particulier (mettez 0 comme numéro SIRET)",value:3}];
 				form.addElement(new sugoi.form.elements.IntSelect('legalStatus',"Forme juridique",data,null,true));
-			}
+			//}
 
 			form.addElement(new sugoi.form.elements.StringInput("companyNumber","Numéro SIRET (14 chiffres) ou numéro RNA pour les associations.",vendor.companyNumber,true));
 			form.addElement(new sugoi.form.elements.StringInput("vatNumber","Numéro de TVA (si assujeti)",vendor.vatNumber,false));
@@ -243,7 +251,6 @@ class VendorService{
 
 		//particulier
 		if(legalInfos && data.legalStatus==3){
-
 			vendor.legalStatus = -1;//particulier
 		}
 
@@ -315,6 +322,18 @@ class VendorService{
 		var filePath = sugoi.Web.getCwd()+"../data/categoriesJuridiques.json";
 		var json:Array<{id:Int,name:String}> = haxe.Json.parse(sys.io.File.getContent(filePath));
 		return json;
+	}
+
+	public static function getUnlinkedCatalogs(company:pro.db.CagettePro){
+
+		var remoteCatalogs = connector.db.RemoteCatalog.manager.search($remoteCatalogId in company.getCatalogs().map(x -> x.id), false); 
+		var vendor = company.vendor;
+		var catalogs = vendor.getActiveContracts().array();
+		catalogs = catalogs.filter( c -> c.group.hasShopMode() );//remove CSA group
+		catalogs = catalogs.filter( c -> {
+			return remoteCatalogs.find( rc -> rc.getContract().id==c.id) == null;
+		}); //remove linked catalogs
+		return catalogs;
 	}
 
 }

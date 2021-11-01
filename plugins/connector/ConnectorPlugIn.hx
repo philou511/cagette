@@ -30,14 +30,14 @@ class ConnectorPlugIn extends PlugIn implements IPlugIn{
 		
 		switch(e) {
 			case Nav(navigation, name, cid):
-				if (name == "contractAdmin"){
+				/*if (name == "contractAdmin"){
 					
 					//check if it is a remote contract
 					var rc = getRemoteCatalog(cid);
 					if (rc != null) {
 						navigation.push({id:"cpro",name:"Producteur Cagette Pro",link:"/p/connector/contract/"+cid,icon:"farmer-pro"});
 					}
-				}
+				}*/	
 			case PreNewDistrib(contract):
 				
 				//warn that the new distribution will be sent to the producer

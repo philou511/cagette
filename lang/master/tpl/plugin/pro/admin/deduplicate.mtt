@@ -21,7 +21,7 @@
 	</tr>
 	::foreach v vendors::	
 	<tr>
-		<td><a href="/p/pro/admin/vendor/::v.id::">::v.name::</a></td>
+		<td><a href="/admin/vendor/view/::v.id::">::v.name::</a></td>
 		<td>::v.email::</td>
 		<td>::v.duplicates::</td>
 		<td>::v.zipCode::</td>

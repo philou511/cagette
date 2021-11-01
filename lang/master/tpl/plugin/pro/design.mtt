@@ -1,42 +1,131 @@
 ﻿::use 'plugin/pro/base.mtt'::
-
-<div class="row header" style="margin-top:10px;">
-	<div class="col-md-8">
-		<h1 ::cond vendor!=null::>::vendor.name::</h1>
-	</div>
-
-	<div class="col-md-4 accountBlock">
-		<div class="pull-right">
-
-			<div id="vendor-freemium-progress-container"></div>
+		
+	<div class="row header" style="margin-top:10px;">
+		<div class="col-md-6">
+			<h1 ::cond vendor!=null:: >::vendor.name::</h1>
 		</div>
+		
+		<div class="col-md-6 accountBlock">	
+			::if(vendor.isDisabled())::
+				<div class="pull-right iconBadge danger" style="margin-top:8px" data-toggle="tooltip" title="Votre compte est bloqué">
+					<i class="icon icon-alert"></i>
+				</div>					
+			::elseif(company.discovery==true)::
+			<a href="/p/pro/upgrade">
+				<div class="pull-right">
+					<div id="vendor-freemium-progress-container"></div>
+				</div>
+				<script>
+					document.addEventListener("DOMContentLoaded", function (event) {
+						neo.createNeoModule("vendor-freemium-progress-container", "vendorFreemiumProgress", {
+							vendorId: :: vendor.id::,
+						});
+					});
+				</script>
+			</a>
+			::else::
+			<a href="/p/pro/upgrade">
+				<div class="pull-right iconBadge farmer-pro" style="margin-top:8px" data-toggle="tooltip" title="Compte Producteur illimité">
+					<i class="icon icon-farmer-pro"></i>
+				</div>
+			</a>
+			::end::
 
-
-		$$userMenu(::user::)
-
-
-		<script>
-			document.addEventListener("DOMContentLoaded", function (event) {
-				neo.createNeoModule("vendor-freemium-progress-container", "vendorFreemiumProgress", {
-					vendorId: :: vendor.id::,
-				});
-			});
-		</script>
+			$$userMenu(::user::)
+		
+		</div>	
+			
 	</div>
+		
 
-</div>
+	::if user!= null && company!=null::
 
-::if user!= null && company!=null::
+		<nav class="navbar navbar-default">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#cagette-navbar">
+				<span class="sr-only">Toggle navigation</span>						
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				</button>				  
+			</div>	
+				
+					<div class="collapse navbar-collapse" id="cagette-navbar">
+						::set category = breadcrumb()[1]::
+						::if(category!=null):: ::set category=category.id:: ::end::
+						<ul class="nav navbar-nav navbar-left">
 
-<nav class="navbar navbar-default">
-	<div class="navbar-header">
-		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#cagette-navbar">
-			<span class="sr-only">Toggle navigation</span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-		</button>
-	</div>
+							<li ::attr class if(category!=null && category=="home") 'active' ::>
+								<a href="/p/pro">
+									<i class="icon icon-map-marker"></i> Mes groupes
+								</a>								
+							</li>
+
+							<li ::attr class if(category!=null && category=="product") 'active' ::>
+								<a href="/p/pro/product">
+									<i class="icon icon-products"></i> Produits
+								</a>								
+							</li>
+
+							<li ::attr class if(category!=null && category=="catalog") 'active' ::>
+								<a href="/p/pro/catalog/">
+									<i class="icon icon-book"></i> Catalogues
+								</a>								
+							</li>
+
+							<li ::attr class if(category!=null && category=="stock") 'active' ::>
+								<a href="/p/pro/stock/">
+									<i class="icon icon-wholesale"></i> Stocks
+								</a>								
+							</li>
+
+							<li ::attr class if(category!=null && category=="delivery" )	'active' ::>
+								<a href="/p/pro/sales">
+									<i class="icon icon-basket"></i> Vente
+								</a>
+							</li>
+
+							<li ::cond company!=null && company.network==true:: ::attr class if(category!=null && category=="network") 'active' ::>
+								<a href="/p/pro/network">
+									<i class="icon icon-users" aria-hidden="true"></i>
+									Réseau
+								</a>								
+							</li>
+
+							<li ::attr class if(category!=null && category=="company") 		'active' ::>
+								<a href="/p/pro/company">
+									<i class="icon icon-farmer"></i>
+									Producteur
+								</a>								
+							</li>
+
+							<li ::attr class if(category!=null && category=="messages") 		'active' ::>
+								<a href="/p/pro/messages">
+									<i class="icon icon-mail"></i>
+									Messagerie
+								</a>								
+							</li>
+
+							
+
+							
+						</ul>
+					</div>
+			</nav>
+			
+	::end::
+
+	<!-- Breadcrumb 
+	<div class="row">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<li><a href="/user/choose">Accueil</a></li>
+				::foreach section breadcrumb()::
+					<li id="::section.id::"><a href="::section.link::">::section.name::</a></li>
+				::end::
+			</ol>
+		</div>
+	</div>-->
 
 	<div class="collapse navbar-collapse" id="cagette-navbar">
 		::set category = breadcrumb()[1]::

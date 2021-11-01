@@ -1,4 +1,5 @@
 package who;
+import db.Catalog;
 import Common;
 import datetime.DateTime;
 import sugoi.plugin.*;
@@ -22,7 +23,10 @@ class WhoPlugIn extends PlugIn implements IPlugIn{
 			case Nav(nav, name, cid):
 				
 				if(name=="contractAdmin"){
-					nav.push({id:"who",name:"Commande en gros", link:"/p/who/"+cid,icon:"wholesale"});		
+					var c = Catalog.manager.get(cid,false);
+					if(c!=null && connector.db.RemoteCatalog.getFromContract(c)!=null ){
+						nav.push({id:"who",name:"Commande en gros", link:"/p/who/"+cid,icon:"wholesale"});		
+					}					
 				}
 				
 			case HourlyCron(now) :

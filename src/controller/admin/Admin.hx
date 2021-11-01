@@ -1,4 +1,5 @@
 package controller.admin;
+import pro.db.VendorStats;
 
 import sugoi.db.Variable;
 import db.TxpProduct;
@@ -80,10 +81,14 @@ class Admin extends Controller {
 		view.title = t._("Email service configuration");
 		view.form = f;
 	}
-
-	function doPlugins(d:Dispatch) {
-		d.dispatch(new controller.admin.Plugins());
+	
+	function doVendor(d:haxe.web.Dispatch) {
+		d.dispatch(new controller.admin.Vendor());
 	}
+
+	// function doPlugins(d:Dispatch) {
+	// 	d.dispatch(new controller.admin.Plugins());
+	// }
 
 	/**
 		export taxo as CSV
@@ -332,8 +337,8 @@ class Admin extends Controller {
 			var cpro = pro.db.CagettePro.getFromVendor(v);
 			var blocked = cpro.getUserCompany().exists(uc -> uc.disabled);
 
-			Sys.print('<tr><td><a href="/p/pro/admin/vendor/${v.id}" target="_blank">${v.id} - ${v.name}</a></td>');
-			Sys.print('<td>${blocked ? "OUI" : "NON"}</a></td>');
+			Sys.print('<tr><td><a href="/admin/vendor/view/${v.id}" target="_blank">${v.id} - ${v.name}</a></td>');
+			Sys.print('<td>${blocked?"OUI":"NON"}</a></td>');
 			Sys.print('<td>${untyped v.cprocdate}</a></td>');
 			Sys.print("</tr>");
 		}
@@ -427,6 +432,28 @@ class Admin extends Controller {
 			g.update();
 			Sys.println(g.name + "<br/>");
 		}
+	}
+
+
+	function doTerraLibra(){
+
+		var v = db.Vendor.manager.get(12535,false);
+		var catalogs = v.getActiveContracts();
+		var groups = catalogs.map(c -> c.group);
+		for( g in groups){
+
+			Sys.println("<h2>"+g.name+"</h2>");
+			Sys.println("<table border='1'>");
+			for( ve in g.getVendors()) {
+
+				var vs = VendorStats.getOrCreate(ve);
+				Sys.println('<tr> <td>${ve.id}</td> <td>${ve.name}</td> <td>${vs.type}</td> <td>${vs.shopTurnover12months}€</td></tr>');
+
+			}
+			Sys.println("</table>");
+
+		}
+
 	}
 
 	@tpl('admin/process.mtt')

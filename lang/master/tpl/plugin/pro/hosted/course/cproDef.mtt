@@ -27,7 +27,7 @@
                 <td><input type="radio" name="vendor" value="::v.id::"/></td>
                 <td>::v.id::</td>
                 <td>
-                    <a href="/p/pro/admin/vendor/::v.id::" target="_blank">::v.name::</a>
+                    <a href="/admin/vendor/view/::v.id::" target="_blank">::v.name::</a>
                 </td>
                 <td>::v.email::</td>
                 <td>$$vendorType(::vs.type::)</td>
