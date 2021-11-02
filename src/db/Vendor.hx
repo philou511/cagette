@@ -306,7 +306,7 @@ class Vendor extends Object
 			case DisabledReason.IncompleteLegalInfos : "Informations légales incomplètes. Complétez vos informations légales pour débloquer le compte. (SIRET,capital social,numéro de TVA)";
 			case DisabledReason.NotCompliantWithPolicy : "Producteur incompatible avec la charte producteur de Cagette.net";
 			case DisabledReason.Banned : "Producteur bloqué par les administrateurs";
-			case DisabledReason.TurnoverLimitReached : "Ce producteur a atteind sa limite de chiffre d'affaire annuel";
+			case DisabledReason.TurnoverLimitReached : "Ce producteur a atteind sa limite de chiffre d'affaires annuel";
 		};
 	}
 

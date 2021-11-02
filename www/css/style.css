@@ -377,23 +377,13 @@ div.reportHeader {
       color: #a94442; }
 
 .blockIconBadge {
-  color: #8cb050;
-  background-color: white;
-  padding: 4px;
   position: absolute;
   top: -18px;
   right: 0px;
   z-index: 50;
-  border-radius: 20px;
-  font-size: 1.5em;
   width: 40px;
   height: 40px;
-  text-align: center;
-  border: 3px solid #bad096;
-  line-height: 20px; }
-  .blockIconBadge.group {
-    border: 3px solid #deceb3;
-    color: #deceb3; }
+  text-align: center; }
 
 /* a cagette group block (use it with .clickable ) */
 .groupBlock {
@@ -878,7 +868,3 @@ a.btn-warning {
   color: #8a6d3b;
   background-color: #fcf8e3;
   border-color: #ae894a; }
-
-a.btn-warning:hover {
-  background-color: darker(#fcf8e3, 10%);
-  border-color: darker(#8a6d3b, 20%); }

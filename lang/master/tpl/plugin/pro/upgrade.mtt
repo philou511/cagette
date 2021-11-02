@@ -20,11 +20,17 @@
                 <p>
                     Vos ventes sont limitées à 1000€ par an.<br/>
                     <span class="disabled">(hors ventes réalisées dans des groupes en mode AMAP)</span><br/>
+            
+
+                    
+                </p>
+                <p class="alert alert-warning">
+                    <b>Offre spéciale de lancement : vous pouvez vendre en illimité jusqu’au 1er février 2022</b><br/>
                 </p>
                 <p>
                     ::set frdate = getDate(vendor.freemiumResetDate)::
-                    La date anniversaire de remise à zéro de votre compteur<br/>
-                    est le <b>::frdate.d:: ::frdate.m::</b> 
+                    Date de référence pour calculer les ventes annuelles :<br/>
+                    <b>::frdate.d:: ::frdate.m::</b> 
                 </p>
             </div>
             <div class="col-md-7">
@@ -67,7 +73,7 @@
 
 <div class="col-md-12">
 	<div class=" article">
-		<h2 style="margin-top:0">Changer de formule</h2>	
+		<h2 style="margin-top:0">Offres d’accès au réseau Cagette.net</h2>	
 		<div class="row">
             <div class="col-md-2"></div>
             <div class="col-md-4">
@@ -83,8 +89,10 @@
                     <div class="panel-body">
                         
                         <ul class="features">
-                            <li>Compte producteur complet</li>
-                            <li><b>Ventes limitées à 1000€ /an</b><br/><span class="disabled">(hors vente dans les groupes en mode AMAP)</span></li>
+                            <li>Compte producteur</li>
+                            <li>Ventes limitées à 1000€/an (les ventes sont calculées à partir de la date de référence)<br/>
+                            <span class="disabled">(hors vente dans les groupes en mode AMAP)</span></li>
+                            <li>Ressources et aide technique</li>
                         </ul>
                         
                         <p class="text-center priceBox">
@@ -94,8 +102,7 @@
                         <p class="text-center">
                             ::if(company.discovery)::
                             <a href="" class="btn btn-default btn-lg" disabled="disabled"><i class="icon icon-check"></i> Votre formule actuelle</a>
-                            ::end::
-                            
+                            ::end::                            
                         </p>
 
                     </div>
@@ -114,8 +121,9 @@
                     </div>
                     <div class="panel-body">
                         <ul class="features">
-                            <li>Compte producteur complet</li>
-                            <li><b>Ventes illimitées</b></li>
+                            <li>Compte producteur</li>
+                            <li>Ventes illimitées</li>
+                            <li>Ressources et aide technique</li>
                         </ul>
                         
                         <p class="text-center priceBox">
@@ -148,34 +156,46 @@
 
                         <div class="row">
                             <div class="col-md-4">
-                                <img src="https://www.cagette.net/wp-content/uploads/2020/11/img_6222.jpg" style="width:250px;border-radius: 8px;"/>
+                                <img src="https://www.cagette.net/wp-content/uploads/2020/11/img_6222.jpg" style="width:230px;border-radius: 8px;"/>
                             </div>
                             <div class="col-md-8">
-                                <ul class="features">
-                                    <li><b>Formation en présentiel et en ligne</b> pour maîtriser Cagette.net, améliorer votre communication et améliorer votre organisation.</li>                            
-                                    <li>Compte producteur complet</li>
-                                    <li><b>Ventes illimitées</b></li>
-                                    
+                                <p>
+                                    Cette formation vous permet de poser des bases solides à votre projet de vente sur Cagette.net<br/>
+                                    Vous prenez du recul sur votre organisation et vous découvrez les bonnes pratiques de communication pour développer votre clientèle.<br/>
+                                </p>
+                                
+                                <ul>
+                                    <li>Une journée de formation en salle avec un formateur expérimenté</li>                            
+                                    <li>21h de formation à distance à votre rythme </li>                                    
                                 </ul>
+
+                                <p>
+                                    <a href="https://www.cagette.net/producteurs/formations/" target="_blank" class="btn btn-default btn-sm">En savoir plus.</a>
+                                </p>
+                                <p>
+                                    Une fois la formation réalisée, vous êtes membre du réseau Cagette.net. 
+                                    A ce titre vous obtenez un accès à un compte producteur illimité dans les ventes.
+                                </p>
                             </div>
                         </div>
                         
                         <p class="text-center priceBox">
-                            1354 €<sup style="font-size: 0.5em;">TTC</sup>
-                            <br/>
+                            <span style="text-decoration: line-through;">1354 €</span>
+                            1137€<br/>
                             <span style="font-size: 0.7em;line-height: 0.7em;">
-                                Finançable par votre caisse de formation.<br/>
-                                <a href="">En savoir plus.</a>
+                                Tarif valable jusqu’au 30 juin 2022. TVA non applicable.<br/>
+                                En tant qu’organisme de formation certifié,<br/>
+                                nos formations sont finançables jusqu’à 100% par votre fond de formation.<br/>
+                                C’est pourquoi avant de vous inscrire nous sécurisons avec vous les possibilités de financement.
                             </span>
                         </p>
 
                         <p class="text-center">
                             ::if(company.discovery)::
-                            <a href="https://share.hsforms.com/1b4mPfDRnSTSyLmRUqq6OGA4f5r5" target="_blank" class="btn btn-primary btn-lg"><i class="icon icon-chevron-right"></i> Etude de financement</a>
+                            <a href="https://share.hsforms.com/1_7sOBRVQTUaCwgZTtmxOOg4f5r5" target="_blank" class="btn btn-primary btn-lg"><i class="icon icon-chevron-right"></i> Etude de financement</a>
                             ::else::
                             <a href=""  class="btn btn-default btn-lg" disabled="disabled"><i class="icon icon-chevron-right"></i> Votre formule actuelle</a>
-                            ::end::
-                            
+                            ::end::                            
                         </p>
 
                     </div>
