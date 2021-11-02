@@ -234,7 +234,8 @@ class Vendor extends controller.Controller
 			+ "/"
 			+ haxe.crypto.Md5.encode(App.config.KEY + "_updateWithoutAuth_" + v.id);
 		
-		var tmpVendor = db.TmpVendor.manager.select($vendor == v);
+		var res = sys.db.Manager.cnx.request('select * from TmpVendor where vendorId = ${v.id}').results();
+		var tmpVendor = res.first();
 		if (tmpVendor!=null) {
 			view.tmpVendorId = tmpVendor.id;
 		}
