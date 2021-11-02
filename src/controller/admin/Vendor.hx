@@ -1,4 +1,5 @@
 package controller.admin;
+import service.BridgeService;
 import pro.db.VendorStats;
 
 /**
@@ -192,7 +193,7 @@ class Vendor extends controller.Controller
 
 		if (app.params["refresh"] == "1") {
 			pro.db.VendorStats.updateStats(v);
-			crm.CrmService.syncToHubspot(v);
+			BridgeService.syncVendorToHubspot(v);
 		}
 
 		if (app.params["disableAccess"] != null) {
@@ -203,8 +204,7 @@ class Vendor extends controller.Controller
 		}
 		if (app.params["enableAccess"] != null) {
 			var user = db.User.manager.get(Std.parseInt(app.params["enableAccess"]), false);
-			var uc = pro.db.PUserCompany.get(user, cpro, true);
-			crm.CrmService.syncToSiB(uc.user, true, "vendor_unlock");
+			var uc = pro.db.PUserCompany.get(user, cpro, true);			
 			uc.disabled = false;
 			uc.update();
 		}

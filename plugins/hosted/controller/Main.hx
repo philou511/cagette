@@ -1,5 +1,5 @@
 package hosted.controller;
-import crm.CrmService;
+import service.BridgeService;
 import pro.db.VendorStats;
 import tools.Timeframe;
 import hosted.HostedPlugIn;
@@ -103,7 +103,7 @@ class Main extends controller.Controller
 	public function doSyncToHubspot(group:db.Group) {
 
 		for( vendor in group.getActiveVendors()){
-			CrmService.syncToHubspot(vendor);
+			BridgeService.syncVendorToHubspot(vendor);
 		}
 		
 		throw Ok("/p/hosted/group/"+group.id,"Synchronisation hubspot faite");
