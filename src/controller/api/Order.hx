@@ -20,7 +20,7 @@ class Order extends Controller
 			if(vendor.isDisabled()){
 				if(vendor.disabled==db.Vendor.DisabledReason.TurnoverLimitReached){
 					var whitelist : Array<Int> = vendor.turnoverLimitReachedDistribsWhiteList.split(",").map(Std.parseInt);
-					if(!whitelist.has(multiDistrib.id)){
+					if(!whitelist.has(distrib.id)){
 						continue;
 					}
 				}else{
