@@ -1,4 +1,5 @@
 package controller;
+import service.BridgeService;
 import service.SubscriptionService;
 import sugoi.form.elements.StringInput;
 import service.OrderService;
@@ -313,9 +314,11 @@ class Group extends controller.Controller
 
 			#if plugins
 			try{
-				//sync if this user is not cpro
-				if(service.VendorService.getCagetteProFromUser(app.user).length==0){
-					crm.CrmService.syncToSiB(app.user,true,"group_created",{groupName:g.name,userName:app.user.firstName});
+				//sync if this user is not cpro && market mode group
+				if( service.VendorService.getCagetteProFromUser(app.user).length==0 && g.hasShopMode() ){
+					
+					BridgeService.syncUserToHubspot(app.user);
+					service.BridgeService.triggerWorkflow(29805116, app.user.email);
 				}
 			}catch(e:Dynamic){
 				//fail silently
@@ -333,10 +336,11 @@ class Group extends controller.Controller
 	@admin
 	function doTest(){
 		#if plugins
+		
 		var user = db.User.manager.get(1,false);
-
-		crm.CrmService.syncToSiB(user,true,"group_created",{groupName:"mon Groupe",userName:user.firstName});
-
+		Sys.print("sync user "+user.getName());
+		BridgeService.syncUserToHubspot(user);
+		service.BridgeService.triggerWorkflow(29805116, user.email);
 		#end
 	}
 	

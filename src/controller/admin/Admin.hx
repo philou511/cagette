@@ -434,14 +434,11 @@ class Admin extends Controller {
 		}
 	}
 
-
-	function doTerraLibra(){
-
+	/*function doTerraLibra(){
 		var v = db.Vendor.manager.get(12535,false);
 		var catalogs = v.getActiveContracts();
 		var groups = catalogs.map(c -> c.group);
 		for( g in groups){
-
 			Sys.println("<h2>"+g.name+"</h2>");
 			Sys.println("<table border='1'>");
 			for( ve in g.getVendors()) {
@@ -451,10 +448,8 @@ class Admin extends Controller {
 
 			}
 			Sys.println("</table>");
-
 		}
-
-	}
+	}*/
 
 	@tpl('admin/process.mtt')
 	function doProcess() {}
