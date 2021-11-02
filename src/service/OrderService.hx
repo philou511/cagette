@@ -1,7 +1,7 @@
 package service;
+import Common;
 import db.MultiDistrib;
 import db.TmpBasket;
-import Common;
 import tink.core.Error;
 
 /**
@@ -30,7 +30,20 @@ class OrderService
 		if( quantity == null ) throw new Error( "Quantity is null" );
 		if( quantity < 0 ) throw new Error( "Quantity is negative" );
 		var vendor = product.catalog.vendor;
-		if( vendor.isDisabled()) throw new Error(vendor.name+" est désactivé. Raison : "+vendor.getDisabledReason());
+		var isVendorDisabled = false;
+		if( vendor.isDisabled()) {
+			if(vendor.disabled==db.Vendor.DisabledReason.TurnoverLimitReached){
+				var whitelist : Array<Int> = vendor.turnoverLimitReachedDistribsWhiteList.split(",").map(Std.parseInt);
+				if(!whitelist.has(distribId)){
+					isVendorDisabled = true;
+				}
+			}else{
+				isVendorDisabled=true;
+			}
+		}
+		if (isVendorDisabled == true) {
+			throw new Error(vendor.name+" est désactivé. Raison : "+vendor.getDisabledReason());
+		}
 		var shopMode = product.catalog.group.hasShopMode();
 
 		//quantity
