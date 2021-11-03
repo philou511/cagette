@@ -1,12 +1,12 @@
 package controller;
-import service.BridgeService;
-import service.SubscriptionService;
-import sugoi.form.elements.StringInput;
-import service.OrderService;
-import service.WaitingListService;
-import service.DistributionService;
-import db.Group;
 import Common;
+import db.Group;
+import service.BridgeService;
+import service.DistributionService;
+import service.OrderService;
+import service.SubscriptionService;
+import service.WaitingListService;
+import sugoi.form.elements.StringInput;
 
 /**
  * Groups
@@ -375,7 +375,7 @@ class Group extends controller.Controller
 		view.container = "container-fluid";
 		
 		//if no param is sent, focus on Paris
-		if (args == null || (args.address == null && args.lat == null && args.lng == null)){
+		if (args == null || ((args.address == null || args.address == "") && args.lat == null && args.lng == null)){
 			args = {lat:48.855675, lng:2.3472365};
 		}
 		
