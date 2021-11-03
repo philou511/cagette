@@ -1,6 +1,8 @@
 ::use 'plugin/pro/design.mtt'::
 
 ::if(vendor.isDisabled())::	
+    ::if(vendor.disabled!=3)::
+    <!--other reason than turnoverLimitReached-->
     <div class="col-md-12">			
         <div class="alert alert-danger">
             <i class="icon icon-alert"></i>
@@ -8,6 +10,7 @@
             Raison : <b>::vendor.getDisabledReason()::</b>
         </div>
     </div>	
+    ::end::
 ::end::
 
 <div class="col-md-12">
@@ -20,9 +23,6 @@
                 <p>
                     Vos ventes sont limitées à 1000€ par an.<br/>
                     <span class="disabled">(hors ventes réalisées dans des groupes en mode AMAP)</span><br/>
-            
-
-                    
                 </p>
                 <p class="alert alert-warning">
                     <b>Offre spéciale de lancement : vous pouvez vendre en illimité jusqu’au 1er février 2022</b><br/>
@@ -148,7 +148,7 @@
             <div class="col-md-8">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">
+                        <h3 class="panel-title" id="formation">
                             Formation "Développer sa vente directe en ligne"
                         </h3>
                     </div>

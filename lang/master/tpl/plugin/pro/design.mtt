@@ -6,11 +6,7 @@
 		</div>
 		
 		<div class="col-md-6 accountBlock">	
-			::if(vendor.isDisabled())::
-				<div class="pull-right iconBadge danger" style="margin-top:8px" data-toggle="tooltip" title="Votre compte est bloqué">
-					<i class="icon icon-alert"></i>
-				</div>					
-			::elseif(company.discovery==true)::
+			::if(company.discovery==true)::
 			<a href="/p/pro/upgrade">
 				<div class="pull-right" style="margin-top:8px">
 					<div id="vendor-freemium-progress-container"></div>

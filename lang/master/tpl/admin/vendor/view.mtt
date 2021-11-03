@@ -91,7 +91,7 @@
 	<div class="col-md-6">
 		C.A Total : ::formatNum(stats.turnoverTotal):: &euro;<br/>
 		C.A 3 mois : ::formatNum(stats.turnover90days):: &euro;<br/>
-		C.A 12 mois en mode marché : ::formatNum(stats.shopTurnover12months):: &euro;<br/>
+		C.A depuis date anniversaire : ::formatNum(stats.marketTurnoverSinceFreemiumResetDate):: &euro;<br/>
 		<span class="disabled">Dernière mise à jour des stats : ::hDate(stats.ldate)::  <a href='?refresh=1' class="btn btn-default btn-xs">Rafraichir</a></span><br/>
 	</div>
 

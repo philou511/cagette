@@ -136,8 +136,7 @@ class VendorService{
 			if( cpro !=null){
 				if (cpro.disabled) vendors.remove(v);
 				if(cpro.training) vendors.remove(v);				
-			} 
-			
+			} 			
 		}
 		#end
 

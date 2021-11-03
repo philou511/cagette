@@ -74,7 +74,7 @@
 											Ce producteur est référencé mais n'a pas encore de compte producteur.
 										</p>
 										<p class="text-center">
-											<a href="/contract/inviteVendor/::v.id::" class="btn btn-primary">L'inviter à ouvrir un producteur</a>
+											<a href="/contract/inviteVendor/::v.id::" class="btn btn-default">L'inviter à ouvrir un compte producteur</a>
 										</p>
 
 									</div>
