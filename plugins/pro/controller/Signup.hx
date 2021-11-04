@@ -23,7 +23,7 @@ class Signup extends controller.Controller
 		//has access to a cpro
 		var uc = pro.db.PUserCompany.manager.search($user ==app.user);
 		if( uc.length>0){
-			throw Error("/","Vous avez déjà accès à un compte Producteur : "+uc.map(c -> return c.company.vendor.name).join(', '));
+			throw Error("/","Vous avez déjà accès à un ou des compte(s) Producteur : <b>"+uc.map(c -> return c.company.vendor.name).join(', ')+"</b>. Contactez le support sur <a href='mailto:support@cagette.net'>support@cagette.net</a> pour clarifier votre situation.");
 		}
 
 		//has same mail than a vendor

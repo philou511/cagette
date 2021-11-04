@@ -105,9 +105,14 @@
 		<p>Connectez-vous à votre <b>compte producteur</b> :</p>
 	</div>
 
-	<!-- cagette pro -->
-	<div class="col-md-12" ::cond cagettePros!=null::>
+
+
+
+
+	
+	<div class="col-md-12" ::cond cagettePros!=null || tmpVendors.length>0:: >
 		<div class="row">
+		<!-- cagette pro -->
 		::foreach cp cagettePros::
 			::set v = cp._vendor::
 			<div class="col-md-4">
@@ -124,6 +129,21 @@
 				</a>
 			</div>
 		::end::
+
+		<!-- Tmp vendors -->
+		::foreach tmp tmpVendors::
+		<div class="col-md-4">			
+			<a class="clickable proBlock">												
+				<h4>::tmp.farmName::</h4>
+				<p class="disabled">
+					<i class="icon icon-clock"></i>
+					Demande d'ouverture de compte producteur en attente de validation par l'équipe Cagette.net
+				</p>
+			</a>
+		</div>
+		::end::
+
+
 		</div>
 	</div>
 	
@@ -218,7 +238,7 @@
 					localStorage.nouvelleReglesCount6=0;
 				}
 				if(localStorage.nouvelleReglesCount6 < 10 ){
-					_Cagette.overlay("/data/nouvellesregles2021-6.html","",true);
+					_Cagette.overlay("/data/nouvellesregles2021-7.html","",true);
 					localStorage.nouvelleReglesCount6++;
 				}
 				

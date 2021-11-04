@@ -84,7 +84,10 @@ class User extends Controller
 		var cagettePros = service.VendorService.getCagetteProFromUser(app.user);
 		view.cagettePros = cagettePros;
 		view.discovery = cagettePros.find(cp -> cp.discovery)!=null;
-		view.isBlocked = pro.db.PUserCompany.getUserCompanies(app.user).find(uc -> return uc.disabled) != null;
+
+		//list tmpVendor that are not certified yet
+		view.tmpVendors = sys.db.Manager.cnx.request('select * from TmpVendor where userId = ${app.user.id} where certificationStatus < 2').results();
+		// view.isBlocked = pro.db.PUserCompany.getUserCompanies(app.user).find(uc -> return uc.disabled) != null;
 
 		//find free or invited vendor
 		/*var vendor = db.Vendor.manager.select($email==app.user.email,false);
