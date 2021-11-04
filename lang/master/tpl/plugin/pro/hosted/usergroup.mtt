@@ -67,7 +67,7 @@
 					$$operation(::op::)
 					
 					<td>
-						<a onclick="_.overlay('/p/hosted/operation/::op.id::','',false)" class="btn btn-default btn-xs">Detail</a>
+						<a onclick="_Cagette.overlay('/p/hosted/operation/::op.id::','',false)" class="btn btn-default btn-xs">Detail</a>
 					</td>
 				</tr>
 				::end::

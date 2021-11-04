@@ -101,7 +101,7 @@
 							$$edit(Modifier,/p/pro/product/edit/::p.id::)
 							
 
-							<a class="btn btn-default btn-sm" onclick="_.openImageUploader('pproduct', ::p.id::, 300, 300, null, ::company.id::)">
+							<a class="btn btn-default btn-sm" onclick="_Cagette.openImageUploader('pproduct', ::p.id::, 300, 300, null, ::company.id::)">
 								<i class="icon icon-image"></i> ::_("Picture")::
 							</a>
 
@@ -161,10 +161,10 @@
 									<td>::formatNum(off.price)::&nbsp;::currency()::</td>
 									<td>
 										<div class="btn-group" role="group" aria-label="...">
-											<a onclick="_.overlay('/p/pro/offer/preview/::off.id::','::urlEncode(off.getName())::')" class="btn btn-default btn-sm">
+											<a onclick="_Cagette.overlay('/p/pro/offer/preview/::off.id::','::urlEncode(off.getName())::')" class="btn btn-default btn-sm">
 												<i class="icon icon-eye"></i> Voir</a>
 											$$edit(Mod.,/p/pro/offer/edit/::off.id::)
-											<a class="btn btn-default btn-sm" onclick="_.openImageUploader('poffer', ::off.id::, 300, 300, null, ::company.id::)">
+											<a class="btn btn-default btn-sm" onclick="_Cagette.openImageUploader('poffer', ::off.id::, 300, 300, null, ::company.id::)">
 												<i class="icon icon-image"></i> ::_("Picture")::
 											</a>
 											$$delete( ,/p/pro/offer/delete/::off.id::)

@@ -27,7 +27,7 @@
 	
 	//enable checked products
 	var enableProducts = function(){
-		var ids = _.getCheckboxesId('form.products');
+		var ids = _Cagette.getCheckboxesId('form.products');
 		if(ids.length==0){
 			alert("::_("You need to select at least one product to perform this action")::");
 		}else{
@@ -39,7 +39,7 @@
 	
 	//disable checked products
 	var disableProducts = function(){
-		var ids = _.getCheckboxesId('form.products');
+		var ids = _Cagette.getCheckboxesId('form.products');
 		if(ids.length==0){
 			alert("::_("You need to select at least one product to perform this action")::");
 		}else{
@@ -138,7 +138,7 @@
 						::end::
 					
 					
-						<a class="btn btn-default btn-sm" onclick="_.openImageUploader('product', ::p.id::, 300, 300)">
+						<a class="btn btn-default btn-sm" onclick="_Cagette.openImageUploader('product', ::p.id::, 300, 300)">
 							<i class="icon icon-image"></i> ::_("Picture")::
 						</a>
 						

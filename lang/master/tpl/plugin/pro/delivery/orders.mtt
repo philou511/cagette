@@ -4,7 +4,7 @@
 
 			::set md = distribution._multiDistrib::
 			<a class="btn btn-default btn-sm"
-				onclick="_.initOrderBox(null, ::md.id::, ::distribution._catalog.id::, 1,'::escapeJS(hDate(md.getDate()))::','::escapeJS(md.getPlace().toString())::', null, '::currency()::', ::md.getGroup().hasPayments()::, '/p/pro/delivery/orders/::distribution.id::', ::md.getGroup().hasCagette2()::, ::md.getGroup().id::)">
+				onclick="_Cagette.initOrderBox(null, ::md.id::, ::distribution._catalog.id::, 1,'::escapeJS(hDate(md.getDate()))::','::escapeJS(md.getPlace().toString())::', null, '::currency()::', ::md.getGroup().hasPayments()::, '/p/pro/delivery/orders/::distribution.id::', ::md.getGroup().hasCagette2()::, ::md.getGroup().id::)">
 				<i class="icon icon-plus"></i>
 				::_("New order")::
 			</a>
@@ -42,7 +42,7 @@
 						</td>
 						<td>
 							<a class="btn btn-default btn-xs"
-							onclick="_.initOrderBox(::m.userId::,::distribution._multiDistrib.id::,::distribution._catalog.id::,::distribution._catalog.type::,'::hDate(distribution.date)::','::escapeJS(distribution._place.toString())::','::escapeJS(m.userName)::','::distribution._catalog._group.currency::', '::distribution._catalog._group.hasPayments()::', '/p/pro/delivery/orders/::distribution.id::', ::distribution._catalog._group.hasCagette2()::, ::distribution._catalog._group.id::)">
+							onclick="_Cagette.initOrderBox(::m.userId::,::distribution._multiDistrib.id::,::distribution._catalog.id::,::distribution._catalog.type::,'::hDate(distribution.date)::','::escapeJS(distribution._place.toString())::','::escapeJS(m.userName)::','::distribution._catalog._group.currency::', '::distribution._catalog._group.hasPayments()::', '/p/pro/delivery/orders/::distribution.id::', ::distribution._catalog._group.hasCagette2()::, ::distribution._catalog._group.id::)">
 							<span class="glyphicon glyphicon-edit"></span>
 							::_("Edit")::
 							</a>

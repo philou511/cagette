@@ -22,7 +22,7 @@
 					<div class="btn-group">
 						$$edit(Gestion,/p/pro/company/editVendor/::v.id::)
 
-						<a class="btn btn-default btn-sm" onclick="_.openImageUploader('vendor', ::v.id::, 300, 300)">
+						<a class="btn btn-default btn-sm" onclick="_Cagette.openImageUploader('vendor', ::v.id::, 300, 300)">
 							<i class="icon icon-image"></i> Photo
 						</a>
 

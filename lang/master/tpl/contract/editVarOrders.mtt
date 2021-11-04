@@ -26,7 +26,7 @@
 				::foreach o orders::
 				<tr>
 					<td>
-						<a href="#" onclick="_.overlay('/shop/productInfo/::o.productId::')">
+						<a href="#" onclick="_Cagette.overlay('/shop/productInfo/::o.productId::')">
 							<img src="::o.productImage::" style="width:32px;height:32px;" />
 							::o.quantity:: x ::o.productName::
 						</a>

@@ -73,7 +73,7 @@
 			document.addEventListener("DOMContentLoaded", function(event) {			  
 				//tutorials
 				::if tuto!=null::		
-				_.getTuto("::tuto.name::",::tuto.step::);
+				_Cagette.getTuto("::tuto.name::",::tuto.step::);
 				::end::			  
 			})
 			*/

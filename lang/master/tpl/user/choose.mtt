@@ -7,35 +7,31 @@
 		<div class="alert alert-warning" style="background-color: white;">
 			
 			<div style="font-size:1.3em;font-weight:bold;text-align:center;margin:16px;">
-				Ressources et aide
+				Ressources techniques et infos
 			</div>			
 		
 			<div class="row">
-				<div class="col-md-3 text-center">					
+				<div class="col-md-6 text-center">	
+					<img src="/img/infos.png" />
+					<p>
 					::if(discovery)::
-					<a href="https://formation.alilo.fr/course/view.php?id=7" class="btn btn-danger" target="_blank">
+					<a href="https://formation.alilo.fr/course/view.php?id=7" class="btn btn-warning" target="_blank">
 						<i class="icon icon-youtube"></i> Guide Découverte
 					</a>
 					::else::
-					<a href="https://www.cagette.net/guide-express/" class="btn btn-danger" target="_blank">
+					<a href="https://www.cagette.net/guide-express/" class="btn btn-warning" target="_blank">
 						<i class="icon icon-youtube"></i> Guide Express
 					</a>					
 					::end::
-					<p style="font-size: 0.9em;margin-top:12px"><b>Commencez par ici !</b><br/> Des vidéos qui vont guideront pas à pas</p>			
+					</p>				
+					<p><b>Pour prendre en main l’outil c’est par ici !</b><br/>
+						C’est l’espace où vous trouverez tous les tutoriels 
+						pour vous lancer sur Cagette.net. 
+					</p>	
 				</div>
-				<div class="col-md-3 text-center">					
-					<a href="https://wiki.cagette.net/cpro:index" class="btn btn-warning" target="_blank">
-						<i class="icon icon-book"></i> Documentation
-					</a>
-					<p style="font-size: 0.9em;margin-top:12px">Pour approfondir <br/>certaines fonctions</p>
-				</div>
-				<div class="col-md-3 text-center">
-					<a href="https://www.facebook.com/groups/EntraideCagettePro/" class="btn btn-warning" target="_blank">
-						<i class="icon icon-facebook"></i> Groupe Facebook
-					</a>
-					<p style="font-size: 0.9em;margin-top:12px">Pour échanger avec<br/>d'autres producteurs et l'équipe Cagette</p>
-				</div>
-				<div class="col-md-3 text-center">
+				
+				<div class="col-md-6 text-center">
+					<img src="/img/question.png" />
 					<p>											
 						<!--<b>Visio d'aide aux Producteurs :</b><br/>
 						<a href="https://us02web.zoom.us/meeting/register/tZAkfu-oqTgvGdBOeJj3JGssxcH9HiFXdu5R" target="_blank" title="">1er lundi du mois à 18h</a><br/>
@@ -45,7 +41,7 @@
 						<a href="https://us02web.zoom.us/meeting/register/tZcrdOqtpjkpGdcVX_-TGDtl4iVpWzepGyr4" target="_blank" data-toggle="tooltip" title="tous les 2e lundi du mois à 18h">Bonnes pratiques</a><br/>
 						<a href="https://us02web.zoom.us/webinar/register/WN_ljYtX1oATOOy22wu33fmzQ" target="_blank" data-toggle="tooltip" title="Dernier lundi du mois à 18h"> Fonctionnalité</a><br/>
 						-->
-						<i class="icon icon-info"></i> ::raw getVariable("homeVendorMessage")::
+						::raw getVariable("homeVendorMessage")::
 					</p>
 				</div>
 			</div>
@@ -58,38 +54,35 @@
 		<div class="alert alert-warning" style="background-color: white;">
 			
 			<div style="font-size:1.3em;font-weight:bold;text-align:center;margin:16px;">
-				Guides Coordinateur de groupe
+				Ressources techniques et infos
 			</div>			
 		
 			<div class="row">
-				<div class="col-md-3 text-center">
-					<a href="https://formation.alilo.fr/course/view.php?id=8" class="btn btn-danger" target="_blank">
-						<i class="icon icon-youtube"></i> Parcours Coordinateur
-					</a>
-					<p style="font-size: 0.9em;margin-top:12px"><b>Commencez par ici !</b><br/> Des vidéos qui vont guideront pas à pas</p>
+				<div class="col-md-6 text-center">
+					<img src="/img/infos.png" />
+					<p>
+						<a href="https://formation.alilo.fr/course/view.php?id=8" class="btn btn-warning" target="_blank">
+							<i class="icon icon-youtube"></i> Guide Coordinateur
+						</a>
+					</p>
+					
+					<p>
+						<b>Pour prendre en main l’outil c’est par ici !</b><br/>
+						C’est l’espace où vous trouverez tous les tutoriels<br/> 
+						pour vous lancer sur Cagette.net.
+					</p>
+					
 				</div>
-				<div class="col-md-3 text-center">
-					<a href="https://wiki.cagette.net/admin:index" class="btn btn-warning" target="_blank">
-						<i class="icon icon-book"></i>
-						Documentation
-					</a>
-					<p style="font-size: 0.9em;margin-top:12px">Pour approfondir <br/>certaines fonctions</p>
-				</div>
-				<div class="col-md-3 text-center">
-					<a href="https://www.facebook.com/groups/EntraideCagette/" class="btn btn-warning" target="_blank">
-						<i class="icon icon-facebook"></i>
-						Groupe Facebook
-					</a>
-					<p style="font-size: 0.9em;margin-top:12px">Pour échanger avec<br/>d'autres administrateurs et l'équipe Cagette</p>
-				</div>
-				<div class="col-md-3 text-center">
+				
+				<div class="col-md-6 text-center">
+					<img src="/img/question.png" />
 					<p>
 						<!--<a href="https://us02web.zoom.us/meeting/register/tZEuf-6vqzwpGtTYCjqRtCfGyaqxSLl5gzvq" target="_blank" data-toggle="tooltip" title="Tous les 3e lundi du mois à 18h">Visio d'aide aux Coordinateurs</a><br/>
 						<b>Webinaire thématiques :</b><br/>
 						<a href="https://us02web.zoom.us/meeting/register/tZcrdOqtpjkpGdcVX_-TGDtl4iVpWzepGyr4" target="_blank" data-toggle="tooltip" title="Tous les 2e lundi du mois à 18h">Bonnes pratiques</a><br/>
 						<a href="https://us02web.zoom.us/webinar/register/WN_ljYtX1oATOOy22wu33fmzQ" target="_blank" data-toggle="tooltip" title="Tous les derniers lundi du mois à 18h"> Fonctionnalité</a><br/>
 						-->
-						<i class="icon icon-info"></i> ::raw getVariable("homeGroupAdminMessage")::
+						::raw getVariable("homeGroupAdminMessage")::
 					</p>				
 				</div>
 			</div>
@@ -207,29 +200,31 @@
 					var txt = "Nous avons réorganisé certains menus et certaines pages pour une meilleure compréhension de Cagette.net.<br/>";
 					txt += "La gestion des distributions a aussi été revue.";
 					txt += "<br/><br/><a href='https://wiki.cagette.net/admin:distributions' target='_blank'>Voir la vidéo pour se mettre à la page</a>";
-					_.newFeature(".row h2","Mise à jour de la rentrée",txt,"bottom");
+					_Cagette.newFeature(".row h2","Mise à jour de la rentrée",txt,"bottom");
 				},2000);
 			});*/
 
-			::if(isBlocked)::
-			_.overlay("/data/disabled.html","");
-			::end::
-
 			/*
-			::if(isFreeVendor || isGroupAdmin)::
+			::if(isBlocked)::
+			_Cagette.overlay("/data/disabled.html","");
+			::end::
+			*/
+
+			
+			::if(isGroupAdmin)::
 			document.addEventListener("DOMContentLoaded", function(event) {
 
-				if(localStorage.nouvelleReglesCount4==null ){
-					localStorage.nouvelleReglesCount4=0;
+				if(localStorage.nouvelleReglesCount6==null ){
+					localStorage.nouvelleReglesCount6=0;
 				}
-				if(localStorage.nouvelleReglesCount4 < 10 ){
-					_.overlay("/data/nouvellesregles2021-5.html","",true);
-					localStorage.nouvelleReglesCount4++;
+				if(localStorage.nouvelleReglesCount6 < 10 ){
+					_Cagette.overlay("/data/nouvellesregles2021-6.html","",true);
+					localStorage.nouvelleReglesCount6++;
 				}
 				
 			});
 			::end::
-			*/
+			
 
 			//]]>
 	</script>

@@ -105,7 +105,7 @@ $$browserDetection()
 		<div class="content orders text-center">
 			::set basket = d.getUserBasket(user)::
 			::set title = "Commande du "+hDate(d.getDate())::
-			<a onclick="_.overlay('/history/basket/::basket.id::/1','::title::')" class="btn btn-default btn-sm">
+			<a onclick="_Cagette.overlay('/history/basket/::basket.id::/1','::title::')" class="btn btn-default btn-sm">
 
 				<i class="icon icon-basket"></i> ::_("My order"):: : ::formatNum(basket.getOrdersTotal(1)):: ::currency()::
 			</a>
@@ -420,7 +420,7 @@ $$browserDetection()
 		</p>
 
 		::if (user==null)::		
-		<a href="#" class="btn btn-primary" onclick="_.registerBox('/user/joingroup','::loginBoxOptions.sid::',null,::loginBoxOptions.phoneRequired::,::loginBoxOptions.addressRequired::)">
+		<a href="#" class="btn btn-primary" onclick="_Cagette.registerBox('/user/joingroup','::loginBoxOptions.sid::',null,::loginBoxOptions.phoneRequired::,::loginBoxOptions.addressRequired::)">
 			<span class="glyphicon glyphicon-plus"></span>
 			M'inscrire à ce groupe
 		</a>
@@ -498,7 +498,7 @@ $$browserDetection()
 		/*window.setTimeout(function(){
 			var txt = "Cet onglet vous permet d'avoir une vue d'ensemble sur toutes vos distributions, leurs commandes et les producteurs qui y participent.";
 			txt += "<br/><br/><a href='https://wiki.cagette.net/admin:distributions' target='_blank'>En savoir plus</a>";
-			_.newFeature("#cagette-navbar #distributions","Nouvel onglet \"Distributions\"",txt,"bottom");
+			_Cagette.newFeature("#cagette-navbar #distributions","Nouvel onglet \"Distributions\"",txt,"bottom");
 		},2000);
 
 		::if !hasShopMode::
@@ -506,7 +506,7 @@ $$browserDetection()
 		window.setTimeout(function(){
 			var txt = "Il est maintenant possible de gérer les paiements en mode AMAP.";
 			txt += "<br/><br/><a href='/amap/edit'>Activez la gestion des paiements dans les propriétés du groupe.</a>";
-			_.newFeature("#cagette-navbar #amapadmin","Gestion des paiements pour les AMAP",txt,"bottom");
+			_Cagette.newFeature("#cagette-navbar #amapadmin","Gestion des paiements pour les AMAP",txt,"bottom");
 		},3000);
 
 		::end::

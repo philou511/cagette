@@ -21,7 +21,7 @@
 			</a>
 			::else::
 			<a href="/p/pro/upgrade">
-				<div class="pull-right iconBadge farmer-pro" style="margin-top:8px" data-toggle="tooltip" title="Compte Producteur illimité">
+				<div class="pull-right iconBadge farmer-pro" style="margin-top:8px" data-toggle="tooltip" title="Offre Pro">
 					<i class="icon icon-farmer-pro"></i>
 				</div>
 			</a>

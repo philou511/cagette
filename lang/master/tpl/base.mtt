@@ -116,19 +116,19 @@
 
         document.addEventListener("DOMContentLoaded", function (event) {
             //init vars in js App
-            _.lang = "::session.lang::";
+            _Cagette.lang = "::session.lang::";
 				:: if (user != null)::
-                _.userId = :: user.id:: ;
-            _.userName = "::user.getName()::";
-            _.userEmail = "::user.email::";
+                _Cagette.userId = :: user.id:: ;
+            _Cagette.userName = "::user.getName()::";
+            _Cagette.userEmail = "::user.email::";
 				:: end::
 
 				//tutorials
 				:: if tuto != null::
-                _.getTuto("::tuto.name::",:: tuto.step:: );			
+                _Cagette.getTuto("::tuto.name::",:: tuto.step:: );			
 				:: end::
 
-            _.antiDoubleClick();
+            _Cagette.antiDoubleClick();
         })
 
 			//tracking 24x7
