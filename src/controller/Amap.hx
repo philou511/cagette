@@ -23,6 +23,7 @@ class Amap extends Controller
 			if( c.vendor.isDisabled()) contracts.remove(c);
 		}
 		view.contracts = contracts;
+		view.group = app.user.getGroup();
 	}
 	
 	@tpl("form.mtt")
@@ -44,7 +45,7 @@ class Amap extends Controller
 		if(!group.hasShopMode()) untyped flags.excluded.push(2);
 
 		//group mode
-		var mode = group.flags.has(db.Group.GroupFlags.ShopMode) ? "Mode Boutique" : "Mode AMAP";
+		var mode = group.flags.has(db.Group.GroupFlags.ShopMode) ? "Mode Marché" : "Mode AMAP";
 		var html = new sugoi.form.elements.Html("mode",mode,"Mode de commande");
 		html.docLink = "https://wiki.cagette.net/admin:admin_boutique";
 		form.addElement(html ,7);

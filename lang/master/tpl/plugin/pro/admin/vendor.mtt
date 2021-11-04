@@ -6,6 +6,9 @@
 		<h4>Producteur #::vendor.id::</h4>
 
 		<h2><a href="::vendor.getLink()::" target="_blank">::vendor.name::</a></h2>
+		::if(vendor.peopleName!=null)::
+		<p>Nom exploitant(s) : <b>::vendor.peopleName::</b></p>
+		::end::
 
 		<p>
 			Charte Producteurs : $$check(::vendor.vendorPolicy::)<br/>			
@@ -34,7 +37,7 @@
 		</p>
 	</div>
 	<div class="col-md-4">
-		<div ::cond(vendor._image!=null):: style="background-image:url('::file(vendor._image)::');width:200px;height:200px;" class="productImg" /> 
+		<div ::cond(vendor.imageId!=null):: style="background-image:url('::file(vendor.imageId)::');width:200px;height:200px;" class="productImg" /> 
 	</div>
 </div>
 

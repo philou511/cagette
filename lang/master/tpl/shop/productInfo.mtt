@@ -70,8 +70,8 @@
 	
 	<div class="row">
 
-		<div ::cond vendor._image!=null:: class="col-md-3">
-			<img src="::file(vendor._image)::" class="img-thumbnail" />
+		<div ::cond vendor.imageId!=null:: class="col-md-3">
+			<img src="::file(vendor.imageId)::" class="img-thumbnail" />
 		</div>
 		
 		<div class="col-md-5">

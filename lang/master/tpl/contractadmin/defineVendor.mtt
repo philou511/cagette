@@ -3,7 +3,7 @@
 <div class="col-md-12">
 	<div class="article">
 
-		<h2>::_("Select a vendor")::</h2>		
+		<h2>Chercher un producteur</h2>		
 		
 		<div class="row">
 			::if(vendors.length>0)::
@@ -14,12 +14,17 @@
 
 				::foreach v vendors::
 				<div class="col-md-4 col-sm-6">
+					::set stats = v.getStats()::
 					::set cpro = v.getCpro()::
 
-					::if(cpro!=null)::
-					<div class="blockIconBadge" data-toggle="tooltip" title="Producteur équipé de Cagette Pro">
+					::if stats.type==0::
+					<div class="blockIconBadge" style="color:#84BD55;border-color:#84BD55" data-toggle="tooltip" title="Compte Producteur illimité">
 						<i class="icon icon-farmer-pro"></i>
-					</div>					
+					</div>
+					::else::		
+					<div class="blockIconBadge" style="color:#f1d577;border-color:#f1d577" data-toggle="tooltip" title="Producteur invité">
+						<i class="icon icon-farmer"></i>
+					</div>
 					::end::
 
 					<div class="boxed" style="height:300px">					
@@ -28,7 +33,10 @@
 								<div class="productImg xl" style="background-image:url('::v.getImage()::');"></div>								
 							</div>
 							<div class="col-md-8">
-									<h4>::v.name::</h4>
+								
+									<h4>
+										<a href="::v.getLink()::" target="_blank">::v.name::</a>
+									</h4>
 									::v.zipCode:: ::v.city::
 									<p ::cond(v.desc!=null):: style="color:#999;font-size:0.9em;">
 										::short(v.desc,80)::
@@ -50,12 +58,12 @@
 									::end::
 									
 									::if shopMode::
-										<!-- even if the vendor is cpro, we can create a catalog for him/her -->
+										 <!-- even if the vendor is cpro, we can create a catalog for him/her -->
 										<a href="/contract/insert/::v.id::" class="btn btn-default btn-sm">
 											<i class="icon icon-plus"></i> Nouveau catalogue
 										</a>
 									::else::
-										<!-- even if the vendor is cpro, we can create a catalog for him/her -->
+										<!-- even if the vendor is cpro, we can create a catalog for him/her-->
 										<a href="/contract/insertChoose/::v.id::" class="btn btn-default btn-sm">
 											<i class="icon icon-plus"></i> Nouveau catalogue
 										</a>

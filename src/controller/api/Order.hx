@@ -15,7 +15,7 @@ class Order extends Controller
 		var type = ( args != null && args.catalogType != null ) ? args.catalogType : null;
 		for( distrib in multiDistrib.getDistributions(type) ) {
 			
-			var image = distrib.catalog.vendor.image == null ? null : view.file( distrib.catalog.vendor.image );
+			var image = distrib.catalog.vendor.getImageId() == null ? null : view.file( distrib.catalog.vendor.getImageId() );
 			catalogs.push( { id : distrib.catalog.id, name : distrib.catalog.name, image : image } );
 		}
 

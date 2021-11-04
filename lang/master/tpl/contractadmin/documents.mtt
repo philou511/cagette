@@ -43,7 +43,7 @@
                             <td style="vertical-align: middle;">
                                 <div style="overflow-wrap: break-word;max-width: 450px;">
                                     <i class="icon icon-file-pdf"></i>
-                                    <a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a>
+                                    <a href="::file(doc.fileId)::" target="_blank">  ::doc._file.name::</a>
                                 </div>                                
                             </td>
                             <td style="vertical-align: middle;">

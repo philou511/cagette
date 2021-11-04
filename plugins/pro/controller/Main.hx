@@ -142,6 +142,7 @@ class Main extends controller.Controller
 			return rc.getCatalog();			
 		};
 		
+		view.vendorId = vendor.id;
 	}
 	
 	

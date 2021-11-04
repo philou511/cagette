@@ -29,6 +29,8 @@ class Account extends Controller
 			view.groupId = group.id;
 		}
 
+		view.noGroup = true;//do not display current group name
+
 		//Create the list of links to change the language
 		var langs = App.config.get("langs").split(";");
 		var langNames = App.config.get("langnames").split(";");

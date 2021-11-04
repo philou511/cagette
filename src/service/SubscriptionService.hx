@@ -345,6 +345,7 @@ class SubscriptionService
 
 	public static function getAbsencesDescription( catalog : db.Catalog ) {
 		if ( catalog.absentDistribsMaxNb==0 || catalog.absentDistribsMaxNb==null ) return "Pas d'absences autorisées";
+		if(catalog.absentDistribsMaxNb>0 && catalog.absencesStartDate==null ) throw "Une période d'absence doit être définie pour ce contrat";
 		return '${catalog.absentDistribsMaxNb} absences maximum autorisées  du ${DateTools.format( catalog.absencesStartDate, "%d/%m/%Y" )} au ${DateTools.format( catalog.absencesEndDate, "%d/%m/%Y")} ';
 	}
 

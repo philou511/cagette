@@ -4,14 +4,6 @@
 	
 	<macro name="confirm(?text)" onclick="return $$jsConfirm(::text::)"/>
 	
-	<macro name="file(id,?def)">
-		::if id == null && def != null::
-			::def::
-		::else::
-			/file/::makeFileSign(id)::.jpg
-		::end::
-	</macro>
-
 	<macro name="userMenu(user)">
 		::if user != null::
 			<!-- Home -->			
@@ -75,8 +67,6 @@
 			
 	</macro>
 	
-	<macro name="img(id,?def)"><img src="$$file(::id::,::def::)"/></macro>
-
 	<macro name="browse(b,url)">$$browseCustom(::b::,::url::,Page ::b.page:: ::if b.pages::/::b.pages:: ::end::)</macro>
 
 	<macro name="browseCustom(b,url,custom)">

@@ -176,10 +176,10 @@ class POffer extends Object
 	}
 	
 	public function getImage() {
-		if (image == null) {
+		if (imageId == null) {
 			return this.product.getImage();
 		}else {
-			return App.current.view.file(image);
+			return App.current.view.file(imageId);
 		}
 	}
 }

@@ -67,7 +67,7 @@
 							$$edit(Modifier,/p/pro/product/edit/::p.id::)
 							
 
-							<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/pro/product/image/::p.id::', null, 300, 300)">
+							<a class="btn btn-default btn-sm" onclick="_.openImageUploader('pproduct', ::p.id::, 300, 300, null, ::company.id::)">
 								<i class="icon icon-image"></i> ::_("Picture")::
 							</a>
 
@@ -130,7 +130,7 @@
 											<a onclick="_.overlay('/p/pro/offer/preview/::off.id::','::urlEncode(off.getName())::')" class="btn btn-default btn-sm">
 												<i class="icon icon-eye"></i> Voir</a>
 											$$edit(Mod.,/p/pro/offer/edit/::off.id::)
-											<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/pro/offer/image/::off.id::', null, 300, 300)">
+											<a class="btn btn-default btn-sm" onclick="_.openImageUploader('poffer', ::off.id::, 300, 300, null, ::company.id::)">
 												<i class="icon icon-image"></i> ::_("Picture")::
 											</a>
 											$$delete( ,/p/pro/offer/delete/::off.id::)
