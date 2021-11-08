@@ -3,8 +3,9 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-06-22 15:41+0000\n"
-"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"PO-Revision-Date: 2021-11-09 23:52+0000\n"
+"Last-Translator: [1000i100] Millicent Billette <millicent.billette@gmail.com>"
+"\n"
 "Language-Team: French <https://hosted.weblate.org/projects/cagette/"
 "translations/fr/>\n"
 "Language: fr\n"
@@ -12,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.2-dev\n"
+"X-Generator: Weblate 4.9-dev\n"
 
 #: ../src/payment/Cash.hx:293
 msgid "Cash"
@@ -1284,8 +1285,9 @@ msgid "Chicken catalog - Example"
 msgstr "Catalogue Poulet - exemple"
 
 #: ../src/controller/Group.hx:9139
+#, fuzzy
 msgid "Chicken catalog example."
-msgstr "Catalogue Poulet - exemple"
+msgstr "Exemple catalogue poulet."
 
 #: ../src/controller/Group.hx:9556
 msgid "12 eggs"
