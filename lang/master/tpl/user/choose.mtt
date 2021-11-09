@@ -237,7 +237,7 @@
 				if(localStorage.nouvelleReglesCount6==null ){
 					localStorage.nouvelleReglesCount6=0;
 				}
-				if(localStorage.nouvelleReglesCount6 < 10 ){
+				if(localStorage.nouvelleReglesCount6 < 5 ){
 					_Cagette.overlay("/data/nouvellesregles2021-7.html","",true);
 					localStorage.nouvelleReglesCount6++;
 				}

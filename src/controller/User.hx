@@ -86,7 +86,7 @@ class User extends Controller
 		view.discovery = cagettePros.find(cp -> cp.discovery)!=null;
 
 		//list tmpVendor that are not certified yet
-		view.tmpVendors = sys.db.Manager.cnx.request('select * from TmpVendor where userId = ${app.user.id} where certificationStatus < 2').results();
+		view.tmpVendors = sys.db.Manager.cnx.request('select * from TmpVendor where userId = ${app.user.id} and certificationStatus < 2').results();
 		// view.isBlocked = pro.db.PUserCompany.getUserCompanies(app.user).find(uc -> return uc.disabled) != null;
 
 		//find free or invited vendor

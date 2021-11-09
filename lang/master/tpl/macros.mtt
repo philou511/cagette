@@ -11,9 +11,15 @@
 			::set cpro = vendor.getCpro()::
 
 			::if(cpro!=null)::
+
 				::if(cpro.discovery)::
 				<!--découverte-->
 				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Offre Découverte">
+					<i class="icon icon-farmer"></i>
+				</div>
+				::elseif(vendor.isTest==true)::
+				<!--cpro test-->
+				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Cagette Pro Test">
 					<i class="icon icon-farmer"></i>
 				</div>
 				::else::
@@ -468,13 +474,13 @@
 									<a href="/charte/" target="_blank">Charte producteurs</a> 
 								</li>
 								<li> 
-									<a href="http://www.cagette.net/wiki" target="_blank">::_("Documentation")::</a> 
+									<a href="https://wiki.cagette.net" target="_blank">::_("Documentation")::</a> 
 								</li>
 								<li>
 									<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank">::_("Facebook group")::</a> 
 								</li>
 								<li>
-									<a href="http://www.cagette.pro" target="_blank">Formations pour producteurs</a> 
+									<a href="http://www.cagette.net/producteurs" target="_blank">Information producteurs</a> 
 								</li>												
 								<li>
 									<a href="/cgu" target="_blank">Conditions générales d'utilisation</a> 
