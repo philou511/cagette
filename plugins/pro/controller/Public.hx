@@ -93,7 +93,7 @@ class Public extends controller.Controller
 				n.company = catalog.company;
 				n.type = pro.db.PNotif.NotifType.NTCatalogImportRequest;
 				n.title = "Demande de liaison du catalogue \"" + catalog.name+"\" pour \"" + group.name + "\"";
-				n.content = params;
+				n.content2 = haxe.Json.stringify(params);
 				n.group = group;
 				n.insert();
 				

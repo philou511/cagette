@@ -325,7 +325,7 @@ class Catalog extends controller.Controller
 		if (notif.type != pro.db.PNotif.NotifType.NTCatalogImportRequest){
 			throw "error";
 		}
-		var content : CatalogImportContent = notif.content;		
+		var content : CatalogImportContent = haxe.Json.parse(notif.content2);		
 		var catalog = pro.db.PCatalog.manager.get( content.catalogId );		
 		try{
 			pro.service.PCatalogService.linkCatalogToGroup(catalog, notif.group , content.userId, content.catalogType );
@@ -350,7 +350,7 @@ class Catalog extends controller.Controller
 			throw "error";
 		}
 		
-		var content : pro.db.PNotif.DeliveryRequestContent = notif.content;
+		var content : pro.db.PNotif.DeliveryRequestContent = haxe.Json.parse(notif.content2);
 		var catalog = pro.db.PCatalog.manager.get(content.pcatalogId,false);
 		var distrib = db.MultiDistrib.manager.get(content.distribId,false);
 		var rcs = connector.db.RemoteCatalog.getFromCatalog(catalog);
