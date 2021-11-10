@@ -57,12 +57,7 @@ class Distribution extends Controller {
 			}
 		}
 
-		view.distribs = distribs.map(distrib -> {
-			var d:Dynamic = distrib;
-			d.slotsIsActivated = distrib.slots != null;
-			return d;
-		});
-
+		view.distribs = distribs;
 		view.cycles = DistributionCycle.getFromTimeFrame(app.user.getGroup(), timeframe);
 		view.timeframe = timeframe;
 

@@ -115,16 +115,6 @@ class Admin extends Controller {
 		}
 	}
 
-	@admin
-	function doMigrateRights() {
-		// populate UserGroup.rights2 field
-		for (ua in db.UserGroup.manager.search($rights2 == null, {limit: 5000})) {
-			Sys.print(ua.user.getName() + "@" + ua.group.name + " = " + ua.sync() + "<br>");
-		}
-
-		Sys.print("Reste encore " + db.UserGroup.manager.count($rights2 == null) + " userGroup à migrer");
-	}
-
 	/**
 		merge TxpProduct categs
 	**/
@@ -455,4 +445,24 @@ class Admin extends Controller {
 
 	@tpl('admin/process.mtt')
 	function doProcess() {}
+
+	@admin
+	function doMigrateCagetteProVatRates() {
+		// populate CagettePro.vatRates2 field
+		for (cp in pro.db.CagettePro.manager.search($vatRates2 == null, {limit: 5000})) {
+			Sys.print(cp.vendor.name + " = " + cp.sync() + "<br>");
+		}
+
+		Sys.print("Reste encore " + pro.db.CagettePro.manager.count($vatRates2 == null) + " CagettePro à migrer");
+	}
+
+	@admin
+	function doMigratePNotifContent() {
+		// populate PNotif.Content2 field
+		for (pn in pro.db.PNotif.manager.search($content2 == "", {limit: 5000})) {
+			Sys.print(pn.type + " = " + pn.sync() + "<br>");
+		}
+
+		Sys.print("Reste encore " + pro.db.PNotif.manager.count($content2 == "") + " PNotif à migrer");
+	}
 }

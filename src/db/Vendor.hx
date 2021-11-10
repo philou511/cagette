@@ -67,7 +67,6 @@ class Vendor extends Object
 	@hideInForms public var vatNumber : SNull<SString<128>>; //VAT number
 	@hideInForms public var legalStatus : SNull<SInt>; //statut juridique
 	@hideInForms public var companyCapital : SNull<SInt>; //capital social
-	@hideInForms public var siretInfos : SNull<SData<SiretInfos>>; //infos from SIRET API
 	@hideInForms public var activityCode:SNull<SString<8>>;//code NAF (NAFRev2)
 	
 	@hideInForms public var vendorPolicy:SBool; //charte producteurs
@@ -267,31 +266,6 @@ class Vendor extends Object
 		if(zipCode!=null) str.add(", "+zipCode);
 		if(city!=null) str.add(" "+city);
 		return str.toString();
-	}
-
-	public function getAddressFromSiretInfos(){
-		if(siretInfos==null) return null;
-		
-		var addr = {
-			address1:"",
-			address2:"",
-			zipCode:siretInfos.code_postal,
-			city:siretInfos.libelle_commune,
-			lat:siretInfos.latitude,
-			lng:siretInfos.longitude
-		}
-
-		//find address1
-		var a = [];
-		for( k in ["numero_voie","type_voie","libelle_voie"] ){
-			var v = Reflect.field(siretInfos,k);
-			if(v!=null && v!=""){
-				a.push(v);
-			}
-		}
-		addr.address1 = a.join(" ");
-
-		return addr;
 	}
 
 	public function isDisabled(){

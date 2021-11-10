@@ -12,7 +12,7 @@ class TmpBasket extends Object
     public var id : SId;
 	public var ref : SNull<SString<256>>;
 	public var cdate : SDateTime; //date when the order has been placed
-	public var data : SText; //SData<TmpBasketData>;
+	public var data : SText; //TmpBasketData;
     @:relation(userId)  public var user  : SNull<db.User>; //ordering is possible without being logged
     @:relation(multiDistribId) public var multiDistrib : db.MultiDistrib;
 	
@@ -49,12 +49,7 @@ class TmpBasket extends Object
 
 	
 	public function getData():TmpBasketData{
-		//try {
-			return haxe.Json.parse(data);
-		/*} catch(e:Any) {
-			// data is probably of type SData<TmpBasketData>
-			return haxe.Unserializer.run(data);
-		}*/
+		return haxe.Json.parse(data);
 	}
 
 	public function setData(tmpBasketData: TmpBasketData){

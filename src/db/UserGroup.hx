@@ -21,7 +21,6 @@ class UserGroup extends Object
 {
 	@:relation(groupId) public var group : db.Group;
 	@:relation(userId) public var user : db.User;
-	public var rights : SNull<SData<Array<Right>>>;		//@deprecated
 	public var rights2 : SNull<SSmallText>; 			//rights in JSON
 	public var balance : SFloat; 						//account balance in group currency
 	public static var CACHE = new Map<String,db.UserGroup>();
@@ -234,30 +233,4 @@ class UserGroup extends Object
 		return false;			*/
 	}
 
-	/**
-		sync old rights to new rights system
-	**/
-	public function sync(){
-		lock();
-		var r2 = new Array<{right:String,params:Array<String>}>();
-		if(this.rights!=null){			
-			for(r in this.rights){
-				switch(r){
-					case ContractAdmin(cid):					
-						r2.push({right:"ContractAdmin",params:cid==null? null : [Std.string(cid)]});
-					case GroupAdmin:
-						r2.push({right:"GroupAdmin",params:null});
-					case Membership:
-						r2.push({right:"Membership",params:null});
-					case Messages : 
-						r2.push({right:"Messages",params:null});
-				}
-			}
-		}
-		
-		this.rights2 = haxe.Json.stringify(r2);
-		update();
-		return r2;
-	}
-	
 }

@@ -42,6 +42,7 @@ class PNotif extends Object
 	public var type 	: SEnum<NotifType>;
 	public var title	: STinyText;
 	public var content 	: SData<Dynamic>;	
+	public var content2 : SText;	
 	public var date 	: SDateTime;	
 	
 	
@@ -62,7 +63,7 @@ class PNotif extends Object
 			pcatalogId : catalog.id,
 			distribId : distrib.id
 		};
-		notif.content  = content;
+		notif.content2  = haxe.Json.stringify(content);
 		notif.sender = sender;
 		notif.insert();
 		
@@ -76,7 +77,7 @@ class PNotif extends Object
 		var out = [];
 		if(catalog==null || distrib==null) return out;
 		for( n in manager.search($group==distrib.getGroup() && $type==NotifType.NTDeliveryRequest)){
-			var content : DeliveryRequestContent = n.content;
+			var content : DeliveryRequestContent = haxe.Json.parse(n.content2);
 			if(content.pcatalogId==catalog.id && content.distribId==distrib.id){
 				out.push(n);
 			}
@@ -85,5 +86,10 @@ class PNotif extends Object
 
 	}
 	
-	
+	public function sync(){
+		lock();
+		this.content2 = haxe.Json.stringify(this.content);
+		update();
+		return this.content2;
+	}
 }

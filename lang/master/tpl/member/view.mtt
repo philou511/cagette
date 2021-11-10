@@ -56,10 +56,6 @@
 			$$delete(::_("Remove from group")::,/member/delete/::member.id::?token=::token::)
 			<a href="/member/movetowl/::member.id::" class="btn btn-default btn-sm">::_("Put on waiting list")::</a>
 			
-			<a onclick="_Cagette.overlay('/member/lastMessages/::member.id::','Message reçus')" class="btn btn-default btn-sm">
-			<i class="icon icon-mail"></i>
-				::_("Received messages")::</a>
-			
 			::if !member.isFullyRegistred()::
 			<a href="/member/inviteMember/::member.id::?token=::token::" class="btn btn-default btn-sm">
 				<i class="icon icon-mail"></i>
