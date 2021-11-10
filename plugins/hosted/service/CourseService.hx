@@ -33,7 +33,6 @@ class CourseService {
             defCpro = new pro.db.CagettePro();
             defCpro.vendor = defVendor;
         }		
-		defCpro.freeCpro = true;
         defCpro.training = false;
         defCpro.discovery = false;
         if(defCpro.id==null) defCpro.insert() else defCpro.update();

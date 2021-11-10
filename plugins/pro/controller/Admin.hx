@@ -1148,14 +1148,15 @@ class Admin extends controller.Controller {
 					uc.delete();
 				}
 
-				cpro.lock();
-				cpro.vendor.user = null;
-				cpro.disabled = true;
-				cpro.update();
+				
+				vendor.lock();
+				vendor.user = null;
+				vendor.disabled = DisabledReason.Banned;
+				vendor.update();
 
 				VendorStats.updateStats(vendor);
 
-				throw Ok("/admin/vendor/view/" + vendor.id, "Cagette Pro désactivé");
+				throw Ok("/admin/vendor/view/" + vendor.id, "Producteur désactivé");
 
 			case "deleteCpro":
 				var cpro = CagettePro.getFromVendor(vendor);

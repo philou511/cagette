@@ -104,7 +104,6 @@ class VendorService{
 			where.push('(' + names.map(n -> 'name LIKE "%$n%"').join(' OR ') + ')');
 		}
 		
-
 		//search by mail
 		// if(search.email!=null){
 		// 	where.push('email LIKE "${search.email}"');
@@ -133,8 +132,7 @@ class VendorService{
 		//cpro first
 		for( v in vendors.copy() ){
 			var cpro = v.getCpro();
-			if( cpro !=null){
-				if (cpro.disabled) vendors.remove(v);
+			if( cpro !=null){				
 				if(cpro.training) vendors.remove(v);				
 			} 			
 		}

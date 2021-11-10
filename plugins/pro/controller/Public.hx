@@ -141,7 +141,11 @@ class Public extends controller.Controller
 				App.current.setTemplate(null);
 				return;
 			}
-		}  
+		}
+		if(Web.getClientHeader('user-agent').toLowerCase().indexOf("python")>-1){
+			App.current.setTemplate(null);
+			return;
+		}
 
 		vendorPage(vendor);
 

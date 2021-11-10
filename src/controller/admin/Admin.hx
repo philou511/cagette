@@ -28,7 +28,7 @@ class Admin extends Controller {
 	@tpl("admin/default.mtt")
 	function doDefault() {
 		view.now = Date.now();
-		view.ip = Web.getClientIP();
+		view.ip = Web.getClientIP();		
 	}
 
 	@tpl("admin/emails.mtt")

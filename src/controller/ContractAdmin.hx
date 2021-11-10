@@ -688,6 +688,8 @@ class ContractAdmin extends Controller
 		checkToken();
 
 		catalog.check();
+
+		view.rc = RemoteCatalog.getFromContract(catalog);
 		
 		if ( !app.user.canManageContract( catalog ) ) throw Error("/", t._("You do not have the authorization to manage this contract"));
 

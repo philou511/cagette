@@ -35,6 +35,23 @@
 				<td>::_("End date")::</td>
 				<td>::dDate(contract.endDate)::</td>
 			</tr>
+
+			<tr>
+				<td>Liaison catalogue</td>
+				<td>
+					::if(rc==null)::
+						Catalogue invité ( non relié à un compte producteur)
+					::else::
+						::set pcat = rc.getCatalog()::
+
+						::if(pcat._company._vendor.id==contract._vendor.id)::
+							Catalogue géré depuis un compte producteur
+						::else::
+							Catalogue <b>invité</b> sur le compte d'un autre producteur (<a href="::pcat._company._vendor.getLink()::">::pcat._company._vendor.name::</a>)
+						::end::
+					::end::
+				</td>
+			</tr>
 		</table>
 
 		<div>
@@ -131,7 +148,9 @@
 					</p>
 					::end::
 				</td>
+				
 			</tr>
+
 		</table>
 		
 		

@@ -1,5 +1,6 @@
 package hosted.controller;
 
+import db.Vendor.DisabledReason;
 import sys.db.Connection;
 import pro.db.CagettePro;
 import pro.db.VendorStats;
@@ -274,8 +275,7 @@ class Course extends sugoi.BaseController
 				v.email = u.email;
 				v.insert();
 
-				var c = new pro.db.CagettePro();
-				c.freeCpro = true; //free account				
+				var c = new pro.db.CagettePro();				
 				c.training = true; // training account
 				c.vendor = v;
 				c.insert();
@@ -397,10 +397,11 @@ class Course extends sugoi.BaseController
 		}
 		
 		//no user have access to this vendor
-		company.vendor.lock();
-		company.vendor.user = null;
-		company.disabled = true;
-		company.vendor.update();
+		var v = company.vendor;
+		v.lock();
+		v.user = null;
+		v.disabled = DisabledReason.Banned;
+		v.update();
 
 		//remove access to groups linked to this cagette pro + remove future distribs
 		for( cat in company.getCatalogs()){
