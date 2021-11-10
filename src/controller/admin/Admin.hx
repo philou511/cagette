@@ -455,4 +455,14 @@ class Admin extends Controller {
 
 		Sys.print("Reste encore " + pro.db.CagettePro.manager.count($vatRates2 == null) + " CagettePro à migrer");
 	}
+
+	@admin
+	function doMigratePNotifContent() {
+		// populate PNotif.Content2 field
+		for (pn in pro.db.PNotif.manager.search($content2 == "", {limit: 5000})) {
+			Sys.print(pn.type + " = " + pn.sync() + "<br>");
+		}
+
+		Sys.print("Reste encore " + pro.db.PNotif.manager.count($content2 == "") + " PNotif à migrer");
+	}
 }
