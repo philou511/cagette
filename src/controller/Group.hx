@@ -119,12 +119,12 @@ class Group extends controller.Controller
 			{
 				label:"Mode marché",
 				value:"2",
-				desc : "Drive de producteurs sans engagement. Groupe ouvert : n'importe qui peut s'inscrire et commander. <a data-toggle='tooltip' title='En savoir plus' href='https://wiki.cagette.net/admin:admin_boutique#mode_marche' target='_blank'><i class='icon icon-info'></i></a>"
+				desc : "Drive de producteurs sans engagement.<br/>Configuration par défaut : Groupe ouvert (n'importe qui peut s'inscrire et commander) <a data-toggle='tooltip' title='En savoir plus' href='https://wiki.cagette.net/admin:admin_boutique#mode_marche' target='_blank'><i class='icon icon-info'></i></a>"
 			},
 			{ 
 				label:"Mode AMAP",
 				value:"0",
-				desc : "Gérer des contrats AMAP classiques ou variables. Groupe fermé avec liste d'attente et gestion des adhésions. <a data-toggle='tooltip' title='En savoir plus' href='https://wiki.cagette.net/admin:admin_boutique#mode_amap' target='_blank'><i class='icon icon-info'></i></a>"
+				desc : "Gérer des contrats AMAP classiques ou variables.<br/>Configuration par défaut : Groupe fermé avec liste d'attente et gestion des adhésions. <a data-toggle='tooltip' title='En savoir plus' href='https://wiki.cagette.net/admin:admin_boutique#mode_amap' target='_blank'><i class='icon icon-info'></i></a>"
 			},
 		/*	{
 				label:t._("Grouped orders"),

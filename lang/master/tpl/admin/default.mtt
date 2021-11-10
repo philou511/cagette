@@ -3,7 +3,8 @@
 
 <h3>Console d'administration de Cagette.net</h3>
 <p>
-	::hDate(now)::
+	::hDate(now)::<br/>
+	IP : ::ip::
 </p>
 
 ::end::

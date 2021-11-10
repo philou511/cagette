@@ -62,6 +62,11 @@ class Place extends Controller
 		f.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),"FR",true));
 		
 		if (f.isValid()) {
+			var country = f.getValueOf('country');
+			if(country!="FR" && country!="BE"){
+				throw Error("/place/insert","Seules les adresses en France et en Belgique sont autorisées");
+			}
+
 			f.toSpod(d); 
 			d.group = app.user.getGroup();
 			d.insert();

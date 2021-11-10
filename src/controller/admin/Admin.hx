@@ -1,4 +1,5 @@
 package controller.admin;
+import sugoi.Web;
 import pro.db.VendorStats;
 
 import sugoi.db.Variable;
@@ -27,6 +28,7 @@ class Admin extends Controller {
 	@tpl("admin/default.mtt")
 	function doDefault() {
 		view.now = Date.now();
+		view.ip = Web.getClientIP();
 	}
 
 	@tpl("admin/emails.mtt")

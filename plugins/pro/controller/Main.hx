@@ -65,7 +65,7 @@ class Main extends controller.Controller
 			for (uc in pro.db.PUserCompany.manager.search($user == app.user, false)){
 				if(uc.company.vendor.id==vendor.id){
 					if(uc.disabled) {
-						// app.session.data.vendorId = null;
+						app.session.data.vendorId = null;
 						throw Redirect("/p/pro/disabled");
 					}
 					break;
