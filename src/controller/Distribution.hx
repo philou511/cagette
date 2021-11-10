@@ -57,6 +57,7 @@ class Distribution extends Controller {
 			}
 		}
 
+		view.distribs = distribs;
 		view.cycles = DistributionCycle.getFromTimeFrame(app.user.getGroup(), timeframe);
 		view.timeframe = timeframe;
 
