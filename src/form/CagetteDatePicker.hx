@@ -22,6 +22,11 @@ class CagetteDatePicker extends NativeDatePicker {
     super(name, label, _value, type, required, attributes);
     this.openTo = openTo;
   }
+
+  override public function getTypedValue(str:String):Date {
+		if(str=="" || str==null) return null;
+    return Date.fromString(str);
+  }
   
   override public function render():String {
     var inputName = (parentForm==null?"":parentForm.name) + "_" + this.name;
@@ -31,7 +36,13 @@ class CagetteDatePicker extends NativeDatePicker {
       <div id="$inputName" ></div>
       <script>
         document.addEventListener("DOMContentLoaded", function() {
-          _.generateDatePicker("#$inputName", "$inputName", $pValue, "$inputType", $required, "$openTo");
+          neo.createNeoModule("$inputName", "haxeDatePicker", {
+            name: "$inputName",
+            type: "$inputType",
+            value: $pValue,
+            required: $required,
+            openTo: "$openTo"
+          });
         });
       </script>
     ';
