@@ -60,8 +60,7 @@ class Vendor extends Object
 	public var desc : SNull<SText>;
 	@hideInForms public var cdate : SNull<SDateTime>; // date de création
 	@hideInForms public var freemiumResetDate : SDateTime;
-	@hideInForms public var turnoverLimitReachedDistribsWhiteList : SText;
-
+	@hideInForms public var turnoverLimitReachedDistribsWhiteList : SSmallText;
 
 	//legal infos
 	@hideInForms public var companyNumber : SNull<SString<128>>; //SIRET

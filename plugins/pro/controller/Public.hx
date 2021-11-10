@@ -1,4 +1,7 @@
 package pro.controller;
+import sugoi.Web;
+import haxe.Json;
+import sugoi.db.Variable;
 import Common;
 
 class Public extends controller.Controller
@@ -129,6 +132,16 @@ class Public extends controller.Controller
 
 	@tpl('plugin/pro/public/vendor.mtt')
 	public function doVendor(vendor:db.Vendor){
+
+		//Anti scraping
+		var bl = Variable.get('IPBlacklist');
+		if(bl!=null){
+			var bl : Array<String> = Json.parse(bl);
+			if( bl.has(Web.getClientIP())){
+				App.current.setTemplate(null);
+				return;
+			}
+		}  
 
 		vendorPage(vendor);
 

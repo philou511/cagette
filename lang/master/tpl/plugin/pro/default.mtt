@@ -12,7 +12,7 @@
 	<div class="article">
 		
 			::foreach n notifs::
-			<a href="#" class="clickable" onclick="_.overlay('/p/pro/notif/view/::n.id::','Notification')">
+			<a href="#" class="clickable" onclick="_Cagette.overlay('/p/pro/notif/view/::n.id::','Notification')">
 			<table class="notifs">
 				<tr>
 				<td class="col-md-1">

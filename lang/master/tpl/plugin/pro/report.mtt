@@ -34,7 +34,7 @@
 		
 		<div class="reportHeaderContainer"></div>
 		<script>
-			_.initReportHeader();
+			_Cagette.initReportHeader();
 		</script>
 		
 		

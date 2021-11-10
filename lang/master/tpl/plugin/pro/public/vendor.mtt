@@ -4,7 +4,7 @@
 		::set cid = catalog.id::
 		::end::
 		<script>
-			_.getVendorPage("vendorPage",::vendor.id::,::cid::);
+			_Cagette.getVendorPage("vendorPage",::vendor.id::,::cid::);
 		</script>
 		<div id="vendorPage"></div>
 

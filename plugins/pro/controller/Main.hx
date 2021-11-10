@@ -59,6 +59,8 @@ class Main extends controller.Controller
 
 			if(app.session.data==null) app.session.data = {};
 
+			app.session.data.vendorId = args.vendor;			
+
 			//disabled "covid" cagette pro test (2020-10-01)			
 			for (uc in pro.db.PUserCompany.manager.search($user == app.user, false)){
 				if(uc.company.vendor.id==vendor.id){
@@ -68,9 +70,8 @@ class Main extends controller.Controller
 					}
 					break;
 				}
-			}			
-			
-			app.session.data.vendorId = args.vendor;			
+			}
+
 			throw Redirect('/p/pro/');
 		}else{
 			checkCompanySelected();

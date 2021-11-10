@@ -168,7 +168,6 @@
                                     <li>Une journée de formation en salle avec un formateur expérimenté</li>                            
                                     <li>21h de formation à distance à votre rythme </li>                                    
                                 </ul>
-
                                 <p>
                                     <a href="https://www.cagette.net/producteurs/formations/" target="_blank" class="btn btn-default btn-sm">En savoir plus.</a>
                                 </p>
@@ -191,7 +190,7 @@
                         </p>
 
                         <p class="text-center">
-                            ::if(company.discovery)::
+                            ::if(company.discovery)::                        
                             <a href="https://share.hsforms.com/1_7sOBRVQTUaCwgZTtmxOOg4f5r5" target="_blank" class="btn btn-primary btn-lg"><i class="icon icon-chevron-right"></i> Etude de financement</a>
                             ::else::
                             <a href=""  class="btn btn-default btn-lg" disabled="disabled"><i class="icon icon-chevron-right"></i> Votre formule actuelle</a>

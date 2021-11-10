@@ -83,14 +83,14 @@
 			document.addEventListener("DOMContentLoaded", function(event) {
 			  
 				//init lang in js App
-				_.LANG = "::session.lang::";
+				_Cagette.LANG = "::session.lang::";
 				
 				//tutorials
 				//::if tuto!=null::				
-				//_.getTuto("::tuto.name::",::tuto.step::);			
+				//_Cagette.getTuto("::tuto.name::",::tuto.step::);			
 				//::end::
 
-				_.antiDoubleClick();
+				_Cagette.antiDoubleClick();
 			  
 			})
 

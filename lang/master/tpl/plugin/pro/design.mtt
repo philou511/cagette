@@ -5,7 +5,7 @@
 			<h1 ::cond vendor!=null:: >::vendor.name::</h1>
 		</div>
 		
-		<div class="col-md-6 accountBlock">	
+		<div class="col-md-6 accountBlock" ::cond company!=null::>	
 			::if(company.discovery==true)::
 			<a href="/p/pro/upgrade">
 				<div class="pull-right" style="margin-top:8px">
@@ -21,7 +21,7 @@
 			</a>
 			::else::
 			<a href="/p/pro/upgrade">
-				<div class="pull-right iconBadge farmer-pro" style="margin-top:8px" data-toggle="tooltip" title="Compte Producteur illimité">
+				<div class="pull-right iconBadge farmer-pro" style="margin-top:8px" data-toggle="tooltip" title="Offre Pro">
 					<i class="icon icon-farmer-pro"></i>
 				</div>
 			</a>
@@ -129,7 +129,7 @@
 	</div>
 </div>
 
-::if(company.discovery==true)::
+::if(comany!=null && company.discovery==true)::
 <div id="vendor-freemium-alert-container" style="margin-bottom:8px"></div>
 <script>
 	document.addEventListener("DOMContentLoaded", function (event) {

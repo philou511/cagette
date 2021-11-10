@@ -278,7 +278,7 @@
 														<div style="background-image:url('::uo.product.getImage()::')" class="productImg sm" />
 												</div>
 												<div class="col-md-7">
-														<a onclick="_.overlay('/shop/productInfo/::uo.product.id::','::urlEncode(uo.product.getName())::')">
+														<a onclick="_Cagette.overlay('/shop/productInfo/::uo.product.id::','::urlEncode(uo.product.getName())::')">
 															::short(uo.product.getName(),36)::
 														</a>
 												</div>
