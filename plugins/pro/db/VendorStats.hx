@@ -2,14 +2,13 @@ package pro.db;
 import sys.db.Types;
 
 enum VendorType {
-	VTCpro; 		// 0 Cagette Pro formé
+	VTCpro; 		// 0 Offre Pro formé
 	VTFree; 		// 1 Gratuit
 	VTInvited; 		// 2 Invité
 	VTInvitedPro;   // 3 Invité Cagette Pro
-	VTCproTest; 	// 4 Cagette Pro test (COVID19)
+	VTCproTest; 	// 4 Cagette Pro test (COVID19 ou en attente de formation)
 	VTStudent; 		// 5 compte pro pédagogique
-	VTCproStudent; 	// 6 compte pro test/découverte inscrit à une formation
-	VTDiscovery; 	// 7 Cagette Découverte
+	VTDiscovery; 	// 6 Offre Découverte
 }
 
 /**
@@ -26,7 +25,7 @@ class VendorStats extends sys.db.Object
 	public var referer:SNull<SString<256>>; // referer list
 	public var turnover90days : SNull<SFloat>; //turnover of the last 90 days
 	public var turnoverTotal : SNull<SFloat>; //turnover since the beginning
-	public var shopTurnover12months : SFloat; //turnover in market mode since 12 month
+	public var marketTurnoverSinceFreemiumResetDate : SFloat; //market turnover since freemium reset date
 	public var ldate : SDateTime; //last update date
 	
 	public function new(){
@@ -120,12 +119,12 @@ class VendorStats extends sys.db.Object
 
 		vs.active = vs.turnover90days > 0;
 
-		//turnover 12 months
-		var from = DateTools.delta(now,-1000.0*60*60*24*365.25);
-		vs.shopTurnover12months = 0;
+		//freemium turnover 
+		var from = vendor.freemiumResetDate;
+		vs.marketTurnoverSinceFreemiumResetDate = 0;
 		var cids = vendor.getContracts().array().filter( cat -> cat.group.hasShopMode() ).map(c -> c.id);//only shopMode
 		for( d in db.Distribution.manager.search($date > from && $date < now && ($catalogId in cids), false)){
-			vs.shopTurnover12months += d.getTurnOver();
+			vs.marketTurnoverSinceFreemiumResetDate += d.getTurnOver();
 		}
 
 		//a trainee cannot be active

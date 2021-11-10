@@ -1,13 +1,15 @@
 package db;
+import Common;
 import pro.db.VendorStats;
 import sugoi.form.validators.EmailValidator;
 import sys.db.Object;
 import sys.db.Types;
-import Common;
 
 enum DisabledReason{
-	IncompleteLegalInfos; //incomplete legal infos
+	IncompleteLegalInfos; 	//incomplete legal infos
 	NotCompliantWithPolicy; //not compliant with policy (charte des producteurs)
+	Banned; //banned by network administrateurs
+	TurnoverLimitReached; //turnover limit reached
 }
 
 /**
@@ -43,6 +45,8 @@ class Vendor extends Object
 	
 	//public var legalStatus : SNull<SEnum<LegalStatus>>;
 	@hideInForms public var profession : SNull<SInt>;
+	@hideInForms public var production2 : SNull<SInt>;
+	@hideInForms public var production3 : SNull<SInt>;
 
 	public var email:SNull<SString<128>>;
 	public var phone:SNull<SString<19>>;
@@ -55,6 +59,9 @@ class Vendor extends Object
 	
 	public var desc : SNull<SText>;
 	@hideInForms public var cdate : SNull<SDateTime>; // date de création
+	@hideInForms public var freemiumResetDate : SDateTime;
+	@hideInForms public var turnoverLimitReachedDistribsWhiteList : SText;
+
 
 	//legal infos
 	@hideInForms public var companyNumber : SNull<SString<128>>; //SIRET
@@ -64,7 +71,7 @@ class Vendor extends Object
 	@hideInForms public var siretInfos : SNull<SData<SiretInfos>>; //infos from SIRET API
 	@hideInForms public var activityCode:SNull<SString<8>>;//code NAF (NAFRev2)
 	
-	public var vendorPolicy:SBool; //charte producteurs
+	@hideInForms public var vendorPolicy:SBool; //charte producteurs
 	@hideInForms public var tosVersion: SNull<SInt>; //CGV version checked
 	
 	public var linkText:SNull<SString<256>>;
@@ -245,7 +252,6 @@ class Vendor extends Object
 			"linkText" 			=> t._("Link text"),			
 			"linkUrl" 			=> t._("Link URL"),			
 			"companyNumber" 	=> "Numéro SIRET (14 chiffres)",	
-			"vendorPolicy"		=> "Ce producteur est conforme à la <a href=\"https://www.cagette.net/charte-producteurs\" target=\"_blank\">Charte Producteurs Cagette.net</a>"
 		];
 	}
 
@@ -299,6 +305,8 @@ class Vendor extends Object
 			case null : null;
 			case DisabledReason.IncompleteLegalInfos : "Informations légales incomplètes. Complétez vos informations légales pour débloquer le compte. (SIRET,capital social,numéro de TVA)";
 			case DisabledReason.NotCompliantWithPolicy : "Producteur incompatible avec la charte producteur de Cagette.net";
+			case DisabledReason.Banned : "Producteur bloqué par les administrateurs";
+			case DisabledReason.TurnoverLimitReached : "Ce producteur a atteind sa limite de chiffre d'affaires annuel";
 		};
 	}
 

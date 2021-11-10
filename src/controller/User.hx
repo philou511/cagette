@@ -38,10 +38,12 @@ class User extends Controller
 		//if its needed to redirect after login
 		if (app.params.exists("redirect")){
 			view.redirect = app.params.exists("redirect");
-		}else{
-			view.redirect = "/";
+		}else if (getParam("__redirect")!=null) {
+			view.redirect = getParam("__redirect");
+		} else {
+			view.redirect = '/';
 		}
-	}
+}
 
 	/**
 	 * Choose which group to connect to.
@@ -61,11 +63,7 @@ class User extends Controller
 		var groups = app.user.getGroups();
 		
 		view.noGroup = true; //force template to not display current group
-		/*view.hasRights = Lambda.find( groups, function(g){
-			var ua = db.UserGroup.get(app.user,g);			
-			return ua!=null && ua.rights!=null && ua.rights.length>0;
-		})!=null;*/
-
+		
 		
 		if (args!=null && args.group!=null) {
 			//select a group
@@ -78,26 +76,24 @@ class User extends Controller
 			throw Redirect('/home');
 		}
 		
-		view.amaps = groups;
+		view.groups = groups;
 		view.wl = db.WaitingList.manager.search($user == app.user, false);
-
 		
 		#if plugins
 		//vendor accounts
-		var vendors = service.VendorService.getVendorsFromUser(app.user);
-		view.vendors = vendors;
-
+		var cagettePros = service.VendorService.getCagetteProFromUser(app.user);
+		view.cagettePros = cagettePros;
+		view.discovery = cagettePros.find(cp -> cp.discovery)!=null;
 		view.isBlocked = pro.db.PUserCompany.getUserCompanies(app.user).find(uc -> return uc.disabled) != null;
 
 		//find free or invited vendor
-		var vendor = db.Vendor.manager.select($email==app.user.email,false);
+		/*var vendor = db.Vendor.manager.select($email==app.user.email,false);
 		if(vendor!=null){
 			var vs = VendorStats.getOrCreate(vendor);
 			if( vs.type == VTFree || vs.type == VTInvited || vs.type == VTInvitedPro ){
 				view.isFreeVendor = true;
 			}
-		}	
-		
+		}*/	
 		#end
 
 		view.isGroupAdmin = app.user.getUserGroups().find(ug -> return ug.isGroupManager()) != null;

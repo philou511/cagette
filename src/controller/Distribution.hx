@@ -695,7 +695,7 @@ class Distribution extends Controller {
 	}
 
 	/**
-		Insert a multidistribution
+		Edit a multidistribution
 	**/
 	@tpl("form.mtt")
 	public function doEditMd(md:db.MultiDistrib) {

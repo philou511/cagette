@@ -9,7 +9,7 @@
     ::set vs = getStats(v)::
 	<tr>
 		<td>
-			<a href="/p/pro/admin/vendor/::v.id::" target="_blank">::v.name::</a>			
+			<a href="/admin/vendor/view/::v.id::" target="_blank">::v.name::</a>			
 		</td>
 		<td style="font-size:0.6em;">::v.desc::</td>
 		

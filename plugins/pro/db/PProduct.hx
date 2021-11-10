@@ -62,6 +62,10 @@ class PProduct extends Object
 			return App.current.view.file(imageId);
 		}
 	}
+
+	public function getImageId(){
+		return this.imageId;
+	}
 	
 	override function toString() {
 		if (name != null) {
@@ -155,7 +159,7 @@ class PProduct extends Object
 			"variablePrice" 	=> "Prix variable selon pesée"/*t._("Variable price based on weight")*/,			
 			"multiWeight" 		=> "Multi-pesée",	
 			"stockStrategy"		=> "Gestion des stocks",
-			"bulk"				=> "vrac"
+			"bulk"				=> "Vrac"
 		];
 	}
 }

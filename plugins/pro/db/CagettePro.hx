@@ -13,12 +13,13 @@ class CagettePro extends sys.db.Object
 	@hideInForms @:relation(demoCatalogId) public var demoCatalog : SNull<pro.db.PCatalog>;//catalog used for public page
 	
 	@hideInForms public var vatRates : SData<Map<String,Float>>;
+	@hideInForms public var vatRates2 : SNull<SText>;
 	@hideInForms public var freeCpro:SBool; //have free access to cpro
 	@hideInForms public var training:SBool;	//training account
 	//@hideInForms public var active:SBool;	//is active
 	@hideInForms public var network:SBool;	//enable network management features
 	@hideInForms public var captiveGroups:SBool;	//the groups are a captive network
-	@hideInForms public var discovery:SBool;	//Cagette Découverte
+	@hideInForms public var discovery:SBool;	//Offre Découverte
 
 	@hideInForms public var networkGroupIds:SNull<SString<512>>; //network groups, ints separated by comas
 
@@ -27,7 +28,7 @@ class CagettePro extends sys.db.Object
 	
 	public function new(){
 		super();
-		vatRates = getVatRates();
+		setVatRates([{label:"TVA alimentaire 5,5%",value:5.5},{label:"TVA 20%",value:20},{label:"Non assujeti à TVA", value:0}]);
 		freeCpro = true;
 		training = false;
 		//active = false;
@@ -93,14 +94,31 @@ class CagettePro extends sys.db.Object
 		}
 		return out;
 	}
-	
-	public function getVatRates(){
-		if (vatRates == null){
-			return ["TVA Alimentaire 5,5%" => 5.5, "TVA 20%" => 20, "Non assujeti à TVA" => 0];	
-		}else{
-			return vatRates;
+
+	public function setVatRates(rates:Array<{value:Float,label:String}>){
+		vatRates2 = haxe.Json.stringify(rates);
+	}
+
+	public function getVatRates():Array<{value:Float,label:String}>{
+		try{
+			return haxe.Json.parse(vatRates2);
+		}catch(e:Dynamic){
+			// If we have legacy vat rates, return them in the correct type
+			if (vatRates != null) {
+				var parsedLegacyVatRates: Array<{value:Float,label:String}> = [];
+				for (k in vatRates.keys()) {
+					parsedLegacyVatRates.push({label:k, value:vatRates.get(k)});
+				}
+				return parsedLegacyVatRates;
+			}
+
+			// Else we return default vat rates
+			var rates = [{label:"TVA alimentaire 5,5%",value:5.5},{label:"TVA 20%",value:20},{label:"Non assujeti à TVA", value:0}];
+			this.lock();
+			setVatRates(rates);
+			this.update();
+			return rates;
 		}
-		
 	}
 	
 	/**

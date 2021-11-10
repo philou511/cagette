@@ -61,11 +61,13 @@ class Mangopay
 
 			//something bad happened...
 			var error : mangopay.Error = result;
+			App.current.logError(result);
 			throw TypedError.typed( 500 , error.Message , error );
 
 		} else if ( exceptionOnResultCode && Reflect.hasField(result, "ResultCode") && result.ResultCode != null ) {
 			var resultCode = Std.parseInt(result.ResultCode);
 			if ( resultCode != 0) {
+				App.current.logError(result);
 				throw TypedError.typed(resultCode, result.ResultMessage, result);
 			}
 		}

@@ -4,7 +4,6 @@ import service.DistributionService;
 import db.User;
 import haxe.DynamicAccess;
 import db.MultiDistrib;
-import crm.CrmService;
 import db.Group.BetaFlags;
 import tools.DateTool;
 import pro.db.PUserCompany;
@@ -37,196 +36,9 @@ class Admin extends controller.Controller {
 		view.nav = nav("admin");
 	}
 
-	/**
-		Vendors admin
-	**/
-	@tpl('plugin/pro/admin/default.mtt')
-	function doDefault() {
-		var vendors = [];
-		var total = 0;
-		var totalCpros = 0;
-		var totalActive = 0;
+	
 
-		// form
-		var f = new sugoi.form.Form("vendors");
-		f.method = GET;
-		var data = [
-			{label: "Tous", value: "all"},
-			{label: "Gratuit", value: VTFree.string()},
-			{label: "Invité", value: VTInvited.string()},
-			{label: "Invité dans un Cagette pro", value: VTInvitedPro.string()},
-			{label: "Cagette Pro formé", value: VTCpro.string()},
-			{label: "Cagette Pro en test", value: VTCproTest.string()},
-			{label: "Cagette Pro pédagogique", value: VTStudent.string()},
-			// {label:"Cagette Pro inscrit à une formation",value:"prostudent"},
-			{label: "Cagette Découverte", value: VTDiscovery.string()},
-		];
-		f.addElement(new sugoi.form.elements.StringSelect("type", "Type de producteur", data, VTCproTest.string(), true, ""));
-		f.addElement(new sugoi.form.elements.StringInput("zipCodes", "Saisir des numéros de département séparés par des virgules ou laisser vide."));
-		f.addElement(new sugoi.form.elements.StringSelect("country", "Pays", db.Place.getCountries(), "FR", true, ""));
-		var data = [
-			{label: "Actifs", value: "active"},
-			{label: "Inactifs", value: "inactive"},
-			{label: "Tous", value: "all"}
-		];
-		f.addElement(new sugoi.form.elements.StringSelect("active", "Actifs ou pas", data, "active", true, ""));
-		var data = [
-			{label: "Tableau", value: "table"},
-			{label: "Emails", value: "emails"},
-			{label: "CSV", value: "csv"}
-		];
-		f.addElement(new sugoi.form.elements.StringSelect("output", "Sortie", data, "table", true, ""));
-
-		var sql_select = "SELECT v.*,s.active,s.type,s.turnoverTotal,s.turnover90days";
-		var sql_where_or = [];
-		var sql_where_and = [];
-		var sql_end = "ORDER BY SUBSTRING(v.zipCode,0,2),v.name ASC";
-		var sql_from = ["Vendor v LEFT JOIN  VendorStats s ON v.id=s.vendorId "];
-
-		if (f.isValid()) {
-			// filter by zip codes
-			var zipCodes:Array<Int> = f.getValueOf("zipCodes") != null ? f.getValueOf("zipCodes").split(",").map(Std.parseInt) : [];
-			if (zipCodes.length > 0) {
-				for (zipCode in zipCodes) {
-					var min = zipCode * 1000;
-					var max = zipCode * 1000 + 999;
-					sql_where_or.push('(v.zipCode>=$min and v.zipCode<=$max)');
-				}
-			}
-
-			// active
-			switch (f.getValueOf("active")) {
-				case "active":
-					sql_where_and.push("active=1");
-				case "inactive":
-					sql_where_and.push("active=0");
-				default:
-			}
-
-			// type
-			if (f.getValueOf("type") != "all") {
-				var t:VendorType = Type.createEnum(VendorType, f.getValueOf("type"));
-				/*switch(t){
-					case "cpro" : sql_where_and.push("type=0");
-					case "free" : sql_where_and.push("type=1");
-					case "invited" : sql_where_and.push("type=2");
-					case "cprotest" : sql_where_and.push("v.isTest=1");
-					default :
-				}*/
-				sql_where_and.push("type=" + Type.enumIndex(t));
-			}
-
-			// country
-			sql_where_and.push('country="${f.getValueOf("country")}"');
-		} else {
-			// default settings
-			sql_where_and.push("active=1");
-			sql_where_and.push("type=" + Type.enumIndex(VTCproTest));
-		}
-
-		// QUERY
-		if (sql_where_and.length == 0)
-			sql_where_and.push("true");
-		if (sql_where_or.length == 0)
-			sql_where_or.push("true");
-		var sql = '$sql_select FROM ${sql_from.join(", ")} WHERE (${sql_where_or.join(" OR ")}) AND ${sql_where_and.join(" AND ")} $sql_end';
-		for (v in db.Vendor.manager.unsafeObjects(sql, false)) {
-			vendors.push(v);
-		}
-
-		view.form = f;
-
-		// remove trainee accounts
-		/*for( v in vendors.copy()){
-			if(v.name.indexOf("(formation)")>-1) vendors.remove(v);
-		}*/
-
-		for (v in vendors) {
-			// refresh active
-			if (app.params.exists("force")) {
-				pro.db.VendorStats.updateStats(v);
-			} else {
-				// force creation of vendorStats
-				VendorStats.getOrCreate(v);
-			}
-
-			if (untyped v.active)
-				totalActive++;
-			if (untyped v.type == 0)
-				totalCpros++;
-		}
-
-		// TOTALS
-		total = vendors.length;
-		view.total = total;
-		view.vendors = vendors;
-		view.totalCpros = totalCpros;
-		view.totalActive = totalActive;
-
-		switch (f.getValueOf("output")) {
-			case "table":
-
-			case "emails":
-				app.setTemplate(null);
-				Sys.println("<html><body>");
-				for (v in vendors)
-					Sys.println('${v.email}<br/>');
-				Sys.println('<hr/><a href="${makeMailtoLink(vendors)}">Leur Ecrire</a>');
-				Sys.println("</body></html>");
-
-			case "csv":
-				var headers = [
-					"id", "name", "email", "phone", "address1", "address2", "zipCode", "city", "active", "type"
-				];
-				var data = [];
-				for (v in vendors) {
-					var active:Bool = untyped v.active;
-					var type:Int = untyped v.type;
-					data.push({
-						id: v.id,
-						name: v.name,
-						email: v.email,
-						phone: v.phone,
-						address1: v.address1,
-						address2: v.address2,
-						zipCode: v.zipCode,
-						city: v.city,
-						active: switch (active) {
-							case true: "OUI";
-							case false: "NON";
-						},
-						type: switch (type) {
-							case 0: "cpro";
-							case 1: "gratuit";
-							case 2: "invité";
-							default: "?";
-						},
-					});
-				}
-
-				sugoi.tools.Csv.printCsvDataFromObjects(data, headers, "producteurs");
-		}
-	}
-
-	/**
-		make a link to write to vendors
-	**/
-	function makeMailtoLink(vendors:Array<db.Vendor>) {
-		var l = "mailto:?subject=Une%20formation%20Cagette%20Pro%20s'organise%20pr%C3%A8s%20de%20chez%20vous";
-
-		// dedup on mail
-		var vendors2 = new Map<String, db.Vendor>();
-		for (v in vendors)
-			vendors2.set(v.email, v);
-		var vendors2 = Lambda.array(vendors2);
-
-		for (v in vendors2) {
-			if (sugoi.form.validators.EmailValidator.check(v.email)) {
-				l += "&bcc=" + v.email;
-			}
-		}
-		return l;
-	}
+	
 
 	/**
 		Deduplicate Vendors
@@ -463,60 +275,9 @@ class Admin extends controller.Controller {
 		}*/
 	}
 
-	@admin @tpl('plugin/pro/admin/vendor.mtt')
-	function doVendor(v:db.Vendor) {
-		var cpro = pro.db.CagettePro.getFromVendor(v);
-		view.vendor = v;
-		view.cpro = cpro;
+	
 
-		if (app.params["refresh"] == "1") {
-			pro.db.VendorStats.updateStats(v);
-			CrmService.syncToHubspot(v);
-		}
-
-		if (app.params["disableAccess"] != null) {
-			var user = db.User.manager.get(Std.parseInt(app.params["disableAccess"]), false);
-			var uc = PUserCompany.get(user, cpro, true);
-			uc.disabled = true;
-			uc.update();
-		}
-		if (app.params["enableAccess"] != null) {
-			var user = db.User.manager.get(Std.parseInt(app.params["enableAccess"]), false);
-			var uc = PUserCompany.get(user, cpro, true);
-			crm.CrmService.syncToSiB(uc.user, true, "vendor_unlock");
-			uc.disabled = false;
-			uc.update();
-		}
-
-		view.stats = pro.db.VendorStats.getOrCreate(v);
-		view.courses = hosted.db.CompanyCourse.manager.search($company == cpro, false);
-		view.isCproCatalog = function(c:db.Catalog) {
-			return connector.db.RemoteCatalog.getFromContract(c) != null;
-		}
-		view.profession = VendorService.getVendorProfessions().find(p -> return p.id == v.profession);
-		if (v.activityCode != null) {
-			var naf:String = v.activityCode.split(".").join("");
-			view.activityCode = VendorService.getActivityCodes().find(p -> return p.id == naf);
-		}
-
-		view.editLink = "https://app.cagette.net/vendorNoAuthEdit/"
-			+ v.id
-			+ "/"
-			+ haxe.crypto.Md5.encode(App.config.KEY + "_updateWithoutAuth_" + v.id);
-	}
-
-	@tpl("form.mtt")
-	function doEditVendor(v:db.Vendor) {
-		var form = VendorService.getForm(v);
-		if (form.isValid()) {
-			v.lock();
-			VendorService.update(v, form.getDatasAsObject(), true);
-			v.update();
-
-			throw Ok("/p/pro/admin/vendor/" + v.id, "Producteur mis à jour");
-		}
-		view.form = form;
-	}
+	
 
 	/**
 	 * Massive import of groups from CSV
@@ -797,9 +558,9 @@ class Admin extends controller.Controller {
 		// vendors created since more than 1 month
 		for (v in db.Vendor.manager.search($cdate < cdate)) {
 			if (v.getContracts().length == 0) {
-				Sys.println('Vendor <a href="/p/pro/admin/vendor/${v.id}">${v.name}</a> has no catalogs ! <br/>');
+				Sys.println('Vendor <a href="/admin/vendor/view/${v.id}">${v.name}</a> has no catalogs ! <br/>');
 			} else if (v.email == null) {
-				Sys.println('Vendor <a href="/p/pro/admin/vendor/${v.id}">${v.name}</a> has no email ! <br/>');
+				Sys.println('Vendor <a href="/admin/vendor/view/${v.id}">${v.name}</a> has no email ! <br/>');
 			}
 		}
 	}
@@ -1048,7 +809,7 @@ class Admin extends controller.Controller {
 	 */
 	function doCreateCpro(vendor:db.Vendor) {
 		if (pro.db.CagettePro.getFromVendor(vendor) != null)
-			throw Error("/p/pro/admin/vendor/" + vendor.id, vendor.name + " a deja un cagette Pro");
+			throw Error("/admin/vendor/view/" + vendor.id, vendor.name + " a deja un cagette Pro");
 
 		vendor.lock();
 
@@ -1070,7 +831,7 @@ class Admin extends controller.Controller {
 
 		VendorStats.updateStats(vendor);
 
-		throw Ok("/p/pro/admin/vendor/" + vendor.id, "Compte Cagette Pro créé");
+		throw Ok("/admin/vendor/view/" + vendor.id, "Compte Cagette Pro créé");
 	}
 
 	function doCproTest(vendor:db.Vendor) {
@@ -1098,7 +859,7 @@ class Admin extends controller.Controller {
 
 		VendorStats.updateStats(vendor);
 
-		throw Ok("/p/pro/admin/vendor/" + vendor.id, "Compte passé en Cagette Pro Test");
+		throw Ok("/admin/vendor/view/" + vendor.id, "Compte passé en Cagette Pro Test");
 	}
 
 	@tpl("form.mtt")
@@ -1113,7 +874,7 @@ class Admin extends controller.Controller {
 			/*service.VendorService.getOrCreateRelatedUser(vendor);
 				service.VendorService.sendEmailOnAccountCreation(vendor,app.user,app.user.getAmap()); */
 
-			throw Ok('/p/pro/admin/vendor/' + vendor.id, t._("This supplier has been saved"));
+			throw Ok('/admin/vendor/view/' + vendor.id, t._("This supplier has been saved"));
 		}
 
 		view.title = t._("Key-in a new vendor");
@@ -1377,7 +1138,7 @@ class Admin extends controller.Controller {
 				for (cat in cpro.getCatalogs()) {
 					for (rc in connector.db.RemoteCatalog.getFromCatalog(cat)) {
 						if (rc.getContract() != null) {
-							throw Error("/p/pro/admin/vendor/" + vendor.id, "Ce Cagette Pro a encore des catalogues reliés à des groupes");
+							throw Error("/admin/vendor/view/" + vendor.id, "Ce Cagette Pro a encore des catalogues reliés à des groupes");
 						}
 					}
 				}
@@ -1394,7 +1155,7 @@ class Admin extends controller.Controller {
 
 				VendorStats.updateStats(vendor);
 
-				throw Ok("/p/pro/admin/vendor/" + vendor.id, "Cagette Pro désactivé");
+				throw Ok("/admin/vendor/view/" + vendor.id, "Cagette Pro désactivé");
 
 			case "deleteCpro":
 				var cpro = CagettePro.getFromVendor(vendor);
@@ -1404,7 +1165,7 @@ class Admin extends controller.Controller {
 				for (cat in cpro.getCatalogs()) {
 					for (rc in connector.db.RemoteCatalog.getFromCatalog(cat)) {
 						if (rc.getContract() != null) {
-							throw Error("/p/pro/admin/vendor/" + vendor.id, "Ce Cagette Pro a encore des catalogues reliés à des groupes");
+							throw Error("/admin/vendor/view/" + vendor.id, "Ce Cagette Pro a encore des catalogues reliés à des groupes");
 						}
 					}
 				}
@@ -1414,11 +1175,11 @@ class Admin extends controller.Controller {
 
 				VendorStats.updateStats(vendor);
 
-				throw Ok("/p/pro/admin/vendor/" + vendor.id, "Cagette Pro désactivé");
+				throw Ok("/admin/vendor/view/" + vendor.id, "Cagette Pro désactivé");
 
 			case "delete":
 				if (vendor.getContracts().length > 0) {
-					throw Error("/p/pro/admin/vendor/" + vendor.id, "Ce producteur a encore des catalogues dans des groupes");
+					throw Error("/admin/vendor/view/" + vendor.id, "Ce producteur a encore des catalogues dans des groupes");
 				} else {
 					vendor.lock();
 					vendor.delete();
@@ -1473,7 +1234,7 @@ class Admin extends controller.Controller {
 					off.active = p.active;
 					off.insert();
 				}
-				throw Ok("/p/pro/admin/vendor/" + catalog.vendor.id, "Catalogue copié");
+				throw Ok("/admin/vendor/view/" + catalog.vendor.id, "Catalogue copié");
 			}
 		} else {
 			f.addElement(new sugoi.form.elements.IntInput("cid", "ID du catalogue", null, true));
@@ -1583,7 +1344,7 @@ class Admin extends controller.Controller {
 			if (v.email == null)
 				continue;
 
-			Sys.println('send to <a href="/p/pro/admin/vendor/${v.id}">${v.name}</a><br/>');
+			Sys.println('send to <a href="/admin/vendor/view/${v.id}">${v.name}</a><br/>');
 
 			var m = new sugoi.mail.Mail();
 			m.setSender(App.config.get("default_email"), "Cagette.net");
@@ -1862,7 +1623,6 @@ class Admin extends controller.Controller {
 			var vs = VendorStats.getOrCreate(v);
 			if(vs.type==VendorType.VTCpro) continue;
 			if(vs.type==VendorType.VTStudent) continue;
-			if(vs.type==VendorType.VTCproStudent) continue;
 			if(vs.type==VendorType.VTDiscovery) continue;
 
 			var cids = v.getContracts().array().map(v -> v.id);
@@ -1952,8 +1712,8 @@ class Admin extends controller.Controller {
 
 		Sys.print("</table>");
 
-
-
-
 	}
+
+	@admin @tpl('plugin/pro/admin/certification.mtt')
+	function doCertification() { }
 }

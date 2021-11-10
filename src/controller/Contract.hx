@@ -1,25 +1,25 @@
 package controller;
-import sugoi.form.elements.Checkbox;
-import sugoi.form.elements.IntInput;
-import haxe.display.Display.GotoDefinitionResult;
-import form.CagetteDatePicker;
-import sugoi.Web;
-import tink.core.Error;
-import service.VendorService;
-import service.SubscriptionService;
-import tools.DateTool;
-import db.MultiDistrib;
+import Common;
 import db.Catalog;
+import db.MultiDistrib;
 import db.UserOrder;
 import db.VolunteerRole;
-import sugoi.form.elements.Input;
-import sugoi.form.elements.Selectbox;
-import sugoi.form.Form;
-import Common;
-import plugin.Tutorial;
-import service.OrderService;
+import form.CagetteDatePicker;
 import form.CagetteForm;
+import haxe.display.Display.GotoDefinitionResult;
+import plugin.Tutorial;
 import service.CatalogService;
+import service.OrderService;
+import service.SubscriptionService;
+import service.VendorService;
+import sugoi.Web;
+import sugoi.form.Form;
+import sugoi.form.elements.Checkbox;
+import sugoi.form.elements.Input;
+import sugoi.form.elements.IntInput;
+import sugoi.form.elements.Selectbox;
+import tink.core.Error;
+import tools.DateTool;
 
 class Contract extends Controller
 {
@@ -73,7 +73,7 @@ class Contract extends Controller
 
 		if(f.isValid()){
 
-			if(f.getValueOf('name')==null && f.getValueOf("geoloc")==false && f.getValueOf("profession")==null){
+			if(f.getValueOf('name')==null && (f.getElement("geoloc")==null || f.getValueOf("geoloc")==false) && f.getValueOf("profession")==null){
 				throw Error('/contract/defineVendor/','Vous devez au moins rechercher par nom ou par profession');
 			}
 			
@@ -81,7 +81,7 @@ class Contract extends Controller
 			var vendors = service.VendorService.findVendors( {
 				name:f.getValueOf('name'),
 				email:null/*f.getValueOf('email')*/,
-				geoloc : f.getValueOf("geoloc"),
+				geoloc : f.getElement("geoloc")==null ? false : f.getValueOf("geoloc"),
 				profession:f.getValueOf("profession"),
 				fromLng: if(place!=null) place.lng else null, 
 				fromLat: if(place!=null) place.lat else null,
@@ -99,11 +99,23 @@ class Contract extends Controller
 	}
 
 	/**
+	  2- invite a vendor
+
+	  a Vendor can be specified if we invite a invited vendor to open a discovery vendor
+	**/
+	@logged @tpl("contractadmin/inviteVendor.mtt")
+	public function doInviteVendor(?vendor:db.Vendor) {
+		view.groupId = app.user.getGroup().id;
+		if(vendor!=null) view.vendor = vendor;
+	}
+
+	/**
 	  2- create vendor
 	**/
 	@logged @tpl("form.mtt")
-	public function doInsertVendor(email:String,name:String) {
-				
+	public function doInsertVendor(?name:String) {
+		if(app.user.getGroup().hasShopMode()) throw Error("/", t._("Access forbidden"));
+
 		var form = VendorService.getForm(new db.Vendor());
 				
 		if (form.isValid()) {
@@ -114,17 +126,12 @@ class Contract extends Controller
 				throw Error(Web.getURI(),e.message);
 			}
 			
-			/*service.VendorService.getOrCreateRelatedUser(vendor);
-			service.VendorService.sendEmailOnAccountCreation(vendor,app.user,app.user.getGroup());*/
-			
 			throw Ok('/contract/insert/'+vendor.id, t._("This supplier has been saved"));
 		}else{
-			form.getElement("email").value = email;
 			form.getElement("name").value = name;
 		}
 
 		view.title = t._("Key-in a new vendor");
-		//view.text = t._("We will send him/her an email to explain that your group is going to organize orders for him very soon");
 		view.form = form;
 	}
 

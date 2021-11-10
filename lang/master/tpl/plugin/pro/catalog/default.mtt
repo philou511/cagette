@@ -4,7 +4,14 @@
 	<div class=" article">
 		<h2>Catalogues</h2>	
 		
-		<p>$$insert(Nouveau catalogue,/p/pro/catalog/insert/)</p>
+		<p>
+			$$insert(Nouveau catalogue,/p/pro/catalog/insert/)
+
+			<a href="https://formation.alilo.fr/course/view.php?id=7&section=3" target="_blank" class="btn btn-warning btn-sm">
+				<i class="icon icon-youtube"></i> Tuto vidéo
+			</a>
+
+		</p>
 		
 		<table class="table">
 		::foreach c catalogs::

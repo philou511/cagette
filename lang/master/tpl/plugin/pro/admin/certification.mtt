@@ -1,0 +1,13 @@
+::use 'admin/design.mtt'::
+
+	<h2>Certification Producteurs</h2>
+
+	<div id="neo-container" style="margin: 16px; margin-top: 24px;"></div>
+	
+	<script>
+		document.addEventListener("DOMContentLoaded", function(event) {
+			neo.createNeoModule("neo-container", "vendorCertification");
+		});
+	</script>
+
+::end::

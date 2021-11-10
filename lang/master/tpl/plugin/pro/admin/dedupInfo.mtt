@@ -12,7 +12,7 @@
 			<br/>
 			<a href="/p/pro/admin/dedupInfo/::v.email::?token=::token::&vid=::v.id::&type=formation" class="btn btn-default btn-sm">Dédup. Formation</a>
 			<br/>
-			<a href="/p/pro/admin/vendor/::v.id::" class="btn btn-default btn-xs">&laquo; Fiche producteur</a>
+			<a href="/admin/vendor/view/::v.id::" class="btn btn-default btn-xs">&laquo; Fiche producteur</a>
 		</td>
 		<td>
 			<a href="/db/Vendor/edit/::v.id::" target="_blank">::v.name::</a>			

@@ -61,7 +61,7 @@
 	<tr>
 		<td>::v.id::</td>
 		<td>
-			<a href="/p/pro/admin/vendor/::v.id::" target="_blank">::v.name::</a>			
+			<a href="/admin/vendor/view/::v.id::" target="_blank">::v.name::</a>			
 		</td>
 		<td>
 			::if(v.zipCode!=null)::
@@ -89,19 +89,5 @@
 	::end::
 </table>
 
-<!--
-<div>
-	<p>
-		<a class="btn btn-default" href="::mailto::">Leur écrire</a>
-	</p>
-	
-
-	<p>
-		<b>Pour envoi de mailings :</b><br/>
-		::foreach v vendors::
-		::v.email::<br/>
-		::end::
-	</p>
-</div>-->
 
 ::end::

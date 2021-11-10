@@ -1,5 +1,37 @@
 <macros>
 
+	<macro name="vendorIcon(vendor)">
+
+		::if(vendor.isDisabled())::
+			<!--disabled-->						
+			<div class="iconBadge danger" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Compte bloqué : ::vendor.getDisabledReason()::">
+				<i class="icon icon-alert"></i>
+			</div>
+		::else::
+			::set cpro = vendor.getCpro()::
+
+			::if(cpro!=null)::
+				::if(cpro.discovery)::
+				<!--découverte-->
+				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Offre Découverte">
+					<i class="icon icon-farmer"></i>
+				</div>
+				::else::
+				<!-- compte producteur -->
+				<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Offre Pro">
+					<i class="icon icon-farmer-pro"></i>
+				</div>
+				::end::
+			
+			::else::
+				<!--invité-->
+				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur invité">
+					<i class="icon icon-farmer"></i>
+				</div>
+			::end::
+		::end::
+	</macro>
+
 	<macro name="jsConfirm(?text)">confirm(::if text==null::'Confirmer cette action ?'::else::'::escapeJS(text)::'::end::)</macro>
 	
 	<macro name="confirm(?text)" onclick="return $$jsConfirm(::text::)"/>
@@ -46,13 +78,15 @@
 					<a href="http://wiki.cagette.net" target="_blank"><i class="icon icon-book"></i> Documentation</a> 
 				</li>
 				<li>
-					<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank"><i class="icon icon-facebook"></i> Groupe Facebook</a> 
+					<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank"><i class="icon icon-facebook"></i> Groupe d'entraide Facebook</a> 
+				</li>
+				<li>
+					<a href="https://cagette.uservoice.com/" target="_blank"><i class="icon icon-question"></i> Support & suggestions</a> 
 				</li>
 				<li>
 					<a href="http://www.cagette.pro" target="_blank"><i class="icon icon-student"></i> Formations pour producteurs</a> 
 				</li>				
 			</ul>
-			
 		</div>
 
 		<!-- Home -->
@@ -61,9 +95,6 @@
 				<i class="icon icon-chevron-left"></i> ::_("Home")::
 			</a>
 		</div>
-
-			
-
 			
 	</macro>
 	
@@ -516,7 +547,7 @@
 
 	<macro name="vendorType(s)">		
 		::if(s==0)::
-			Cagette Pro				
+			Offre Pro (formé)			
 		::elseif(s==1)::
 			Gratuit
 		::elseif(s==2)::
@@ -524,13 +555,11 @@
 		::elseif(s==3)::
 			Invité sur un Cagette Pro
 		::elseif(s==4)::
-			Cagette Pro en test 
+			Cagette Pro test 
 		::elseif(s==5)::
-			Cagette Pro pédagogique
+			Compte pédagogique
 		::elseif(s==6)::
-			Cagette Pro inscrit à une formation
-		::elseif(s==7)::
-			Cagette Découverte
+			Offre Découverte		
 		::end::
 	</macro>
     

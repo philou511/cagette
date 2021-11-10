@@ -1,11 +1,12 @@
 package controller;
-import service.SubscriptionService;
-import sugoi.form.elements.StringInput;
-import service.OrderService;
-import service.WaitingListService;
-import service.DistributionService;
-import db.Group;
 import Common;
+import db.Group;
+import service.BridgeService;
+import service.DistributionService;
+import service.OrderService;
+import service.SubscriptionService;
+import service.WaitingListService;
+import sugoi.form.elements.StringInput;
 
 /**
  * Groups
@@ -313,9 +314,11 @@ class Group extends controller.Controller
 
 			#if plugins
 			try{
-				//sync if this user is not cpro
-				if(service.VendorService.getVendorsFromUser(app.user).length==0){
-					crm.CrmService.syncToSiB(app.user,true,"group_created",{groupName:g.name,userName:app.user.firstName});
+				//sync if this user is not cpro && market mode group
+				if( service.VendorService.getCagetteProFromUser(app.user).length==0 && g.hasShopMode() ){
+					
+					BridgeService.syncUserToHubspot(app.user);
+					service.BridgeService.triggerWorkflow(29805116, app.user.email);
 				}
 			}catch(e:Dynamic){
 				//fail silently
@@ -333,10 +336,11 @@ class Group extends controller.Controller
 	@admin
 	function doTest(){
 		#if plugins
+		
 		var user = db.User.manager.get(1,false);
-
-		crm.CrmService.syncToSiB(user,true,"group_created",{groupName:"mon Groupe",userName:user.firstName});
-
+		Sys.print("sync user "+user.getName());
+		BridgeService.syncUserToHubspot(user);
+		service.BridgeService.triggerWorkflow(29805116, user.email);
 		#end
 	}
 	
@@ -371,7 +375,7 @@ class Group extends controller.Controller
 		view.container = "container-fluid";
 		
 		//if no param is sent, focus on Paris
-		if (args == null || (args.address == null && args.lat == null && args.lng == null)){
+		if (args == null || ((args.address == null || args.address == "") && args.lat == null && args.lng == null)){
 			args = {lat:48.855675, lng:2.3472365};
 		}
 		

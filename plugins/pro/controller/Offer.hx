@@ -1,11 +1,12 @@
 package pro.controller;
+import Common;
 import form.CagetteForm;
 import sugoi.form.Form;
-import Common;
 import sugoi.form.ListData.FormData;
 import sugoi.form.elements.FloatInput;
 import sugoi.form.elements.FloatSelect;
 import sugoi.form.elements.IntSelect;
+
 using Std;
 
 class Offer extends controller.Controller
@@ -44,7 +45,7 @@ class Offer extends controller.Controller
 		}
 		
 		//for the VATBox component
-		view.rates = Lambda.array(company.getVatRates()).join("|");
+		view.rates = Lambda.map(company.getVatRates(),function(v) return v.value).join("|");
 		view.price = o.price;
 		view.vat = o.vat;		
 		
@@ -126,9 +127,9 @@ class Offer extends controller.Controller
 		}
 		
 		//for the VATBox component
-		view.rates = Lambda.array(company.getVatRates()).join("|");
+		view.rates = Lambda.map(company.getVatRates(),function(v) return v.value).join("|");
 		view.price = 0;
-		view.vat = Lambda.array(company.getVatRates())[0];
+		view.vat = company.getVatRates()[0].value;
 
 		if (f.isValid()) {
 			f.toSpod(o);
