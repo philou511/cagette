@@ -115,7 +115,6 @@ class Admin extends Controller {
 		}
 	}
 
-
 	/**
 		merge TxpProduct categs
 	**/
@@ -446,4 +445,14 @@ class Admin extends Controller {
 
 	@tpl('admin/process.mtt')
 	function doProcess() {}
+
+	@admin
+	function doMigrateCagetteProVatRates() {
+		// populate CagettePro.vatRates2 field
+		for (cp in pro.db.CagettePro.manager.search($vatRates2 == null, {limit: 5000})) {
+			Sys.print(cp.vendor.name + " = " + cp.sync() + "<br>");
+		}
+
+		Sys.print("Reste encore " + pro.db.CagettePro.manager.count($vatRates2 == null) + " CagettePro à migrer");
+	}
 }
