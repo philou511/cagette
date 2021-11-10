@@ -13,9 +13,7 @@
 			<!--Charte Producteurs : $$check(::vendor.vendorPolicy::)-->
 			Profession : ::if(profession!=null)::<b>::profession.name::</b>::else:: ??? ::end::<br/>
 
-			::if(tmpVendorId!=null)::
-				<a href='/p/pro/admin/certification#/::tmpVendorId::' target="_blank">Réponses au questionnaire</a><br/>
-			::end::
+			
 		</p>
 	</div>
 	<div class="col-md-4">
@@ -68,18 +66,38 @@
 	</div>
 
 	<div class="col-md-6">
-		$$vendorIcon(::vendor::)	<b>$$vendorType(::enumIndex(stats._type)::)</b>
+		<p>
+			$$vendorIcon(::vendor::)	<b>$$vendorType(::enumIndex(stats._type)::)</b>
+			::if(cpro!=null)::
+				(# <a href="/db/pro.db.CagettePro/edit/::cpro.id::" target="_blank">::cpro.id::</a>)			
+				<br/>
+				::if(cpro.training==true)::<i class="icon icon-student" style="color:#336600"></i> Compte pédagogique<br/> ::end::
+			::end::
+		</p>
 		
-		::if(cpro!=null)::
-			(# <a href="/db/pro.db.CagettePro/edit/::cpro.id::" target="_blank">::cpro.id::</a>)
-			::if(cpro.disabled==true):: <b>Désactivé</b> ::end::
-			<br/>
-			::if(cpro.training==true)::<i class="icon icon-student" style="color:#336600"></i> Compte pédagogique<br/> ::end::
-			<!--::if(cpro.freeCpro==false)::<i  class="icon icon-euro" style="color:#FF6600"></i> Compte payant<br/> ::end::-->
-			
-		::end::
-		<br/>	
-		Actif $$bool(::stats.active::)<br/>
+		
+		<p ::cond(tmpVendor!=null)::>
+			<b>
+			::if(tmpVendor.certificationStatus==0)::
+				$$bigBool(::false::) Certification non traitée
+			::elseif(tmpVendor.certificationStatus==1)::
+				$$bigBool(::false::) Certification en cours
+			::elseif(tmpVendor.certificationStatus==2)::
+				$$bigBool(::true::) Certifié
+			::else::	
+				$$bigBool(::false::) Certification refusée
+			::end::
+			</b>	
+
+			::if(tmpVendor.id!=null)::
+				<a href='/p/pro/admin/certification#/::tmpVendor.id::' target="_blank">( questionnaire )</a><br/>
+			::end::
+		</p>
+
+		<p>
+			Actif $$bool(::stats.active::)
+		</p>
+		
 
 		Sur Cagette depuis le ::sDate(vendor.cdate)::<br/>
 		::if(cpro!=null)::Cagette Pro depuis le ::sDate(cpro.cdate)::::end::<br/>

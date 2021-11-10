@@ -153,14 +153,13 @@
 
 	<macro name="bigBool(v)">
 		::if v==true::
-		<div class="iconBadge" style="background-color:#84bd55;">
+		<div class="iconBadge" style="background-color:#84bd55;margin: 6px;">
 			<i class="icon icon-check"></i>
 		</div>
 		::else::
-		<div class="iconBadge" style="background-color:#CCC;">
+		<div class="iconBadge" style="background-color:#CCC;margin: 6px;">
 			<i class="icon icon-delete"></i>
-		</div>
-		
+		</div>		
 		::end::
 	</macro>
 	

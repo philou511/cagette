@@ -383,12 +383,12 @@ class PaymentService {
 		distrib.validated = true;
 		distrib.update();
 
-		//update vendor stats
-		for(vendor in distrib.getVendors()){
-			BridgeService.call('/vendor-summaries/update/${vendor.id}/${distrib.distribStartDate.toString().substr(0,10)}');
+		//update vendor stats if distrib is not today
+		if(Date.now().toString().substr(0,10) != distrib.getDate().toString().substr(0,10)){
+			for(vendor in distrib.getVendors()){
+				BridgeService.call('/vendor-summaries/update/${vendor.id}/${distrib.distribStartDate.toString().substr(0,10)}');
+			}
 		}
-		
-
 	}
 
 	public static function unvalidateDistribution(distrib:db.MultiDistrib) {
