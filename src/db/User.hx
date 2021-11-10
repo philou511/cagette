@@ -55,7 +55,6 @@ class User extends Object {
 	public var flags : SFlags<UserFlags>;
 	
 	@hideInForms public var tosVersion: SNull<SInt>; //CGU version checked
-	@hideInForms public var tutoState : SNull<SData<{name:String,step:Int}>>; //tutorial state
 	
 	public var apiKey : SNull<SString<128>>; //private API key
 	public var currentRefreshToken : SNull<SString<255>>; 
