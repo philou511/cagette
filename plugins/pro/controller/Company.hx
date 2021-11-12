@@ -317,26 +317,6 @@ class Company extends controller.Controller
 		
 	}
 	
-	
-	
-	/**
-	 * old one
-	 */
-	@tpl('plugin/pro/company/abo2.mtt')
-	function doAbo2(){
-		
-		var abo = new Abo(company);		
-		view.abo = abo;
-	}
-	
-	@tpl('plugin/pro/company/abo.mtt')
-	function doAbo(){
-		
-		var abo = new Abo(company);	
-		abo.offset = Std.parseInt(app.params.get("offset"));
-		view.abo = abo;		
-	}
-
 	@tpl('plugin/pro/company/publicPage.mtt')
 	function doPublicPage(){
 

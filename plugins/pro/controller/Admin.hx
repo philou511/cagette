@@ -311,7 +311,6 @@ class Admin extends controller.Controller {
 			for (p in i) {
 				/*mettre seb et françois en adhérent
 					mettre le producteur en membre dans le groupe et lui donner accès à son contrat
-					ouvrir l’abonnement à 100 adhérents avec expiration au 2016-12-31
 				 */
 
 				// group
