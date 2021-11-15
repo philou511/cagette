@@ -85,6 +85,10 @@ class PNotif extends Object
 		return out;
 
 	}
+
+	public function getContent(){
+		return haxe.Json.parse(this.content2);
+	}
 	
 	public function sync(){
 		lock();

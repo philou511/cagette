@@ -56,11 +56,11 @@
 			<tr>
 				<td>Catalogue</td>
 				<th>
-					<a href="/p/pro/catalog/view/::notif._content.catalogId::">::getCatalog(notif._content.catalogId).name::</a>
+					<a href="/p/pro/catalog/view/::notifContent.catalogId::">::getCatalog(notifContent.catalogId).name::</a>
 				</th>
 			</tr>
 			<tr>
-				::set user = getUser(notif._content.userId)::
+				::set user = getUser(notifContent.userId)::
 				::set group = notif._group::
 
 				<td>Demandé par :</td>
@@ -85,7 +85,7 @@
 				<td>::if(group.hasShopMode())::
 						Catalogue standard ( commande variable )
 					::else::
-						::if(notif._content.catalogType==0)::
+						::if(notifContent.catalogType==0)::
 							Contrat AMAP classique
 						::else::
 							Contrat AMAP variable
@@ -95,7 +95,7 @@
 			</tr>
 			<tr>
 				<td>Message</td>
-				<td>::raw nl2br(notif._content.message)::</td>
+				<td>::raw nl2br(notifContent.message)::</td>
 			</tr>
 		</table>
 	
@@ -114,7 +114,7 @@
 	::case::
 		<!-- delivery request-->
 		<table class="table table-striped">
-			::set d = getDistrib(notif._content.distribId)::
+			::set d = getDistrib(notifContent.distribId)::
 			<tr>
 				<td>Contact</td>
 				<td>
@@ -147,7 +147,7 @@
 			<tr>
 				<td>Catalogue concerné</td>
 				<td>
-					::getCatalog(notif._content.pcatalogId).name::
+					::getCatalog(notifContent.pcatalogId).name::
 				</td>
 			</tr>
 			::else::
@@ -181,15 +181,15 @@
 		<table class="table table-striped">
 			<tr>
 				<td>Date</td>
-				::if hDate(notif._content.oldDistribution.date) == hDate(notif._content.newDistribution.date)::
+				::if hDate(notifContent.oldDistribution.date) == hDate(notifContent.newDistribution.date)::
 				<td>
-					::hDate(notif._content.oldDistribution.date):: (inchangé)
+					::hDate(notifContent.oldDistribution.date):: (inchangé)
 				</td>
 				::else::
 				<td class="danger">					
 					<span style="color:#A00"><i class="fa fa-warning"></i> Nouvelle date : </span><br/>
-					<b>::hDate(notif._content.newDistribution.date)::</b><br/>
-					( à la place de  ::hDate(notif._content.oldDistribution.date):: )
+					<b>::hDate(notifContent.newDistribution.date)::</b><br/>
+					( à la place de  ::hDate(notifContent.oldDistribution.date):: )
 				</td>
 				::end::
 				
@@ -197,44 +197,44 @@
 			<tr>
 				<td>Ouverture des commandes</td>
 				
-				::if hDate(notif._content.oldDistribution.orderStartDate) == hDate(notif._content.newDistribution.orderStartDate)::
+				::if hDate(notifContent.oldDistribution.orderStartDate) == hDate(notifContent.newDistribution.orderStartDate)::
 				<td>
-					::hDate(notif._content.oldDistribution.orderStartDate):: (inchangé)					
+					::hDate(notifContent.oldDistribution.orderStartDate):: (inchangé)					
 				</td>
 				::else::
 				<td class="danger">
 					<span style="color:#A00"><i class="fa fa-warning"></i> Nouvelle date : </span><br/>
-					<b>::hDate(notif._content.newDistribution.orderStartDate)::</b><br/>
-					( à la place de  ::hDate(notif._content.oldDistribution.orderStartDate):: )
+					<b>::hDate(notifContent.newDistribution.orderStartDate)::</b><br/>
+					( à la place de  ::hDate(notifContent.oldDistribution.orderStartDate):: )
 				</td>
 				::end::
 			</tr>
 			<tr>
 				<td>Fermeture des commandes</td>
-				::if hDate(notif._content.oldDistribution.orderEndDate) == hDate(notif._content.newDistribution.orderEndDate)::
+				::if hDate(notifContent.oldDistribution.orderEndDate) == hDate(notifContent.newDistribution.orderEndDate)::
 				<td>
-					::hDate(notif._content.oldDistribution.orderEndDate):: (inchangé)					
+					::hDate(notifContent.oldDistribution.orderEndDate):: (inchangé)					
 				</td>
 				::else::
 				<td class="danger">
 					<span style="color:#A00"><i class="fa fa-warning"></i> Nouvelle date : </span><br/>
-					<b>::hDate(notif._content.newDistribution.orderEndDate)::</b><br/>
-					( à la place de  ::hDate(notif._content.oldDistribution.orderEndDate):: )
+					<b>::hDate(notifContent.newDistribution.orderEndDate)::</b><br/>
+					( à la place de  ::hDate(notifContent.oldDistribution.orderEndDate):: )
 				</td>
 				::end::
 			</tr>
 			<tr>
 				<td>Adresse de livraison</td>
 				
-				::if notif._content.oldDistribution.place == notif._content.newDistribution.place::
+				::if notifContent.oldDistribution.place == notifContent.newDistribution.place::
 				<td>
-					::notif._content.oldDistribution.place:: (inchangé)					
+					::notifContent.oldDistribution.place:: (inchangé)					
 				</td>
 				::else::
 				<td class="danger">
 					<span style="color:#A00"><i class="fa fa-warning"></i> Nouvelle adresse : </span><br/>
-					<b>::notif._content.newDistribution.place::</b><br/>
-					( à la place de  ::notif._content.oldDistribution.place:: )
+					<b>::notifContent.newDistribution.place::</b><br/>
+					( à la place de  ::notifContent.oldDistribution.place:: )
 				</td>
 				::end::
 				
