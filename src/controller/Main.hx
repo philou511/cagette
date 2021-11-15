@@ -410,7 +410,12 @@ class Main extends Controller {
 		}
 		// populate CagettePro.vatRates2 field
 		for (cp in pro.db.CagettePro.manager.search($vatRates2 == null, {limit: 5000})) {
-			Sys.print(cp.vendor.name + " = " + cp.sync() + "<br>");
+			var vendor = cp.vendor;
+			if (vendor!=null){
+				Sys.print(cp.vendor.name + " = " + cp.sync() + "<br>");
+			}else{
+				Sys.print("Unknown vendor #" +cp.vendorId + " = " + cp.sync() + "<br>");
+			}
 		}
 
 		Sys.print("Reste encore " + pro.db.CagettePro.manager.count($vatRates2 == null) + " CagettePro à migrer");
