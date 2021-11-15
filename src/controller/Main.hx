@@ -414,7 +414,7 @@ class Main extends Controller {
 			if (vendor!=null){
 				Sys.print(cp.vendor.name + " = " + cp.sync() + "<br>");
 			}else{
-				Sys.print("Unknown vendor #" +cp.vendorId + " = " + cp.sync() + "<br>");
+				Sys.print("Unknown vendor for CPro #" +cp.id + " = " + cp.sync() + "<br>");
 			}
 		}
 
