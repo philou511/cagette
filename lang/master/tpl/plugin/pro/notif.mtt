@@ -147,7 +147,12 @@
 			<tr>
 				<td>Catalogue concerné</td>
 				<td>
-					::getCatalog(notif._content.pcatalogId).name::
+					::set catalog = getCatalog(notif._content.pcatalogId)::
+					::if(catalog!=null)::
+						::catalog.name::
+					::else::
+						Catalogue inconnu
+					::end::
 				</td>
 			</tr>
 			::else::

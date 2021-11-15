@@ -34,7 +34,7 @@ class Product extends controller.Controller
 		
 		var duplicateRefs = pro.db.POffer.getRefDuplicates(company);
 		if(duplicateRefs.length>0){
-			App.current.session.addMessage("Attention, plusieurs offres ont la même référence : <b>"+duplicateRefs.join(" ")+"</b>. ",true);
+			App.current.session.addMessage("Attention, plusieurs offres ont la même référence : <b>"+duplicateRefs.join(" ")+"</b>. Modifiez vos produits pour que chaque référence soit unique.",true);
 		}
 		
 		view.unlinkedCatalogs = service.VendorService.getUnlinkedCatalogs(company);

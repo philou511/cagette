@@ -25,7 +25,7 @@ class VendorService{
 	/**
 		Get or create+link user account related to this vendor.
 	**/
-	public static function getOrCreateRelatedUser(vendor:db.Vendor){
+	/*public static function getOrCreateRelatedUser(vendor:db.Vendor){
 		if(vendor.user!=null){
 			return vendor.user;
 		}else{
@@ -35,7 +35,7 @@ class VendorService{
 			vendor.update();
 			return u;
 		}
-	}
+	}*/
 
 	/**
 		Get vendors accounts linked to a user account
@@ -56,7 +56,7 @@ class VendorService{
 	/**
 		Send an email to the vendor
 	**/
-	public static function sendEmailOnAccountCreation(vendor:db.Vendor,source:db.User,group:db.Group){
+	/*public static function sendEmailOnAccountCreation(vendor:db.Vendor,source:db.User,group:db.Group){
 
 		return;
 		
@@ -84,7 +84,7 @@ class VendorService{
 		
 		App.sendMail(e);	
 		#end
-	}
+	}*/
 
 	/**
 		Search vendors.

@@ -190,14 +190,12 @@ class CagettePro extends sys.db.Object
 	public static function canLogIn(user:db.User,vendor:db.Vendor){
 		if(user.isAdmin()) return true;
 
-		var cpro = pro.db.CagettePro.manager.select($vendor==vendor,false);
-
+		var cpro = vendor.getCpro();
 		if(cpro!=null){
 			var cpros = pro.db.PUserCompany.getCompanies(user);
 			return Lambda.exists(cpros, function(a) return a.id == cpro.id);
 		}else{
-			//Not Cpro
-			return vendor.user.id==user.id;
+			return false;
 		}
 	}
 	

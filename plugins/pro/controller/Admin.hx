@@ -51,8 +51,7 @@ class Admin extends controller.Controller {
 		var d = 0;
 		for (r in res)
 			d += r.duplicates - 1;
-		view.duplicates = d;
-		view.unlinkedVendors = db.Vendor.manager.count($user == null);
+		view.duplicates = d;		
 	}
 
 	@tpl('plugin/pro/admin/dedupInfo.mtt')
@@ -102,10 +101,9 @@ class Admin extends controller.Controller {
 				survivor.status = "master";
 				survivor.update(); */
 
-			service.VendorService.getOrCreateRelatedUser(survivor);
-			if (lastContract != null && lastContract.contact != null) {
+			/*if (lastContract != null && lastContract.contact != null) {
 				service.VendorService.sendEmailOnAccountCreation(survivor, lastContract.contact, lastContract.group);
-			}
+			}*/
 
 			throw Ok("/p/pro/admin/deduplicate", survivor.name + " a été dédupliqué");
 		}
@@ -1149,7 +1147,6 @@ class Admin extends controller.Controller {
 
 				
 				vendor.lock();
-				vendor.user = null;
 				vendor.disabled = DisabledReason.Banned;
 				vendor.update();
 

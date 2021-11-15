@@ -399,7 +399,6 @@ class Course extends sugoi.BaseController
 		//no user have access to this vendor
 		var v = company.vendor;
 		v.lock();
-		v.user = null;
 		v.disabled = DisabledReason.Banned;
 		v.update();
 

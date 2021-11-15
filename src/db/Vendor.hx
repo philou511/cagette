@@ -81,7 +81,6 @@ class Vendor extends Object
 	@hideInForms public var offCagette 	: SNull<SText>;
 	
 	@hideInForms @:relation(imageId) 	public var image : SNull<sugoi.db.File>;
-	@hideInForms @:relation(userId) 	public var user : SNull<db.User>; //owner of this vendor (when not cpro)
 	
 	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
 	@hideInForms public var disabled : SNull<SEnum<DisabledReason>>; // vendor is disabled
