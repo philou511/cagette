@@ -50,7 +50,7 @@
 		</p>
 
 		<p>
-			<a href="?token=::token::&delete=1" class="btn btn-danger">DANGEREUX : Effacer ce compte, remplacer ses commandes par Monsieur X.</a>
+			<a href="?token=::token::&delete=1" $$confirm() class="btn btn-danger">DANGEREUX : Effacer ce compte, remplacer ses commandes par Monsieur X.</a>
 		</p>
 		
 	</div>

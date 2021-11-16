@@ -46,7 +46,7 @@
 									::raw o.smartQt::
 								</td>
 								<td>
-									<a href="#" onclick="_.overlay('/shop/productInfo/::o.productId::','::o.productName::')">
+									<a href="#" onclick="_Cagette.overlay('/shop/productInfo/::o.productId::','::o.productName::')">
 										<img src="::o.productImage::" style="width:32px;height:32px;" />
 										::o.productName::
 									</a>

@@ -10,7 +10,7 @@
 </div>
 
 <script>
-	_.getVATBox(::price::,"::currency()::",'::rates::',::vat::,"::form.name::");
+	_Cagette.getVATBox(::price::,"::currency()::",'::rates::',::vat::,"::form.name::");
 </script>
 
 ::end::

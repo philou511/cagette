@@ -12,10 +12,10 @@
 				::raw _("In order to confirm your basket, <br/>You need to authenticate.")::
 			</p>
 			<hr/>
-			<a href="#" onclick="_.loginBox('::raw redirect::');" class="btn btn-primary" style="margin-right:12px;">
+			<a href="#" onclick="_Cagette.loginBox('::raw redirect::');" class="btn btn-primary" style="margin-right:12px;">
 				<span class="glyphicon glyphicon-user"></span> ::_("Connection")::</a>
 			
-			<a href="#" onclick="_.registerBox('::raw redirect::',::phoneRequired::);" class="btn btn-success">
+			<a href="#" onclick="_Cagette.registerBox('::raw redirect::',::phoneRequired::);" class="btn btn-success">
 				<i class="icon icon-chevron-right"></i> ::_("Sign up")::</a>
 		</div>
 	</div>-->
@@ -31,11 +31,11 @@
 <script language="javascript">
 	::if(register==true)::
 	document.addEventListener("DOMContentLoaded", function(event) {
-		_.registerBox('::raw redirect::','::raw sid::','::raw message::',::phoneRequired::, false);	
+		_Cagette.registerBox('::raw redirect::','::raw sid::','::raw message::',::phoneRequired::, false);	
 	});
 	::else::
 	document.addEventListener("DOMContentLoaded", function(event) {
-		_.loginBox('::raw redirect::','::raw sid::','::raw message::',::phoneRequired::);	
+		_Cagette.loginBox('::raw redirect::','::raw sid::','::raw message::',::phoneRequired::);	
 	});
 	::end::
 	

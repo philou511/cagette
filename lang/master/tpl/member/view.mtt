@@ -56,7 +56,7 @@
 			$$delete(::_("Remove from group")::,/member/delete/::member.id::?token=::token::)
 			<a href="/member/movetowl/::member.id::" class="btn btn-default btn-sm">::_("Put on waiting list")::</a>
 			
-			<a onclick="_.overlay('/member/lastMessages/::member.id::','Message reçus')" class="btn btn-default btn-sm">
+			<a onclick="_Cagette.overlay('/member/lastMessages/::member.id::','Message reçus')" class="btn btn-default btn-sm">
 			<i class="icon icon-mail"></i>
 				::_("Received messages")::</a>
 			
@@ -94,7 +94,7 @@
 		::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user.getGroup().getPeriodName(null)::</b>
 		<br/>
 		
-		<a onclick="_.membershipBox(::member.id::,'::member.getName()::',::userGroup._group.id::,'/member/view/::member.id::')" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
+		<a onclick="_Cagette.membershipBox(::member.id::,'::member.getName()::',::userGroup._group.id::,'/member/view/::member.id::')" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
 
 	</div>
 	::end::

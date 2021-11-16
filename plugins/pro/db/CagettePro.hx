@@ -11,29 +11,20 @@ class CagettePro extends sys.db.Object
 	public var id : SId;
 	@hideInForms @:relation(vendorId) public var vendor : db.Vendor;
 	@hideInForms @:relation(demoCatalogId) public var demoCatalog : SNull<pro.db.PCatalog>;//catalog used for public page
-	
 	@hideInForms public var vatRates : SData<Map<String,Float>>;
 	@hideInForms public var vatRates2 : SNull<SText>;
-	@hideInForms public var freeCpro:SBool; //have free access to cpro
 	@hideInForms public var training:SBool;	//training account
-	//@hideInForms public var active:SBool;	//is active
 	@hideInForms public var network:SBool;	//enable network management features
 	@hideInForms public var captiveGroups:SBool;	//the groups are a captive network
 	@hideInForms public var discovery:SBool;	//Offre Découverte
-
 	@hideInForms public var networkGroupIds:SNull<SString<512>>; //network groups, ints separated by comas
-
-	@hideInForms public var disabled:SBool;	//disable training accounts when the training sessions is over
 	@hideInForms public var cdate:SNull<SDateTime>; //date when vendor became Cagette Pro
 	
 	public function new(){
 		super();
 		setVatRates([{label:"TVA alimentaire 5,5%",value:5.5},{label:"TVA 20%",value:20},{label:"Non assujeti à TVA", value:0}]);
-		freeCpro = true;
 		training = false;
-		//active = false;
 		network = false;		
-		disabled = false;
 		cdate = Date.now();
 	}
 
@@ -199,14 +190,12 @@ class CagettePro extends sys.db.Object
 	public static function canLogIn(user:db.User,vendor:db.Vendor){
 		if(user.isAdmin()) return true;
 
-		var cpro = pro.db.CagettePro.manager.select($vendor==vendor,false);
-
+		var cpro = vendor.getCpro();
 		if(cpro!=null){
 			var cpros = pro.db.PUserCompany.getCompanies(user);
 			return Lambda.exists(cpros, function(a) return a.id == cpro.id);
 		}else{
-			//Not Cpro
-			return vendor.user.id==user.id;
+			return false;
 		}
 	}
 	

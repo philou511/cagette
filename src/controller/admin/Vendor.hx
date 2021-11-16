@@ -236,9 +236,8 @@ class Vendor extends controller.Controller
 		
 		var res = sys.db.Manager.cnx.request('select * from TmpVendor where vendorId = ${v.id}').results();
 		var tmpVendor = res.first();
-		if (tmpVendor!=null) {
-			view.tmpVendorId = tmpVendor.id;
-		}
+		view.tmpVendor = tmpVendor;
+		
 	}
 
 	/**

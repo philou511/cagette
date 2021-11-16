@@ -52,7 +52,7 @@
 				
 		<p class="text-center">
 			
-				<a class="btn btn-default btn-sm" onclick="_.initOrderBox(null, ::distribution.id::, null, 1,'::date::','::escapeJS(place.name)::', null, '€', true, '/distribution/validate/::distribution.id::', ::user.getGroup().hasCagette2()::, ::user.getGroup().id::)">
+				<a class="btn btn-default btn-sm" onclick="_Cagette.initOrderBox(null, ::distribution.id::, null, 1,'::date::','::escapeJS(place.name)::', null, '€', true, '/distribution/validate/::distribution.id::', ::user.getGroup().hasCagette2()::, ::user.getGroup().id::)">
 					<i class="icon icon-plus"></i>
 					Nouvelle commande
 				</a>

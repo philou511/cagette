@@ -13,7 +13,7 @@
 				
 				$$edit(::_("Edit properties")::,/amap/edit)
 				
-				<a class="btn btn-default btn-sm" onclick="_.openImageUploader('group', ::user.getGroup().id::, 400, 400)">
+				<a class="btn btn-default btn-sm" onclick="_Cagette.openImageUploader('group', ::user.getGroup().id::, 400, 400)">
 					<i class="icon icon-image"></i> ::_("Choose a logo")::
 				</a>
 			</p>

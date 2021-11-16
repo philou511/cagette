@@ -51,8 +51,7 @@ class Admin extends controller.Controller {
 		var d = 0;
 		for (r in res)
 			d += r.duplicates - 1;
-		view.duplicates = d;
-		view.unlinkedVendors = db.Vendor.manager.count($user == null);
+		view.duplicates = d;		
 	}
 
 	@tpl('plugin/pro/admin/dedupInfo.mtt')
@@ -102,10 +101,9 @@ class Admin extends controller.Controller {
 				survivor.status = "master";
 				survivor.update(); */
 
-			service.VendorService.getOrCreateRelatedUser(survivor);
-			if (lastContract != null && lastContract.contact != null) {
+			/*if (lastContract != null && lastContract.contact != null) {
 				service.VendorService.sendEmailOnAccountCreation(survivor, lastContract.contact, lastContract.group);
-			}
+			}*/
 
 			throw Ok("/p/pro/admin/deduplicate", survivor.name + " a été dédupliqué");
 		}
@@ -311,7 +309,6 @@ class Admin extends controller.Controller {
 			for (p in i) {
 				/*mettre seb et françois en adhérent
 					mettre le producteur en membre dans le groupe et lui donner accès à son contrat
-					ouvrir l’abonnement à 100 adhérents avec expiration au 2016-12-31
 				 */
 
 				// group
@@ -1148,14 +1145,14 @@ class Admin extends controller.Controller {
 					uc.delete();
 				}
 
-				cpro.lock();
-				cpro.vendor.user = null;
-				cpro.disabled = true;
-				cpro.update();
+				
+				vendor.lock();
+				vendor.disabled = DisabledReason.Banned;
+				vendor.update();
 
 				VendorStats.updateStats(vendor);
 
-				throw Ok("/admin/vendor/view/" + vendor.id, "Cagette Pro désactivé");
+				throw Ok("/admin/vendor/view/" + vendor.id, "Producteur désactivé");
 
 			case "deleteCpro":
 				var cpro = CagettePro.getFromVendor(vendor);

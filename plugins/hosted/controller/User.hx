@@ -40,7 +40,7 @@ class User extends sugoi.BaseController
 		view.mangopayUserId = mangopay.db.MangopayUser.get(u);
 
 		//vendors
-		var vendors = Lambda.array(db.Vendor.manager.search($user==u,false));
+		var vendors = [];
 		for( uv in PUserCompany.manager.search($user ==u,false)){
 			vendors.push(uv.company.vendor);
 		}

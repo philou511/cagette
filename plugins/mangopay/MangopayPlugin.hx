@@ -352,7 +352,7 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 	/**
 	what is netAmount ?
 	**/
-	static public function getMultidistribTotal(multiDistrib : Array<db.Distribution>) : Float {	
+	/*static public function getMultidistribTotal(multiDistrib : Array<db.Distribution>) : Float {	
 		var total = 0.0;
 		for (distrib in multiDistrib)
 		{
@@ -366,7 +366,7 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 			}
 		}
 		return total;
-	}
+	}*/
 
 	/**
 		Get multidistrib net MP turnover ( payments made with MP less fees )
