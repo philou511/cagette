@@ -20,14 +20,12 @@ class PCatalog extends Object
 	@hideInForms public var visible : SBool;
 	
 	@hideInForms public var maxDistance : SNull<SInt>; //max distance in km
-	@hideInForms public var deliveryAvailabilities : SNull<SData<Array<{startHour:Int,startMinutes:Int,endHour:Int,endMinutes:Int}>>>; 
 	
 	@hideInForms @:relation(companyId) 	public var company : pro.db.CagettePro;
 	@hideInForms public var lastUpdate : SDateTime;
 	
 	public function new(){
 		super();
-		deliveryAvailabilities = [];
 		lastUpdate = Date.now();
 		visible = true;
 	}

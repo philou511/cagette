@@ -124,26 +124,6 @@ class Member extends Controller
 		App.current.session.data.amapId = null;
 	}
 	
-	@tpl('member/lastMessages.mtt')
-	function doLastMessages(member:db.User){
-		
-		var out = new Array<{date:Date,subject:String,success:String,failure:String}>();
-		var threeMonth = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30.5 * 3);
-		
-		for ( m in sugoi.db.BufferedMail.manager.search($remoteId == app.user.getGroup().id && $cdate > threeMonth, {limit:10, orderBy:-cdate})){
-			
-			var status : sugoi.mail.IMailer.MailerResult = m.status;
-			
-			if ( status!=null && status.get(member.email)!=null ){
-				
-				var r = m.getMailerResultMessage(member.email);
-				out.push( {date:m.cdate,subject:m.title,success:r.success,failure:r.failure} );	
-			}
-			
-		}
-		view.emails = out;
-	}
-	
 	/**
 	 * Edit a Member
 	 */

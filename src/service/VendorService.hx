@@ -267,9 +267,28 @@ class VendorService{
 				throw new Error("Erreur avec le numéro SIRET ("+res.message+"). Si votre numéro SIRET est correct mais non reconnu, contactez nous sur support@cagette.net");
 			}else{
 				vendor.companyNumber = siret;
-				vendor.siretInfos = res.etablissement;
+				var siretInfos = res.etablissement;
+				
 				//take adress from siretInfos
-				var addr = vendor.getAddressFromSiretInfos();
+				var addr = {
+					address1:"",
+					address2:"",
+					zipCode:siretInfos.code_postal,
+					city:siretInfos.libelle_commune,
+					lat:siretInfos.latitude,
+					lng:siretInfos.longitude
+				}
+		
+				//find address1
+				var a = [];
+				for( k in ["numero_voie","type_voie","libelle_voie"] ){
+					var v = Reflect.field(siretInfos,k);
+					if(v!=null && v!=""){
+						a.push(v);
+					}
+				}
+				addr.address1 = a.join(" ");
+		
 				if(addr!=null && addr.city!=null){
 					vendor.address1 = addr.address1;
 					vendor.zipCode = addr.zipCode;

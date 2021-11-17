@@ -61,8 +61,7 @@ class Group extends Object
 	@hideInForms public var membershipRenewalDate : SNull<SDate>;
 	@hideInForms public var membershipFee : SNull<STinyInt>;
 	
-	// @hideInForms public var vatRates : SNull<SData<Map<String,Float>>>;
-	@hideInForms public var vatRates2 : SNull<SText>; //
+	@hideInForms public var vatRates2 : SNull<SText>;
 	
 	//options and flags
 	public var flags:SFlags<GroupFlags>;
@@ -85,8 +84,7 @@ class Group extends Object
 	@formPopulate("getMembersFormElementData") @:relation(legalReprId) public var legalRepresentative : SNull<db.User>;
 	
 	//payments
-	// @hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
-	@hideInForms public var allowedPaymentsType2:SNull<SText>;
+	@hideInForms public var allowedPaymentsType2:SNull<SText>; //Array<String>
 	@hideInForms public var checkOrder:SNull<SString<64>>;
 	@hideInForms public var IBAN:SNull<SString<40>>;
 	@hideInForms public var allowMoneyPotWithNegativeBalance:SNull<SBool>;
