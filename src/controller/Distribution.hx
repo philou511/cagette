@@ -73,6 +73,11 @@ class Distribution extends Controller {
 	 */
 	@tpl('distribution/list.mtt')
 	function doList(d:db.Distribution) {
+
+		if(!d.catalog.group.hasShopMode()){
+			throw Redirect("/distribution/csaList/"+d.id);
+		}
+
 		view.distrib = d;
 		view.place = d.place;
 		view.contract = d.catalog;

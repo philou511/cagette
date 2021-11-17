@@ -13,17 +13,11 @@
 				::_("Summary by products")::
 			</a>
 
-			<div class="dropdown" style="display:inline-block;">
-				<button class="btn btn-default btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<i class="icon icon-print"></i> ::_("Attendance sheet")::
-				</button>
-				<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-					<li><a href="/distribution/list/::distribution.id::"> ::_("Standard")::</a></li>
-					<li><a href="/distribution/listByProductUser/::distribution.id::"> ::_("By Product-User")::</a></li>	
-					<li><a href="/distribution/csaList/::distribution.id::"> Liste d'émargement spéciale AMAP</a></li>		
-				</ul>
-			</div>
-
+			<a href="/distribution/csaList/::distribution.id::" class="btn btn-default btn-sm">
+				<i class="icon icon-print"></i> ::_("Attendance sheet")::
+			</a>
+	
+	
 		</div>
 
 		::if disabledProducts > 0::
