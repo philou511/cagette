@@ -159,7 +159,7 @@ class CagettePro extends sys.db.Object
 		get vendors linked to this company (product reselling/distribution)
 	**/
 	public function getVendors():Array<db.Vendor>{
-		return Lambda.map(pro.db.PVendorCompany.manager.search($company == this, false), x -> x.vendor).array());
+		return Lambda.map(pro.db.PVendorCompany.manager.search($company == this, false), x -> x.vendor).array();
 	}
 
 

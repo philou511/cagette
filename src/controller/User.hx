@@ -302,15 +302,15 @@ class User extends Controller
 		user.flags.set(HasEmailNotif24h);
 		user.flags.set(HasEmailNotifOuverture);
 		user.update();*/
-		db.UserGroup.getOrCreate(user,group);
+		db.UserGroup.getOrCreate(app.user,group);
 
 		//warn manager by mail
 		if(group.contact!=null){
-			var url = "http://" + App.config.HOST + "/member/view/" + user.id;
-			var text = t._("A new member joined the group without ordering : <br/><strong>::newMember::</strong><br/> <a href='::url::'>See contact details</a>",{newMember:user.getCoupleName(),url:url});
+			var url = "http://" + App.config.HOST + "/member/view/" + app.user.id;
+			var text = t._("A new member joined the group without ordering : <br/><strong>::newMember::</strong><br/> <a href='::url::'>See contact details</a>",{newMember:app.user.getCoupleName(),url:url});
 			App.quickMail(
 				group.contact.email,
-				group.name +" - "+ t._("New member") + " : " + user.getCoupleName(),
+				group.name +" - "+ t._("New member") + " : " + app.user.getCoupleName(),
 				app.processTemplate("mail/message.mtt", { text:text } ) 
 			);	
 		}
