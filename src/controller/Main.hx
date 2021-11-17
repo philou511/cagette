@@ -1,17 +1,17 @@
 package controller;
 
-import haxe.macro.Expr.Error;
-import tools.DateTool;
-import db.MultiDistrib;
+import Common;
 import db.Distribution;
+import db.MultiDistrib;
 import db.UserOrder;
 import haxe.Json;
+import haxe.macro.Expr.Error;
 import haxe.web.Dispatch;
+import sugoi.Web;
 import sugoi.form.elements.StringInput;
 import sugoi.tools.ResultsBrowser;
-import Common;
 import tools.ArrayTool;
-import sugoi.Web;
+import tools.DateTool;
 
 class Main extends Controller {
 	public function new() {
@@ -401,36 +401,5 @@ class Main extends Controller {
 
 	function doDiscovery(){
 		throw Redirect('/p/pro/signup/discovery');
-	}
-
-	function doMigrateCagetteProVatRates() {
-		if (Web.isModNeko) {
-			Sys.print("only CLI.");
-			return;
-		}
-		// populate CagettePro.vatRates2 field
-		for (cp in pro.db.CagettePro.manager.search($vatRates2 == null, {limit: 5000})) {
-			var vendor = cp.vendor;
-			if (vendor!=null){
-				Sys.print(cp.vendor.name + " = " + cp.sync() + "<br>");
-			}else{
-				Sys.print("Unknown vendor for CPro #" +cp.id + " = " + cp.sync() + "<br>");
-			}
-		}
-
-		Sys.print("Reste encore " + pro.db.CagettePro.manager.count($vatRates2 == null) + " CagettePro à migrer");
-	}
-
-	function doMigratePNotifContent() {
-		if (Web.isModNeko) {
-			Sys.print("only CLI.");
-			return;
-		}
-		// populate PNotif.Content2 field
-		for (pn in pro.db.PNotif.manager.search($content2 == "", {limit: 5000})) {
-			Sys.print(pn.type + " = " + pn.sync() + "<br>");
-		}
-
-		Sys.print("Reste encore " + pro.db.PNotif.manager.count($content2 == "") + " PNotif à migrer");
 	}
 }

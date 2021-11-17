@@ -1,17 +1,18 @@
 package controller;
+import Common;
 import datetime.DateTime;
-import payment.MoneyPot;
-import sugoi.form.elements.Input.InputType;
-import sugoi.form.elements.IntInput;
 import db.Group.GroupFlags;
 import db.UserGroup;
 import haxe.Http;
 import neko.Web;
+import payment.MoneyPot;
 import sugoi.form.Form;
-import Common;
+import sugoi.form.elements.FloatInput;
+import sugoi.form.elements.Input.InputType;
+import sugoi.form.elements.IntInput;
 import sugoi.form.elements.IntSelect;
 import sugoi.form.elements.StringInput;
-import sugoi.form.elements.FloatInput;
+
 using tools.DateTool;
 
 
@@ -178,7 +179,7 @@ class AmapAdmin extends Controller
 				ua = db.UserGroup.manager.select($userId == Std.parseInt(form.getValueOf("user")) && $groupId == app.user.getGroup().id, true);
 			}			
 
-			ua.rights2 = "[]";
+			ua.rights = "[]";
 
 			var arr : Array<String> = cast form.getElement("rights").value;
 			for ( r in arr) {

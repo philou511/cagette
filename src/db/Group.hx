@@ -1,8 +1,9 @@
 package db;
+import Common;
 import sugoi.form.ListData.FormData;
 import sys.db.Object;
 import sys.db.Types;
-import Common;
+
 using tools.DateTool;
 
 enum GroupFlags {
@@ -61,7 +62,7 @@ class Group extends Object
 	@hideInForms public var membershipRenewalDate : SNull<SDate>;
 	@hideInForms public var membershipFee : SNull<STinyInt>;
 	
-	@hideInForms public var vatRates2 : SNull<SText>;
+	@hideInForms public var vatRates : SNull<SText>;
 	
 	//options and flags
 	public var flags:SFlags<GroupFlags>;
@@ -84,7 +85,7 @@ class Group extends Object
 	@formPopulate("getMembersFormElementData") @:relation(legalReprId) public var legalRepresentative : SNull<db.User>;
 	
 	//payments
-	@hideInForms public var allowedPaymentsType2:SNull<SText>; //Array<String>
+	@hideInForms public var allowedPaymentsType:SNull<SText>; //Array<String>
 	@hideInForms public var checkOrder:SNull<SString<64>>;
 	@hideInForms public var IBAN:SNull<SString<40>>;
 	@hideInForms public var allowMoneyPotWithNegativeBalance:SNull<SBool>;
@@ -282,7 +283,7 @@ class Group extends Object
 	**/
 	public function getGroupAdmins():Array<db.UserGroup>{
 
-		var users = db.UserGroup.manager.search($rights2 != null && $rights2 != "[]" && $group == this, false);
+		var users = db.UserGroup.manager.search($rights != null && $rights != "[]" && $group == this, false);
 		
 		//cleaning 
 		/*for ( u in users.array()) {
@@ -462,38 +463,13 @@ class Group extends Object
 		];
 	}
 
-	// override function update() {
-	// 	sync();
-	// 	super.update();
-	// }
-
-	// public function sync() {
-	// 	this.allowedPaymentsType2 = this.allowedPaymentsType != null ? haxe.Json.stringify(this.allowedPaymentsType) : null;
-
-	// 	var transform = function(r:Map<String,Float>){
-	// 		var out  = [];
-	// 		if(r==null) return null;
-	// 		try{
-	// 			for ( k in r.keys() ){
-	// 				out.push(  {label:k,value:r.get(k)} );
-	// 			}
-	// 		}catch(e:Dynamic){
-
-	// 		}
-			
-	// 		return out;
-	// 	};
-
-	// 	this.vatRates2 = this.vatRates != null ? haxe.Json.stringify(transform(this.vatRates)) : null;
-	// }
-
 	public function setVatRates(rates:Array<{value:Float,label:String}>){
-		vatRates2 = haxe.Json.stringify(rates);
+		vatRates = haxe.Json.stringify(rates);
 	}
 
 	public function getVatRates():Array<{value:Float,label:String}>{
 		try{
-			return haxe.Json.parse(vatRates2);
+			return haxe.Json.parse(vatRates);
 		}catch(e:Dynamic){
 			var rates = [{label:"TVA alimentaire",value:5.5},{label:"TVA standard",value:20}];
 			this.lock();
@@ -517,12 +493,12 @@ class Group extends Object
 	}
 
 	public function setAllowedPaymentTypes(pt:Array<String>){
-		allowedPaymentsType2 = haxe.Json.stringify(pt);
+		allowedPaymentsType = haxe.Json.stringify(pt);
 	}
 
 	public function getAllowedPaymentTypes():Array<String>{
 		try{
-			return haxe.Json.parse(allowedPaymentsType2);
+			return haxe.Json.parse(allowedPaymentsType);
 		}catch(e:Dynamic){
 			return [];
 		}

@@ -1,6 +1,6 @@
 package pro.db;
-import sys.db.Types;
 import Common;
+import sys.db.Types;
 
 /**
  * Cagette Pro account linked to a Vendor Account
@@ -11,8 +11,7 @@ class CagettePro extends sys.db.Object
 	public var id : SId;
 	@hideInForms @:relation(vendorId) public var vendor : db.Vendor;
 	@hideInForms @:relation(demoCatalogId) public var demoCatalog : SNull<pro.db.PCatalog>;//catalog used for public page
-	@hideInForms public var vatRates : SData<Map<String,Float>>;
-	@hideInForms public var vatRates2 : SNull<SText>;
+	@hideInForms public var vatRates : SNull<SText>;
 	@hideInForms public var training:SBool;	//training account
 	@hideInForms public var network:SBool;	//enable network management features
 	@hideInForms public var captiveGroups:SBool;	//the groups are a captive network
@@ -87,23 +86,13 @@ class CagettePro extends sys.db.Object
 	}
 
 	public function setVatRates(rates:Array<{value:Float,label:String}>){
-		vatRates2 = haxe.Json.stringify(rates);
+		vatRates = haxe.Json.stringify(rates);
 	}
 
 	public function getVatRates():Array<{value:Float,label:String}>{
 		try{
-			return haxe.Json.parse(vatRates2);
+			return haxe.Json.parse(vatRates);
 		}catch(e:Dynamic){
-			// If we have legacy vat rates, return them in the correct type
-			if (vatRates != null) {
-				var parsedLegacyVatRates: Array<{value:Float,label:String}> = [];
-				for (k in vatRates.keys()) {
-					parsedLegacyVatRates.push({label:k, value:vatRates.get(k)});
-				}
-				return parsedLegacyVatRates;
-			}
-
-			// Else we return default vat rates
 			var rates = [{label:"TVA alimentaire 5,5%",value:5.5},{label:"TVA 20%",value:20},{label:"Non assujeti à TVA", value:0}];
 			this.lock();
 			setVatRates(rates);
@@ -245,26 +234,5 @@ class CagettePro extends sys.db.Object
 			"linkUrl" 	=> /*t._("Website URL")*/"URL du site web",			
 			"freeCpro" 	=> "Accès gratuit à Cagette Pro (stagiaire formation)",		
 		];
-	}
-	
-	public function sync(){
-		lock();
-		var transform = function(r:Map<String,Float>){
-			var out  = [];
-			if(r==null) return [{label:"TVA alimentaire 5,5%",value:5.5},{label:"TVA 20%",value:20},{label:"Non assujeti à TVA", value:0}];
-			try{
-				for ( k in r.keys() ){
-					out.push(  {label:k,value:r.get(k)} );
-				}
-			}catch(e:Dynamic){
-
-			}
-			
-			return out;
-		};
-
-		this.vatRates2 = haxe.Json.stringify(transform(this.vatRates));
-		update();
-		return this.vatRates2;
 	}
 }

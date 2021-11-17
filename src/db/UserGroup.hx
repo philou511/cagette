@@ -1,7 +1,7 @@
 package db;
+import Common;
 import sys.db.Object;
 import sys.db.Types;
-import Common;
 
 
 enum Right{
@@ -21,7 +21,7 @@ class UserGroup extends Object
 {
 	@:relation(groupId) public var group : db.Group;
 	@:relation(userId) public var user : db.User;
-	public var rights2 : SNull<SSmallText>; 			//rights in JSON
+	public var rights : SNull<SSmallText>; 			//rights in JSON
 	public var balance : SFloat; 						//account balance in group currency
 	public static var CACHE = new Map<String,db.UserGroup>();
 	
@@ -55,8 +55,8 @@ class UserGroup extends Object
 
 	public function getRights():JsonRights{		
 		try{
-			if(this.rights2==null) return [];
-			return haxe.Json.parse(this.rights2);
+			if(this.rights==null) return [];
+			return haxe.Json.parse(this.rights);
 		}catch(e:Dynamic){
 			return [];
 		}
@@ -84,7 +84,7 @@ class UserGroup extends Object
 				});			
 		}
 
-		rights2 = haxe.Json.stringify(rights);
+		rights = haxe.Json.stringify(rights);
 		update();		
 	}
 		
@@ -124,7 +124,7 @@ class UserGroup extends Object
 				}					
 		}
 
-		rights2 = haxe.Json.stringify(rights);
+		rights = haxe.Json.stringify(rights);
 		update();
 	}
 	

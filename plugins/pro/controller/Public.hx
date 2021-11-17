@@ -1,8 +1,8 @@
 package pro.controller;
-import sugoi.Web;
-import haxe.Json;
-import sugoi.db.Variable;
 import Common;
+import haxe.Json;
+import sugoi.Web;
+import sugoi.db.Variable;
 
 class Public extends controller.Controller
 {
@@ -93,7 +93,7 @@ class Public extends controller.Controller
 				n.company = catalog.company;
 				n.type = pro.db.PNotif.NotifType.NTCatalogImportRequest;
 				n.title = "Demande de liaison du catalogue \"" + catalog.name+"\" pour \"" + group.name + "\"";
-				n.content2 = haxe.Json.stringify(params);
+				n.content = haxe.Json.stringify(params);
 				n.group = group;
 				n.insert();
 				

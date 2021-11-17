@@ -1,9 +1,9 @@
 package pro.controller;
-import pro.db.PVendorCompany;
-import sugoi.form.elements.StringInput;
 import mangopay.Mangopay;
-import sugoi.form.elements.FloatInput;
+import pro.db.PVendorCompany;
 import service.VendorService;
+import sugoi.form.elements.FloatInput;
+import sugoi.form.elements.StringInput;
 
 class Company extends controller.Controller
 {
@@ -275,10 +275,10 @@ class Company extends controller.Controller
 		view.nav.push("default");
 		var f = new sugoi.form.Form("vat");
 		
-		if (company.vatRates2 == null) {
+		if (company.vatRates == null) {
 			company.lock();
 			var x = new pro.db.CagettePro();
-			company.vatRates2 = x.vatRates2;
+			company.vatRates = x.vatRates;
 			company.update();
 		}
 		

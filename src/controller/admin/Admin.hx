@@ -1,17 +1,16 @@
 package controller.admin;
-import sugoi.Web;
-import pro.db.VendorStats;
-
-import sugoi.db.Variable;
-import db.TxpProduct;
+import Common;
 import db.BufferedJsonMail;
-import hosted.db.GroupStats;
-import tools.Timeframe;
-import service.GraphService;
 import db.Catalog;
 import db.MultiDistrib;
+import db.TxpProduct;
 import haxe.web.Dispatch;
-import Common;
+import hosted.db.GroupStats;
+import pro.db.VendorStats;
+import service.GraphService;
+import sugoi.Web;
+import sugoi.db.Variable;
+import tools.Timeframe;
 
 class Admin extends Controller {
 	public function new() {
@@ -388,7 +387,7 @@ class Admin extends Controller {
 				useStocks: db.Product.manager.count(($catalogId in cids) && $active == true && $stock > 0) > 0,
 				// turnover12months:Math.round(turnOver),
 				distribNum12months: distributions.length,
-				payments: g.allowedPaymentsType2
+				payments: g.allowedPaymentsType
 			});
 		}
 

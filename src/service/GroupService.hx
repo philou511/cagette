@@ -1,7 +1,8 @@
 package service;
+import Common;
+
 using Lambda;
 using tools.ObjectListTool;
-import Common;
 
 /**
  * Service for managing groups
@@ -52,7 +53,7 @@ class GroupService
 	**/
 	public static function getGroupMembersWithRights(group:db.Group,?rights:Array<Right>):Array<db.User>{
 
-		var membersWithAnyRights = db.UserGroup.manager.search($rights2!=null && $rights2!="[]" && $group==group,false).array();
+		var membersWithAnyRights = db.UserGroup.manager.search($rights!=null && $rights!="[]" && $group==group,false).array();
 		if(rights==null){
 			return membersWithAnyRights.map(ua -> ua.user);
 		}else{
