@@ -115,16 +115,6 @@ class Admin extends Controller {
 		}
 	}
 
-	@admin
-	function doMigrateRights() {
-		// populate UserGroup.rights2 field
-		for (ua in db.UserGroup.manager.search($rights2 == null, {limit: 5000})) {
-			Sys.print(ua.user.getName() + "@" + ua.group.name + " = " + ua.sync() + "<br>");
-		}
-
-		Sys.print("Reste encore " + db.UserGroup.manager.count($rights2 == null) + " userGroup à migrer");
-	}
-
 	/**
 		merge TxpProduct categs
 	**/

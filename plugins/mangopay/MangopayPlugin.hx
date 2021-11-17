@@ -1,14 +1,14 @@
 package mangopay;
-import payment.OnTheSpotCardTerminal;
-import sugoi.tools.TransactionWrappedTask;
-import sugoi.plugin.*;
+import Common;
+import db.MultiDistrib;
 import mangopay.Mangopay;
 import mangopay.Types;
 import mangopay.db.*;
+import payment.OnTheSpotCardTerminal;
 import pro.payment.*;
-import Common;
+import sugoi.plugin.*;
+import sugoi.tools.TransactionWrappedTask;
 import tink.core.Error;
-import db.MultiDistrib;
 
 class MangopayPlugin extends PlugIn implements IPlugIn{
 	
@@ -348,25 +348,6 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 	static function round(f:Float):Float{
 		return Math.round(f*100)/100;
 	}
-
-	/**
-	what is netAmount ?
-	**/
-	/*static public function getMultidistribTotal(multiDistrib : Array<db.Distribution>) : Float {	
-		var total = 0.0;
-		for (distrib in multiDistrib)
-		{
-			for (basket in distrib.getBaskets())
-			{
-				if(basket.data != null)
-				{
-					var data = basket.data.get(distrib.catalog.vendor.id);
-					total = total + data.netAmount;
-				}
-			}
-		}
-		return total;
-	}*/
 
 	/**
 		Get multidistrib net MP turnover ( payments made with MP less fees )

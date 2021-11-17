@@ -19,8 +19,6 @@ class Basket extends Object
 	@:relation(userId) public var user : db.User;
 	@:relation(multiDistribId) public var multiDistrib : db.MultiDistrib;
 
-	public var data : SNull<SData<Map<Int,RevenueAndFees>>>; //store shared revenue
-	
 	public static var CACHE = new Map<String,db.Basket>();
 	
 	public function new(){
