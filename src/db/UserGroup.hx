@@ -84,7 +84,7 @@ class UserGroup extends Object
 				});			
 		}
 
-		rights = haxe.Json.stringify(rights);
+		this.rights = haxe.Json.stringify(rights);
 		update();		
 	}
 		
@@ -124,7 +124,7 @@ class UserGroup extends Object
 				}					
 		}
 
-		rights = haxe.Json.stringify(rights);
+		this.rights = haxe.Json.stringify(rights);
 		update();
 	}
 	
