@@ -297,11 +297,11 @@ class User extends Controller
 		if(group==null) throw "no group selected";
 		if(group.regOption!=db.Group.RegOption.Open) throw "this group is not open";
 
-		var user = app.user;
+		/*var user = app.user;
 		user.lock();
 		user.flags.set(HasEmailNotif24h);
 		user.flags.set(HasEmailNotifOuverture);
-		user.update();
+		user.update();*/
 		db.UserGroup.getOrCreate(user,group);
 
 		//warn manager by mail

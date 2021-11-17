@@ -174,7 +174,8 @@ class VendorService{
 		
 		//country
 		form.removeElementByName("country");
-		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country.toUpperCase(),true));
+		var country = vendor.country==null ? "FR" : vendor.country.toUpperCase();
+		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),country,true));
 		
 		//profession
 		form.addElement(new sugoi.form.elements.IntSelect('profession',t._("Profession"),sugoi.form.ListData.fromSpod(service.VendorService.getVendorProfessions()),vendor.profession,true),4);
