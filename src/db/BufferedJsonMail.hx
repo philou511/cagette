@@ -15,10 +15,10 @@ class BufferedJsonMail extends sys.db.Object
 	public var title : SString<256>;
 	public var htmlBody : SNull<SText>;
 	public var textBody : SNull<SText>;
-	public var headers :  SNull<SText>;     //SData<Map<String,String>>;
-	public var sender : SNull<SText>;       //SData<{name:String,email:String,?userId:Int}>;
-	public var recipients : SNull<SText>;   //SData<Array<{name:String,email:String,?userId:Int}>>;
-	public var attachments : SNull<SText>;  //SData<Array<{filename:String,contentType:String,content:String,encoding:String}>>;
+	public var headers :  SNull<SText>;     //Map<String,String>
+	public var sender : SNull<SText>;       //{name:String,email:String,?userId:Int}
+	public var recipients : SNull<SText>;   //Array<{name:String,email:String,?userId:Int}>
+	public var attachments : SNull<SText>;  //Array<{filename:String,contentType:String,content:String,encoding:String}>
 
 	//utility fields
 	public var mailerType : SString<32>;	//mailer used when sending for real
@@ -26,13 +26,7 @@ class BufferedJsonMail extends sys.db.Object
 	public var cdate : SDateTime;		 	//creation date
 	public var sdate : SNull<SDateTime>; 	//sent date
 	public var rawStatus : SNull<SText>;			//raw return from the smtp server or mandrill API
-	//public var status : SNull<SData<MailerResult>>; //map of emails with api/smtp results	
 
-	//custom datas
-	//public var data : SNull<SData<Dynamic>>;//custom datas
-    //public var remoteId : SNull<Int>;		//custom remote Id (userId, groupId ...) 
-    
-    
     public function setHeaders(headers:Map<String,String>){
         this.headers = haxe.Json.stringify(headers);
     }

@@ -30,10 +30,6 @@ class MultiDistrib extends Object
 	public var orderEndDate : SNull<SDateTime>;
 
 	//time slots management
-	@hideInForms public var slotsMode : SNull<SData<String>>;
-	@hideInForms public var slots : SNull<SData<Array<Slot>>>;
-	@hideInForms public var inNeedUserIds : SNull<SData<Map<Int, Array<String>>>>;
-	@hideInForms public var voluntaryUsers : SNull<SData<Map<Int, Array<Int>>>>;
 	@hideInForms public var timeSlots : SNull<SText>; // IN JSON
 	
 	@hideInForms @:relation(groupId) public var group : db.Group;

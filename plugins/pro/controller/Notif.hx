@@ -29,6 +29,7 @@ class Notif extends controller.Controller
 	public function doView(n:pro.db.PNotif){
 		view.category = "home";
 		view.notif = n;
+		view.notifContent = n.getContent();
 		view.getCatalog = function(cid){
 			return pro.db.PCatalog.manager.get(cid, false);
 		}

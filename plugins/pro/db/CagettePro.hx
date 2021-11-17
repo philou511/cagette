@@ -247,4 +247,24 @@ class CagettePro extends sys.db.Object
 		];
 	}
 	
+	public function sync(){
+		lock();
+		var transform = function(r:Map<String,Float>){
+			var out  = [];
+			if(r==null) return [{label:"TVA alimentaire 5,5%",value:5.5},{label:"TVA 20%",value:20},{label:"Non assujeti à TVA", value:0}];
+			try{
+				for ( k in r.keys() ){
+					out.push(  {label:k,value:r.get(k)} );
+				}
+			}catch(e:Dynamic){
+
+			}
+			
+			return out;
+		};
+
+		this.vatRates2 = haxe.Json.stringify(transform(this.vatRates));
+		update();
+		return this.vatRates2;
+	}
 }
