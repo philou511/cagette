@@ -9,7 +9,10 @@
     "@material-ui/icons": "3.0.1",
     "bootstrap.native": "^2.0.27",
     "haxe-modular": "^0.7.0",
+    "prop-types": "^15.6.2",
     "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-redux": "^5.0.7",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "redux": "^4.0.0"
