@@ -1,4 +1,5 @@
 package pro.service;
+import connector.db.RemoteCatalog;
 import Common;
 
 class PCatalogService{
@@ -155,11 +156,30 @@ class PCatalogService{
 	/**
 		Link first Catalog in a cpro
 	**/
-	public static function linkRemoteCatalog(remoteCatalog:db.Catalog,cagettePro:pro.db.CagettePro){
+	public static function linkFirstCatalog(catalog:db.Catalog,cagettePro:pro.db.CagettePro){
 
 		var offers = [];
 
-		for (p in remoteCatalog.getProducts(false)) {
+		//is this catalog invited in another cpro ?
+		var rc = RemoteCatalog.getFromContract(catalog);
+		if(rc != null){
+			//just move products and catalog
+			var pcatalog = rc.getCatalog();
+			pcatalog.lock();
+
+			for (p in pcatalog.getProducts()) {
+				p.product.lock();
+				p.product.company = cagettePro;
+				p.product.update();
+			}
+
+			pcatalog.company = cagettePro;
+			pcatalog.update();
+
+			return;
+		}
+
+		for (p in catalog.getProducts(false)) {
 			// product
 			var pp = new pro.db.PProduct();
 			pp.name = p.name;
@@ -197,26 +217,22 @@ class PCatalogService{
 		}
 
 		//create pcatalog
-		var cat = new pro.db.PCatalog();
-		cat.name = "Mes produits en vente";
-		cat.company = cagettePro;
-		cat.visible = true;
+		var pcatalog = new pro.db.PCatalog();
+		pcatalog.name = "Mes produits en vente";
+		pcatalog.company = cagettePro;
+		pcatalog.visible = true;
 		var now = Date.now();
-		cat.startDate = new Date(now.getFullYear(),0,0,0,0,0);
-		cat.endDate = new Date(now.getFullYear()+10,0,0,0,0,0);
-		cat.insert();
+		pcatalog.startDate = new Date(now.getFullYear(),0,0,0,0,0);
+		pcatalog.endDate = new Date(now.getFullYear()+10,0,0,0,0,0);
+		pcatalog.insert();
 
 		//bind offers to this catalog
 		for(off in offers){
-			pro.db.PCatalogOffer.make(off,cat,off.price);
+			pro.db.PCatalogOffer.make(off,pcatalog,off.price);
 		}
 
 		//create link to remote catalog
-		var rc = new connector.db.RemoteCatalog();
-		rc.id = remoteCatalog.id;
-		rc.remoteCatalogId = cat.id;
-		rc.insert();
-
+		link(pcatalog,catalog);
 	}
 
 	/**
@@ -287,9 +303,9 @@ class PCatalogService{
 	}
 
 	/**
-	 * Link catalog to group : Create catalog and products from a pcatalog
+	 * Link a pcatalog to a group
 	 */
-	public static function linkCatalogToGroup(catalog:pro.db.PCatalog,clientGroup:db.Group,remoteUserId:Int,?contractType=1):connector.db.RemoteCatalog{
+	public static function linkCatalogToGroup(pcatalog:pro.db.PCatalog,clientGroup:db.Group,remoteUserId:Int,?contractType=1):connector.db.RemoteCatalog{
 		
 		/*if(catalog.company.discovery){
 			//check if there is already one group
@@ -300,7 +316,7 @@ class PCatalogService{
 		}*/
 
 		//checks
-		var contracts = connector.db.RemoteCatalog.getContracts(catalog, clientGroup);
+		var contracts = connector.db.RemoteCatalog.getContracts(pcatalog, clientGroup);
 		if ( contracts.length>0 ){
 			throw new tink.core.Error("Ce catalogue existe déjà dans ce groupe. Il n'est pas nécéssaire d'importer plusieurs fois le même catalogue dans un groupe.");
 		}
@@ -309,7 +325,7 @@ class PCatalogService{
 		var contact = db.User.manager.get(remoteUserId);
 		
 		//create contract		
-		var contract = syncCatalog(null,catalog,contact,clientGroup);
+		var contract = syncCatalog(null,pcatalog,contact,clientGroup);
 
 		//if CSA contract with constant orders
 		if(contractType==db.Catalog.TYPE_CONSTORDERS && !clientGroup.hasShopMode()){
@@ -318,13 +334,11 @@ class PCatalogService{
 		}
 		
 		//create remoteCatalog record
-		var rc = new connector.db.RemoteCatalog();
-		rc.id = contract.id;
-		rc.remoteCatalogId = catalog.id;
-		rc.insert();
+		var rc = link(pcatalog,contract);
+		
 		
 		//create products
-		for ( co in catalog.getOffers()){
+		for ( co in pcatalog.getOffers()){
 			pro.service.PCatalogService.syncProduct(co, null, contract,true, false);
 		}
 		
@@ -339,6 +353,21 @@ class PCatalogService{
 		cp.price = price;
 		cp.insert();
 		return cp;
+	}
+
+	public static function link(pcatalog:pro.db.PCatalog, catalog:db.Catalog){
+
+		var cats = connector.db.RemoteCatalog.getContracts( pcatalog, catalog.group );
+		if ( cats.length>0 ){
+			throw new tink.core.Error("Ce catalogue existe déjà dans ce groupe. Il n'est pas nécéssaire d'importer plusieurs fois le même catalogue dans un groupe.");
+		}
+
+		var rc = new connector.db.RemoteCatalog();
+		rc.id = catalog.id;
+		rc.remoteCatalogId = pcatalog.id;
+		rc.insert();
+
+		return rc;
 	}
 
 }

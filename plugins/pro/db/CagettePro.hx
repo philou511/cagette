@@ -11,7 +11,7 @@ class CagettePro extends sys.db.Object
 	public var id : SId;
 	@hideInForms @:relation(vendorId) public var vendor : db.Vendor;
 	@hideInForms @:relation(demoCatalogId) public var demoCatalog : SNull<pro.db.PCatalog>;//catalog used for public page
-	@hideInForms public var vatRates : SNull<SText>;
+	@hideInForms public var vatRates : SNull<SSmallText>;
 	@hideInForms public var training:SBool;	//training account
 	@hideInForms public var network:SBool;	//enable network management features
 	@hideInForms public var captiveGroups:SBool;	//the groups are a captive network

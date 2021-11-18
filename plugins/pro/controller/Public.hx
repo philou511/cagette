@@ -68,7 +68,6 @@ class Public extends controller.Controller
 				throw Error("/contractAdmin/view/" + contracts.first().id, "Ce catalogue existe déjà dans ce groupe. Il n'est pas nécéssaire d'importer plusieurs fois le même catalogue dans un groupe.");
 			}
 
-
 			if(isVendor){
 				
 				//direct linkage

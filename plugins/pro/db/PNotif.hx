@@ -41,15 +41,13 @@ class PNotif extends Object
 	@:relation(userId) 		public var sender 	: SNull<db.User>; //sender of the notif
 	public var type 	: SEnum<NotifType>;
 	public var title	: STinyText;
-	public var content : SText;	
+	public var content 	: SSmallText;	
 	public var date 	: SDateTime;	
-	
 	
 	public function new(){
 		super();
 		date = Date.now();
 	}
-
 
 	public static function distributionInvitation(catalog:pro.db.PCatalog, distrib:db.MultiDistrib,sender:db.User){
 
@@ -82,7 +80,6 @@ class PNotif extends Object
 			}
 		}
 		return out;
-
 	}
 
 	public function getContent(){

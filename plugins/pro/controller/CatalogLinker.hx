@@ -54,7 +54,7 @@ class CatalogLinker extends controller.Controller
 		if(catalog!=null){
 			if(company.getProducts().length>0) throw Error("/p/pro","Action interdite, vous avez déjà des produits dans votre compte producteur");
 
-			pro.service.PCatalogService.linkRemoteCatalog(catalog,company);
+			pro.service.PCatalogService.linkFirstCatalog(catalog,company);
 			throw Ok('/p/pro/product',"Bravo, vous avez récupéré votre premier catalogue ! Vérifiez que les fiches produits sont correctes.");
 
 		}else{
@@ -62,7 +62,7 @@ class CatalogLinker extends controller.Controller
 		}
 	}
 
-	public function doSubmitLinkage(remoteCatalog:db.Catalog,pcatalog:pro.db.PCatalog){
+	public function doSubmitLinkage(catalog:db.Catalog,pcatalog:pro.db.PCatalog){
 
 		if(checkToken()){
 			var linkage = [];
@@ -93,11 +93,7 @@ class CatalogLinker extends controller.Controller
 			}
 
 			//create link to remote catalog
-			var rc = new connector.db.RemoteCatalog();
-			rc.id = remoteCatalog.id;
-			rc.remoteCatalogId = pcatalog.id;
-			rc.insert();
-
+			PCatalogService.link(pcatalog,catalog);
 
 			//make a sync 
 			PCatalogService.sync(pcatalog.id);
