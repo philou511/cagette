@@ -27,7 +27,6 @@ import react.product.*;
 import react.map.*;
 import react.user.*;
 import react.vendor.*;
-import react.CagetteDatePicker;
 import react.ReactComponent;
 
 
@@ -39,7 +38,6 @@ class App {
 	public var currency : String; //currency symbol like &euro; or $
 	public var t : sugoi.i18n.GetText;//gettext translator
 	public var Modal = bootstrap.Modal;
-    public var Collapse = bootstrap.Collapse;
     public var lang : String;
     public var userId : Int;
     public var userName : String;
@@ -97,7 +95,6 @@ class App {
 	 * @param	formName
 	 */
 	public function getProductInput(divId:String, productName:String, txpProductId:Null<Int>, formName:String ){
-        // //initSentry();
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
 
 			//dirty stuff to remove "real" input, and replace it by the react one
@@ -141,10 +138,6 @@ class App {
             imageType: imageType,
             currentCagetteProId: currentCagetteProId
         });
-	}
-	
-	public function initReportHeader(){
-		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
 	
 	public function initOrderBox(userId : Int, multiDistribId : Int, catalogId : Int, catalogType : Int, date : String, place : String, userName : String, currency : String, hasPayments : Bool, callbackUrl : String, hasCagette2 : Bool, groupId : Int) {
@@ -277,10 +270,6 @@ class App {
         });
 	}
 
-	public function browser(){
-		return bowser.Bowser.getParser(js.Browser.window.navigator.userAgent);
-	}
-
 	/**
 	 * Helper to get values of a bunch of checked checkboxes
 	 * @param	formSelector
@@ -403,31 +392,6 @@ class App {
 			untyped el.classList.add("hidden");
 		}
 	}
-
-	public function generateDatePicker(
-		selector: String,
-		name: String,
-		?date: String,
-		?type: String = "date",
-        ?required: Bool = false,
-        ?openTo: String = "date"
-	) {
-		ReactDOM.render(
-			jsx('
-				<MuiThemeProvider theme=${CagetteTheme.get()}>
-					<>
-						<CssBaseline />
-						<CagetteDatePicker name=$name value=$date type=$type required=$required openTo=$openTo />
-					</>
-				</MuiThemeProvider>
-			'),
-			js.Browser.document.querySelector(selector)
-		);
-    }
-
-    public function tab(el){
-        return new bootstrap.Tab(el);
-    }
 
     // public function showTab(el){
     //     tab(el).show();
