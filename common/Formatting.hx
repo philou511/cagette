@@ -9,14 +9,6 @@ using Std;
  */
 class Formatting
 {
-
-	/** smart quantity filter : display easier-to-read quantity when it's floats
-	 * 
-	 * 0.33 x Lemon 12kg => 4kg Lemon
-	 */ 
-	public static function smartQt(orderQt:Float,productQt:Float,unit:Unit):String{
-		return formatNum(orderQt * productQt) + "&nbsp;" + Formatting.unit(unit);
-	}
 	
 	public static function formatNum(n:Float):String {
 		if (n == null) return "";
@@ -73,33 +65,6 @@ class Formatting
 		
 	}
 
-	/**
-	 * Price per Kg/Liter...
-	 * @param	qt
-	 * @param	unit
-	 */
-	public static function pricePerUnit(price:Float, qt:Float, u:Unit, ?currency="€"):String{
-		if (u==null || qt == null || qt == 0 || price==null || price==0) return "";
-		var pricePerUnit = price / qt;
-				
-		//turn small prices in Kg
-		if (pricePerUnit < 1 ){
-			switch(u){
-				case Gram: 
-					pricePerUnit *= 1000;
-					u = Kilogram;
-				case Centilitre:
-					pricePerUnit *= 100;
-					u = Litre;
-				case Millilitre:
-					pricePerUnit *= 1000;
-					u = Litre;
-				default :
-			}
-		}			
-		return formatNum(pricePerUnit) + " " + currency + "/" + unit(u,qt);
-	}
-
 	public static var DAYS    = ["Dimanche","Lundi", "Mardi", "Mercredi","Jeudi", "Vendredi", "Samedi"];
 	public static var MONTHS  = ["Janvier","Février","Mars","Avril", "Mai","Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre","Décembre"];
 	public static var MONTHS_LOWERCASE  = ["janvier","février","mars","avril", "mai","juin", "juillet", "août", "septembre", "octobre", "novembre","décembre"];
@@ -130,7 +95,6 @@ class Formatting
 		return StringTools.lpad(date.getHours().string(), "0", 2) + ":" + StringTools.lpad(date.getMinutes().string(), "0", 2);
 	}
 	
-
 	public static function getDate(date:Date) {
 		return {
 			dow: DAYS[date.getDay()],
@@ -229,21 +193,7 @@ class Formatting
 		return str.split("\\").join("\\\\").split("'").join("\\'").split('\"').join('\\"').split("\r").join("\\r").split("\n").join("\\n");
 	}
 
-	
-	
-	/**
-	 * convert a RVB color from Int to Hexa
-	 * @param	c
-	 * @param	leadingZeros=6
-	 */
-	public static function intToHex(c:Int, ?leadingZeros=6):String {
-		var h = StringTools.hex(c);
-		while (h.length<leadingZeros)
-			h="0"+h;
-		return "#"+h;
-	}
-
-	/**
+    /**
 		If string is not UTF8 encoded, encode it
 	**/
 	#if sys
@@ -270,8 +220,7 @@ class Formatting
 	// }
 	#end
 
-
-	/**
+    /**
 		https://www.w3.org/TR/NOTE-datetime
 	**/
 	public static function dateToIso(date:Date):String{
