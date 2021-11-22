@@ -47,7 +47,7 @@ class Offer extends controller.Controller
 		//for the VATBox component
 		view.rates = Lambda.map(company.getVatRates(),function(v) return v.value).join("|");
 		view.price = o.price;
-		view.vat = o.vat;		
+		view.vat = o.vat;
 		
 		//add catalogs to update
 		f.addElement(new sugoi.form.elements.Html("html","<hr/>"));

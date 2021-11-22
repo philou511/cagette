@@ -82,10 +82,23 @@ class App {
 	}
 	
 	public function getVATBox(ttcprice:Float,currency:String,rates:String,vat:Float,formName:String){
-		var input = js.Browser.document.querySelector('form input[name="${formName}_price"]');
-		remove( js.Browser.document.querySelector('form input[name="${formName}_vat"]').parentElement.parentElement );		
-		ReactDOM.render(jsx('<$VATBox ttc=${ttcprice} currency=${currency} vatRates=${rates} vat=${vat} formName=${formName} />'),  input.parentElement);
-	}
+        js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
+            
+            var input = js.Browser.document.querySelector('form input[name="${formName}_price"]');
+            remove( js.Browser.document.querySelector('form input[name="${formName}_vat"]').parentElement.parentElement );		
+            
+            input.parentElement.id = "vat-box-neo-container";
+
+            var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+            neo.createNeoModule(input.parentElement.id, "vatBox", {
+                initialTtc: ttcprice,
+                currency: currency,
+                vatRates: rates,
+                initialVat: vat,
+                formName: formName
+            });
+        });
+    }
 
 	/**
 	 * Removes the form element and replace it by a react js component
