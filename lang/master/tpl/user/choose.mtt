@@ -230,20 +230,25 @@
 			::end::
 			*/
 
+			var displayPopup = function(id,displaysByDay){
+				document.addEventListener("DOMContentLoaded", function(event) {
+					var now = new Date();
+					var storageId = id + "-" + now.toJSON().substr(0,10);
+					if(localStorage[storageId]==null ){
+						localStorage[storageId]=0;
+					}
+					if(localStorage[storageId] < displaysByDay ){
+						_Cagette.overlay("/data/"+id+".html","",true);
+						localStorage[storageId]++;
+					}					
+				});
+			};
 			
-			::if(isGroupAdmin)::
-			document.addEventListener("DOMContentLoaded", function(event) {
-
-				if(localStorage.nouvelleReglesCount6==null ){
-					localStorage.nouvelleReglesCount6=0;
-				}
-				if(localStorage.nouvelleReglesCount6 < 5 ){
-					_Cagette.overlay("/data/nouvellesregles2021-7.html","",true);
-					localStorage.nouvelleReglesCount6++;
-				}
-				
-			});
-			::end::
+			::if(discovery)::
+				displayPopup("popupformation",1);
+			::elseif(isGroupAdmin)::	
+				displayPopup("nouvellesregles2021-7",1);			
+			::end:: 
 			
 
 			//]]>
