@@ -96,7 +96,7 @@ class Vendor extends Object
 		super();
 		directory = true;
 		cdate = Date.now();
-
+		freemiumResetDate = Date.now();
 	}
 
 	public function checkIsolate(){
