@@ -1,4 +1,4 @@
-package react;
+package react.order.redux.components;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;

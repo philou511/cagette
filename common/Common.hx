@@ -3,38 +3,6 @@
 typedef Right = db.UserGroup.Right;
 #end
 
-
-/*@:enum
-abstract Entity(String) {
-	var User 	= "user";
-	var Vendor 	= "vendor";
-	var Group 	= "group";
-	var Product = "product";
-}*/
-
-@:keep
-typedef OrderSimple = {
-	products: Array<ProductWithQuantity>,
-	total:Float,//total price
-	count:Int,	//Nombre de produits avec quantité
-}
-
-//A temporary order, waiting for being paid and definitely recorded.
-/*@:keep
-typedef OrderInSession = {
-	products:Array <{
-		productId:Int,
-		quantity:Float,
-		#if !js
-		?product:db.Product,
-		?distributionId:Int,
-		#end
-	} > ,	
-	total:Float, 	//price to pay
-	?userId:Int,
-	?paymentOp:Int, //payment operation ID
-}*/
-
 //OrderInSession v2 for db.TmpBasket
 typedef TmpBasketData = {
 	products:Array <{
@@ -122,13 +90,6 @@ typedef ProductInfo = {
 	?multiWeight : Bool, //Used in OrderBox to be able to create a new order when selecting a product that is multiweight
 }
 
-//used in shop client
-@:keep
-typedef ProductWithQuantity = {
-	product: ProductInfo,
-	quantity: Int
-}
-
 @:keep
 typedef DistributionInfos = {
 	id:Int,
@@ -141,9 +102,6 @@ typedef DistributionInfos = {
 	orderEndDate:Float,
 	place:PlaceInfos,
 }
-
-//This is used by Mangopay to know which document types to ask for KYC compliance
-
 enum Unit{
 	Piece;
 	Kilogram;
@@ -159,15 +117,6 @@ typedef CategoryInfo = {
 	?image : String,
 	?subcategories:Array<CategoryInfo>,
 	?displayOrder:Int,
-}
-
-/**
- * datas used with the "tagger" ajax class
- */
-@:keep
-typedef TaggerInfos = {
-	products:Array<{product:ProductInfo,categories:Array<Int>}>,//tagged products
-	categories : Array<{id:Int,categoryGroupName:String,color:String,tags:Array<{id:Int,name:String}>}>, //groupe de categories + tags
 }
 
 /**
@@ -230,8 +179,6 @@ typedef UserOrder = {
 	catalogName:String,
 }
 
-
-
 typedef PlaceInfos = {
 	id:Int,
 	name:String,
@@ -254,19 +201,6 @@ typedef UserInfo = {
 	?zipCode:String,
 	?address1:String,
 	?address2:String,
-}
-
-typedef UserList = {
-	id:String,
-	name:String,
-	count:Int
-}
-
-typedef GroupOnMap = {
-	id:Int,
-	name:String,
-	image:String,
-	place:PlaceInfos,	
 }
 
 enum OrderFlags {
@@ -358,233 +292,6 @@ enum Event {
 	
 	#end
 	
-}
-
-
-/*
- * Product Taxonomy structure
- */ 
-/*typedef TxpDictionnary = {
-	products:Map<Int,{id:Int,name:String,category:Int,subCategory:Int}>,
-	categories:Map<Int,CategoryInfo>,
-	subCategories:Map<Int,CategoryInfo>,	
-}*/
-
-
-/* 
- * Tutorials
- */
-/*
-enum TutoAction {
-	TAPage(uri:String);
-	TANext;
-	
-}
-enum TutoPlacement {
-	TPTop;
-	TPBottom;
-	TPLeft;
-	TPRight;
-}
-
-typedef TutoInfos = {name:String, steps:Array<{element:String,text:String,action:TutoAction,placement:TutoPlacement}>};
-
-class TutoDatas {
-
-	public static var TUTOS: Map<String,TutoInfos> = null;
-	
-	#if js
-	//async 
-	public static function get(tuto:String, callback:Dynamic->Void){
-		#if !test
-		sugoi.i18n.Locale.init(App.instance.lang, function(t:sugoi.i18n.GetText){			
-			App.instance.t = t;
-			init(t);
-			var tuto = TUTOS.get(tuto);
-			callback(tuto);			
-		});
-		#end
-	}
-	#else
-	//sync 
-	public static function get(tuto:String):TutoInfos
-	{
-		sugoi.i18n.Locale.init(App.current.getLang());
-		init(sugoi.i18n.Locale.texts);
-		return TUTOS.get(tuto);
-	}
-	#end
-	
-	static function init(t:sugoi.i18n.GetText){
-			
-		TUTOS = [
-			"intro" => {
-				name:t._("Guided tour for the group administrator"),
-				steps:[
-					{
-						element:null,
-						text:t._("<p>In order to better discover Cagette.net, we propose to do a guided tour of the user interface of the software. <br/> You will then have a global overview on the different tools that are available to you.</p><p>You will be able to stop and start again this tutorial whenever you want.</p>"),
-						action: TANext,
-						placement : null
-					},
-					{
-						element:"ul.nav.navbar-left",
-						text:t._( "This part of the navigation bar is visible by all members.</br>It allows to access the three main pages:	<ul><li> The <b>order page</b> which displays orders and the delivery planning.</li><li> On the <b>My account</b> page, you can update your personal information and check your orders history</li><li> On the <b>Farmers</b> page,  you can see all farmers and administrators of the group</ul>"),
-						action: TANext,
-						placement : TPBottom
-					},
-					{
-						element:"ul.nav.navbar-right",
-						text:t._("This part is <b>for administrators only.</b> Here you will be able to manage the register of members, orders,  products, etc.<br/><p>Now click on the <b>Members</b> section</p>"),
-						action: TAPage("/member"),
-						placement : TPBottom
-
-					},{
-						element:".article .table td",
-						text:t._("The purpose of this section is to administrate the list of your members.<br/>Every time that you register a new membrer, an account will be created for him/her. Now the member can join you at Cagette.net and order or consult the planning of the deliveries.<p>Now click on a <b>member</b> in the list</p>"),
-						action: TAPage("/member/view/*"),
-						placement : TPRight
-					},{
-						element:".article",
-						text:t._("This is the page of a member. Here you can : <ul><li>see and change their contact details</li><li>manage the membership fee of your group</li><li>see a summary of their orders</li></ul>"),
-						action: TANext,
-						placement : TPRight
-					},
-					{
-						element:"ul.nav #distributions",
-						text:t._("Please click on the <b>distributions</b> section."),
-						action: TAPage("/distribution"),
-						placement : TPBottom
-					},{
-						element:"div.distrib:nth-child(1)",
-						text:t._("In this section, you can manage the global distribution planning. This dashboard gives an overview of the next distributions : are orders open ? , how many farmers are attending ?, how many volunteers do you need..."),
-						action: TANext,
-						placement : TPBottom
-
-					},					
-					{
-						element:"ul.nav #contractadmin",
-						text:t._("Now let's have a look at the <b>catalogs</b> section."),
-						action: TAPage("/contractAdmin"),
-						placement : TPBottom
-					},{
-						element:"#contracts",
-						text:t._("Here is the list of <b>catalogs</b>. They include a start date, a end date, and contain the products you can purchase from a specific farmer."),
-						action: TANext,
-						placement : TPBottom
-
-					},{
-					   element:"#contracts table .btn",
-					   text:t._("Let's look closer at how to manage a catalog. <b>Click on this button</b>"),
-					   action: TAPage("/contractAdmin/view/*"),
-					   placement : TPBottom
-
-				   },{
-					   element:".table.table-bordered",
-					   text:t._("Here is a summary of the catalog.<br/>There are two types of contracts:<ul><li>CSA contracts: the member commits on buying the same products during the whole duration of the contract</li><li>Variable orders : the member can choose what he buys for each delivery.</li></ul>"),
-					   action: TANext,
-					   placement : TPRight
-
-				   },{
-					   element:"#subnav #products",
-					   text:t._("Let's see now the page <b>Products</b>"),
-					   action : TAPage("/contractAdmin/products/*"),
-					   placement:TPRight
-				   },{
-					   element:".article .table",
-					   text:t._("On this page, you can manage the list of products offered by this supplier.<br/>Define at least the name and the price of products. It is also recommended to add a description and a picture."),
-					   action: TANext,
-					   placement : TPTop
-
-				   },{
-					   element:"#subnav #deliveries",
-					   text:t._("Let's see the <b>deliveries</b> page"),
-					   action : TAPage("/contractAdmin/distributions/*"),
-					   placement:TPRight
-				   },{
-					   element:".article .table",
-					   text:t._("Here you can view the distributions which have been planified from the distribution section.<br/>Everyone who has access to this page can define if the products of this catalog will be available or not to a specific distribution."),
-					   action: TANext,
-					   placement : TPLeft
-
-				   },{
-					   element:"#subnav #orders",
-					   text:t._("Let's see now the <b>Orders</b> page"),
-					   action : TAPage("/contractAdmin/orders/*"), //can fail if the contract is variable because the uri is different
-					   placement:TPRight
-				   },{
-					   element:".article .table",
-					   text:t._("Here we can manage the list of orders for this supplier.<br/>If you choose to \"open orders\" to members, they will be able to make their orders online themselves.<br/>This page will centralize automatically the orders for this supplier.  Otherwise, as a administrator, you will be able to enter orders on behalf of a member."),
-					   action: TANext,
-					   placement : TPLeft
-
-				   },{
-					   element:"ul.nav #messages",
-					   text:t._("<p>We have seen the main features related to catalogs.</p><p>Let's see the <b>messaging</b> section.</p>"),
-					   action: TAPage("/messages"),
-					   placement : TPBottom
-
-				   },{
-					   element:null,
-					   text:t._("<p>The messaging section allows you to send e-mails to different lists of members. It is not necessary anymore to maintain a lot of lists of e-mails depending on catalogs, as all these lists are automatically generated.</p>  <p>E-mails are sent with your e-mail address as sender, so you will receive answers in your own mailbox.</p>"),
-					   action: TANext,
-					   placement : null
-
-				   },{
-					   element:"ul.nav #amapadmin",
-					   text:t._("Click here now on this page"),
-					   action : TAPage("/amapadmin"),
-					   placement : TPLeft,
-				   },{
-					   element:"#subnav",
-					   text:t._("<p>In this last page, you can configure everything that is related to your group.</p><p>The <b>Administration rights</b> page is important, it's where you can define other administrators among members. They will then be able to manage one or many catalogs, send emails, etc.</p>"),
-					   action:TANext,
-					   placement : TPBottom
-				   },{
-					   element:"#helpMenu",
-					   text:t._("<p>This is the last step of this tutorial. I hope that it gave you a good overview of this software.<br/>To go further, do not hesitate to look at the <b>documentation</b>. The link is always available at the top-right corner of the screen.</p>"),
-					   action:TANext,
-					   placement : TPBottom
-				   }
-			   ]
-		   },
-		];
-		
-	}
-	
-	
-
-}*/
-
-/**
- * Order Reports
- */
-enum OrdersReportGroupOption{
-	ByMember;
-	ByProduct;
-}
-
-enum OrdersReportFormatOption{
-	Table;
-	Csv;
-	PrintableList; //list de distrib ?
-}
-
-
-//Report Options : should be usable in an URL, an API call...
-typedef OrdersReportOptions = {
-	//time scope
-	startDate:Date,
-	endDate:Date,
-	
-	//formatting
-	?groupBy:OrdersReportGroupOption,			//group order by...	
-	?format:OrdersReportFormatOption,			//table , csv ?
-	
-	//filters :
-	?groups:Array<Int>,
-	?contracts:Array<Int>,			//which contracts
-	?distributions:Array<Int>,
 }
 
 /**
