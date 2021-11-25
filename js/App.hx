@@ -115,7 +115,7 @@ class App {
 			remove(Browser.document.querySelector("form select[name='" + formName+"_txpProductId']").parentElement.parentElement);
 
             var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
-            neo.createNeoModule(divId, "ProductCategorizer", {
+            neo.createNeoModule(divId, "productCategorizer", {
                 originalProductName: productName,
                 originalTxpProductId: txpProductId,
                 formName: formName
