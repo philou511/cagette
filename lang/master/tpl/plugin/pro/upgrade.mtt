@@ -122,19 +122,39 @@
                     <div class="panel-body">
                         <ul class="features">
                             <li>Compte producteur</li>
-                            <li>Ventes illimitées</li>
+                            <li>Ventes <b>illimitées</b></li>
                             <li>Ressources et aide technique</li>
                         </ul>
                         
-                        <p class="text-center priceBox">
-                            <span style="font-size: 0.8em;">Abonnement</span><br/>
-                            29 €<sup style="font-size: 0.5em;">HT</sup>/mois                            
-                        </p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="text-center priceBox">
+                                    <span style="font-size: 0.8em;">Abonnement mensuel</span><br/>
+                                    39 €<sup style="font-size: 0.5em;">HT</sup>/mois                            
+                                </p>
+                                <div id="monthly-subscription-button-neo-container" class="text-center"></div>
+                            </div>
+                            <div class="col-md-6">
+                                 <p class="text-center priceBox">
+                                    <span style="font-size: 0.8em;">Abonnement annuel</span><br/>
+                                    348 €<sup style="font-size: 0.5em;">HT</sup>/an                            
+                                </p>
+                                <div id="yearly-subscription-button-neo-container" class="text-center"></div>
+                            </div>
 
-
-                        <p class="text-center">
-                            <a href="" class="btn btn-default btn-lg" disabled="disabled"><i class="icon icon-chevron-right"></i> Bientôt disponible</a>
-                        </p>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function(event) {
+                                    neo.createNeoModule("monthly-subscription-button-neo-container", "subscriptionButton", {
+                                        vendorId: ::vendor.id::,
+                                        subscriptionPlan: "Monthly"
+                                    });
+                                        neo.createNeoModule("yearly-subscription-button-neo-container", "subscriptionButton", {
+                                        vendorId: ::vendor.id::,
+                                        subscriptionPlan: "Yearly"
+                                    });
+                                });
+                            </script>
+                        </div>
                     </div>
                 </div>
             </div>
