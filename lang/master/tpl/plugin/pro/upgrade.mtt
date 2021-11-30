@@ -15,6 +15,16 @@
 
 <div class="col-md-12">
 	<div class=" article">
+        <div id="manage-subscription-button-neo-container" class="text-center"></div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function(event) {
+                neo.createNeoModule("manage-subscription-button-neo-container", "manageMySubscriptionButton", {
+                    vendorId: ::vendor.id::,
+                });
+            });
+        </script>
+
         ::if(company.discovery)::
 
 		<h2 style="margin-top:0">Votre statut : Offre découverte</h2>	
@@ -100,9 +110,10 @@
                         </p>
 
                         <p class="text-center">
-                            ::if(company.discovery)::
+                            <!-- CagetteProType.Discovery -->
+                            ::if(company.type==0)::
                             <a href="" class="btn btn-default btn-lg" disabled="disabled"><i class="icon icon-check"></i> Votre formule actuelle</a>
-                            ::end::                            
+                            ::end::
                         </p>
 
                     </div>
@@ -142,19 +153,25 @@
                                 <div id="yearly-subscription-button-neo-container" class="text-center"></div>
                             </div>
 
-                        ::if(company.discovery)::
+                        <!-- CagetteProType.Discovery -->
+                        ::if(company.type==0)::
                             <script>
                                 document.addEventListener("DOMContentLoaded", function(event) {
-                                    neo.createNeoModule("monthly-subscription-button-neo-container", "subscriptionButton", {
+                                    neo.createNeoModule("monthly-subscription-button-neo-container", "subscribeButton", {
                                         vendorId: ::vendor.id::,
                                         subscriptionPlan: "Monthly"
                                     });
-                                        neo.createNeoModule("yearly-subscription-button-neo-container", "subscriptionButton", {
+                                        neo.createNeoModule("yearly-subscription-button-neo-container", "subscribeButton", {
                                         vendorId: ::vendor.id::,
                                         subscriptionPlan: "Yearly"
                                     });
                                 });
                             </script>
+                        <!-- CagetteProType.Subscriber -->
+                        ::elseif(company.type==2)::
+                            <p class="text-center">
+                                <a href="" class="btn btn-default btn-lg" disabled="disabled"><i class="icon icon-check"></i> Votre formule actuelle</a>
+                            </p>
                         ::end::
                         
                         </div>
@@ -213,11 +230,12 @@
                         </p>
 
                         <p class="text-center">
-                            ::if(company.discovery)::                        
+                            <!-- CagetteProType.Trained -->
+                            ::if(company.type!=1)::
                             <a href="https://share.hsforms.com/1_7sOBRVQTUaCwgZTtmxOOg4f5r5" target="_blank" class="btn btn-primary btn-lg"><i class="icon icon-chevron-right"></i> Etude de financement</a>
                             ::else::
                             <a href=""  class="btn btn-default btn-lg" disabled="disabled"><i class="icon icon-chevron-right"></i> Votre formule actuelle</a>
-                            ::end::                            
+                            ::end::
                         </p>
 
                     </div>
