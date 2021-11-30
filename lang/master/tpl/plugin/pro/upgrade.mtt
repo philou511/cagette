@@ -142,6 +142,7 @@
                                 <div id="yearly-subscription-button-neo-container" class="text-center"></div>
                             </div>
 
+                        ::if(company.discovery)::
                             <script>
                                 document.addEventListener("DOMContentLoaded", function(event) {
                                     neo.createNeoModule("monthly-subscription-button-neo-container", "subscriptionButton", {
@@ -154,6 +155,8 @@
                                     });
                                 });
                             </script>
+                        ::end::
+                        
                         </div>
                     </div>
                 </div>
