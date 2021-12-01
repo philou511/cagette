@@ -15,20 +15,9 @@
 
 <div class="col-md-12">
 	<div class=" article">
-        <div id="manage-subscription-button-neo-container" class="text-center"></div>
-
-        <script>
-            document.addEventListener("DOMContentLoaded", function(event) {
-                neo.createNeoModule("manage-subscription-button-neo-container", "manageMySubscriptionButton", {
-                    vendorId: ::vendor.id::,
-                });
-            });
-        </script>
-
-        ::if(company.discovery)::
-
-		<h2 style="margin-top:0">Votre statut : Offre découverte</h2>	
-		<div class="row">
+        ::if(company.type==0)::
+        <h2 style="margin-top:0">Votre statut : Offre découverte</h2>	
+        <div class="row">
             <div class="col-md-5">
                 <p>
                     Vos ventes sont limitées à 1000€ par an.<br/>
@@ -53,7 +42,6 @@
                     }); 
                 </script>
             </div>
-            
         </div>
         
         ::else::
@@ -63,7 +51,19 @@
         </p>
         ::end::
 
-	</div>
+        ::if(company.type!=1)::
+        <div>
+        <div id="manage-subscription-neo-container"></div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function(event) {
+                neo.createNeoModule("manage-subscription-neo-container", "manageMySubscription", {
+                    vendorId: ::vendor.id::,
+                });
+            });
+        </script>
+        </div>
+        ::end::
+    </div>
 </div>
 
 <style>
