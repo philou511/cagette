@@ -214,7 +214,10 @@ class Vendor extends Object
 	}
 
 	public function getProfession():String {
-		return Lambda.find(service.VendorService.getVendorProfessions(), x -> x.id==this.profession).name;
+		if(this.profession==null) return null;
+		var p = service.VendorService.getVendorProfessions().find(x -> x.id==this.profession);
+		if(p==null) throw new tink.core.Error("Vendor #"+this.id+" has invalid profession code : "+this.profession);
+		return p.name;
 	}
 
 	public function getGroups():Array<db.Group>{

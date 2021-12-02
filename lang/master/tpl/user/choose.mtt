@@ -14,15 +14,9 @@
 				<div class="col-md-6 text-center">	
 					<img src="/img/infos.png" />
 					<p>
-					::if(discovery)::
-					<a href="https://formation.alilo.fr/course/view.php?id=7" class="btn btn-warning" target="_blank">
-						<i class="icon icon-youtube"></i> Guide Découverte
-					</a>
-					::else::
-					<a href="https://www.cagette.net/guide-express/" class="btn btn-warning" target="_blank">
-						<i class="icon icon-youtube"></i> Guide Express
-					</a>					
-					::end::
+						<a href="https://formation.alilo.fr/course/view.php?id=7" class="btn btn-warning" target="_blank">
+							<i class="icon icon-youtube"></i> Guide Découverte
+						</a>
 					</p>				
 					<p><b>Pour prendre en main l’outil c’est par ici !</b><br/>
 						C’est l’espace où vous trouverez tous les tutoriels 
