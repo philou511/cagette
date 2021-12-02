@@ -127,8 +127,14 @@
                         </ul>
                         
                         <p class="text-center priceBox">
-                            <span style="font-size: 0.8em;">Abonnement</span><br/>
+                            <span style="font-size: 0.8em;">
+                                Abonnement<br/>
+                            </span>
                             29 €<sup style="font-size: 0.5em;">HT</sup>/mois                            
+                            <br/>
+                            <span class="disabled" style="font-size: 0.8em;">Engagement d'un an<br/>
+                                Paiement annuel
+                                </span>
                         </p>
 
 

@@ -1,4 +1,6 @@
 package controller.admin;
+import tools.ObjectListTool;
+import mangopay.db.MangopayGroupPayOut;
 import Common;
 import db.BufferedJsonMail;
 import db.Catalog;
@@ -317,9 +319,34 @@ class Admin extends Controller {
 		}
 	}
 
+	function doVendorNum(){
+		//nbre de vendor actifs dans des groupes qui ont eu des payout mangopay en octobre
+		var vendorsNum = 0;
+		var payoutNum = 0;
+		var vendors = [];
+		var mds = db.MultiDistrib.manager.search($distribStartDate >= Date.fromString("2021-10-01 00:00:00") && $distribStartDate < Date.fromString("2021-11-01 00:00:00"));
+		Sys.print('<h3>${mds.length} distribs</h3>');
+		for( md in mds ){
+
+			var payout = MangopayGroupPayOut.get(md);
+			if(payout==null) continue;
+			payoutNum++;
+
+			Sys.print('distrib ${md.id} of ${md.group.name} : ${md.distribStartDate.toString()}<br/>');
+			var distribVendors = md.getVendors();
+			vendorsNum += distribVendors.length;
+			for( v in distribVendors) vendors.push(v);
+		}
+		Sys.print('estimation à ${vendorsNum} payouts pour chaque prod à chaque distrib<br/>');
+		Sys.print('${payoutNum} payouts mgp');
+		vendors = ObjectListTool.deduplicate(vendors);
+		Sys.print('${vendors.length} vendors actifs');
+
+	}
+
 	function doLastCproTest() {
 		// cagette pro test par date de creation du cpro
-		var vendors = db.Vendor.manager.unsafeObjects("SELECT v.*,cpro.cdate as cprocdate FROM CagettePro cpro, Vendor v WHERE v.id=cpro.vendorId and isTest=1 order by cpro.cdate DESC",
+		/*var vendors = db.Vendor.manager.unsafeObjects("SELECT v.*,cpro.cdate as cprocdate FROM CagettePro cpro, Vendor v WHERE v.id=cpro.vendorId and isTest=1 order by cpro.cdate DESC",
 			false);
 		Sys.print("<h2>Derniers Cagette Pro test</h2>");
 		Sys.print('<p>${vendors.length} producteurs</p>');
@@ -333,7 +360,7 @@ class Admin extends Controller {
 			Sys.print('<td>${untyped v.cprocdate}</a></td>');
 			Sys.print("</tr>");
 		}
-		Sys.print('</table>');
+		Sys.print('</table>');*/
 	}
 
 	function doGroupStats() {

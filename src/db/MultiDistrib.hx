@@ -364,7 +364,7 @@ class MultiDistrib extends Object
 	public function getVendors():Array<db.Vendor>{
 		var vendors = new Map<Int,db.Vendor>();
 		for( d in getDistributions()) vendors.set(d.catalog.vendor.id,d.catalog.vendor);
-		return Lambda.array(vendors);
+		return vendors.array();
 	}
 	
 	public function getUsers(?type:Int){
