@@ -1,14 +1,14 @@
 package controller;
-import pro.db.VendorStats;
-import sugoi.form.elements.Checkbox;
-import pro.db.CagettePro;
 import haxe.crypto.Md5;
-import sugoi.form.elements.Input;
+import pro.db.CagettePro;
+import pro.db.VendorStats;
+import sugoi.Web;
 import sugoi.form.Form;
+import sugoi.form.elements.Checkbox;
+import sugoi.form.elements.Input;
 import sugoi.form.elements.IntInput;
 import sugoi.form.elements.StringInput;
 import sugoi.form.validators.EmailValidator;
-import sugoi.Web;
 import ufront.mail.*;
 
 class User extends Controller
@@ -82,7 +82,7 @@ class User extends Controller
 		//vendor accounts
 		var cagettePros = service.VendorService.getCagetteProFromUser(app.user);
 		view.cagettePros = cagettePros;
-		view.discovery = cagettePros.find(cp -> cp.discovery)!=null;
+		view.discovery = cagettePros.find(cp -> cp.type==Discovery)!=null;
 
 		//list tmpVendor that are not certified yet
 		view.tmpVendors = sys.db.Manager.cnx.request('select * from TmpVendor where userId = ${app.user.id} and certificationStatus < 2').results();

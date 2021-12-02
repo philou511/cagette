@@ -1,8 +1,8 @@
 package hosted.service;
 
+import pro.db.CagettePro;
 import pro.db.PUserCompany;
 import pro.db.VendorStats;
-import pro.db.CagettePro;
 
 class CourseService {
 
@@ -35,6 +35,7 @@ class CourseService {
         }		
         defCpro.training = false;
         defCpro.discovery = false;
+        defCpro.type = Trained;
         if(defCpro.id==null) defCpro.insert() else defCpro.update();
 
         defVendor.lock();

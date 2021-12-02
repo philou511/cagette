@@ -11,24 +11,24 @@
 			::set cpro = vendor.getCpro()::
 
 			::if(cpro!=null)::
-
-				::if(cpro.discovery)::
-				<!--découverte-->
-				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Offre Découverte">
-					<i class="icon icon-farmer"></i>
-				</div>
-				::elseif(vendor.isTest==true)::
+				::if(vendor.isTest==true)::
 				<!--cpro test-->
 				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Cagette Pro Test">
 					<i class="icon icon-farmer"></i>
 				</div>
 				::else::
-				<!-- compte producteur -->
-				<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Offre Pro">
-					<i class="icon icon-farmer-pro"></i>
-				</div>
+					::if cpro.type==0::
+					<!-- offre découverte -->
+					<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Offre Découverte">
+						<i class="icon icon-farmer"></i>
+					</div>
+					::else::
+					<!-- offre pro formé ou abonné -->
+					<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Offre Pro">
+						<i class="icon icon-farmer-pro"></i>
+					</div>
+					::end::
 				::end::
-			
 			::else::
 				<!--invité-->
 				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur invité">
@@ -564,7 +564,9 @@
 		::elseif(s==5)::
 			Compte pédagogique
 		::elseif(s==6)::
-			Offre Découverte		
+			Offre Découverte
+		::elseif(s==7)::
+			Offre Pro (abonné)
 		::end::
 	</macro>
     

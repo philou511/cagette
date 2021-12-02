@@ -1,11 +1,11 @@
 package hosted.controller;
 
+import datetime.*;
 import db.Vendor.DisabledReason;
-import sys.db.Connection;
+import hosted.db.CompanyCourse;
 import pro.db.CagettePro;
 import pro.db.VendorStats;
-import hosted.db.CompanyCourse;
-import datetime.*;
+import sys.db.Connection;
 
 class Course extends sugoi.BaseController
 {
@@ -278,6 +278,7 @@ class Course extends sugoi.BaseController
 				var c = new pro.db.CagettePro();				
 				c.training = true; // training account
 				c.vendor = v;
+				c.type = Trained;
 				c.insert();
 
 				//bypass disabling because of missing legal infos

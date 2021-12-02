@@ -61,12 +61,14 @@ class VendorStats extends sys.db.Object
 
 			if(vendor.isTest){
 				vs.type = VTCproTest;
-			}else if(cpro.discovery){	
-				vs.type = VTDiscovery;
 			}else if(cpro.training){				
 				vs.type = VTStudent;
-			}else{
+			}else if(cpro.type==Discovery){
+				vs.type = VTDiscovery;
+			}else if(cpro.type==Trained){
 				vs.type = VTCpro;
+			}else if(cpro.type==Subscriber){
+				vs.type = VTCproSubscriber;
 			}
 			
 		}else{

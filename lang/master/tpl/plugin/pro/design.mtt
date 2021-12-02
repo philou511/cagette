@@ -6,7 +6,7 @@
 		</div>
 		
 		<div class="col-md-6 accountBlock" ::cond company!=null::>	
-			::if(company.discovery==true)::
+			::if(company.type==0)::
 			<a href="/p/pro/upgrade">
 				<div class="pull-right" style="margin-top:8px">
 					<div id="vendor-freemium-progress-container"></div>
@@ -103,7 +103,7 @@
 							</li>
 						</ul>
 
-						::if(company.discovery)::
+						::if(company.type==0)::
 						<ul class="nav navbar-nav navbar-right">
 							<li>
 								<a href="/p/pro/upgrade#formation" style="background: orange;border-radius: 8px;padding: 6px 8px;margin: 8px;color: white;font-size: 0.9em;font-weight: bold;">
@@ -129,7 +129,7 @@
 	</div>
 </div>
 
-::if(comany!=null && company.discovery==true)::
+::if(comany!=null && company.type==0)::
 <div id="vendor-freemium-alert-container" style="margin-bottom:8px"></div>
 <script>
 	document.addEventListener("DOMContentLoaded", function (event) {

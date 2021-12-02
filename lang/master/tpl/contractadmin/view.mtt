@@ -100,7 +100,7 @@
 
 					::if(cpro==null)::
 					Producteur invité
-					::elseif(cpro.discovery)::
+					::elseif(cpro.type==0)::
 					Offre Découverte
 					::else::
 					Offre Pro
