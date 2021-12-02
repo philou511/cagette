@@ -27,6 +27,7 @@ class Vendor extends controller.Controller
 		// form
 		var f = new sugoi.form.Form("vendors");
 		f.method = GET;
+		f.addElement(new sugoi.form.elements.StringInput("companyNumber", "SIRET ou RNA"));
 		var data = [
 			{label: "Tous", value: "all"},
 			{label: "Gratuit", value: VTFree.string()},
@@ -37,7 +38,7 @@ class Vendor extends controller.Controller
 			{label: "Compte pédagogique", value: VTStudent.string()},
 			{label: "Offre Découverte", value: VTDiscovery.string()},
 		];
-		f.addElement(new sugoi.form.elements.StringSelect("type", "Type de producteur", data, VTCproTest.string(), true, ""));
+		f.addElement(new sugoi.form.elements.StringSelect("type", "Type de producteur", data, VTDiscovery.string(), true, ""));
 		f.addElement(new sugoi.form.elements.StringInput("zipCodes", "Saisir des numéros de département séparés par des virgules ou laisser vide."));
 		f.addElement(new sugoi.form.elements.StringSelect("country", "Pays", db.Place.getCountries(), "FR", true, ""));
 		var data = [
@@ -82,22 +83,21 @@ class Vendor extends controller.Controller
 			// type
 			if (f.getValueOf("type") != "all") {
 				var t:VendorType = Type.createEnum(VendorType, f.getValueOf("type"));
-				/*switch(t){
-					case "cpro" : sql_where_and.push("type=0");
-					case "free" : sql_where_and.push("type=1");
-					case "invited" : sql_where_and.push("type=2");
-					case "cprotest" : sql_where_and.push("v.isTest=1");
-					default :
-				}*/
 				sql_where_and.push("type=" + Type.enumIndex(t));
 			}
 
 			// country
 			sql_where_and.push('country="${f.getValueOf("country")}"');
+
+			//SIRET
+			if(f.getValueOf("companyNumber")!=null){
+				sql_where_and.push('companyNumber="${f.getValueOf("companyNumber")}"');
+			}
+
 		} else {
 			// default settings
 			sql_where_and.push("active=1");
-			sql_where_and.push("type=" + Type.enumIndex(VTCproTest));
+			sql_where_and.push("type=" + Type.enumIndex(VTDiscovery));
 		}
 
 		// QUERY
