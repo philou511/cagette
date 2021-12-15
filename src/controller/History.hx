@@ -101,7 +101,7 @@ class History extends Controller
 	}
 	
 	/**
-	 * user payments history
+	 * user payments history -----> a quel moment c'est utilisé ça ?
 	 */
 	@logged
 	@tpl('history/payments.mtt')
