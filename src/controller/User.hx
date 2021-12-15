@@ -332,8 +332,8 @@ class User extends Controller
 			}
 		}
 
-		view.group = group;
-		view.member = user;
+		view.groupId = group.id;
+		view.userId = user.id;
 		view.controlKey = key;
 	}
 
