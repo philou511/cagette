@@ -2,6 +2,7 @@ package pro.service;
 import Common;
 import tink.core.Error;
 import service.OrderService;
+import service.ProductService;
 using tools.ObjectListTool;
 
 typedef OrdersExportOptions = {
@@ -131,7 +132,7 @@ class ProReportService{
 			var distribs = db.Distribution.manager.search($date >= options.startDate && $date <= options.endDate && ($catalogId in remoteContracts.getIds()), false);
 			if (distribs.length == 0) throw new Error("Aucune distribution sur cette periode");
 			for( d in distribs) scopedDistributions.push(d);
-			where += ' and up.distributionId IN ('+distribs.getIds().join(',')+')';
+			where += ' and uo.distributionId IN ('+distribs.getIds().join(',')+')';
 		}
 	
 
@@ -140,12 +141,12 @@ class ProReportService{
 			SUM(quantity) as quantity,	
 			MAX(p.id) as pid,
 			p.name as pname,
-			AVG(up.productPrice) as price,
+			AVG(uo.productPrice) as price,
 			AVG(p.vat) as vat,
 			p.ref as ref,
-			SUM(quantity*up.productPrice) as totalTTC
-			from UserOrder up, Product p 
-			where up.productId = p.id 
+			SUM(quantity*uo.productPrice) as totalTTC
+			from UserOrder uo, Product p 
+			where uo.productId = p.id 
 			$where
 			group by ref,pname,price 
 			order by pname asc; ';
@@ -157,16 +158,16 @@ class ProReportService{
 		for ( r in res){
 					
 			var o : OrderByProduct = {
-				quantity:1.0 * r.quantity,
-				smartQt:"",
-				pid:r.pid,
-				pname:r.pname,
-				ref:r.ref,
-				priceHT: service.ProductService.getHTPrice(r.price,r.vat),
-				priceTTC: r.price,
-				vat:r.vat,
-				totalTTC : r.totalTTC,
-				totalHT  : service.ProductService.getHTPrice( r.totalTTC ,r.vat),
+				quantity	: 1.0 * r.quantity,
+				smartQt		: "",
+				pid			: r.pid,
+				pname		: r.pname,
+				ref			: r.ref,
+				priceHT		: ProductService.getHTPrice(r.price,r.vat),
+				priceTTC	: r.price,
+				vat			: r.vat,
+				totalTTC 	: r.totalTTC,
+				totalHT  	: ProductService.getHTPrice( r.totalTTC ,r.vat),
 				weightOrVolume:"",
 			};
 			
@@ -188,9 +189,9 @@ class ProReportService{
 			//special case : if product is multiweight, we should count the records number ( and not SUM quantities )
 			if (p.multiWeight){
 				sql = 'select 
-				COUNT(up.id) as quantity 
-				from UserOrder up, Product p 
-				where up.productId = p.id and up.quantity > 0 and p.id=${p.id}
+				COUNT(uo.id) as quantity 
+				from UserOrder uo, Product p 
+				where uo.productId = p.id and uo.quantity > 0 and p.id=${p.id}
 				$where';
 				var count = sys.db.Manager.cnx.request(sql).getIntResult(0);					
 				o.smartQt = ""+count;
@@ -203,17 +204,23 @@ class ProReportService{
 			var data = new Array<Dynamic>();			
 			for (o in orders) {
 				data.push({
-					"quantity":view.formatNum(o.quantity),
-					"pname":o.pname,
-					"ref":o.ref,
-					"priceHT":view.formatNum(o.priceHT),
-					"priceTTC":view.formatNum(o.priceTTC),
-					"totalHT":view.formatNum(o.totalHT),					
-					"totalTTC":view.formatNum(o.totalTTC),
+					quantity	: view.formatNum(o.quantity),
+					pname		: o.pname,
+					ref			: o.ref,
+					priceHT		: view.formatNum(o.priceHT),
+					priceTTC	: view.formatNum(o.priceTTC),
+					VATRate		: view.formatNum(o.vat),
+					VATAmount	: view.formatNum(o.priceTTC - o.priceHT),
+					totalHT		: view.formatNum(o.totalHT),					
+					totalTTC	: view.formatNum(o.totalTTC),
 				});				
 			}
 
-			sugoi.tools.Csv.printCsvDataFromObjects(data, ["quantity", "pname","ref", "priceHT","priceTTC","totalHT","totalTTC"],"Export-"+exportName+"-par produits");
+			sugoi.tools.Csv.printCsvDataFromObjects(
+				data,
+				["quantity", "pname","ref", "priceHT","priceTTC","VATAmount","VATRate","totalHT","totalTTC"],
+				"Export-"+exportName+"-par produits"
+			);
 			return null;
 		}else{
 			return {orders:orders,distribs:scopedDistributions};		
@@ -267,46 +274,52 @@ class ProReportService{
 		for ( d in scopedDistributions){
 			var or = Lambda.array(service.OrderService.getOrders(d.catalog, d));
 			
-			if (csv){
-				for ( o in or){
+			if(csv){
+				for ( o in or ){
 					
 					var u = db.User.manager.get(o.userId, false);
+					var p = o.product;
 					
 					csvData.push({
-						"orderId" : o.id,
-						"user" : o.userName,
-						"userId" : o.userId,
-						"userEmail" : o.userEmail,
-						"contractName":o.catalogName,
-						"quantity":view.formatNum(o.quantity),
-						"ref":o.productRef,
-						"pname":o.productName,
-						"price":view.formatNum(o.productPrice),
-						"fees":view.formatNum(o.fees),
-						"total":view.formatNum(o.total),
-						"paid":o.paid,
+						orderId		: o.id,
+						user		: o.userName,
+						userId	 	: o.userId,
+						userEmail	: o.userEmail,
+						contractName: o.catalogName,
+						quantity	: view.formatNum(o.quantity),
+						ref			: o.productRef,
+						pname 		: o.productName,
+						priceTTC	: view.formatNum(o.productPrice),
+						priceHT		: view.formatNum(ProductService.getHTPrice(o.productPrice,p.vat)),
+						VATRate		: view.formatNum(p.vat),
+						VATAmount	: view.formatNum(o.productPrice - ProductService.getHTPrice(o.productPrice,p.vat)),
+						
+						fees 		: view.formatNum(o.fees),
+						total		: view.formatNum(o.total),
+						paid		: o.paid,
 						
 						//user infos
-						"address" : u.address1 + (u.address2 != null?u.address2:""),
-						"zipCode" : u.zipCode,
-						"city" : u.city,
+						address 	: u.address1 + (u.address2 != null?u.address2:""),
+						zipCode 	: u.zipCode,
+						city 		: u.city,
 						
 						//group and delivery
-						"deliveryDate" : d.date.toString().substr(0, 10),
-						"place" : d.place.name,
-						"group" : d.catalog.group.name,
-						"groupId" : d.catalog.group.id,
+						deliveryDate : d.date.toString().substr(0, 10),
+						place		 : d.place.name,
+						group		 : d.catalog.group.name,
+						groupId		 : d.catalog.group.id,
 					});		
 				}
-			}else{
-				
+			}else{				
 				orders = orders.concat( or );
 			}
 		}
 		
-		
 		if (csv) {			
-			sugoi.tools.Csv.printCsvDataFromObjects(csvData, ["orderId","user","userId","userEmail","contractName","quantity", "ref","pname", "price","fees", "paid","total","address","zipCode","city","deliveryDate","place","group","groupId"], exportName+" - Détail par adhérents");
+			sugoi.tools.Csv.printCsvDataFromObjects(
+				csvData ,
+				["orderId","user","userId","userEmail","contractName","quantity", "ref","pname","priceHT","priceTTC","VATAmount","VATRate","fees", "paid","total","address","zipCode","city","deliveryDate","place","group","groupId"], exportName+" - Détail par adhérents"
+			);
 			return null;
 		}else{
 			orders = service.OrderService.sort(tools.ObjectListTool.deduplicateOrders(orders));

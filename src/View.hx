@@ -190,17 +190,6 @@ class View extends sugoi.BaseView {
 	 */
 	public function hDate(date:Date):String {
 		return Formatting.hDate(date);
-		/*
-			if (date == null) return t._("no date set");
-			if (DAYS == null) initDate();
-
-			var out = DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()];
-			out += " " + date.getFullYear();
-			if ( date.getHours() != 0 || date.getMinutes() != 0){
-
-				out += " " + sugoi.i18n.Locale.texts._("at||time : at 12:30") + " " + StringTools.lpad(Std.string(date.getHours()), "0", 2) + ":" + StringTools.lpad(Std.string(date.getMinutes()), "0", 2);
-			}
-			return out; */
 	}
 
 	/**
