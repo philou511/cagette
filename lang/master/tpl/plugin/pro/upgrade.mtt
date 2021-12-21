@@ -19,7 +19,8 @@
         document.addEventListener("DOMContentLoaded", function () {
             neo.createNeoModule("upgrade-page-neo-container", "upgradePage", {
                 vendorId: ::vendor.id::,
-                cagetteProType: "::company._type::"
+                cagetteProType: "::company._type::",
+                freemiumResetDate: new Date("::vendor.freemiumResetDate::")
             });
         }); 
     </script>
