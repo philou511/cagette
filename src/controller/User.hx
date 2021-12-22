@@ -82,7 +82,7 @@ class User extends Controller
 		//vendor accounts
 		var cagettePros = service.VendorService.getCagetteProFromUser(app.user);
 		view.cagettePros = cagettePros;
-		view.discovery = cagettePros.find(cp -> cp.type==Discovery)!=null;
+		view.discovery = cagettePros.find(cp -> cp.offer==Discovery)!=null;
 
 		//list tmpVendor that are not certified yet
 		view.tmpVendors = sys.db.Manager.cnx.request('select * from TmpVendor where userId = ${app.user.id} and certificationStatus < 2').results();

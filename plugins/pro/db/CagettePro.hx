@@ -2,10 +2,10 @@ package pro.db;
 import Common;
 import sys.db.Types;
 
-enum CagetteProType {
+enum CagetteProOffer {
 	Discovery;
-	Trained;
-	Subscriber;
+	Member;
+	Pro;
 }
 
 /**
@@ -24,7 +24,7 @@ class CagettePro extends sys.db.Object
 	@hideInForms public var discovery:SBool;	//Offre Découverte
 	@hideInForms public var networkGroupIds:SNull<SString<512>>; //network groups, ints separated by comas
 	@hideInForms public var cdate:SNull<SDateTime>; //date when vendor became Cagette Pro
-	@hideInForms public var type:SEnum<CagetteProType>;
+	@hideInForms public var offer:SEnum<CagetteProOffer>;
 	
 	public function new(){
 		super();

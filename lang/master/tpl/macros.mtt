@@ -17,7 +17,7 @@
 					<i class="icon icon-farmer"></i>
 				</div>
 				::else::
-					::if cpro.type==0::
+					::if cpro.offer==0::
 					<!-- offre découverte -->
 					<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Offre Découverte">
 						<i class="icon icon-farmer"></i>
