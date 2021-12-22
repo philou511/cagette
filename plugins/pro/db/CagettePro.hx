@@ -21,7 +21,6 @@ class CagettePro extends sys.db.Object
 	@hideInForms public var training:SBool;	//training account
 	@hideInForms public var network:SBool;	//enable network management features
 	@hideInForms public var captiveGroups:SBool;	//the groups are a captive network
-	@hideInForms public var discovery:SBool;	//Offre Découverte
 	@hideInForms public var networkGroupIds:SNull<SString<512>>; //network groups, ints separated by comas
 	@hideInForms public var cdate:SNull<SDateTime>; //date when vendor became Cagette Pro
 	@hideInForms public var offer:SEnum<CagetteProOffer>;

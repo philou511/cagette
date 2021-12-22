@@ -307,7 +307,7 @@ class PCatalogService{
 	 */
 	public static function linkCatalogToGroup(pcatalog:pro.db.PCatalog,clientGroup:db.Group,remoteUserId:Int,?contractType=1):connector.db.RemoteCatalog{
 		
-		/*if(catalog.company.discovery){
+		/*if(catalog.company.offer==0){
 			//check if there is already one group
 			var groups = catalog.company.getGroups();
 			if(groups.length > 0 && groups[0].id!=clientGroup.id){

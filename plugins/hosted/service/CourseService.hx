@@ -34,7 +34,6 @@ class CourseService {
             defCpro.vendor = defVendor;
         }		
         defCpro.training = false;
-        defCpro.discovery = false;
         defCpro.offer = Member;
         if(defCpro.id==null) defCpro.insert() else defCpro.update();
 
