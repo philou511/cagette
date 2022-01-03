@@ -1,0 +1,24 @@
+::use 'admin/design.mtt'::
+
+
+<h3>Basket #::basket.id::</h3>
+<p>
+    Utilisateur : <a href="/p/hosted/user/view/::basket.userId::">::basket._user.getName()::</a>    
+</p>
+<p>
+    Distribution : ::hDate(basket._multiDistrib.distribStartDate):: ( #::basket.multiDistribId:: )<br/>
+    du groupe <a href="/p/hosted/group/::basket._multiDistrib.groupId::">::basket._multiDistrib._group.name::</a>
+</p>
+<p>
+    cdate : ::basket.cdate::<br/>
+    num : ::basket.num::<br/>
+    <a href="/p/hosted/userGroup/::basket.userId::/::basket._multiDistrib.groupId::">userGroup</a>
+</p>
+<p>
+    <h5>UserOrders</h5>
+    ::foreach o basket.getOrders(null)::
+        <li>::o.quantity:: x ::o._product.getName()::</li>
+    ::end::		
+</p>
+
+::end::

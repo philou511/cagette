@@ -30,20 +30,25 @@ class OrderService
 		if( quantity == null ) throw new Error( "Quantity is null" );
 		if( quantity < 0 ) throw new Error( "Quantity is negative" );
 		var vendor = product.catalog.vendor;
-		var isVendorDisabled = false;
+		
 		if( vendor.isDisabled()) {
+			var isVendorDisabled = true;
+			
 			if(vendor.disabled==db.Vendor.DisabledReason.TurnoverLimitReached){
+
+				//Exception : do not block if TurnoverLimitReached and distrib is in whitelist
 				var whitelist : Array<Int> = vendor.turnoverLimitReachedDistribsWhiteList.split(",").map(Std.parseInt);
-				if(!whitelist.has(distribId)){
-					isVendorDisabled = true;
-				}
-			}else{
-				isVendorDisabled=true;
+				if(whitelist.has(distribId)) isVendorDisabled = false;
+
+				//Exception : do not block if TurnoverLimitReached && CSA subscription
+				if(subscription!=null) isVendorDisabled = false;
+			}
+
+			if (isVendorDisabled) {
+				throw new Error('${vendor.name} est désactivé. Raison : ${vendor.getDisabledReason()}');
 			}
 		}
-		if (isVendorDisabled == true) {
-			throw new Error(vendor.name+" est désactivé. Raison : "+vendor.getDisabledReason());
-		}
+		
 		var shopMode = product.catalog.group.hasShopMode();
 
 		//quantity
