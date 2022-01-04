@@ -67,7 +67,7 @@
 
 	<div class="col-md-6">
 		<p>
-			$$vendorIcon(::vendor::)	<b>$$vendorType(::enumIndex(stats._type)::)</b>
+			$$publicVendorIcon(::vendor::)	<b>$$vendorType(::enumIndex(stats._type)::)</b>
 			::if(cpro!=null)::
 				(# <a href="/db/pro.db.CagettePro/edit/::cpro.id::" target="_blank">::cpro.id::</a>)			
 				<br/>

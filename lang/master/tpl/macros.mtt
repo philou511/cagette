@@ -1,6 +1,6 @@
 <macros>
 
-	<macro name="vendorIcon(vendor)">
+	<macro name="publicVendorIcon(vendor)">
 
 		::if(vendor.isDisabled())::
 			<!--disabled-->						
@@ -19,19 +19,19 @@
 				::else::
 					::if cpro.offer==0::
 					<!-- offre découverte -->
-					<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Offre Découverte">
+					<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur limité à 1000€ de ventes par an">
 						<i class="icon icon-farmer"></i>
 					</div>
 					::else::
 					<!-- offre pro formé ou abonné -->
-					<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Offre Pro">
+					<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur avec ventes illimitées">
 						<i class="icon icon-farmer-pro"></i>
 					</div>
 					::end::
 				::end::
 			::else::
 				<!--invité-->
-				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur invité">
+				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur limité à 1000€ de ventes par an">
 					<i class="icon icon-farmer"></i>
 				</div>
 			::end::
@@ -557,7 +557,7 @@
 
 	<macro name="vendorType(s)">		
 		::if(s==0)::
-			Offre Pro (formé)			
+			Formule Membre
 		::elseif(s==1)::
 			Gratuit
 		::elseif(s==2)::
@@ -569,9 +569,9 @@
 		::elseif(s==5)::
 			Compte pédagogique
 		::elseif(s==6)::
-			Offre Découverte
+			Formule Découverte
 		::elseif(s==7)::
-			Offre Pro (abonné)
+			Formule Pro
 		::end::
 	</macro>
     
@@ -580,9 +580,7 @@
         <div id="browser-detection-container"></div>
         <script>
         if (!window.IsValidBrowser) {
-            var browserDetectionContainer = document.getElementById(
-            "browser-detection-container"
-            );
+            var browserDetectionContainer = document.getElementById("browser-detection-container");
 
             var style = document.createElement("style");
             style.innerHTML =
