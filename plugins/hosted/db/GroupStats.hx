@@ -69,8 +69,6 @@ class GroupStats extends sys.db.Object
 		this.visible = (del && cn );
 		this.active = del;
 		this.membersNum = g.getMembersNum();
-		// this.cproContractNum = cproContracts.length;
-		// this.contractNum = contracts.length;
 		this.update();
 		
 		return {

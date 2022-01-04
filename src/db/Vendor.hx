@@ -64,6 +64,7 @@ class Vendor extends Object
 
 	//legal infos
 	@hideInForms public var companyNumber : SNull<SString<128>>; //SIRET
+	@hideInForms public var companySubNumber : SNull<SString<128>>; 
 	@hideInForms public var vatNumber : SNull<SString<128>>; //VAT number
 	@hideInForms public var legalStatus : SNull<SInt>; //statut juridique
 	@hideInForms public var companyCapital : SNull<SInt>; //capital social

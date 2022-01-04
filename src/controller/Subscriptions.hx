@@ -517,6 +517,7 @@ class Subscriptions extends controller.Controller
 			operation.group = group;
 			operation.user = subscription.user;
 			operation.subscription = subscription;
+			operation.pending = false;
 			operation.insert();
 			service.PaymentService.updateUserBalance( subscription.user, group );
 			throw Ok( returnUrl, t._("Payment recorded") );
