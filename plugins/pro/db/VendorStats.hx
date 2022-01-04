@@ -61,7 +61,7 @@ class VendorStats extends sys.db.Object
 
 			if(vendor.isTest){
 				vs.type = VTCproTest;
-			}else if(cpro.training){				
+			}else if(cpro.offer == Training){				
 				vs.type = VTStudent;
 			}else if(cpro.offer==Discovery){
 				vs.type = VTDiscovery;
@@ -131,7 +131,7 @@ class VendorStats extends sys.db.Object
 		}
 
 		//a trainee cannot be active
-		if(cpro!=null && cpro.training){
+		if(cpro != null && cpro.offer == Training){
 			vs.active = false;
 		}
 

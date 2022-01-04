@@ -8,7 +8,7 @@ class CourseService {
 
     public static function createCproDef(trainingCpro:pro.db.CagettePro , ?defVendor:db.Vendor) {
 
-        if(!trainingCpro.training) throw "ce Cagette Pro n'est pas un Cagette Pro pédagogique !";
+        if(trainingCpro.offer!=Training) throw "ce Cagette Pro n'est pas un Cagette Pro pédagogique !";
         
         var props = ["name","email","image","phone","address1","address2",
 		"zipCode","city","desc","linkText","linkUrl","vatRates"];
@@ -27,13 +27,12 @@ class CourseService {
         var defCpro = CagettePro.getFromVendor(defVendor);
         if(defCpro!=null) {
             defCpro.lock();
-            if(defCpro.training) throw "Le compte pro sélectionné est aussi un compte pédagogique";
+            if(defCpro.offer==Training) throw "Le compte pro sélectionné est aussi un compte pédagogique";
         }
 		if(defCpro==null){
             defCpro = new pro.db.CagettePro();
             defCpro.vendor = defVendor;
         }		
-        defCpro.training = false;
         defCpro.offer = Member;
         if(defCpro.id==null) defCpro.insert() else defCpro.update();
 

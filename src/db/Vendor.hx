@@ -330,7 +330,7 @@ class Vendor extends Object
 		#if plugins
 		var cpro = pro.db.CagettePro.getFromVendor(this);
 		if(companyNumber==null){
-			if(cpro!=null && cpro.training){
+			if(cpro!=null && cpro.offer==Training){
 				//do not disable training accounts
 			}else{
 				disabled = DisabledReason.IncompleteLegalInfos;

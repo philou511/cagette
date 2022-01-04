@@ -71,7 +71,7 @@
 			::if(cpro!=null)::
 				(# <a href="/db/pro.db.CagettePro/edit/::cpro.id::" target="_blank">::cpro.id::</a>)			
 				<br/>
-				::if(cpro.training==true)::<i class="icon icon-student" style="color:#336600"></i> Compte pédagogique<br/> ::end::
+				::if(cpro.offer==3)::<i class="icon icon-student" style="color:#336600"></i> Compte pédagogique<br/> ::end::
 			::end::
 		</p>
 		
