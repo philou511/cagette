@@ -758,7 +758,7 @@ class Admin extends controller.Controller {
 				
 				var op = b.getOrderOperation(false);
 				var ordersTotal = Formatting.cleanFloat(0 - b.getOrdersTotal());
-				var opAmount = Formatting.cleanFloat(op.amount);
+				var opAmount = op==null ? null : Formatting.cleanFloat(op.amount);
 
 				if(autoFix){
 					if(!group.hasShopMode()) throw "cette page ne marche que pour les groupes en mode Marché";
