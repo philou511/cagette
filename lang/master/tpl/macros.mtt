@@ -542,15 +542,20 @@
 		</div>-->
 	</macro>
 
-	<macro name="ga()">
+	<macro name="matomo()">
 		
-		<!-- Global site tag (gtag.js) - Google Analytics -->
-		<script async="1" src="https://www.googletagmanager.com/gtag/js?id=UA-81371329-2"></script>
-		<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
-		gtag('config', 'UA-81371329-2');
+		<script type="text/javascript">
+		var _paq = window._paq = window._paq || [];
+		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+		_paq.push(['trackPageView']);
+		_paq.push(['enableLinkTracking']);
+		(function() {
+			var u="https://matomo-alilo.osc-fr1.scalingo.io/";
+			_paq.push(['setTrackerUrl', u+'piwik.php']);
+			_paq.push(['setSiteId', "2"]);
+			var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+			g.type='text/javascript'; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+		})();
 		</script>
 
 	</macro>
