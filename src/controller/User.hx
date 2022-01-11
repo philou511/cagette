@@ -1,5 +1,4 @@
 package controller;
-import pro.db.CagettePro;
 import haxe.crypto.Md5;
 import sugoi.form.elements.Input;
 import sugoi.form.Form;

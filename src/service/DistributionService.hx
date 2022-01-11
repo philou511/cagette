@@ -1,7 +1,5 @@
 package service;
 import db.Subscription;
-import pro.payment.MangopayECPayment;
-import pro.payment.MangopayMPPayment;
 import service.PaymentService.PaymentContext;
 import Common;
 import tink.core.Error;
