@@ -8,8 +8,8 @@ import sys.db.Types;
 enum DisabledReason{
 	IncompleteLegalInfos; 	//incomplete legal infos
 	NotCompliantWithPolicy; //not compliant with policy (charte des producteurs)
-	Banned; //banned by network administrateurs
-	TurnoverLimitReached; //turnover limit reached
+	Banned; 				//banned by network administrateurs
+	TurnoverLimitReached; 	//turnover limit reached
 }
 
 /**
