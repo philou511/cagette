@@ -201,7 +201,8 @@ class VendorService{
 					{label:"Société",value:0},
 					{label:"Entreprise individuelle",value:1},
 					{label:"Association",value:2},
-					{label:"Particulier (mettez 0 comme numéro SIRET)",value:3}];
+					// {label:"Particulier (mettez 0 comme numéro SIRET)",value:3}
+				];
 				form.addElement(new sugoi.form.elements.IntSelect('legalStatus',"Forme juridique",data,null,true));
 			//}
 
