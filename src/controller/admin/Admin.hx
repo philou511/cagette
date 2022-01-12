@@ -32,6 +32,11 @@ class Admin extends Controller {
 		view.ip = Web.getClientIP();		
 	}
 
+	@tpl('admin/basket.mtt')
+	function doBasket(basket:db.Basket){
+		view.basket = basket;
+	}
+
 	@tpl("admin/emails.mtt")
 	function doEmails(?args:{?reset:BufferedJsonMail}) {
 		if (args != null && args.reset != null) {
@@ -57,7 +62,7 @@ class Admin extends Controller {
 		view.num = count;
 	}
 
-	@tpl("form.mtt")
+	/*@tpl("form.mtt")
 	function doSmtp() {
 		var f = new sugoi.form.Form("emails");
 		var data = [{label: "SMTP", value: "smtp"}, {label: "Mandrill API", value: "mandrill"},];
@@ -83,7 +88,7 @@ class Admin extends Controller {
 
 		view.title = t._("Email service configuration");
 		view.form = f;
-	}
+	}*/
 	
 	function doVendor(d:haxe.web.Dispatch) {
 		d.dispatch(new controller.admin.Vendor());
