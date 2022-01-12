@@ -179,6 +179,19 @@ class User extends Object {
 			return ua.hasRight(Right.ContractAdmin(contract.id));
 		}		
 	}
+
+	/**
+	 * Est ce que ce membre a la gestion d'au moins un catalogue de ce vendor
+	 */
+	public function canManageVendor(vendor:db.Vendor ) {
+		var catalogs = vendor.getActiveContracts();
+		for (c in catalogs) {
+			if (this.canManageContract(c)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public function canManageAllContracts(){
 		var ua = getUserGroup(getGroup());
