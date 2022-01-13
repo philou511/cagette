@@ -59,7 +59,7 @@
 
 
 
-<div class="row">
+<div class="row" style="margin-bottom: 24px;">
 
 	<div class="col-md-12">
 		<h4>Statut Cagette</h4>
@@ -103,16 +103,6 @@
 		::if(cpro!=null)::Cagette Pro depuis le ::sDate(cpro.cdate)::::end::<br/>
 
 		<!--Lien pour mettre à jour le compte : <a href="::editLink::">::editLink::</a>-->
-
-		<!-- Set or remove subscription coupon -->
-		<div id="toggle-coupon-neo-container" style="margin-bottom: 8px"></div>
-		<script>
-			document.addEventListener("DOMContentLoaded", function(event) {
-				neo.createNeoModule("toggle-coupon-neo-container", "vendorHasSubscriptionCoupon", {
-					vendorId: ::vendor.id::,
-				});
-			});
-		</script>
 	</div>
 
 	<div class="col-md-6">
@@ -161,6 +151,23 @@
 			</div>
 		</p>
 
+	</div>
+</div>
+
+<div class="row" style="margin-bottom: 24px;">
+	<div class="col-md-12">
+		<h4>Gestion Abonnement Stripe</h4>
+	</div>
+
+	<div class="col-md-12">
+		<div id="stripe-admin-neo-container" style="margin-bottom: 8px"></div>
+		<script>
+			document.addEventListener("DOMContentLoaded", function(event) {
+				neo.createNeoModule("stripe-admin-neo-container", "vendorStripeAdmin", {
+					vendorId: ::vendor.id::,
+				});
+			});
+		</script>
 	</div>
 </div>
 
