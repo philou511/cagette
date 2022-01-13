@@ -1610,4 +1610,26 @@ class Admin extends controller.Controller {
 			service.PaymentService.updateUserBalance(m, group);	
 		}
 	}
+
+
+	function doCleanCproTest(){
+
+		var vendors = db.Vendor.manager.search($isTest==true,false);
+		var print = controller.Cron.print;
+		for ( v in vendors ){
+
+			print('<a target="_blank" href="/admin/vendor/view/${v.id}">${v.name}</a>');
+			
+			var cpro = v.getCpro();
+			if(cpro==null){
+				print("No Cpro !!");
+			}else{
+				for( uc in pro.db.PUserCompany.getUsers(cpro)){
+					if(!uc.disabled){
+						print('${uc.user.getName()} is not disabled !');
+					}
+				}
+			}
+		}
+	}
 }

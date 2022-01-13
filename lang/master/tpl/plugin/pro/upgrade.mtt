@@ -17,7 +17,7 @@
 	<div class=" article">
         ::if(company.discovery)::
 
-		<h2 style="margin-top:0">Votre statut : Offre découverte</h2>	
+		<h2 style="margin-top:0">Votre formule actuelle : Découverte</h2>	
 		<div class="row">
             <div class="col-md-5">
                 <p>
@@ -47,9 +47,9 @@
         </div>
         
         ::else::
-        <h2 style="margin-top:0">Votre statut : Offre Pro</h2>	
+        <h2 style="margin-top:0">Votre formule actuelle : Membre</h2>	
         <p>
-            Vous avez un compte Producteur illimité.
+            Vous avez un compte producteur illimité.
         </p>
         ::end::
 
@@ -73,100 +73,93 @@
 
 <div class="col-md-12">
 	<div class=" article">
-		<h2 style="margin-top:0">Offres d’accès au réseau Cagette.net</h2>	
-		<div class="row">
+		<h2 style="margin-top:0">::if company.discovery::Changer de formule::else::Les autres formules::end::</h2>	
+		        
+        ::if company.discovery == false::
+        <div class="row">
             <div class="col-md-2"></div>
-            <div class="col-md-4">
+            <div class="col-md-8">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                       <h3 class="panel-title">
-                            <div class="iconBadge farmer" style="margin-right: 12px;">
-                                <i class="icon icon-farmer"></i>
-                            </div> 
-                            Offre Découverte
+                            Formule Découverte
                         </h3>
                     </div>
                     <div class="panel-body">
-                        
-                        <ul class="features">
-                            <li>Compte producteur</li>
-                            <li>Ventes limitées à 1000€/an (les ventes sont calculées à partir de la date de référence)<br/>
-                            <span class="disabled">(hors vente dans les groupes en mode AMAP)</span></li>
-                            <li>Ressources et aide technique</li>
-                        </ul>
-                        
-                        <p class="text-center priceBox">
-                            Gratuit
-                        </p>
-
-                        <p class="text-center">
-                            ::if(company.discovery)::
-                            <a href="" class="btn btn-default btn-lg" disabled="disabled"><i class="icon icon-check"></i> Votre formule actuelle</a>
-                            ::end::                            
-                        </p>
-
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <img src="https://www.cagette.net/wp-content/uploads/2022/01/formule-membre.png" style="width:150px;border-radius: 8px;"/>
+                            </div>
+                            <div class="col-md-8">
+                                <ul class="features">
+                                    <li>Compte producteur</li>
+                                    <li>Ventes limitées à 1000€/an (les ventes sont calculées à partir de la date de référence)<br/>
+                                    <span class="disabled">(hors vente dans les groupes en mode AMAP)</span></li>
+                                    <li>Ressources et aide technique</li>
+                                </ul>
+                                
+                                <p class="text-center priceBox">
+                                    Gratuit
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="col-md-2"></div>            
+        </div>
+        ::end::
 
-            <div class="col-md-4">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            <div class="iconBadge farmer-pro" style="margin-right: 12px;">
-                                <i class="icon icon-farmer-pro"></i>
-                            </div> 
-                            Offre Pro
+                            Formule Pro
                         </h3>
                     </div>
                     <div class="panel-body">
-                        <ul class="features">
-                            <li>Compte producteur</li>
-                            <li>Ventes illimitées</li>
-                            <li>Ressources et aide technique</li>
-                        </ul>
-                        
-                        <p class="text-center priceBox">
-                            <span style="font-size: 0.8em;">
-                                Abonnement<br/>
-                            </span>
-                            29 €<sup style="font-size: 0.5em;">HT</sup>/mois                            
-                            <br/>
-                            <span class="disabled" style="font-size: 0.8em;">Engagement d'un an<br/>
-                                Paiement annuel
-                                </span>
-                        </p>
-
+                         <div class="row">
+                            <div class="col-md-4 text-center">
+                                <img src="https://www.cagette.net/wp-content/uploads/2022/01/formule-pro.png" style="width:150px;border-radius: 8px;"/>
+                            </div>
+                            <div class="col-md-8">
+                                <ul class="features">
+                                    <li>Abonnement mensuel ou annuel</li>
+                                    <li>Ventes illimitées</li>
+                                    <li>Souscription par CB à partir du 1<sup>er</sup> février 2022</li>
+                                </ul>
+                            </div>
+                        </div>
 
                         <p class="text-center">
-                            <a href="" class="btn btn-default btn-lg" disabled="disabled"><i class="icon icon-chevron-right"></i> Bientôt disponible</a>
+                            <a href="https://www.cagette.net/formules/" target="_blank" class="btn btn-primary btn-lg"><i class="icon icon-chevron-right"></i> En savoir plus sur les différentes formules</a>
                         </p>
                     </div>
                 </div>
             </div>
-
             <div class="col-md-2"></div>
-
-            
         </div>
+        ::if company.discovery == true::
         <div class="row">
             <div class="col-md-2"></div>
             <div class="col-md-8">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title" id="formation">
-                            Formation "Développer sa vente directe en ligne"
+                            Formule Membre
                         </h3>
                     </div>
                     <div class="panel-body">
-
                         <div class="row">
-                            <div class="col-md-4">
-                                <img src="https://www.cagette.net/wp-content/uploads/2020/11/img_6222.jpg" style="width:230px;border-radius: 8px;"/>
+                            <div class="col-md-4 text-center">
+                                <img src="https://www.cagette.net/wp-content/uploads/2022/01/formule-membre.png" style="width:150px;border-radius: 8px;"/>
                             </div>
                             <div class="col-md-8">
+                                <p><b>Participez à la formation "Développer sa vente directe en ligne"</b></p>
                                 <p>
-                                    Cette formation vous permet de poser des bases solides à votre projet de vente sur Cagette.net<br/>
+                                    Elle vous permet de poser des bases solides à votre projet de vente sur Cagette.net<br/>
                                     Vous prenez du recul sur votre organisation et vous découvrez les bonnes pratiques de communication pour développer votre clientèle.<br/>
                                 </p>
                                 
@@ -179,28 +172,26 @@
                                 </p>
                                 <p>
                                     Une fois la formation réalisée, vous êtes membre du réseau Cagette.net. 
-                                    A ce titre vous obtenez un accès à un compte producteur illimité dans les ventes.
+                                    À ce titre <b>vous obtenez un accès à un compte producteur illimité dans les ventes</b>.
                                 </p>
                             </div>
                         </div>
                         
                         <p class="text-center priceBox">
-                            <span style="text-decoration: line-through;">1354 €</span>
-                            1207 €<br/>
+                            <span style="text-decoration: line-through;">1354€<small><sup>HT</sup></small></span>
+                            1207€<small><sup>HT</sup></small><br/>
                             <span style="font-size: 0.7em;line-height: 0.7em;">
                                 Tarif valable jusqu’au 30 juin 2022. TVA non applicable.<br/>
                                 En tant qu’organisme de formation certifié,<br/>
                                 nos formations sont finançables jusqu’à 100% par votre fond de formation.<br/>
-                                C’est pourquoi avant de vous inscrire nous sécurisons avec vous les possibilités de financement.
+                                L’étude de financement est une démarche totalement gratuite et sans engagement.<br/>
+                                Cela nous permet de sécuriser avec vous les possibilités de financement.<br/>
+                                C’est une étape indispensable pour pouvoir vous inscrire à une session près de chez vous.
                             </span>
                         </p>
 
                         <p class="text-center">
-                            ::if(company.discovery)::                        
-                            <a href="https://share.hsforms.com/1_7sOBRVQTUaCwgZTtmxOOg4f5r5" target="_blank" class="btn btn-primary btn-lg"><i class="icon icon-chevron-right"></i> Etude de financement</a>
-                            ::else::
-                            <a href=""  class="btn btn-default btn-lg" disabled="disabled"><i class="icon icon-chevron-right"></i> Votre formule actuelle</a>
-                            ::end::                            
+                            <a href="https://share.hsforms.com/1_7sOBRVQTUaCwgZTtmxOOg4f5r5" target="_blank" class="btn btn-primary btn-lg"><i class="icon icon-chevron-right"></i> Etude de financement</a>                          
                         </p>
 
                     </div>
@@ -208,6 +199,7 @@
             </div>
             <div class="col-md-2"></div>
         </div>
+        ::end::
 	</div>
 </div>
 
