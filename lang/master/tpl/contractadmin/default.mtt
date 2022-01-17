@@ -1,9 +1,14 @@
 ::use 'design.mtt'::
 
 <div class="col-md-12">
+
 	::foreach v vendors::		
 		::if(v.isDisabled())::
+			::if( group.hasShopMode() || v.disabled!=3  )::			
 			<div class="alert alert-danger"><i class="icon icon-alert"></i> Le producteur <b>::v.name::</b> est désactivé : ::v.getDisabledReason()::</div>	
+			::else::
+			<!-- turnoverLimitReached has no effect in CSA mode -->
+			::end::
 		::end::	
 	::end::
 
@@ -130,10 +135,10 @@
 						::v.zipCode:: ::v.city::
 
 						::if(v.isDisabled())::
-						<div class="alert alert-danger"><i class="icon icon-alert"></i> Producteur désactivé : ::v.getDisabledReason()::</div>
+							::if( group.hasShopMode() || v.disabled!=3  )::	
+								<div class="alert alert-danger"><i class="icon icon-alert"></i> Producteur désactivé : ::v.getDisabledReason()::</div>
+							::end::
 						::end::
-
-
 					</td>
 					<td>
 						<div class="btn-group" role="group">

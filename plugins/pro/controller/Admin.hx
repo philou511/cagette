@@ -758,7 +758,7 @@ class Admin extends controller.Controller {
 				
 				var op = b.getOrderOperation(false);
 				var ordersTotal = Formatting.cleanFloat(0 - b.getOrdersTotal());
-				var opAmount = Formatting.cleanFloat(op.amount);
+				var opAmount = op==null ? null : Formatting.cleanFloat(op.amount);
 
 				if(autoFix){
 					if(!group.hasShopMode()) throw "cette page ne marche que pour les groupes en mode Marché";
@@ -1608,6 +1608,28 @@ class Admin extends controller.Controller {
 		//update balances
 		for(m in group.getMembers()){
 			service.PaymentService.updateUserBalance(m, group);	
+		}
+	}
+
+
+	function doCleanCproTest(){
+
+		var vendors = db.Vendor.manager.search($isTest==true,false);
+		var print = controller.Cron.print;
+		for ( v in vendors ){
+
+			print('<a target="_blank" href="/admin/vendor/view/${v.id}">${v.name}</a>');
+			
+			var cpro = v.getCpro();
+			if(cpro==null){
+				print("No Cpro !!");
+			}else{
+				for( uc in pro.db.PUserCompany.getUsers(cpro)){
+					if(!uc.disabled){
+						print('${uc.user.getName()} is not disabled !');
+					}
+				}
+			}
 		}
 	}
 }
