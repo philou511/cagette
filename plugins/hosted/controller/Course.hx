@@ -281,7 +281,6 @@ class Course extends sugoi.BaseController
 				var c = new pro.db.CagettePro();				
 				c.offer = Training; // training account
 				c.vendor = v;
-				c.offer = Member;
 				c.insert();
 
 				//bypass disabling because of missing legal infos

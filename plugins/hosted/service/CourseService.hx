@@ -3,6 +3,7 @@ package hosted.service;
 import pro.db.CagettePro;
 import pro.db.PUserCompany;
 import pro.db.VendorStats;
+import service.BridgeService;
 
 class CourseService {
 
@@ -22,6 +23,11 @@ class CourseService {
             }
             defVendor.name = StringTools.replace(defVendor.name,"(formation)","");//remove "(formation)"
             defVendor.insert();
+        } else {
+            if (defVendor.getCpro()!=null && defVendor.getCpro().offer==Pro) {
+                // Cancel running subscription
+                BridgeService.call('/subscriptions/cancel/${defVendor.id}');
+            }
         }
 
         var defCpro = CagettePro.getFromVendor(defVendor);
