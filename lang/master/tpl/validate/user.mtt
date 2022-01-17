@@ -257,7 +257,7 @@
 								<td class="text-center alert-danger">
 									$$check(false) ::_("Membership to renew"):: pour la période <b>::user.getGroup().getPeriodName(null)::</b>
                                     <br/>
-									<a onclick="_Cagette.membershipBox(::member.id::,'::user.getName()::',::place._group.id::,'/validate/::distribution.id::/::member.id::',::distribution.id::)" class="btn btn-danger btn-sm">::_("Manage membership fees")::</a>
+									<a onclick="_Cagette.membershipBox(::member.id::,`::user.getName()::`,::place._group.id::,'/validate/::distribution.id::/::member.id::',::distribution.id::)" class="btn btn-danger btn-sm">::_("Manage membership fees")::</a>
 								</td>
 							::end::
 			

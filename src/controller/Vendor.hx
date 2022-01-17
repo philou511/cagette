@@ -47,6 +47,8 @@ class Vendor extends Controller
 			}
 		}
 
+		if(!app.user.canManageVendor(vendor))  throw Error("/contractAdmin","Vous n'avez pas les droits de modification de ce producteur");
+
 		if(vendor.email=="jean@cagette.net" || vendor.email=="galinette@cagette.net"){
 			throw Error("/contractAdmin","Il est impossible de modifier les comptes producteurs de démonstration");
 		} 
@@ -75,6 +77,7 @@ class Vendor extends Controller
 	function doAddImage(vendor:db.Vendor) {
 		
 		if(vendor.email != null && vendor.email.indexOf("@cagette.net")>-1) throw Error("/contractAdmin","Il est impossible de modifier ce producteur");
+		if(!app.user.canManageVendor(vendor))  throw Error("/contractAdmin","Vous n'avez pas les droits de modification de ce producteur");
 
 		#if plugins
 		if(pro.db.CagettePro.getFromVendor(vendor)!=null) throw Error("/contractAdmin","Vous ne pouvez pas modifier la fiche de ce producteur, car il gère lui même sa fiche depuis Cagette Pro");

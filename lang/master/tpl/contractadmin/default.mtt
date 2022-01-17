@@ -86,7 +86,9 @@
 					</td>
 					<td>
 						<div class="btn-group" role="group">
-						$$edit(::_("Manage")::,/contractAdmin/view/::c.id::)
+						::if(user.canManageContract(c))::
+							$$edit(::_("Manage")::,/contractAdmin/view/::c.id::)
+						::end::
 						</div>
 					</td>
 				</tr>
@@ -140,8 +142,11 @@
 					</td>
 					<td>
 						<div class="btn-group" role="group">
-							$$edit(::_("Edit")::,/vendor/edit/::v.id::)
-							<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <i class="icon icon-image"></i> ::_("Picture")::</a>
+							::set cpro = v.getCpro()::
+							::if(cpro==null && user.canManageVendor(v))::
+								$$edit(::_("Edit")::,/vendor/edit/::v.id::)
+								<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <i class="icon icon-image"></i> ::_("Picture")::</a>
+							::end::
 							<!-- ::if user.isAmapManager():: $$delete(,/vendor/delete/::v.id::?token=::token::) ::end::-->
 						</div>
 					</td>
