@@ -24,6 +24,7 @@
 	{"id":22,"name":"Crêpier"},
 	{"id":23,"name":"Cressiculteur"},
     {"id":24,"name":"Cuniculiculteur"},
+	{"id":72,"name":"Distillateur"},	 
     {"id":25,"name":"Distributeur associatif"},
     {"id":26,"name":"Distributeur professionnel"},
 	{"id":27,"name":"Ecailler"},
@@ -69,7 +70,6 @@
     {"id":69,"name":"Tripier"},
     {"id":70,"name":"Viticulteur"},
     {"id":71,"name":"Volailler"},
-    {"id":72,"name":"Distillateur"},	 
     {"id":0,"name":"Autres"}
     ]
 }
