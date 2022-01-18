@@ -27,7 +27,7 @@
     {"id":25,"name":"Distributeur associatif"},
     {"id":26,"name":"Distributeur professionnel"},
 	{"id":27,"name":"Ecailler"},
-	{"id":28,"name":"Élevage équin"},
+	{"id":28,"name":"Éleveur équin"},
 	{"id":29,"name":"Éleveur allaitant bovin"},
 	{"id":30,"name":"Éleveur allaitant ovin"},
 	{"id":31,"name":"Éleveur autres animaux"},
@@ -69,6 +69,7 @@
     {"id":69,"name":"Tripier"},
     {"id":70,"name":"Viticulteur"},
     {"id":71,"name":"Volailler"},
+    {"id":72,"name":"Distillateur"},	 
     {"id":0,"name":"Autres"}
     ]
 }
