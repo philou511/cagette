@@ -241,7 +241,7 @@
 			::if(discovery)::
 				displayPopup("formules2",1);
 			::elseif(cagetteProTest)::	
-				displayPopup("formules3",5);	
+				displayPopup("formules3",1);	
 			::elseif(isGroupAdmin || memberVendor)::		
 				displayPopup("formules1",1);
 			::end::
@@ -250,8 +250,5 @@
 
 			//]]>
 	</script>
-	::isGroupAdmin::
-	::memberVendor::
-	::discovery::
-	::cagetteProTest::
+	
 ::end::
