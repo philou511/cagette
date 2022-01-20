@@ -4,11 +4,11 @@
 	<h3>Mon compte utilisateur</h3>
 
 	<div>
-		<div id="neo-container"></div>
+		<div id="user-account-neo-container"></div>
 		
 		<script>
 			document.addEventListener("DOMContentLoaded", function(event) {
-				neo.createNeoModule("neo-container", "userAccount", {
+				neo.createNeoModule("user-account-neo-container", "userAccount", {
 						currentGroupId: ::groupId::,
 					});
 			});
@@ -39,9 +39,15 @@
 		<h3>Suppression du compte</h3>
 		<div class="MuiPaper-root MuiCard-root MuiPaper-elevation1 MuiPaper-rounded" style="margin-bottom: 16px">
 			<div style="padding: 16px">
-				<a href='https://wiki.cagette.net/user:supprimer' class="btn btn-default btn-sm">
-					Comment supprimer mon compte  ?
-				</a>
+				<div id="delete-account-neo-container"></div>
+		
+				<script>
+					document.addEventListener("DOMContentLoaded", function(event) {
+						neo.createNeoModule("delete-account-neo-container", "deleteAccount", {
+								userId: ::userId::,
+							});
+					});
+				</script>
 			</div>
 		</div>
 	</div>

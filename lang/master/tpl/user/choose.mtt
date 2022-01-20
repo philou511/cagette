@@ -226,7 +226,7 @@
 			::end::
 			*/
 
-			/*var displayPopup = function(id,displaysByDay){
+			var displayPopup = function(id,displaysByDay){
 				document.addEventListener("DOMContentLoaded", function(event) {
 					var now = new Date();
 					var storageId = id + "-" + now.toJSON().substr(0,10);
@@ -241,12 +241,19 @@
 			};
 			
 			::if(discovery)::
-				displayPopup("popupformation",1);
-			::elseif(isGroupAdmin)::	
-				displayPopup("nouvellesregles2021-7",1);			
-			::end:: 
-			*/
+				displayPopup("formules2",1);
+			::elseif(cagetteProTest)::	
+				displayPopup("formules3",5);	
+			::elseif(isGroupAdmin || memberVendor)::		
+				displayPopup("formules1",1);
+			::end::
+			
+			
 
 			//]]>
 	</script>
+	::isGroupAdmin::
+	::memberVendor::
+	::discovery::
+	::cagetteProTest::
 ::end::
