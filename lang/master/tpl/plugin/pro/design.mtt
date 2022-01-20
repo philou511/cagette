@@ -2,9 +2,13 @@
 		
 	<div class="row header" style="margin-top:10px;">
 		<div class="col-md-6" style="display: flex;">
-			::if(company.offer!=0)::
-				<div class="iconBadge farmer-pro" style="margin-top:8px; margin-right: 8px;" data-toggle="tooltip" title="Offre Pro">
+			::if(company.offer==2 || company.offer==1)::
+				<div class="iconBadge farmer-pro" style="margin-top:8px; margin-right: 8px;" data-toggle="tooltip" title="::if(company.offer==2)::Formule Pro::else::Formule Membre::end::">
 					<i class="icon icon-farmer-pro"></i>
+				</div>
+			::elseif(company.offer==3)::
+				<div class="iconBadge farmer-pro" style="margin-top:8px; margin-right: 8px;" data-toggle="tooltip" title="Compte pédagogique">
+					<i class="icon icon-student"></i>
 				</div>
 			::end::
 			<h1 ::cond vendor!=null:: >::vendor.name::</h1>
