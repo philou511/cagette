@@ -107,15 +107,7 @@
 				<td>
 					::set vendor = contract._vendor::
 					::set cpro = vendor.getCpro()::
-					$$vendorIcon(::vendor::)
-
-					::if(cpro==null)::
-					Producteur invité
-					::elseif(cpro.offer==0)::
-					Offre Découverte
-					::else::
-					Offre Pro
-					::end::
+					$$publicVendorIcon(::vendor::)
 
 					::if(vendor.isDisabled())::
 					<div class="row">
@@ -129,41 +121,39 @@
 					</div>
 					::end::
 
-					<!--TODO à partir de février afficher message aussi aux découverte-->
-					::if(cpro==null)::
-					<p>
-						Ventes limitées à 1000€ par an.<br/>
-						<span class="disabled">(hors ventes réalisées dans des groupes en mode AMAP)</span><br/>
-					</p>
-					<p>
-						::set frdate = getDate(vendor.freemiumResetDate)::
-						La date anniversaire de remise à zéro du compteur de chiffre d'affaires
-						est le <b>::frdate.d:: ::frdate.m::</b> 
-					</p>
-					<p>
-						<a href="/vendor/checkId/::c.id::" class="btn btn-primary">Ouvrir un compte Producteur Découverte</a>
+					::if(cpro==null || cpro.offer==0)::
+						<p>
+							Ventes limitées à 1000€ par an.<br/>
+							<span class="disabled">(hors ventes réalisées dans des groupes en mode AMAP)</span><br/>
+						</p>
+						<p>
+							::set frdate = getDate(vendor.freemiumResetDate)::
+							La date anniversaire de remise à zéro du compteur de chiffre d'affaires
+							est le <b>::frdate.d:: ::frdate.m::</b> 
+						</p>
+						::if(cpro==null)::
+							<p>
+								<a href="/vendor/checkId/::c.id::" class="btn btn-primary">Ouvrir un compte Producteur Découverte</a>
 
-						<div class="alert alert-warning">
-							<i class="icon icon-info"></i>
-							L'offre Découverte donne accès à un compte producteur avec ventes illimitées jusqu'au 1er Février 2022.<br/>
-						<a href="https://www.cagette.net/producteurs">En savoir plus</a>
-						</div>
-					</p>
-					<p>
-						<div id="discoveryVendorTurnoverLimit"></div>
-						<script>
-							document.addEventListener("DOMContentLoaded", function () {
-								neo.createNeoModule("discoveryVendorTurnoverLimit", "discoveryVendorTurnoverLimit", {vendorId: ::vendor.id::});
-							}); 
-						</script>
-					</p>
+								<div class="alert alert-warning">
+									<i class="icon icon-info"></i>
+									L'offre Découverte donne accès à un compte producteur avec ventes illimitées jusqu'au 1er Février 2022.<br/>
+								<a href="https://www.cagette.net/producteurs">En savoir plus</a>
+								</div>
+							</p>
+							<p>
+								<div id="discoveryVendorTurnoverLimit"></div>
+								<script>
+									document.addEventListener("DOMContentLoaded", function () {
+										neo.createNeoModule("discoveryVendorTurnoverLimit", "discoveryVendorTurnoverLimit", {vendorId: ::vendor.id::});
+									}); 
+								</script>
+							</p>
+						::end::
 					::end::
 				</td>
-				
 			</tr>
-
 		</table>
-		
 		
 		<h4><a href="/contractAdmin/products/::c.id::">::_("Products")::</a></h4>
 		<div style="max-height:400px;overflow:auto;">

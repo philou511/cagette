@@ -110,9 +110,11 @@
 		::foreach cp cagettePros::
 			::set v = cp._vendor::
 			<div class="col-md-4">
+				<!--
 				<div class="blockIconBadge">
-					$$vendorIcon(::v::)
+					$$publicVendorIcon(::v::)
 				</div>
+				-->
 				
 				<a class="clickable proBlock" href="/p/pro/?vendor=::v.id::">					
 					::if v.imageId!=null::
