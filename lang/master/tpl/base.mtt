@@ -4,7 +4,17 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" xml:lang="::LANG::" lang="::LANG::"/>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <meta charset="utf-8" />
+
+    <!-- Meta Tags required for
+       Progressive Web App -->
+    <meta name="apple-mobile-web-app-status-bar" content="#aa7700" />
+    <meta name="theme-color" content="black" />
+ 
+    <!-- Manifest File link -->
+    <link rel="manifest" href="/manifest.json" />
+
     <title>
         ::if pageTitle!=null::
         ::pageTitle::
@@ -119,6 +129,41 @@
     <script src="::script::"></script>
     ::end::
 
+    <div style="margin-bottom: 32px; margin-left: 100px;">
+        <button type="button" onclick="displayNotification()" >send notif</button>
+    </div> 
+    <script type="text/javascript">
+        window.addEventListener('load', function() {
+            registerSW();
+        });
+    
+        // Register the Service Worker
+        async function registerSW() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    await navigator
+                            .serviceWorker
+                            .register('/serviceworker.js');
+                    }
+                catch (e) {
+                    console.log('SW registration failed', e);
+                }
+            }
+        }
+
+        Notification.requestPermission(function(status) {
+            console.log('Notification permission status:', status);
+        });
+
+
+        function displayNotification() {
+            if (Notification.permission == 'granted') {
+                navigator.serviceWorker.getRegistration().then(function(reg) {
+                    reg.showNotification('Hello world!');
+                });
+            }
+        }
+    </script>
 </body>
 
 </html>

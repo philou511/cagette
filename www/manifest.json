@@ -1,0 +1,22 @@
+{
+  "name": "Cagette PWA",
+  "short_name": "CagettePWA",
+  "start_url": "index.n",
+  "display": "standalone",
+  "background_color": "#5900b3",
+  "theme_color": "black",
+  "scope": ".",
+  "description": "This is a PWA Cagette.",
+  "icons": [
+    {
+      "src": "img/logo4.png",
+      "sizes": "225x164",
+      "type": "image/png"
+    },
+    {
+      "src": "img/squareLogo.png",
+      "sizes": "164x164",
+      "type": "image/png"
+    }
+  ]
+}
