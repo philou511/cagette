@@ -119,7 +119,7 @@
 	</div>
 </div>
 
-::if(comany!=null && company.offer==0)::
+::if(company!=null && company.offer==0)::
 <div id="vendor-freemium-alert-container" style="margin-bottom:8px"></div>
 <script>
 	document.addEventListener("DOMContentLoaded", function (event) {

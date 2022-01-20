@@ -134,12 +134,6 @@
 						::if(cpro==null)::
 							<p>
 								<a href="/vendor/checkId/::c.id::" class="btn btn-primary">Ouvrir un compte Producteur Découverte</a>
-
-								<div class="alert alert-warning">
-									<i class="icon icon-info"></i>
-									L'offre Découverte donne accès à un compte producteur avec ventes illimitées jusqu'au 1er Février 2022.<br/>
-								<a href="https://www.cagette.net/producteurs">En savoir plus</a>
-								</div>
 							</p>
 							<p>
 								<div id="discoveryVendorTurnoverLimit"></div>
