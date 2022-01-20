@@ -188,7 +188,7 @@
 				<li><a href="/admin/vendor/ban/::vendor.id::?reason=0">Informations légales incomplètes</a></li>
 				<li><a href="/admin/vendor/ban/::vendor.id::?reason=1">Producteur incompatible avec la charte producteur de Cagette.net</a></li>
 				<li><a href="/admin/vendor/ban/::vendor.id::?reason=2">Producteur bloqué par les administrateurs</a></li>
-				<!--<li><a href="/admin/vendor/ban/::vendor.id::?reason=3">Ce producteur a atteind sa limite de chiffre d'affaires annuel</a></li>-->			
+				<!--<li><a href="/admin/vendor/ban/::vendor.id::?reason=3">Ce producteur a atteint sa limite de chiffre d'affaires annuel</a></li>-->			
 			</ul>
 		</div>
 	::end::
