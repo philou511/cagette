@@ -1,39 +1,19 @@
 ﻿::use 'plugin/pro/base.mtt'::
 		
 	<div class="row header" style="margin-top:10px;">
-		<div class="col-md-6">
-			<h1 ::cond vendor!=null:: >::vendor.name::</h1>
-		</div>
-		
-		<div class="col-md-6 accountBlock" ::cond company!=null::>	
-			::if(company.offer==0)::
-			<a href="/p/pro/upgrade">
-				<div class="pull-right" style="margin-top:8px">
-					<div id="vendor-freemium-progress-container"></div>
-				</div>
-				<script>
-					document.addEventListener("DOMContentLoaded", function (event) {
-						neo.createNeoModule("vendor-freemium-progress-container", "vendorFreemiumProgress", {
-							vendorId: ::vendor.id::,
-						});
-					});
-				</script>
-			</a>
-			::else::
-			<a href="/p/pro/upgrade">
-				<div class="pull-right iconBadge farmer-pro" style="margin-top:8px" data-toggle="tooltip" title="Offre Pro">
+		<div class="col-md-6" style="display: flex;">
+			::if(company.offer!=0)::
+				<div class="iconBadge farmer-pro" style="margin-top:8px; margin-right: 8px;" data-toggle="tooltip" title="Offre Pro">
 					<i class="icon icon-farmer-pro"></i>
 				</div>
-			</a>
 			::end::
-
+			<h1 ::cond vendor!=null:: >::vendor.name::</h1>
+		</div>
+		<div class="col-md-6 accountBlock" ::cond company!=null::>	
 			$$userMenu(::user::)
-		
-		</div>	
-			
+		</div>
 	</div>
 		
-
 	::if user!= null && company!=null::
 
 		<nav class="navbar navbar-default">
@@ -102,18 +82,24 @@
 								</a>								
 							</li>
 						</ul>
-
-						::if(company.offer==0)::
-						<ul class="nav navbar-nav navbar-right">
-							<li>
-								<a href="/p/pro/upgrade#formation" style="background: orange;border-radius: 8px;padding: 6px 8px;margin: 8px;color: white;font-size: 0.9em;font-weight: bold;">
-									Etude de financement formation
-								</a>								
-							</li>
-						</ul>
-						::end::
 					</div>
 			</nav>
+			::if(company.offer==0)::
+			<div 
+				style="margin-top: -16px; height: 16px; background: #E1E1E1;">
+			</div>
+			<div 
+				id="vendor-freemium-progress-container" 
+				style="margin-top: -8px; display: flex; height: 50px; background: #E1E1E1; padding-left: 16px; padding-right: 16px; border-radius: 8px;">
+			</div>
+			<script>
+					document.addEventListener("DOMContentLoaded", function (event) {
+						neo.createNeoModule("vendor-freemium-progress-container", "vendorFreemiumProgress", {
+							vendorId: ::vendor.id::,
+						});
+					});
+				</script>
+			::end::
 			
 	::end::
 
