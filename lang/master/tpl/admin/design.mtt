@@ -15,6 +15,7 @@
 			<li><a href="/admin/emails"><i class="icon icon-mail"></i> Emails</a> </li>			
 			<li><a href="/admin/graph"><i class="icon icon-chart"></i> Statistiques</a> </li>	
 			<li><a href="/admin/messages"><i class="icon icon-info"></i> Messages</a> </li>					
+			<li><a href="/admin/newsCreator"><i class="icon icon-edit"></i> Créateur de news</a> </li>					
 			
 			::if nav!=null::
 					::foreach i nav::
