@@ -367,6 +367,10 @@ class Company extends controller.Controller
 
 	}
 	
-	
+	@tpl('plugin/pro/company/stripe.mtt')
+	function doStripe(){
+		var vendor = company.vendor;
+		view.vendor = vendor;
+	}
 
 }

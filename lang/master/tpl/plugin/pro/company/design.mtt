@@ -8,6 +8,7 @@
 			<li ::attr class if(nav[1]=="users") 		'active'::><a href="/p/pro/company/users">Utilisateurs</a></li>
 			<li ::attr class if(nav[1]=="vendors") 		'active'::><a href="/p/pro/company/vendors">Autres producteurs</a></li>
 			<li ::attr class if(nav[1]=="publicPage") 	'active'::><a href="/p/pro/company/publicPage">Ma page producteur</a></li>			
+			<li ::attr class if(nav[1]=="stripe") 	'active'::><a href="/p/pro/company/stripe">Stripe</a></li>			
 			::if navbar!=null::
 				::foreach i navbar::
 				<li ::attr class if(nav[1]==i.id) 'active'::>
@@ -23,9 +24,7 @@
 ::end::
 
 <div class="col-md-9">
-	<div class="article">
-		::raw __content__::
-	</div>
+	::raw __content__::
 </div>
 
 ::if(company==null)::

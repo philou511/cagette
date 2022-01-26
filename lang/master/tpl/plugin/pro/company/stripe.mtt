@@ -1,0 +1,12 @@
+::use 'plugin/pro/company/design.mtt'::
+	
+	<div id="vendor-stripe"></div>
+	<script>
+		document.addEventListener("DOMContentLoaded", function(event) {
+			neo.createNeoModule("vendor-stripe", "vendorStripe", {
+					vendorId: ::vendor.id::,
+				});
+		});
+	</script>
+
+::end::
