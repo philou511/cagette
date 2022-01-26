@@ -9,7 +9,7 @@ import mangopay.Mangopay;
 class MangopayUser extends sys.db.Object
 {
 	@:relation(userId) public var user : db.User;
-	public var mangopayUserId : SInt; //user id in mangopay
+	public var mangopayUserId : SString<64>; //mangopay userId as string ( int overflows )
 		
 	public static function get(user:db.User){
 		return MangopayUser.manager.select($user == user, true);
