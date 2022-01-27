@@ -239,15 +239,11 @@
 			};
 			
 			::if(discovery)::
-				displayPopup("formules2",1);
-			::elseif(cagetteProTest)::	
-				displayPopup("formules3",1);	
-			::elseif(isGroupAdmin || memberVendor)::		
-				displayPopup("formules1",1);
+				displayPopup("offre-formation-2022-01-A",1);							
+			::elseif(isGroupAdmin)::		
+				displayPopup("offre-formation-2022-01-B",1);
 			::end::
 			
-			
-
 			//]]>
 	</script>
 	
