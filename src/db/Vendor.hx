@@ -8,8 +8,8 @@ import sys.db.Types;
 enum DisabledReason{
 	IncompleteLegalInfos; 	//incomplete legal infos
 	NotCompliantWithPolicy; //not compliant with policy (charte des producteurs)
-	Banned; //banned by network administrateurs
-	TurnoverLimitReached; //turnover limit reached
+	Banned; 				//banned by network administrateurs
+	TurnoverLimitReached; 	//turnover limit reached
 }
 
 /**
@@ -282,7 +282,7 @@ class Vendor extends Object
 			case DisabledReason.IncompleteLegalInfos : "Informations légales incomplètes. Complétez vos informations légales pour débloquer le compte. (SIRET,capital social,numéro de TVA)";
 			case DisabledReason.NotCompliantWithPolicy : "Producteur incompatible avec la charte producteur de Cagette.net";
 			case DisabledReason.Banned : "Producteur bloqué par les administrateurs";
-			case DisabledReason.TurnoverLimitReached : "Ce producteur a atteind sa limite de chiffre d'affaires annuel";
+			case DisabledReason.TurnoverLimitReached : "Ce producteur a atteint sa limite de chiffre d'affaires annuel";
 		};
 	}
 
@@ -330,7 +330,7 @@ class Vendor extends Object
 		#if plugins
 		var cpro = pro.db.CagettePro.getFromVendor(this);
 		if(companyNumber==null){
-			if(cpro!=null && cpro.training){
+			if(cpro!=null && cpro.offer==Training){
 				//do not disable training accounts
 			}else{
 				disabled = DisabledReason.IncompleteLegalInfos;

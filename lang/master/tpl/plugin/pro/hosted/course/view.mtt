@@ -33,7 +33,7 @@
 					<a href="/admin/vendor/view/::c._company._vendor.id::" target="_blank">::c._company._vendor.name::</a>
 				</td>
 				<td>
-					::if(c._company.training==true)::<span  class="glyphicon glyphicon-education" style="color:#336600"></span>::end::
+					::if(c._company.offer==3)::<span  class="glyphicon glyphicon-education" style="color:#336600"></span>::end::
 					::if(c._company.getUsers().length==0)::<span  class="glyphicon glyphicon-ban-circle" style="color:#666"></span>::end::					
 				</td>
 				<td>
@@ -42,14 +42,14 @@
 					::end::
 				</td>
 				<td>
-					::if(c._company.training==false)::
+					::if( c._company.offer != 3 )::
 						$$bool(::c._company.active::)
 					::end::
 				</td>
 				<td>
-					<a ::cond(c._company.training==true):: href="/p/hosted/course/disable/::c._company.id::" class="btn btn-xs btn-default">Couper les accès</a>
-					<a ::cond(c._company.training==true):: href="/p/hosted/course/cproDef/::c._company.id::" class="btn btn-xs btn-default">Créer compte définitif</a>
-					<a ::cond(c._company.training==true):: href="/p/hosted/course/idMail/::c._company.id::/::course.id::" class="btn btn-xs btn-default">Envoyer mail identifiants</a>
+					<a ::cond(c._company.offer == 3 ):: href="/p/hosted/course/disable/::c._company.id::" class="btn btn-xs btn-default">Couper les accès</a>
+					<a ::cond(c._company.offer == 3):: href="/p/hosted/course/cproDef/::c._company.id::" class="btn btn-xs btn-default">Créer compte définitif</a>
+					<a ::cond(c._company.offer == 3):: href="/p/hosted/course/idMail/::c._company.id::/::course.id::" class="btn btn-xs btn-default">Envoyer mail identifiants</a>
 					<a href="/p/hosted/course/switch/::c._company.id::" class="btn btn-xs btn-default">Changer de session</a>
 				</td>
 			</tr>

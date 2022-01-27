@@ -132,8 +132,8 @@ class VendorService{
 		//cpro first
 		for( v in vendors.copy() ){
 			var cpro = v.getCpro();
-			if( cpro !=null){				
-				if(cpro.training) vendors.remove(v);				
+			if( cpro != null){				
+				if(cpro.offer==Training) vendors.remove(v);				
 			} 			
 		}
 		#end
@@ -153,7 +153,7 @@ class VendorService{
 		for( v in vendors.copy()){
 			//remove training pro accounts
 			var cpro = pro.db.CagettePro.getFromVendor(v);
-			if(cpro!=null && cpro.training) vendors.remove(v);
+			if(cpro!=null && cpro.offer==Training) vendors.remove(v);
 		}
 		#end
 		if(vendors.length>0) throw new Error("Un producteur est déjà référencé avec cet email dans notre base de données");

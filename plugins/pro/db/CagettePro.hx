@@ -6,19 +6,18 @@ enum CagetteProOffer {
 	Discovery;
 	Member;
 	Pro;
+	Training;
 }
 
 /**
- * Cagette Pro account linked to a Vendor Account
- * @author fbarbut
+ * Vendor Account
  */
 class CagettePro extends sys.db.Object
 {
 	public var id : SId;
 	@hideInForms @:relation(vendorId) public var vendor : db.Vendor;
 	@hideInForms @:relation(demoCatalogId) public var demoCatalog : SNull<pro.db.PCatalog>;//catalog used for public page
-	@hideInForms public var vatRates : SNull<SSmallText>;
-	@hideInForms public var training:SBool;	//training account
+	@hideInForms public var vatRates : SNull<SSmallText>;	
 	@hideInForms public var network:SBool;	//enable network management features
 	@hideInForms public var captiveGroups:SBool;	//the groups are a captive network
 	@hideInForms public var networkGroupIds:SNull<SString<512>>; //network groups, ints separated by comas
@@ -28,7 +27,7 @@ class CagettePro extends sys.db.Object
 	public function new(){
 		super();
 		setVatRates([{label:"TVA alimentaire 5,5%",value:5.5},{label:"TVA 20%",value:20},{label:"Non assujeti à TVA", value:0}]);
-		training = false;
+		offer = Discovery;
 		network = false;		
 		cdate = Date.now();
 	}

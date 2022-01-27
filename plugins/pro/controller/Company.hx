@@ -34,16 +34,16 @@ class Company extends controller.Controller
 	function doEdit() {
 		view.nav.push("default");
 
-		var form = VendorService.getForm(vendor, !company.training );
+		var form = VendorService.getForm(vendor, company.offer!=Training );
 
-		if(!company.training){ 
+		if(company.offer!=Training){ 
 			app.session.addMessage("Attention, afin de mieux informer les consommateurs, vous devez maintenant renseigner votre <b>numéro SIRET</b> et confirmer le fait que votre activité est conforme à la <b><a href=\"https://www.cagette.net/charte-producteurs\" target=\"_blank\">Charte Producteurs Cagette.net</a></b>.");
 		}
 				
 		if (form.isValid()) {
 			vendor.lock();
 			try{
-				vendor = VendorService.update(vendor,form.getDatasAsObject(),!company.training);
+				vendor = VendorService.update(vendor,form.getDatasAsObject(),company.offer!=Training);
 			}catch(e:tink.core.Error){
 				throw Error(sugoi.Web.getURI(),e.message);
 			}			

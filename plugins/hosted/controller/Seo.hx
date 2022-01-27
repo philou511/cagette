@@ -18,7 +18,7 @@ class Seo extends sugoi.BaseController
 			//farmer did not authorize to be displayed on directories
 			if(!vendor.directory) continue;
 			//not training accounts
-			if(cpro.training) continue;
+			if(cpro.offer==Training) continue;
 
 			out.push([
 				Std.string(vendor.id),

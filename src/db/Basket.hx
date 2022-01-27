@@ -15,7 +15,6 @@ class Basket extends Object
 	public var num : SInt;		 			//Basket number for distribution
 	public var total : SNull<SFloat>;		//orders total price for stats, !!! this is not reliable, dont use this for payments !!!
 
-
 	@:relation(userId) public var user : db.User;
 	@:relation(multiDistribId) public var multiDistrib : db.MultiDistrib;
 
