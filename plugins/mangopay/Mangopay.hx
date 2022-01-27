@@ -117,7 +117,7 @@ class Mangopay
 	/**
 		Get a user's wallet list
 	**/
-	static public function getUserWallets(mangopayUserId:Int,page:Int,walletsPerPage:Int) : Array<Wallet> {
+	static public function getUserWallets(mangopayUserId:String,page:Int,walletsPerPage:Int) : Array<Wallet> {
 		var params  = {
 			Page : page,
 			Per_page : walletsPerPage,
@@ -129,7 +129,7 @@ class Mangopay
 	/**
 		Get or create a wallet for a user
 	**/
-	static public function getOrCreateUserWallet(mangopayUserId: Int, group: db.Group) : Wallet {	
+	static public function getOrCreateUserWallet(mangopayUserId:String, group: db.Group) : Wallet {	
 		
 		var description = "Group: " + group.name;
 		var groupId = Std.string(group.id);
@@ -155,7 +155,7 @@ class Mangopay
 	/**
 		Get or create a wallet for a group
 	**/
-	static public function getOrCreateGroupWallet(mangopayUserId: Int, group: db.Group) : Wallet {	
+	static public function getOrCreateGroupWallet(mangopayUserId:String, group:db.Group) : Wallet {	
 		var conf = MangopayPlugin.getGroupConfig(group);
 		if(conf==null) throw new Error("No wallet for group "+group.id);
 		if(conf.walletId==null){
@@ -194,7 +194,7 @@ class Mangopay
 		return callService("payins/card/web/", "POST", params);
 	}
 
-	static public function getPayIn(payInId:Int) : CardWebPayIn {
+	static public function getPayIn(payInId:String) : CardWebPayIn {
 		return callService("payins/" + payInId + "/");
 	}
 
@@ -203,7 +203,7 @@ class Mangopay
 
 	WARNING : dates should be UTC not local time !!
 	**/
-	static public function getUserTransactions(mangopayUserId:Int,resultPerPage:Int,page:Int,afterDate:Date,beforeDate:Date,type:TransactionType) : Array<Transaction> {
+	static public function getUserTransactions(mangopayUserId:String,resultPerPage:Int,page:Int,afterDate:Date,beforeDate:Date,type:TransactionType) : Array<Transaction> {
 		var beforeDate = beforeDate.getTime()/1000;
 		var afterDate = afterDate.getTime()/1000;
 		var params = '?Per_Page=$resultPerPage&Page=$page&BeforeDate=$beforeDate&AfterDate=$afterDate&Type=$type';
@@ -222,7 +222,7 @@ class Mangopay
 		return callService("payins/" + payInId + "/refunds");
 	}
 
-	static public function createTransfer(amount:Int, debitedWalletId:Int, creditedWalletId:Int, authorId:Int) : Transfer {
+	static public function createTransfer(amount:Int, debitedWalletId:String, creditedWalletId:String, authorId:String) : Transfer {
 		var tempTransfer : Transfer = {
 			// ?Tag: String,
 			DebitedFunds: {
@@ -298,11 +298,11 @@ class Mangopay
 		return payOut;
 	}
 
-	static public function getPayOut(payOutId: Int) : PayOut {
+	static public function getPayOut(payOutId:String) : PayOut {
 		return callService("payouts/" + payOutId + "/",null,null,false);
 	}
 
-	static public function getUserKYCDocuments(mangopayUserId: Int) : Array<KYCDocument> {	
+	/*static public function getUserKYCDocuments(mangopayUserId: Int) : Array<KYCDocument> {	
 		return callService("users/" + mangopayUserId + "/kyc/documents/");
 	}
 
@@ -333,7 +333,7 @@ class Mangopay
 		};
 		var params = haxe.Json.stringify(document);
 		return callService("users/" + mangopayUserId + "/kyc/documents/", "POST", params);
-	}
+	}*/
 
 	static public function translate(str: String) {
 

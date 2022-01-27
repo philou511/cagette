@@ -1026,7 +1026,7 @@ class Distribution extends Controller {
 										Amount: 0 - Math.round(amount.fees * 100), // negative : refund fees
 									},
 									AuthorId: mangopayUser.mangopayUserId,
-									InitialTransactionId: o.getPaymentData().remoteOpId.parseInt()
+									InitialTransactionId: o.getPaymentData().remoteOpId
 								};
 								// trace(refund);
 

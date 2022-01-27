@@ -125,7 +125,7 @@ class MangopayGroupController extends controller.Controller
 		Payout detail
 	**/
 	@tpl('plugin/pro/transaction/mangopay/payout.mtt')
-	function doPayOut(payoutId:Int){
+	function doPayOut(payoutId:String){
 		var p = Mangopay.getPayOut(payoutId);
 		view.payout = p;
 		view.fromTime = Date.fromTime;
@@ -252,7 +252,7 @@ class MangopayGroupController extends controller.Controller
 			return null;
 		}
 
-		view.findUser = function(id:Int){
+		view.findUser = function(id:String){
 			return MangopayUser.manager.select($mangopayUserId == id,false);
 		}
 

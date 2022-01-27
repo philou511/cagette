@@ -758,7 +758,7 @@ class Admin extends controller.Controller {
 				
 				var op = b.getOrderOperation(false);
 				var ordersTotal = Formatting.cleanFloat(0 - b.getOrdersTotal());
-				var opAmount = Formatting.cleanFloat(op.amount);
+				var opAmount = op==null ? null : Formatting.cleanFloat(op.amount);
 
 				if(autoFix){
 					if(!group.hasShopMode()) throw "cette page ne marche que pour les groupes en mode Marché";
@@ -1573,4 +1573,63 @@ class Admin extends controller.Controller {
 
 	@admin @tpl('plugin/pro/admin/certification.mtt')
 	function doCertification() { }
+
+	@admin
+	function doFixCsaOps(group:db.Group){
+
+		//Fix CSA operations :
+		/*
+		- supprimer les opérations qui n'ont pas de subscriptionId et qui ne sont pas des paiements de membership
+		- attention des ops de paiement sont en pending
+		*/
+
+		if(group.hasShopMode()) throw "Pour les AMAP only !";
+
+		//remove 'non CSA' ops
+		Operation.manager.delete($group==group && $type==OperationType.VOrder);
+
+		//remove payment/subscriptionTotal ops with no subscription
+		Operation.manager.delete($group==group && $type==OperationType.SubscriptionTotal && $subscription==null);
+		Operation.manager.delete($group==group && $type==OperationType.Payment && $subscription==null);
+
+		for ( op in Operation.manager.search($group==group,true)){
+			//no pending ops
+			if(op.pending) {
+				op.pending = false;
+				op.update();
+			}
+			
+			//remove ops of catalogs where payments are not activated
+			if(op.subscription!=null && !op.subscription.catalog.hasPayments){
+				op.delete();
+			}
+		}
+
+		//update balances
+		for(m in group.getMembers()){
+			service.PaymentService.updateUserBalance(m, group);	
+		}
+	}
+
+
+	function doCleanCproTest(){
+
+		var vendors = db.Vendor.manager.search($isTest==true,false);
+		var print = controller.Cron.print;
+		for ( v in vendors ){
+
+			print('<a target="_blank" href="/admin/vendor/view/${v.id}">${v.name}</a>');
+			
+			var cpro = v.getCpro();
+			if(cpro==null){
+				print("No Cpro !!");
+			}else{
+				for( uc in pro.db.PUserCompany.getUsers(cpro)){
+					if(!uc.disabled){
+						print('${uc.user.getName()} is not disabled !');
+					}
+				}
+			}
+		}
+	}
 }

@@ -239,12 +239,16 @@
 			};
 			
 			::if(discovery)::
-				displayPopup("popupformation",1);
-			::elseif(isGroupAdmin)::	
-				displayPopup("nouvellesregles2021-7",1);			
-			::end:: 
+				displayPopup("formules2",1);
+			::elseif(cagetteProTest)::	
+				displayPopup("formules3",1);	
+			::elseif(isGroupAdmin || memberVendor)::		
+				displayPopup("formules1",1);
+			::end::
+			
 			
 
 			//]]>
 	</script>
+	
 ::end::

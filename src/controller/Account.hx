@@ -49,6 +49,8 @@ class Account extends Controller
 			app.user.lang = app.params.get("lang");
 			app.user.update();
 		}
+
+		view.userId = app.user.id;
 	}
 
 	/**

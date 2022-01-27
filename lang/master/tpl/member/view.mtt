@@ -90,7 +90,7 @@
 		::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user.getGroup().getPeriodName(null)::</b>
 		<br/>
 		
-		<a onclick="_Cagette.membershipBox(::member.id::,'::member.getName()::',::userGroup._group.id::,'/member/view/::member.id::')" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
+		<a onclick="_Cagette.membershipBox(::member.id::,`::member.getName()::`,::userGroup._group.id::,'/member/view/::member.id::')" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
 
 	</div>
 	::end::
@@ -312,7 +312,7 @@
 
 
 <div  class="col-md-8">
-	<div ::cond hasPayments && hasShopMode:: class="article">
+	<div ::cond (hasPayments && hasShopMode) || !hasShopMode:: class="article">
 		
 		<span style="font-size:1.3em;">
 			::_("Balance"):: :

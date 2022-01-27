@@ -54,6 +54,7 @@
 		<th>Type</th>
 		<th>CA Total</th>
 		<th>CA 3 mois</th>
+		<th>Bloqué</th>
 		<th>Actif</th>
 		
 	</tr>
@@ -79,6 +80,11 @@
 		<td>
 			::if(v.turnover90days!=null)::
 				::roundTo(v.turnover90days,0):: &euro;
+			::end::
+		</td>
+		<td>
+			::if(v.disabled!=null)::
+			$$check(::false::)
 			::end::
 		</td>
 		<td>			

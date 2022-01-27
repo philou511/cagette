@@ -27,6 +27,8 @@
 		::if member.email2!=null::
 			::_("Email"):: : <a href="mailto: ::member.email2::">::member.email2::</a><br/>
 		::end::
+		<br/>
+		<a href="/member/view/::member.id::" class="btn btn-default btn-sm">Retour fiche membre</a>
 		
 		
 	</div>
@@ -118,8 +120,4 @@
 		
 	</div>
 </div>
-
-
-
-
 ::end::

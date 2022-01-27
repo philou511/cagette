@@ -45,10 +45,21 @@
 						::set pcat = rc.getCatalog()::
 
 						::if(pcat._company._vendor.id==contract._vendor.id)::
-							Catalogue géré depuis un compte producteur
+							Catalogue géré depuis un compte producteur.
 						::else::
-							Catalogue <b>invité</b> sur le compte d'un autre producteur (<a href="::pcat._company._vendor.getLink()::">::pcat._company._vendor.name::</a>)
+							Catalogue <b>invité</b> sur le compte d'un autre producteur (<a href="::pcat._company._vendor.getLink()::">::pcat._company._vendor.name::</a>).
 						::end::
+
+						<p>
+							Si vous souhaitez arrêter de collaborer avec 
+							ce producteur et archiver ce catalogue, cliquez sur le bouton ci-dessous 
+							( les commandes seront conservées, mais il ne sera plus possible d'organiser de nouvelle commande ).
+						</p>
+						<a href="/p/connector/contract/::contract.id::?token=::token::" class="btn btn-danger btn-xs" onclick="return confirm('Voulez vous casser la liaison et archiver ce catalogue ?')">
+							<i class="icon icon-delete"></i> 
+							&nbsp;Casser la liaison
+						</a>
+
 					::end::
 				</td>
 			</tr>

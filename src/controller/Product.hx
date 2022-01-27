@@ -33,7 +33,9 @@ class Product extends Controller
 
 			//manage stocks by distributions for CSA contracts
 			if(!product.catalog.group.hasShopMode() && product.catalog.hasStockManagement()){
-				product.stock = (f.getValueOf("stock"):Float) * product.catalog.getDistribs(false).length;
+				var distribNum = product.catalog.getDistribs(false).length;
+				distribNum = distribNum == 0 ? 1 : distribNum;
+				product.stock = (f.getValueOf("stock"):Float) * distribNum;
 			}
 
 			try{

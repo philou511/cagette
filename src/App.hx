@@ -213,8 +213,6 @@ class App extends sugoi.BaseApp {
 		out.set("Open", 		"Ouvert : tout le monde peut s'inscrire");
 		out.set("Full", 		"Complet : Le groupe n'accepte plus de nouveaux membres");
 
-		
-
 		out.set("Soletrader"	, "Micro-entreprise");
 		out.set("Organization"	, "Association");
 		out.set("Business"		, "Société");		
@@ -240,9 +238,9 @@ class App extends sugoi.BaseApp {
 		out.set("ByOffer"	, "Par offre (produits stockés déja conditionnés)");
 				
 		out.set("variablePrice", "Prix variable selon pesée");	
-		
+		out.set("VATAmount", "Montant TVA");	
+		out.set("VATRate", "Taux TVA");
 	
-
 		return out;
 	}
 	

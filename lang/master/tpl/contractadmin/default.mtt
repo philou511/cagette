@@ -1,9 +1,14 @@
 ::use 'design.mtt'::
 
 <div class="col-md-12">
+
 	::foreach v vendors::		
 		::if(v.isDisabled())::
+			::if( group.hasShopMode() || v.disabled!=3  )::			
 			<div class="alert alert-danger"><i class="icon icon-alert"></i> Le producteur <b>::v.name::</b> est désactivé : ::v.getDisabledReason()::</div>	
+			::else::
+			<!-- turnoverLimitReached has no effect in CSA mode -->
+			::end::
 		::end::	
 	::end::
 
@@ -81,7 +86,9 @@
 					</td>
 					<td>
 						<div class="btn-group" role="group">
-						$$edit(::_("Manage")::,/contractAdmin/view/::c.id::)
+						::if(user.canManageContract(c))::
+							$$edit(::_("Manage")::,/contractAdmin/view/::c.id::)
+						::end::
 						</div>
 					</td>
 				</tr>
@@ -128,15 +135,18 @@
 						::v.zipCode:: ::v.city::
 
 						::if(v.isDisabled())::
-						<div class="alert alert-danger"><i class="icon icon-alert"></i> Producteur désactivé : ::v.getDisabledReason()::</div>
+							::if( group.hasShopMode() || v.disabled!=3  )::	
+								<div class="alert alert-danger"><i class="icon icon-alert"></i> Producteur désactivé : ::v.getDisabledReason()::</div>
+							::end::
 						::end::
-
-
 					</td>
 					<td>
 						<div class="btn-group" role="group">
-							$$edit(::_("Edit")::,/vendor/edit/::v.id::)
-							<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <i class="icon icon-image"></i> ::_("Picture")::</a>
+							::set cpro = v.getCpro()::
+							::if(cpro==null && user.canManageVendor(v))::
+								$$edit(::_("Edit")::,/vendor/edit/::v.id::)
+								<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <i class="icon icon-image"></i> ::_("Picture")::</a>
+							::end::
 							<!-- ::if user.isAmapManager():: $$delete(,/vendor/delete/::v.id::?token=::token::) ::end::-->
 						</div>
 					</td>

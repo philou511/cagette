@@ -279,7 +279,7 @@
 		<!--<span style="margin-left:48px;">::_("Payment"):: ::_(t.getPaymentType())::</span>-->
 		<i class="icon icon-euro" aria-hidden="true"></i> ::t.getPaymentTypeName()::
 		::else::						
-		<i class="fa fa-user" aria-hidden="true"></i> ::_("Subscription")::
+		<i class="icon icon-user" aria-hidden="true"></i> Adhésion
 		::end::
 	</td>
 	
@@ -293,7 +293,7 @@
 	<td style="font-size:1em;">
 		
 		::t.name::<br/>
-		
+
 		::if x==2 && t.pending==true::		
 			::if(t.getPaymentType()=="check")::
 				<span style="color:red;">::_("Check to be given at the collection of products")::</span>
@@ -306,7 +306,12 @@
 			::end::
 			
 		::else::
-			<span style="font-size:0.90em;color:#AAA;">::hDate(t.date)::</span>
+			<span style="font-size:0.90em;color:#AAA;">::sDate(t.date)::</span>
+		::end::
+
+		::set sub = t._subscription:: 
+		::if(sub!=null)::
+			<br/><a href="/contractAdmin/subscriptions/payments/::sub.id::">Souscription ::sub._catalog.name::</a>
 		::end::
 	</td>
 	<td class="text-right">

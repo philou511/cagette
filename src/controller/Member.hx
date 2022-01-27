@@ -300,9 +300,9 @@ class Member extends Controller
 	@tpl('member/payments.mtt')
 	function doPayments(m:db.User){
 
-		if(!app.user.getGroup().hasShopMode()){
-			throw Redirect("/amap/payments/"+m.id);
-		}
+		// if(!app.user.getGroup().hasShopMode()){
+		// 	throw Redirect("/amap/payments/"+m.id);
+		// }
 		
 		service.PaymentService.updateUserBalance(m, app.user.getGroup());		
     	var browse:Int->Int->List<Dynamic>;
@@ -323,6 +323,14 @@ class Member extends Controller
 	
 	@tpl('member/balance.mtt')
 	function doBalance(){
+
+		if(app.params.get("refresh")=="1"){
+			var group = app.user.getGroup();
+			for(m in group.getMembers()){
+				service.PaymentService.updateUserBalance(m, group);	
+			}
+		}
+
 		view.balanced = db.UserGroup.manager.search($group == app.user.getGroup() && $balance == 0.0, false);
 		view.credit = db.UserGroup.manager.search($group == app.user.getGroup() && $balance > 0, false);
 		view.debt = db.UserGroup.manager.search($group == app.user.getGroup() && $balance < 0, false);
