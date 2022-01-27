@@ -8,7 +8,7 @@ class MangopayLegalUserGroup extends sys.db.Object
 {
 	@:relation(legalUserId) public var legalUser : mangopay.db.MangopayLegalUser;
 	@:relation(groupId) public var group : db.Group;	
-    public var walletId : SNull<SInt>;			// wallet ID of this group
+    public var walletId : SNull<SString<64>>;			// wallet ID of this group
 
     public function new(){
         super();

@@ -9,10 +9,10 @@ import Common;
 @:id(mangopayUserId)
 class MangopayLegalUser extends sys.db.Object
 {
-	public var mangopayUserId : SInt;   		//user id in mangopay
-    public var name : SString<256>;				// name of legal User (organization/company)
+	public var mangopayUserId : SString<64>;   		//user id in mangopay
+    public var name : SString<256>;					// name of legal User (organization/company)
 	public var companyNumber : SNull<SString<256>>; 	    
-    public var legalStatus : SNull<SString<32>>; //enum abstract mangopay.Types.LegalStatus
+    public var legalStatus : SNull<SString<32>>; 	//enum abstract mangopay.Types.LegalStatus
 	
     @:relation(legalReprId) public var legalRepresentative : db.User;
 	public var bankAccountId:SNull<SInt>;

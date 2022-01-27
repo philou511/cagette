@@ -3,9 +3,11 @@
 	<div class="row header" style="margin-top:10px;">
 		<div class="col-md-6" style="display: flex;">
 			::if(company.offer==2 || company.offer==1)::
-				<div class="iconBadge farmer-pro" style="margin-top:8px; margin-right: 8px;" data-toggle="tooltip" title="::if(company.offer==2)::Formule Pro::else::Formule Membre::end::">
-					<i class="icon icon-farmer-pro"></i>
-				</div>
+				<a href="/p/pro/upgrade">
+					<div class="iconBadge farmer-pro" style="margin-top:8px; margin-right: 8px;" data-toggle="tooltip" title="::if(company.offer==2)::Formule Pro::else::Formule Membre::end::">
+						<i class="icon icon-farmer-pro"></i>
+					</div>
+				</a>
 			::elseif(company.offer==3)::
 				<div class="iconBadge farmer-pro" style="margin-top:8px; margin-right: 8px;" data-toggle="tooltip" title="Compte pédagogique">
 					<i class="icon icon-student"></i>

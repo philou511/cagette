@@ -191,7 +191,7 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 								Amount: 0 - Math.round(amount.fees * 100),//negative : refund fees
 							},
 							AuthorId: mangopayUser.mangopayUserId,
-							InitialTransactionId: payment.getPaymentData().remoteOpId.parseInt()				
+							InitialTransactionId: payment.getPaymentData().remoteOpId				
 						};				
 						refund = Mangopay.createPayInRefund(refund);
 						totalRefunded += amountToRefund;
@@ -581,7 +581,7 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 	/**
 		Get Group legal User 
 	**/
-	static public function getGroupLegalUserId(group: db.Group) : Int {
+	static public function getGroupLegalUserId(group: db.Group):String {
 		
 		var conf = MangopayPlugin.getGroupConfig(group);
 

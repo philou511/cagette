@@ -41,7 +41,7 @@
 					::set basket = md.getUserTmpBasket(member)::
 					::if(basket!=null)::
 					<div style="color:green">
-						<b>Panier en cours #::basket.ref::</b>
+						<b>Panier en cours #::basket.id::</b>
 						<ul>
 						::foreach o basket.getOrders()::
 							::if(o.product!=null)::
