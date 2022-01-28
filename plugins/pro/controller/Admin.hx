@@ -693,15 +693,15 @@ class Admin extends controller.Controller {
 	function doMigrateOperations() {
 		// 2020-07-31 : refacto payment ops
 		/*var from = Date.fromString(app.params.get("from"));
-			var to = Date.fromString(app.params.get("to"));
+		var to = Date.fromString(app.params.get("to"));
 
-			for( op in db.Operation.manager.search($date >= from && $date < to && $data2 ==null ,true)){
+			for( op in db.Operation.manager.search($date >= from && $date < to && $data2 == null ,true)){
 				try{
 
 					switch(op.type){
 						case VOrder:
 							var data :VOrderInfos = op.data;
-							var basket = db.Basket.manager.get(data.basketId);
+							var basket = data==null ? null : db.Basket.manager.get(data.basketId);
 							// on peut migrer une op si le basket n'existe plus, pas la peine d'essayer de fixer un autre problème.
 							
 							if(basket!=null){
@@ -709,32 +709,42 @@ class Admin extends controller.Controller {
 								op.setData({basketId:basket.id});
 								Sys.print('Op ${op.id} OK<br/>');
 							}else{
-								op.setData({basketId:null});
-								Sys.print('Warning "basket null" avec op <a href="http://localhost/db/Operation/edit/${op.id}">#${op.id}</a><br>');
-							}
-							try{
 
-								op.update();
-							}catch(e:Error){}
-							
+								//sometimes op.basket is null in data, but populated in op.basket
+								if(op.basket!=null){
+									op.setData({basketId:op.basket.id});
+								}else{
+									op.setData({basketId:null});
+									Sys.print('Warning "basket null" avec op <a href="/db/db.Operation/edit/${op.id}">#${op.id}</a><br>');
+								}								
+								
+							}
 						
-						case COrder :
+						//case COrder :
 							//delete this, it it exists its shit
-							op.delete();	
+							// op.delete();	
+						case SubscriptionTotal:
+
+							//no need to migrate
 
 						case Payment :
 							var data :PaymentInfos = op.data;
 							op.setData({type:data.type,remoteOpId:data.remoteOpId});
-							op.update();
+
 						case Membership :
 							var data :MembershipInfos = op.data;
-							op.setData({year:data.year});
-							op.update();
+							op.setData({year:data.year});							
+					}
+
+					try{
+						op.unsafeUpdate();
+					}catch(e:Error){
+						Sys.print("Error : "+e.message);
 					}
 
 				}catch(e:Dynamic){
 
-					Sys.print('Erreur "$e" avec op <a href="http://localhost/db/Operation/edit/${op.id}">#${op.id}</a><br>');
+					Sys.print('Erreur "$e" avec op <a href="/db/db.Operation/edit/${op.id}">#${op.id}</a><br>');
 
 				}
 				
