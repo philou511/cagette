@@ -290,6 +290,10 @@ class DistributionService
 			}
 		}
 
+		if(catalog.vendor.isDisabled()){
+			throw new Error('Le compte de "${catalog.vendor.name}" est désactivé. Raison : "${catalog.vendor.getDisabledReason()}"');
+		} 
+
 		if( catalog.type == db.Catalog.TYPE_VARORDER){
 			if(md.orderStartDate==null || md.orderEndDate==null){
 				var url = "/distribution/editMd/" + md.id;
