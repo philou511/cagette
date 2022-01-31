@@ -2,13 +2,14 @@ package pro.db;
 import sys.db.Types;
 
 enum VendorType {
-	VTCpro; 		// 0 Offre Pro formé
-	VTFree; 		// 1 Gratuit
-	VTInvited; 		// 2 Invité
-	VTInvitedPro;   // 3 Invité Cagette Pro
-	VTCproTest; 	// 4 Cagette Pro test (COVID19 ou en attente de formation)
-	VTStudent; 		// 5 compte pro pédagogique
-	VTDiscovery; 	// 6 Offre Découverte
+	VTCpro; 			// 0 Offre Pro formé
+	VTFree; 			// 1 Gratuit
+	VTInvited; 			// 2 Invité
+	VTInvitedPro;   	// 3 Invité Cagette Pro
+	VTCproTest; 		// 4 Cagette Pro test (COVID19 ou en attente de formation)
+	VTStudent; 			// 5 compte pro pédagogique
+	VTDiscovery; 		// 6 Offre Découverte
+	VTCproSubscriber; 	// 7 Offre Pro abonné
 }
 
 /**
@@ -60,12 +61,14 @@ class VendorStats extends sys.db.Object
 
 			if(vendor.isTest){
 				vs.type = VTCproTest;
-			}else if(cpro.discovery){	
-				vs.type = VTDiscovery;
-			}else if(cpro.training){				
+			}else if(cpro.offer == Training){				
 				vs.type = VTStudent;
-			}else{
+			}else if(cpro.offer==Discovery){
+				vs.type = VTDiscovery;
+			}else if(cpro.offer==Member){
 				vs.type = VTCpro;
+			}else if(cpro.offer==Pro){
+				vs.type = VTCproSubscriber;
 			}
 			
 		}else{
@@ -128,7 +131,7 @@ class VendorStats extends sys.db.Object
 		}
 
 		//a trainee cannot be active
-		if(cpro!=null && cpro.training){
+		if(cpro != null && cpro.offer == Training){
 			vs.active = false;
 		}
 

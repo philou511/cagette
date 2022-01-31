@@ -1,6 +1,6 @@
 <macros>
 
-	<macro name="vendorIcon(vendor)">
+	<macro name="publicVendorIcon(vendor)">
 
 		::if(vendor.isDisabled())::
 			<!--disabled-->						
@@ -11,27 +11,27 @@
 			::set cpro = vendor.getCpro()::
 
 			::if(cpro!=null)::
-
-				::if(cpro.discovery)::
-				<!--découverte-->
-				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Offre Découverte">
-					<i class="icon icon-farmer"></i>
-				</div>
-				::elseif(vendor.isTest==true)::
+				::if(vendor.isTest==true)::
 				<!--cpro test-->
 				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Cagette Pro Test">
 					<i class="icon icon-farmer"></i>
 				</div>
 				::else::
-				<!-- compte producteur -->
-				<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Offre Pro">
-					<i class="icon icon-farmer-pro"></i>
-				</div>
+					::if cpro.offer==0::
+					<!-- offre découverte -->
+					<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur limité à 1000€ de ventes par an">
+						<i class="icon icon-farmer"></i>
+					</div>
+					::else::
+					<!-- offre pro formé ou abonné -->
+					<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur avec ventes illimitées">
+						<i class="icon icon-farmer-pro"></i>
+					</div>
+					::end::
 				::end::
-			
 			::else::
 				<!--invité-->
-				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur invité">
+				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur limité à 1000€ de ventes par an">
 					<i class="icon icon-farmer"></i>
 				</div>
 			::end::
@@ -542,22 +542,27 @@
 		</div>-->
 	</macro>
 
-	<macro name="ga()">
+	<macro name="matomo()">
 		
-		<!-- Global site tag (gtag.js) - Google Analytics -->
-		<script async="1" src="https://www.googletagmanager.com/gtag/js?id=UA-81371329-2"></script>
-		<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
-		gtag('config', 'UA-81371329-2');
+		<script type="text/javascript">
+		var _paq = window._paq = window._paq || [];
+		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+		_paq.push(['trackPageView']);
+		_paq.push(['enableLinkTracking']);
+		(function() {
+			var u="https://matomo-alilo.osc-fr1.scalingo.io/";
+			_paq.push(['setTrackerUrl', u+'piwik.php']);
+			_paq.push(['setSiteId', "2"]);
+			var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+			g.type='text/javascript'; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+		})();
 		</script>
 
 	</macro>
 
 	<macro name="vendorType(s)">		
 		::if(s==0)::
-			Offre Pro (formé)			
+			Formule Membre
 		::elseif(s==1)::
 			Gratuit
 		::elseif(s==2)::
@@ -569,7 +574,9 @@
 		::elseif(s==5)::
 			Compte pédagogique
 		::elseif(s==6)::
-			Offre Découverte		
+			Formule Découverte
+		::elseif(s==7)::
+			Formule Pro
 		::end::
 	</macro>
     
@@ -578,9 +585,7 @@
         <div id="browser-detection-container"></div>
         <script>
         if (!window.IsValidBrowser) {
-            var browserDetectionContainer = document.getElementById(
-            "browser-detection-container"
-            );
+            var browserDetectionContainer = document.getElementById("browser-detection-container");
 
             var style = document.createElement("style");
             style.innerHTML =
