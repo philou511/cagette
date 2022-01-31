@@ -13,13 +13,13 @@
         <h3 class="text-center">Cette offre n'est plus disponible</h3>
         <p class="text-center">
             Vous avez actuellement un compte "Cagette Pro test" bloqué.<br/>
-            Cliquez sur le lien ci-dessous pour basculer sur notre offre Découverte.<br/>
-            Cette offre permet de tester le compte producteur sur Cagette.net dans la limite de 1000€ de ventes par an.
-            Offre de lancement : les ventes sont illimitées jusqu'au 1/02/2022.<br/>
-            <a href="https://www.cagette.net/producteurs" target="_blank">En savoir plus sur l'offre Découverte</a>
+            Cliquez sur le lien ci-dessous pour basculer sur notre formule Découverte.<br/>
+            Cette formule permet de tester le compte producteur sur Cagette.net dans la limite de 1000€ de ventes par an.
+            <br/>
+            <a href="https://www.cagette.net/producteurs" target="_blank">En savoir plus sur la formule Découverte</a>
         </p>
         <p class="text-center">
-            <a href="/discovery" class="btn btn-primary">Faire une demande pour passer en offre Découverte</a>
+            <a href="/discovery" class="btn btn-primary">Faire une demande pour passer en formule Découverte</a>
         </p>
 
         <p class="text-center">

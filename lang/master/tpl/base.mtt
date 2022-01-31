@@ -81,7 +81,7 @@
 
     ::raw __content__::
 
-    $$ga()
+    $$matomo()
 
     <script type="text/javascript">
 

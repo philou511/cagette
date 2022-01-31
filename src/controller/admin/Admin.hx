@@ -278,52 +278,6 @@ class Admin extends Controller {
 		}
 	}
 
-	/**
-		clean datas to prepare a dataset
-	**/
-	public function doDataset() {
-		if (!App.config.DEBUG && App.config.HOST.substr(0, 3) != "pp.") {
-			Sys.print("Interdit dans cet environnement");
-			return;
-		}
-
-		// delete old distribs.
-		MultiDistrib.manager.delete($distribStartDate < DateTools.delta(Date.now(), -1000 * 60 * 60 * 24 * 360 * 2));
-
-		// delete old messages
-		// db.Message.manager.delete( $date < DateTools.delta(Date.now(),-1000 * 60 * 60 * 24 * 360 * 2) );
-
-		// delete old contracts
-		Catalog.manager.delete($endDate < DateTools.delta(Date.now(), -1000 * 60 * 60 * 24 * 360));
-
-		// delete small groups
-		for (g in db.Group.manager.all(true)) {
-			if (g.getMembersNum() < 30) {
-				if (g.name.indexOf("GT") == -1) {
-					g.delete();
-				}
-			}
-
-			if (g.getActiveContracts().length == 0) {
-				if (g.name.indexOf("GT") == -1) {
-					g.delete();
-				}
-			}
-		}
-
-		// delete cagette pro
-		#if plugins
-		pro.db.CagettePro.manager.delete($training == true);
-		#end
-
-		// delete unlinked vendors
-		for (v in db.Vendor.manager.all(true)) {
-			if (db.Catalog.manager.select($vendor == v, false) == null) {
-				v.delete();
-			}
-		}
-	}
-
 	function doVendorNum(){
 		//nbre de vendor actifs dans des groupes qui ont eu des payout mangopay en octobre
 		var vendorsNum = 0;

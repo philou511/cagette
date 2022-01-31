@@ -33,7 +33,7 @@
 								<h4>
 									<a href="::v.getLink()::" target="_blank">::v.name::</a>
 								</h4>
-								<p>$$vendorIcon(::v::) ::v.zipCode:: ::v.city::</p>									
+								<p>$$publicVendorIcon(::v::) ::v.zipCode:: ::v.city::</p>									
 							</div>
 						</div>
 						

@@ -6,14 +6,14 @@
 		<div class="block">
 			
 			<h4>
-				::group.name:: ::group.imageId::
+				::group.name::
 			</h4>
 
 			::if group.imageId!=null::
 			::if group.extUrl!=null && group.extUrl!=""::
-			<a href="::group.extUrl::"><img src="::file(group.imageId)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/></a>
+				<a href="::group.extUrl::"><img src="::file(group.imageId)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/></a>
 			::else::
-			<img src="::file(group.imageId)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/>
+				<img src="::file(group.imageId)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/>
 			::end::
 			::end::
 			

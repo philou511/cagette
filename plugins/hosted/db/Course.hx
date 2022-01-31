@@ -19,7 +19,7 @@ class Course extends sys.db.Object
 	}
 
 	public function getStudents(){
-		return CompanyCourse.manager.search($courseId==id,false).array().filter( cc -> cc.company.training);		
+		return CompanyCourse.manager.search($courseId==id,false).array().filter( cc -> cc.company.offer==Training);		
 	}
 
 	public static function all(){

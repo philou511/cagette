@@ -11,19 +11,9 @@
 		<!-- Cagette very own icon font -->
 		<link rel="stylesheet" href="/font/icons.css?v=::getVariable('css')::" />
 			
-		<!-- JQUERY 
-		<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-		-->
-
 		<!-- BOOTSTRAP 	-->
 		<link rel="stylesheet" href="/css/::getVariable('css')::/bootstrap.min.css" />
 				
-		<!-- bootstrap datepicker 
-		<script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
-		<script type="text/javascript" src="/bower_components/moment/locale/fr.js"></script>
-		<script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
-		<link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />-->
-		
 		<!-- polyfill for IE11 : Object.assign() doesnt exists in IE11 , error in libs.prod.js -->
 		<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
 
@@ -65,7 +55,7 @@
 		
 		::raw __content__::
 		
-		$$ga()
+		$$matomo()
 		  
 		<script type="text/javascript"> 
 			//Tooltips & popovers
