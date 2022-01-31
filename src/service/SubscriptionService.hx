@@ -1131,7 +1131,7 @@ class SubscriptionService
 	}
 
 
-	public static function createOrUpdateTotalOperation( subscription : db.Subscription ) : db.Operation {
+	public static function createOrUpdateTotalOperation( subscription:db.Subscription ) : db.Operation {
 
 		if( subscription == null )  throw new Error( 'Pas de souscription fournie.' );
 
