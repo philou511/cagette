@@ -576,7 +576,9 @@
 		::elseif(s==6)::
 			Formule Découverte
 		::elseif(s==7)::
-			Formule Pro
+			Formule Pro (abo mensuel)
+		::elseif(s==8)::
+			Formule Pro (abo annuel)	
 		::end::
 	</macro>
     
