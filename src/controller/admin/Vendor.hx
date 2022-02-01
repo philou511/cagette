@@ -198,7 +198,7 @@ class Vendor extends controller.Controller
 			BridgeService.syncVendorToHubspot(v);
 		}
 
-		if (app.params["disableAccess"] != null) {
+		/*if (app.params["disableAccess"] != null) {
 			var user = db.User.manager.get(Std.parseInt(app.params["disableAccess"]), false);
 			var uc = pro.db.PUserCompany.get(user, cpro, true);
 			uc.disabled = true;
@@ -209,7 +209,7 @@ class Vendor extends controller.Controller
 			var uc = pro.db.PUserCompany.get(user, cpro, true);			
 			uc.disabled = false;
 			uc.update();
-		}
+		}*/
 
 		view.stats = pro.db.VendorStats.getOrCreate(v);
 		view.courses = hosted.db.CompanyCourse.manager.search($company == cpro, false);

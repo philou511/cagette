@@ -70,7 +70,7 @@ class Vendor extends Object
 	@hideInForms public var companyCapital : SNull<SInt>; //capital social
 	@hideInForms public var activityCode:SNull<SString<8>>;//code NAF (NAFRev2)
 	
-	@hideInForms public var vendorPolicy:SBool; //charte producteurs
+	// @hideInForms public var vendorPolicy:SBool; //charte producteurs
 	@hideInForms public var tosVersion: SNull<SInt>; //CGV version checked
 	
 	public var linkText:SNull<SString<256>>;
@@ -85,7 +85,7 @@ class Vendor extends Object
 	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
 	@hideInForms public var disabled : SNull<SEnum<DisabledReason>>; // vendor is disabled
 	
-	@hideInForms public var isTest : SBool; //cpro test account
+	// @hideInForms public var isTest : SBool; //cpro test account
 
 	@hideInForms public var lat:SNull<SFloat>;
 	@hideInForms public var lng:SNull<SFloat>;

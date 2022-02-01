@@ -616,79 +616,6 @@ class Admin extends controller.Controller {
 		}
 	}
 
-	/**
-		find groups with test cpros
-	**/
-	function doFindGroupsWithTestCpros() {
-		/*var out = new Map<Int,{
-			id:Int,
-			groupName:String,
-
-
-		}>();*/
-
-		var groups = [];
-		for (vs in VendorStats.manager.search($type == VTCproTest, false)) {
-			var v = vs.vendor;
-			var cpro = CagettePro.getFromVendor(v);
-
-			for (c in cpro.getClients())
-				groups.push(c);
-		}
-
-		groups = ObjectListTool.deduplicate(groups);
-
-		var data = new Array<{
-			id:Int,
-			name:String,
-			groupLeader:String,
-			email:String,
-			invitedVendors:Int,
-			proVendors:Int,
-			testProVendors:Int
-		}>();
-
-		for (g in groups) {
-			var invitedVendors = 0;
-			var proVendors = 0;
-			var testCproVendors = 0;
-			for (c in g.getActiveContracts()) {
-				var rc = RemoteCatalog.getFromContract(c);
-
-				if (rc == null) {
-					invitedVendors++;
-				} else {
-					// var cpro = rc.getCatalog().company;
-					if (c.vendor.isTest) {
-						testCproVendors++;
-					} else {
-						proVendors++;
-					}
-				}
-			}
-
-			data.push({
-				id: g.id,
-				name: g.name,
-				groupLeader: g.contact != null ? g.contact.getName() : "",
-				email: g.contact != null ? g.contact.email : "",
-				invitedVendors: invitedVendors,
-				proVendors: proVendors,
-				testProVendors: testCproVendors
-			});
-		}
-
-		sugoi.tools.Csv.printCsvDataFromObjects(data, [
-			"id",
-			"name",
-			"groupLeader",
-			"email",
-			"invitedVendors",
-			"proVendors",
-			"testProVendors"
-		], "Groupes avec Cpro Test");
-	}
-
 	@admin
 	function doMigrateOperations() {
 		// 2020-07-31 : refacto payment ops
@@ -814,7 +741,7 @@ class Admin extends controller.Controller {
 	/**
 	 * Create a cagette pro account
 	 */
-	function doCreateCpro(vendor:db.Vendor) {
+	/*function doCreateCpro(vendor:db.Vendor) {
 		if (pro.db.CagettePro.getFromVendor(vendor) != null)
 			throw Error("/admin/vendor/view/" + vendor.id, vendor.name + " a deja un cagette Pro");
 
@@ -839,9 +766,9 @@ class Admin extends controller.Controller {
 		VendorStats.updateStats(vendor);
 
 		throw Ok("/admin/vendor/view/" + vendor.id, "Compte Cagette Pro créé");
-	}
+	}*/
 
-	function doCproTest(vendor:db.Vendor) {
+	/*function doCproTest(vendor:db.Vendor) {
 		vendor.lock();
 
 		var cpro = pro.db.CagettePro.getFromVendor(vendor);
@@ -867,7 +794,7 @@ class Admin extends controller.Controller {
 		VendorStats.updateStats(vendor);
 
 		throw Ok("/admin/vendor/view/" + vendor.id, "Compte passé en Cagette Pro Test");
-	}
+	}*/
 
 	@tpl("form.mtt")
 	public function doNewVendor() {
@@ -1622,7 +1549,7 @@ class Admin extends controller.Controller {
 	}
 
 
-	function doCleanCproTest(){
+	/*function doCleanCproTest(){
 
 		var vendors = db.Vendor.manager.search($isTest==true,false);
 		var print = controller.Cron.print;
@@ -1634,11 +1561,11 @@ class Admin extends controller.Controller {
 			if(cpro==null){
 				print("No Cpro !!");
 			}else{
-				/*for( uc in pro.db.PUserCompany.getUsers(cpro)){
-					if(!uc.disabled){
-						print('${uc.user.getName()} is not disabled !');
-					}
-				}*/
+				// for( uc in pro.db.PUserCompany.getUsers(cpro)){
+				// 	if(!uc.disabled){
+				// 		print('${uc.user.getName()} is not disabled !');
+				// 	}
+				// }
 
 				for ( catalog in cpro.getCatalogs() ){
 
@@ -1652,5 +1579,5 @@ class Admin extends controller.Controller {
 				VendorStats.updateStats(v);				
 			}
 		}
-	}
+	}*/
 }
