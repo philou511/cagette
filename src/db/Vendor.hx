@@ -92,6 +92,8 @@ class Vendor extends Object
 
 	@hideInForms public var betaFlags:SFlags<VendorBetaFlags>;
 
+	@hideInForms public var stripeCustomerId:SNull<SString<255>>;
+
 	public function new() 
 	{
 		super();
