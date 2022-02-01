@@ -37,6 +37,8 @@ enum VendorBetaFlags{
 /**
  * Vendor (farmer/producer/vendor)
  */
+@:index(stripeCustomerId)
+@:index(companyNumber,companySubNumber,country,unique)
 class Vendor extends Object
 {
 	public var id : SId;
@@ -64,7 +66,7 @@ class Vendor extends Object
 
 	//legal infos
 	@hideInForms public var companyNumber : SNull<SString<128>>; //SIRET
-	@hideInForms public var companySubNumber : SNull<SString<128>>; 
+	@hideInForms public var companySubNumber : SNull<STinyInt>; 
 	@hideInForms public var vatNumber : SNull<SString<128>>; //VAT number
 	@hideInForms public var legalStatus : SNull<SInt>; //statut juridique
 	@hideInForms public var companyCapital : SNull<SInt>; //capital social
@@ -91,6 +93,8 @@ class Vendor extends Object
 	@hideInForms public var lng:SNull<SFloat>;
 
 	@hideInForms public var betaFlags:SFlags<VendorBetaFlags>;
+
+	@hideInForms public var stripeCustomerId:SNull<SString<255>>;
 
 	public function new() 
 	{
