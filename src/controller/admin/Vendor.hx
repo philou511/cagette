@@ -23,6 +23,7 @@ class Vendor extends controller.Controller
 		var total = 0;
 		var totalCpros = 0;
 		var totalActive = 0;
+		var defaultType = VTCproSubscriber;
 
 		// form
 		var f = new sugoi.form.Form("vendors");
@@ -32,13 +33,14 @@ class Vendor extends controller.Controller
 			{label: "Tous", value: "all"},
 			{label: "Gratuit", value: VTFree.string()},
 			{label: "Invité", value: VTInvited.string()},
-			{label: "Invité dans un Cagette pro", value: VTInvitedPro.string()},
-			{label: "Offre Pro formé", value: VTCpro.string()},
+			{label: "Invité dans un compte producteur", value: VTInvitedPro.string()},
+			{label: "Formule Membre (formé)", value: VTCpro.string()},
 			{label: "Cagette Pro test", value: VTCproTest.string()},
 			{label: "Compte pédagogique", value: VTStudent.string()},
-			{label: "Offre Découverte", value: VTDiscovery.string()},
+			{label: "Formule Découverte", value: VTDiscovery.string()},
+			{label: "Formule Pro (abo)", value: VTCproSubscriber.string()},
 		];
-		f.addElement(new sugoi.form.elements.StringSelect("type", "Type de producteur", data, VTDiscovery.string(), true, ""));
+		f.addElement(new sugoi.form.elements.StringSelect("type", "Type de producteur", data, defaultType.string(), true, ""));
 		f.addElement(new sugoi.form.elements.StringInput("zipCodes", "Saisir des numéros de département séparés par des virgules ou laisser vide."));
 		f.addElement(new sugoi.form.elements.StringSelect("country", "Pays", db.Place.getCountries(), "FR", true, ""));
 		var data = [
@@ -97,7 +99,7 @@ class Vendor extends controller.Controller
 		} else {
 			// default settings
 			sql_where_and.push("active=1");
-			sql_where_and.push("type=" + Type.enumIndex(VTDiscovery));
+			sql_where_and.push("type=" + Type.enumIndex(defaultType));
 		}
 
 		// QUERY

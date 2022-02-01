@@ -49,9 +49,8 @@ class MangopayGroupController extends controller.Controller
 		view.timeframe = timeframe;
 		var mds = MultiDistrib.getFromTimeRange(group,timeframe.from,timeframe.to);
 		view.multidistribs = mds;
-		view.getMangopayGroupPayout = function(md:MultiDistrib){
-			return MangopayGroupPayOut.get(md);
-		} 
+		view.getMangopayGroupPayout = (md:MultiDistrib)-> MangopayGroupPayOut.get(md);
+		view.getMultidistribNetTurnover = MangopayPlugin.getMultidistribNetTurnover;
 
 		view.getMangopayECTotal = MangopayPlugin.getMultidistribNetTurnover; 
 

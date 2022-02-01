@@ -4,7 +4,7 @@
 		<h3>Paiements Mangopay</h3>
 		
 		<p class="text-center">
-            SOLDE TOTAL ACTUEL : <br/>
+            Solde de votre compte Mangopay : <br/>
             <b>::formatNum(wallet.Balance.Amount/100):: ::wallet.Balance.Currency::</b>
         </p>
 
@@ -63,7 +63,7 @@
 
                 ::else::                        
                     <td>
-                        -
+                        <span class="disabled">::formatNum(getMultidistribNetTurnover(md)):: &euro;</span>                        
                     </td>
                     <td>
                         <span class="disabled">Trop tôt, cette distribution n'est pas encore validée</span>
