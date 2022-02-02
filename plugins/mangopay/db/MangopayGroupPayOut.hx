@@ -11,7 +11,7 @@ class MangopayGroupPayOut extends sys.db.Object
     public var id : SId;
     @:relation(multiDistribId) public var multiDistrib     : db.MultiDistrib;
 	public var payOutId         : SString<64>; //payout ID in mangopay
-    public var cachedDatas      : SNull<SData<PayOut>>; // @deprecated
+    // public var cachedDatas      : SNull<SData<PayOut>>; // @deprecated
     public var data : SString<1024>; //payout data stored from Mangopay API
 
 	public static function get(md:db.MultiDistrib,?lock=false){

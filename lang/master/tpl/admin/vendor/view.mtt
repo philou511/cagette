@@ -206,20 +206,11 @@
 			</td>
 			<td>::uc._user.email::</td>
 			<td>
-				::if(uc.disabled)::
-				<p class="alert alert-danger">Accès coupé (cagette pro test non inscrit en formation)</p>
-				::end::
 				::if(uc.legalRepresentative)::
 				Représentant légal.
 				::end::
 			</td>
-			<td>
-				::if(uc.disabled)::
-				<a href="?enableAccess=::uc.userId::" class="btn btn-danger btn-sm">Réouvrir l'accès</a>
-				::else::
-				<a href="?disableAccess=::uc.userId::" class="btn btn-default btn-sm">Bloquer l'accès</a>
-				::end::
-			</td>
+			
 		</tr>
 		::end::
 	</table>

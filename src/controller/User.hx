@@ -99,8 +99,8 @@ class User extends Controller
 		#end
 
 		view.isGroupAdmin = app.user.getUserGroups().find(ug -> return ug.isGroupManager()) != null;
-		view.cagetteProTest = cagettePros.find(cp -> cp.vendor.isTest)!=null;
-		view.memberVendor = cagettePros.find(cp -> cp.vendor.isTest==false && cp.offer==Member)!=null;
+		//view.cagetteProTest = cagettePros.find(cp -> cp.vendor.isTest)!=null;
+		view.memberVendor = cagettePros.find(cp -> cp.offer==Member)!=null;
 
 	}
 	

@@ -42,9 +42,9 @@ class CourseService {
         defCpro.offer = Member;
         if(defCpro.id==null) defCpro.insert() else defCpro.update();
 
-        defVendor.lock();
+        /*defVendor.lock();
         defVendor.isTest = false;
-        defVendor.update();
+        defVendor.update();*/
 
         if(v.name.indexOf("(formation)")<0){
             v.lock();
