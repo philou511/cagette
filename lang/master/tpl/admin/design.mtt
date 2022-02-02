@@ -15,7 +15,7 @@
 			<li><a href="/admin/emails"><i class="icon icon-mail"></i> Emails</a> </li>			
 			<li><a href="/admin/graph"><i class="icon icon-chart"></i> Statistiques</a> </li>	
 			<li><a href="/admin/messages"><i class="icon icon-info"></i> Messages</a> </li>					
-			<li><a href="/admin/newsCreator">
+			<li><a href="/admin/news">
 				<i class="icon" >
 					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" preserveAspectRatio="xMidYMid meet" viewBox="0 0 22 22">
 						<path d="m20 3h-16c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2v-14c0-1.11-.89-2-2-2m-15 4h5v6h-5v-6m14 10h-14v-2h14v2m0-4h-7v-2h7v2m0-4h-7v-2h7v2z" fill="currentColor"></path>
