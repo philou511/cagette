@@ -291,7 +291,7 @@ class Mangopay
 
 		var mangopayPayOut = new MangopayGroupPayOut();
 		mangopayPayOut.payOutId = payOut.Id;
-		mangopayPayOut.cachedDatas = payOut;
+		mangopayPayOut.setData(payOut);
 		mangopayPayOut.multiDistrib = md;
 		mangopayPayOut.insert();
 

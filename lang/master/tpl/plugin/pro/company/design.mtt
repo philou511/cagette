@@ -8,6 +8,7 @@
 			<li ::attr class if(nav[1]=="users") 		'active'::><a href="/p/pro/company/users">Utilisateurs</a></li>
 			<li ::attr class if(nav[1]=="vendors") 		'active'::><a href="/p/pro/company/vendors">Autres producteurs</a></li>
 			<li ::attr class if(nav[1]=="publicPage") 	'active'::><a href="/p/pro/company/publicPage">Ma page producteur</a></li>			
+			<li ::attr class if(nav[1]=="upgrade") 	'active'::><a href="/p/pro/upgrade">Ma formule</a></li>			
 			::if navbar!=null::
 				::foreach i navbar::
 				<li ::attr class if(nav[1]==i.id) 'active'::>

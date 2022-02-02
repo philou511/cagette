@@ -1634,11 +1634,22 @@ class Admin extends controller.Controller {
 			if(cpro==null){
 				print("No Cpro !!");
 			}else{
-				for( uc in pro.db.PUserCompany.getUsers(cpro)){
+				/*for( uc in pro.db.PUserCompany.getUsers(cpro)){
 					if(!uc.disabled){
 						print('${uc.user.getName()} is not disabled !');
 					}
+				}*/
+
+				for ( catalog in cpro.getCatalogs() ){
+
+					//break linkage
+					var rcs = RemoteCatalog.getFromCatalog(catalog,true);
+					for( rc in rcs) rc.delete();
 				}
+
+				cpro.delete();
+				print('${v.name} redevient invité !');
+				VendorStats.updateStats(v);				
 			}
 		}
 	}
