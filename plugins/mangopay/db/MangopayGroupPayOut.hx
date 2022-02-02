@@ -34,7 +34,7 @@ class MangopayGroupPayOut extends sys.db.Object
     **/
     function refreshDatas():Void{
         if(this.payOutId==null || this.payOutId=="") return;
-        if(this.data==null || getData().Status!=Succeeded){
+        if(this.data==null || this.data=="" || getData().Status!=Succeeded){
             this.lock();
             this.setData( mangopay.Mangopay.getPayOut(this.payOutId) );
             this.update();
@@ -56,6 +56,7 @@ class MangopayGroupPayOut extends sys.db.Object
 	}
 
 	public function getData():PayOut{
+        if(this.data==null || this.data=="") refreshDatas();
 		return haxe.Json.parse(this.data);
 	}
 

@@ -236,11 +236,12 @@ class Transaction extends controller.Controller
 		}
 		
 		var total = tmpBasket.getTotal();
+		var group = tmpBasket.multiDistrib.group;
 		view.amount = total;		
 		view.tmpBasket = tmpBasket;
-		view.paymentTypes = service.PaymentService.getPaymentTypes(PCPayment, app.user.getGroup());
-		view.allowMoneyPotWithNegativeBalance = app.user.getGroup().allowMoneyPotWithNegativeBalance;	
-		view.futurebalance = db.UserGroup.get(app.user, app.user.getGroup()).balance - total;
+		view.paymentTypes = service.PaymentService.getPaymentTypes(PCPayment, group);
+		view.allowMoneyPotWithNegativeBalance = group.allowMoneyPotWithNegativeBalance;	
+		view.futurebalance = db.UserGroup.get(app.user, group).balance - total;
 	}
 
 	@tpl("transaction/tmpBasket.mtt")

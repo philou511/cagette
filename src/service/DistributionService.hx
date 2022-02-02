@@ -290,7 +290,7 @@ class DistributionService
 			}
 		}
 
-		if(catalog.vendor.isDisabled()){
+		if(md.group.hasShopMode() && catalog.vendor.isDisabled()){
 			throw new Error('Le compte de "${catalog.vendor.name}" est désactivé. Raison : "${catalog.vendor.getDisabledReason()}"');
 		} 
 
