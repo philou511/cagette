@@ -70,8 +70,7 @@
 			$$publicVendorIcon(::vendor::)	<b>$$vendorType(::enumIndex(stats._type)::)</b>
 			::if(cpro!=null)::
 				(# <a href="/db/pro.db.CagettePro/edit/::cpro.id::" target="_blank">::cpro.id::</a>)			
-				<br/>
-				::if(cpro.offer==3)::<i class="icon icon-student" style="color:#336600"></i> Compte pédagogique<br/> ::end::
+				<br/>				
 			::end::
 		</p>
 		
@@ -152,6 +151,28 @@
 		</p>
 
 	</div>
+
+	<div class="col-md-12">
+		::if(vendor.disabled!=null)::
+			<div class="alert alert-danger">
+				<i class="icon icon-alert"></i> Compte bloqué : ::vendor.getDisabledReason():: 
+				<a href="/admin/vendor/ban/::vendor.id::?unban=1" class="btn btn-default btn-xs">Débloquer</a>			
+			</div>
+		::else::
+			<div class="dropdown">
+				<button class="btn btn-default  btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					<i class="icon icon-delete"></i> Bloquer
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+					<li><a href="/admin/vendor/ban/::vendor.id::?reason=0">Informations légales incomplètes</a></li>
+					<li><a href="/admin/vendor/ban/::vendor.id::?reason=1">Producteur incompatible avec la charte producteur de Cagette.net</a></li>
+					<li><a href="/admin/vendor/ban/::vendor.id::?reason=2">Producteur bloqué par les administrateurs</a></li>
+					<!--<li><a href="/admin/vendor/ban/::vendor.id::?reason=3">Ce producteur a atteint sa limite de chiffre d'affaires annuel</a></li>-->			
+				</ul>
+			</div>
+		::end::
+		</div>
 </div>
 
 <div class="row" style="margin-bottom: 24px;">
@@ -171,29 +192,7 @@
 	</div>
 </div>
 
-<div class="row">
-	<div class="col-md-12">
-	::if(vendor.disabled!=null)::
-		<div class="alert alert-danger">
-			<i class="icon icon-alert"></i> Compte bloqué : ::vendor.getDisabledReason():: 
-			<a href="/admin/vendor/ban/::vendor.id::?unban=1" class="btn btn-default btn-xs">Débloquer</a>			
-		</div>
-	::else::
-		<div class="dropdown">
-			<button class="btn btn-default  btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-				<i class="icon icon-delete"></i> Bloquer
-				<span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-				<li><a href="/admin/vendor/ban/::vendor.id::?reason=0">Informations légales incomplètes</a></li>
-				<li><a href="/admin/vendor/ban/::vendor.id::?reason=1">Producteur incompatible avec la charte producteur de Cagette.net</a></li>
-				<li><a href="/admin/vendor/ban/::vendor.id::?reason=2">Producteur bloqué par les administrateurs</a></li>
-				<!--<li><a href="/admin/vendor/ban/::vendor.id::?reason=3">Ce producteur a atteint sa limite de chiffre d'affaires annuel</a></li>-->			
-			</ul>
-		</div>
-	::end::
-	</div>
-</div>
+
 
 ::if(cpro!=null)::
 <p>

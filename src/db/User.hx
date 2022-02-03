@@ -643,7 +643,7 @@ class User extends Object {
 		}else{			
 			var vendor = uc.company.vendor;
 			infos = {
-				type:"Cagette Pro",
+				type:"Producteur",
 				id:vendor.id,
 				name:vendor.name
 			};

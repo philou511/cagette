@@ -477,7 +477,8 @@ class Course extends sugoi.BaseController
 				throw Ok("/p/hosted/course/");
 			}*/
 
-			throw Error("/p/hosted/course/view/"+course.id,"Impossible de trouver un compte producteur Découverte ou Pro avec le même email !");
+			throw Error("/p/hosted/course/view/"+course.id,"Impossible de trouver un compte producteur Découverte ou Pro avec le même email !
+			Le producteur doit obligatoirement ouvrir un compte découverte pour faire la formation");
 		}
 		
 		

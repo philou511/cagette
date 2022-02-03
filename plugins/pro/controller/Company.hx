@@ -126,15 +126,19 @@ class Company extends controller.Controller
 		view.form = f;
 	}
 	
-	public function doDeleteUser(u:db.User){
+	public function doDeleteUser(userToDelete:db.User){
 		
 		if (checkToken()){
 			
-			if (u.id == app.user.id && !app.user.isAdmin() ) {
+			if (userToDelete.id == app.user.id && !app.user.isAdmin() ) {
 				throw Error("/p/pro/company/users", "Vous ne pouvez pas vous retirer l'accès à vous même");
 			}
+
+			if(company.getUsers().count(user -> return userToDelete.id!=user.id)==0){
+				throw Error("/p/pro/company/users", "Vous ne pouvez pas supprimer cet utilisateur. Au moins une personne doit avoir accès à un compte producteur.");
+			}
 			
-			var uc = pro.db.PUserCompany.get(u, company);			
+			var uc = pro.db.PUserCompany.get(userToDelete, company);			
 			if (uc != null){
 				uc.lock();
 				uc.delete();
