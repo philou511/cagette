@@ -1,11 +1,11 @@
 ::use 'admin/design.mtt'::
 	<div class="article">
 		
-		<h3>Ouvrir Cagette Pro définitif de "::cpro._vendor.name::"</h3>
+		<h3>Chercher un compte existant pour "::cpro._vendor.name::"</h3>
 
         <p>
             Il semble qu'il y aie déja des comptes producteurs similaires.<br/>
-            Sélectionnez celui qui deviendra le compte Cagette Pro définitif :
+            Sélectionnez celui qui deviendra le compte producteur définitif :
         </p>
         
         <form action="">
@@ -17,7 +17,7 @@
                 <th>email</th>
                 <th>Type</th>
                 <th>actif</th>
-                <th>Désactivé</th>
+                <th>bloqué</th>
                 <th>C.A total</th>
             </tr>
             ::foreach v vendors::
@@ -33,18 +33,18 @@
                 <td>$$vendorType(::vs.type::)</td>
                 <td>$$bool(::vs.active::)</td>
                 <td>
-                    ::if(cpro!=null && cpro.disabled)::  <b>Désactivé</b> ::end::
+                    ::if(v.isDisabled())::
+                        ::v.getDisabledReason()::
+                    ::else::
+                        non
+                    ::end::
                 </td>
                 <td>
                     ::formatNum(vs.turnoverTotal):: €
                 </td>
             </tr>
             ::end::
-            <tr>
-                <td><input type="radio" name="vendor" value="0"/></td>
-                
-                <td colspan="7">Créer un nouveau compte</td>
-            </tr>
+            
         </table>
 
         <input type="submit" value="Ok" class="btn btn-primary"/>

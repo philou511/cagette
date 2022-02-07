@@ -318,6 +318,14 @@ class VendorService{
 			App.current.session.addMessage("Merci d'avoir saisi vos informations légales. Votre compte a été débloqué.",false);
 		}
 
+		//training account MUST have "(formation)" in its name
+		var cpro = vendor.getCpro();
+		if(cpro!=null && cpro.offer==Training){
+			if(vendor.name.indexOf("(formation)")==-1){
+				vendor.name += " (formation)";
+			}
+		}
+
 		return vendor;
 	}
 

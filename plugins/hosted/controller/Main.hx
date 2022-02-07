@@ -150,31 +150,12 @@ class Main extends controller.Controller
 	@tpl("transaction/view.mtt")
 	public function doOperation(op:db.Operation){
 		view.op = op ;
-		
-		
-		/* SERVICE BROKEN
-		var lw = pro.payment.LWCPayment.getConnector(op.group);
-		
-		if (op.data.remoteOpId != null) {
-			//update status if needed
-			var td = lw.getMoneyInTransDetails(op.data.remoteOpId);
-			//if (td.HPAY[0].STATUS == "3" && op.pending){
-			//	op.lock();
-			//	op.pending = false;
-			//	op.update();
-			//}
-			
-			view.infos = td;	
-		}
-		*/
-		
 	}
 	
 	@admin public function doAddMe(g:db.Group){
 		
 		var ua = app.user.makeMemberOf(g);
 		throw Ok("/user/choose?group="+g.id, "Vous faites maintenant partie de " + ua.group.name);
-		
 	}
 	
 	@admin public function doDeleteGroup(a:db.Group) {
