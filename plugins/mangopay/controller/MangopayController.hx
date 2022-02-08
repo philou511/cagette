@@ -90,9 +90,9 @@ class MangopayController extends controller.Controller
 			//e-commerce : we put the money directly in the group wallet
 			var legalUserId = MangopayPlugin.getGroupLegalUserId(app.user.getGroup());
 			wallet = Mangopay.getOrCreateGroupWallet(legalUserId, user.getGroup());
-		}else if (type==pro.payment.MangopayMPPayment.TYPE){
+		/*}else if (type==pro.payment.MangopayMPPayment.TYPE){
 			//marketplace : we put the money in a user-group wallet
-			wallet = Mangopay.getOrCreateUserWallet(naturalUserId, user.getGroup());
+			wallet = Mangopay.getOrCreateUserWallet(naturalUserId, user.getGroup());*/
 		}else{
 			throw new tink.core.Error("payment type should be either mangopay-ec or mangopay-mp");
 		}

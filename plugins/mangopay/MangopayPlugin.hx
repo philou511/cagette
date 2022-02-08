@@ -218,14 +218,14 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 			case PreOperationDelete(op) :
 				//cannot delete a bank card payment op	
 				var type = op.getPaymentType();
-				if ( type == MangopayECPayment.TYPE || type == MangopayMPPayment.TYPE ){
+				if ( type == MangopayECPayment.TYPE /*|| type == MangopayMPPayment.TYPE*/ ){
 					throw sugoi.ControllerAction.ErrorAction("/member/payments/" + op.user.id, "Vous ne pouvez pas effacer un paiement ou remboursement par carte bancaire." );
 				}
 
 			case PreOperationEdit(op) :
 				//cannot edit a bank card payment op, unless the user is admin
 				var type = op.getPaymentType();
-				if ( !App.current.user.isAdmin() && (type == MangopayECPayment.TYPE || type == MangopayMPPayment.TYPE) ){
+				if ( !App.current.user.isAdmin() && (type == MangopayECPayment.TYPE /*|| type == MangopayMPPayment.TYPE*/) ){
 					throw sugoi.ControllerAction.ErrorAction("/member/payments/" + op.user.id, "Vous ne pouvez pas modifier un paiement ou remboursement par carte bancaire." );
 				}	
 
@@ -235,7 +235,7 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 				for( b in md.getBaskets()){
 
 					for( payment in b.getPaymentsOperations()){
-						if(payment.getPaymentType()==MangopayECPayment.TYPE || payment.getPaymentType()==MangopayMPPayment.TYPE){
+						if(payment.getPaymentType()==MangopayECPayment.TYPE /*|| payment.getPaymentType()==MangopayMPPayment.TYPE*/){
 							throw new tink.core.Error("Vous ne pouvez pas effacer cette distribution, car elle contient des commandes avec paiement par carte bancaire");
 						}
 					}
@@ -253,7 +253,7 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 		var payments = basket.getPaymentsOperations();
 		var mangopayPayments = [];
 		for( payment in payments) {
-			if(payment.getPaymentType() == MangopayMPPayment.TYPE || payment.getPaymentType() == MangopayECPayment.TYPE){
+			if(payment.getPaymentType() == MangopayECPayment.TYPE){
 				mangopayPayments.push(payment);
 			}
 		}
@@ -427,7 +427,7 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 					case payment.MoneyPot.TYPE : 
 					//do nothing
 
-					case MangopayECPayment.TYPE,MangopayMPPayment.TYPE :
+					case MangopayECPayment.TYPE :
 						//IMPORTANT D'ARRONDIR sinon décalage avec MP !
 						out.mpTurnover.ttc += round(  op.amount );
 						out.mpFixedFees.ttc += round( conf.legalUser.fixedFeeAmount );
@@ -487,7 +487,7 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 					var mpOp : CardWebPayIn = cast mpOp;
 					//this a succeeded payin
 					for (op in lastOps ){
-						if(op.getPaymentType()==pro.payment.MangopayECPayment.TYPE || op.getPaymentType()==pro.payment.MangopayMPPayment.TYPE){
+						if(op.getPaymentType()==pro.payment.MangopayECPayment.TYPE){
 							//its a mangopay payment
 							if(Std.string(mpOp.Id) == op.getPaymentData().remoteOpId){
 								//trace("related op found");
@@ -511,7 +511,7 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 							//find which Mp payment type is enabled in this group
 							var paymentTypes = service.PaymentService.getPaymentTypes(PCPayment,tmpBasket.multiDistrib.getGroup());
 							
-							var mp_type = Lambda.find(paymentTypes, function(pt) return pt.type==pro.payment.MangopayECPayment.TYPE || pt.type==pro.payment.MangopayMPPayment.TYPE );
+							var mp_type = Lambda.find(paymentTypes, function(pt) return pt.type==pro.payment.MangopayECPayment.TYPE );
 							
 							if(mp_type==null){
 								throw 'unable to find MPpayement among '+paymentTypes.map(p -> return p.type)+' for tmpBasket '+tmpBasket.id;
@@ -538,8 +538,8 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 	 */
 	public static function processOrder( tmpBasket:db.TmpBasket , payIn:CardWebPayIn , paymentType:String ):Array<db.UserOrder>{
 		
-		if(paymentType!=pro.payment.MangopayECPayment.TYPE && paymentType!=pro.payment.MangopayMPPayment.TYPE){
-			throw new Error("The payment type should be either mangopay-ec or mangopay-mp");
+		if(paymentType!=pro.payment.MangopayECPayment.TYPE){
+			throw new Error("The payment type should be mangopay-ec");
 		}
 		
 		//create real orders
