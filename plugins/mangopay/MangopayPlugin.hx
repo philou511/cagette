@@ -267,83 +267,6 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 		}
 	}
 
-	public function findCompany(vendor:db.Vendor):pro.db.CagettePro{
-		return pro.db.CagettePro.getFromVendor(vendor);
-	}
-
-
-	/**
-	*	Get the vendors dispatch for a distributed payment for a given basket (needed for marketplace payments)
-	**/
-	public static function getVendorsPaymentDispatch(basket:db.Basket):Map<Int,RevenueAndFees> {
-		// vendorId -> amount to transfer
-		var amountDispatchByVendorId = new Map<Int,RevenueAndFees>();
-
-		for( order in basket.getOrders())
-		{
-			var vendorId = order.product.catalog.vendor.id;
-			var amount = order.quantity * order.productPrice;
-			
-			//manage amount
-			if(amountDispatchByVendorId[vendorId] == null){
-				amountDispatchByVendorId[vendorId] = {amount:amount,netAmount:null,fixedFees:null,variableFees:null};
-			}else{
-				amountDispatchByVendorId[vendorId].amount += amount;
-			}
-		}
-
-		//manage netAmount and fees
-		var conf = getGroupConfig(basket.getGroup());
-		var fixedFeesMap = computeFixedFees(amountDispatchByVendorId,basket);
-
-		for( vendorId in amountDispatchByVendorId.keys()){
-			var data = amountDispatchByVendorId[vendorId];
-			data.variableFees = round(data.amount * conf.legalUser.variableFeeRate );
-			data.fixedFees = fixedFeesMap[vendorId];
-			data.netAmount = round(data.amount - data.variableFees - data.fixedFees);
-		}
-
-		return amountDispatchByVendorId;
-	}
-
-	/**
-		Returns a map containing shared fixed fees between vendors
-	**/
-	public static function computeFixedFees(dispatch:Map<Int,RevenueAndFees>,basket:db.Basket):Map<Int,Float>{
-		var feesMap = new Map<Int,Float>();
-
-		var total = 0.0;
-		for(v in dispatch){
-			total+=v.amount;
-		}
-
-		var conf = getGroupConfig(basket.getGroup());
-
-		//as much fixed fee as payment operations
-		var paymentOpNum = Lambda.count(basket.getPaymentsOperations());
-		var totalFee = paymentOpNum * conf.legalUser.fixedFeeAmount;
-		var remain :Float = paymentOpNum * conf.legalUser.fixedFeeAmount;
-
-		//dispatch
-		for( k in dispatch.keys()){
-			var fee = round( totalFee * (dispatch[k].amount / total) );
-			remain -= fee;
-			feesMap[k] = fee;
-		}
-
-		//assign remaining cents to the biggest seller 
-		var higher = null;
-		for( k in dispatch.keys()){
-			if(higher==null || dispatch[k].amount > dispatch[higher].amount){
-				higher = k;
-			}
-		}
-
-		feesMap[higher] += remain;
-
-		return feesMap;
-	}
-
 
 	static function round(f:Float):Float{
 		return Math.round(f*100)/100;
@@ -366,17 +289,20 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 	}
 
 	/**
-		Get net amount and fees from raw amount
+		Get net amount and fees from raw amount of an operation
 		rounding at the right place is very important !
 	**/
-	static public function getAmountAndFees(_amount:Float, conf:mangopay.db.MangopayLegalUserGroup):{amount:Float,netAmount:Float,fees:Float}{
+	static public function getAmountAndFees(_amount:Float, conf:mangopay.db.MangopayLegalUserGroup){
 		var amount = round(_amount);
 		var fees = round( conf.legalUser.fixedFeeAmount + ( Math.abs(amount) * conf.legalUser.variableFeeRate ) );
 		//if amount is negative, its a refund, thats why we add fees to the negative amount.
 		return {
 			amount 		: amount,
 			netAmount	: amount>0 ? amount - fees : amount + fees,
+			//Warning : fixedFees+variableFees != fees , because of rounding
 			fees 		: fees,
+			fixedFees	: conf.legalUser.fixedFeeAmount,
+			variableFees: round( Math.abs(amount) * conf.legalUser.variableFeeRate )
 		};
 	}
 	
@@ -428,10 +354,16 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 					//do nothing
 
 					case MangopayECPayment.TYPE :
-						//IMPORTANT D'ARRONDIR sinon décalage avec MP !
-						out.mpTurnover.ttc += round(  op.amount );
-						out.mpFixedFees.ttc += round( conf.legalUser.fixedFeeAmount );
-						out.mpVariableFees.ttc += round( op.amount * conf.legalUser.variableFeeRate );
+												
+						var amountAndFees = getAmountAndFees(op.amount,conf);
+						out.mpTurnover.ttc += round(op.amount);
+						if(op.amount>0){
+							out.mpFixedFees.ttc += amountAndFees.fixedFees;
+							out.mpVariableFees.ttc += amountAndFees.variableFees;
+						}else{
+							out.mpFixedFees.ttc -= amountAndFees.fixedFees;
+							out.mpVariableFees.ttc -= amountAndFees.variableFees;
+						}
 				}
 			}
 		}
@@ -442,26 +374,11 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 		out.total.ttc += out.transferTurnover.ttc;
 		out.total.ttc += out.mpTurnover.ttc;
 		out.total.ttc += out.cardTerminalTurnover.ttc;
-		out.total.ttc -= out.mpFixedFees.ttc;
-		out.total.ttc -= out.mpVariableFees.ttc;
+		out.total.ttc -= out.mpFixedFees.ttc; 		
+		out.total.ttc -= out.mpVariableFees.ttc;	
 
 		return out;
 	}
-
-
-		/*var legalRep = group.legalRepresentative;
-		if(legalRep == null) {
-			throw new Error("Vous devez définir un représentant légal dans les propriétés du groupe.");
-		}
-
-		if(legalRep.countryOfResidence == null || legalRep.birthDate == null || legalRep.nationality == null){
-			throw new Error("Le représentant légal doit spécifier son pays de résidence, date d'anniversaire et nationalité");
-		}
-
-		if(group.legalStatus==null){
-			throw new Error("Vous devez définir le statut légal de la structure qui collecte les paiements pour ce groupe Cagette (dans les propriétés du groupe).");
-		}
-	}*/
 
 	/**
 		Check Bug de Brigitte 
