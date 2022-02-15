@@ -240,11 +240,11 @@
 				});
 			};
 			
-			::if(discovery)::
+			/*::if(discovery)::
 				displayPopup("offre-formation-2022-01-A",1);							
 			::elseif(isGroupAdmin)::		
 				displayPopup("offre-formation-2022-01-B",1);
-			::end::
+			::end::*/
 			
 			//]]>
 	</script>
