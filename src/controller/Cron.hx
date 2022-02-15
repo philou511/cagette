@@ -272,7 +272,11 @@ class Cron extends Controller
 										La commande à chaque distribution est obligatoire dans le contrat "${subscription.catalog.name}". 
 										Vous pouvez modifier votre commande par défaut en accédant à votre souscription à ce contrat depuis la page "commandes" sur Cagette.net';
 
-										App.quickMail( subscription.user.email, distrib.catalog.name + ' : Commande par défaut', message, distrib.catalog.group );
+										//fail silently
+										try{} catch(e:Dynamic){
+											App.quickMail( subscription.user.email, distrib.catalog.name + ' : Commande par défaut', message, distrib.catalog.group );
+										}
+										
 									}
 								
 									//Create order operation only
@@ -718,7 +722,10 @@ class Cron extends Controller
 			html += explain;
 			html += t._("<p><a href='::distriburl::'>Click here to validate the delivery</a> (You must be connected to your Cagette group)", {distriburl:url});
 			
-			App.quickMail(d.getGroup().contact.email, subj, html);
+			if(d.getGroup().contact!=null){
+				App.quickMail(d.getGroup().contact.email, subj, html);
+			}
+			
 		}
 		
 		
