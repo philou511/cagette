@@ -3,6 +3,7 @@
     {"id":1,"name":"Apiculteur"},
 	{"id":2,"name":"Arboriculteur"},
     {"id":3,"name":"Artisan non alimentaire"},
+	{"id":73,"name":"Aviculteur"} 
     {"id":4,"name":"Biscotterie"},
     {"id":5,"name":"Biscuiterie"},
     {"id":6,"name":"Boucher"},
