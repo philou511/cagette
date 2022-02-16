@@ -24,6 +24,14 @@ class Subscriptions extends controller.Controller
 		if ( !app.user.canManageContract( catalog ) ) throw Error( '/', t._('Access forbidden') );
 
 		var catalogSubscriptions = SubscriptionService.getCatalogSubscriptions(catalog);
+
+		//subs sorting
+		var orderBy = app.params.get("orderBy");
+		if(orderBy=="userName" || orderBy==null){
+			catalogSubscriptions.sort( (a,b) -> a.user.lastName > b.user.lastName ? 1 : -1);
+			orderBy = "userName";
+		}
+		view.orderBy = orderBy;
 	
 		view.catalog = catalog;
 		view.c = catalog;

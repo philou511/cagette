@@ -75,6 +75,16 @@
             <i class="icon icon-euro"></i> Saisie de paiements en masse
         </a>
         ::end::
+
+        ::if(orderBy=="userName")::
+        <a href="?orderBy=subscriptionId" class="btn btn-default btn-sm">
+            Trier par ordre chronologique
+        </a>
+        ::else::
+        <a href="?orderBy=userName" class="btn btn-default btn-sm">
+            Trier par nom
+        </a>
+        ::end::
         
         <div class="row" style="margin-top: 10px; margin-bottom: 24px;">
             <div class="col-md-12">

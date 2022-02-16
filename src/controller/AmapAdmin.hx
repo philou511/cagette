@@ -76,6 +76,7 @@ class AmapAdmin extends Controller
 
 	@tpl("amapadmin/default.mtt")
 	function doDefault() {
+
 		var group = app.user.getGroup();
 		view.membersNum = UserGroup.manager.count($group == group);
 		view.contractsNum = group.getActiveContracts().length;
@@ -105,11 +106,6 @@ class AmapAdmin extends Controller
 		#else
 		view.visibleOnMap = true;
 		#end
-
-		
-		
-
-		
 	}
 	
 	@tpl("amapadmin/rights.mtt")

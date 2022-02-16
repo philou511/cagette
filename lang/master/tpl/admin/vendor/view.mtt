@@ -45,6 +45,7 @@
 			$$nullSafe(::vendor.address1::)<br/>
 			$$nullSafe(::vendor.address2::)<br/>
 			::vendor.zipCode:: ::vendor.city::<br/>
+			::vendor.country::<br/>
 			::if(vendor.lat!=null)::
 			<a href="https://www.google.fr/maps/search/+::vendor.lat::,+::vendor.lng::" target="_blank" class="btn btn-default btn-xs">Localiser</a>
 			::end::

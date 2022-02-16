@@ -34,7 +34,7 @@ class SubscriptionService
 		get subscriptions of a catalog
 	**/
 	public static function getCatalogSubscriptions( catalog : db.Catalog ) {
-		return db.Subscription.manager.search( $catalogId == catalog.id, false ).array();
+		return db.Subscription.manager.search( $catalogId == catalog.id, {orderBy:id},false ).array();
 	}
 
 	/**
