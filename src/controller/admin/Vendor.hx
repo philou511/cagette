@@ -101,7 +101,7 @@ class Vendor extends controller.Controller
 			// default settings
 			sql_where_and.push('active=1');
 			sql_where_and.push('type=${Type.enumIndex(defaultType)}');
-			sql_where_and.push('country=FR');
+			sql_where_and.push('country="FR"');
 		}
 
 		// QUERY

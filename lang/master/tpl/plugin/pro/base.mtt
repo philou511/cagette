@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" xml:lang="::LANG::" lang="::LANG::" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Cagette PRO</title>
+		<title>Compte producteur</title>
 
 		<!-- Cagette CSS -->
 		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
