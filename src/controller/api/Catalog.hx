@@ -32,4 +32,30 @@ class Catalog extends Controller
 
     }
 
+    /**
+        absences infos when there is no subscription
+    **/
+    public function doCatalogAbsences(catalog:db.Catalog){
+        json({
+            startDate : catalog.absencesStartDate,
+            endDate : catalog.absencesEndDate,
+            absentDistribsMaxNb : catalog.absentDistribsMaxNb,
+            possibleAbsentDistribs : SubscriptionService.getContractAbsencesDistribs(catalog).map(d -> d.getInfos())
+        });
+    }
+
+    /**
+        absences infos once a sub is created
+    **/
+    public function doSubscriptionAbsences(sub:db.Subscription){
+       /* json({
+            startDate : catalog.absencesStartDate,
+            endDate : catalog.absencesEndDate,
+            absentDistribsNb : sub.getAbsencesNb(),
+            absentDistribIds : sub.getAbsentDistribIds(),
+            possibleAbsentDistribs : SubscriptionService.getContractAbsencesDistribs(catalog).map(d -> d.getInfos())
+        });*/
+
+    }
+
 }

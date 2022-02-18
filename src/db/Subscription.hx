@@ -156,16 +156,12 @@ class Subscription extends Object {
 	}
 
 	public function getAbsencesNb():Int {
-
-		/*if ( this.absentDistribIds == null ) return 0;
-		var distribIds = this.absentDistribIds.split(',');
-		if ( this.catalog.absentDistribsMaxNb < distribIds.length ) {
-			return this.catalog.absentDistribsMaxNb;
-		}
-		return distribIds.length;*/
 		return getAbsentDistribIds().length;
 	}
 	
+	/**
+		get chosen absence distribs of this subscription
+	**/
 	public function getAbsentDistribIds() : Array<Int> {
 
 		if ( this.absentDistribIds == null ) return [];
