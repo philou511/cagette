@@ -29,12 +29,12 @@ class Signup extends controller.Controller
 		}
 
 		//has same mail than a vendor
-		var vendor : db.Vendor = db.Vendor.manager.select($email != null && ($email == app.user.email || $email == app.user.email2),true);
+		var vendor = db.Vendor.manager.select($email != null && ($email == app.user.email || $email == app.user.email2),true);
 		if( vendor!=null ){
-			//is this vendor cpro (but not cpro test)
-			// if(vendor.getCpro()!=null && vendor.isTest==false){
-				throw Error("/","Vous avez déjà accès à un compte Producteur");
-			// }
+			//is this vendor cpro
+			if(vendor.getCpro()!=null){
+				throw Error("/","Vous avez déjà accès à un compte Producteur : "+vendor.name);
+			}
 			view.vendorId = vendor.id;
 		}
 		

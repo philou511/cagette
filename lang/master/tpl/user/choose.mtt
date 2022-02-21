@@ -12,7 +12,7 @@
 		
 			<div class="row">
 				<div class="col-md-6 text-center">	
-					<img src="/img/infos.png" />
+					<!--<img src="/img/infos.png" />-->
 					<p>
 						<a href="https://formation.alilo.fr/course/view.php?id=7" class="btn btn-warning" target="_blank">
 							<i class="icon icon-youtube"></i> Guide Découverte
@@ -25,7 +25,7 @@
 				</div>
 				
 				<div class="col-md-6 text-center">
-					<img src="/img/question.png" />
+					<!--<img src="/img/question.png" />-->
 					<p>											
 						<!--<b>Visio d'aide aux Producteurs :</b><br/>
 						<a href="https://us02web.zoom.us/meeting/register/tZAkfu-oqTgvGdBOeJj3JGssxcH9HiFXdu5R" target="_blank" title="">1er lundi du mois à 18h</a><br/>
@@ -53,7 +53,7 @@
 		
 			<div class="row">
 				<div class="col-md-6 text-center">
-					<img src="/img/infos.png" />
+					<!--<img src="/img/infos.png" />-->
 					<p>
 						<a href="https://formation.alilo.fr/course/view.php?id=8" class="btn btn-warning" target="_blank">
 							<i class="icon icon-youtube"></i> Guide Coordinateur
@@ -69,7 +69,7 @@
 				</div>
 				
 				<div class="col-md-6 text-center">
-					<img src="/img/question.png" />
+					<!--<img src="/img/question.png" />-->
 					<p>
 						<!--<a href="https://us02web.zoom.us/meeting/register/tZEuf-6vqzwpGtTYCjqRtCfGyaqxSLl5gzvq" target="_blank" data-toggle="tooltip" title="Tous les 3e lundi du mois à 18h">Visio d'aide aux Coordinateurs</a><br/>
 						<b>Webinaire thématiques :</b><br/>
