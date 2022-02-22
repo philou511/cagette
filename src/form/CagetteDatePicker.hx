@@ -1,7 +1,7 @@
 package form;
 
-import sugoi.form.elements.NativeDatePicker;
 import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
+import sugoi.form.elements.NativeDatePicker;
 // import react.ReactMacro.jsx;
 // import react.ReactDOM;
 
@@ -17,7 +17,7 @@ class CagetteDatePicker extends NativeDatePicker {
     ?type: NativeDatePickerType = NativeDatePickerType.date,
     ?required:Bool=false,
     ?attibutes:String="",
-    ?openTo:String="date"
+    ?openTo:String="day"
   ) {
     super(name, label, _value, type, required, attributes);
     this.openTo = openTo;

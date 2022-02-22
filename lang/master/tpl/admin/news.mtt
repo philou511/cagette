@@ -1,0 +1,11 @@
+::use 'admin/design.mtt'::
+
+<div id="news-admin-container"></div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    neo.createNeoModule("news-admin-container", "newsAdmin");
+  });
+</script>
+
+::end::
