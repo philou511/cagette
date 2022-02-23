@@ -1,4 +1,5 @@
 package controller.api;
+import tink.core.Error;
 import service.SubscriptionService;
 import haxe.Json;
 import neko.Web;
@@ -48,14 +49,65 @@ class Catalog extends Controller
         absences infos once a sub is created
     **/
     public function doSubscriptionAbsences(sub:db.Subscription){
-       /* json({
+
+        if( sub.catalog.group.hasShopMode() ){
+            throw new Error(403,"group is in shop mode");
+        }
+
+		if ( !app.user.canManageContract(sub.catalog) && !(app.user.id==sub.user.id) ){
+			throw new Error(403,t._('Access forbidden') );
+		} 
+		
+		if( !SubscriptionService.canAbsencesBeEdited( sub.catalog ) ) {
+			throw new Error(403,t._('no absences mgmt in this catalog') );
+		}
+		
+		var absenceDistribs = sub.getAbsentDistribs();
+		var possibleAbsences = sub.getPossibleAbsentDistribs();
+		var now = Date.now().getTime();
+		possibleAbsences = possibleAbsences.filter(d -> d.orderEndDate.getTime() > now);
+		var lockedDistribs = absenceDistribs.filter( d -> d.orderEndDate.getTime() < now);	//absences that are not editable anymore
+		
+		/*if ( form.checkToken() ) {
+			try {
+				var absentDistribIds = lockedDistribs.map(d->d.id);
+				for ( i in 0...absenceDistribs.length ) {				
+					if(form.getElement('absentDistrib' + i)!=null){
+						absentDistribIds.push( form.getValueOf( 'absentDistrib' + i ) );	
+					}					
+				}
+				subService.updateAbsencesDates( subscription, absentDistribIds );				
+			} catch( error:Error ) {
+				throw Error( '/subscriptions/absences/' + subscription.id, error.message );
+			}
+			throw Ok( App.current.session.data.absencesReturnUrl, 'Les dates d\'absences ont bien été mises à jour.' );
+		}*/
+
+        var post = StringTools.urlDecode( sugoi.Web.getPostData() );
+        if(post!=null){
+            var newAbsentDistribIds:Array<Int> = Json.parse(post).absentDistribIds;
+            if (newAbsentDistribIds==null || newAbsentDistribIds.length==0) {
+                throw new Error(500,"bad parameter");
+            }
+            
+            var subService = new SubscriptionService();
+            subService.updateAbsencesDates( sub, newAbsentDistribIds );
+        }
+
+
+        /**
+            once the sub is created, absent distribs number cannot be changed.
+            But asbence distribs can be chosen, until they are 
+        **/
+        var catalog = sub.catalog;
+        json({
             startDate : catalog.absencesStartDate,
             endDate : catalog.absencesEndDate,
             absentDistribsNb : sub.getAbsencesNb(),
             absentDistribIds : sub.getAbsentDistribIds(),
-            possibleAbsentDistribs : SubscriptionService.getContractAbsencesDistribs(catalog).map(d -> d.getInfos())
-        });*/
-
+            closedDistribIds : lockedDistribs.map(d -> d.id),
+            possibleAbsentDistribs : possibleAbsences.map(d -> d.getInfos())
+        });
     }
 
 }
