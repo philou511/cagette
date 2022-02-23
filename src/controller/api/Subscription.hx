@@ -14,12 +14,12 @@ typedef NewSubscriptionDto = {
 class Subscription extends Controller
 {
 
-	public function doDefault(sub:db.Subscription){
+	public function doDefault(?sub:db.Subscription){
 
         // Create a new sub
-        var post = StringTools.urlDecode( sugoi.Web.getPostData() );
+        var post = sugoi.Web.getPostData();
         if(post!=null && sub==null){
-            var newSubData : NewSubscriptionDto = Json.parse(post);
+            var newSubData : NewSubscriptionDto = Json.parse(StringTools.urlDecode(post));
             var user = db.User.manager.get(newSubData.userId,false);
             var catalog = db.Catalog.manager.get(newSubData.catalogId,false);
 
@@ -37,6 +37,7 @@ class Subscription extends Controller
         }    
 
         return json({
+            id : sub.id,
             startDate : sub.startDate,
             endDate : sub.endDate,
             user : sub.user.infos(),

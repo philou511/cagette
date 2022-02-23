@@ -427,7 +427,8 @@ class SubscriptionService
 		}
 			
 		if ( subscriptions1.length != 0 || subscriptions2.length != 0 || subscriptions3.length != 0 ) {
-			var subs = subscriptions1.concat(subscriptions2).concat(subscriptions3);
+			var subs = subscriptions1.concat(subscriptions2).concat(subscriptions3).array();
+			subs = tools.ObjectListTool.deduplicate(subs);
 			throw TypedError.typed( 'Il y a déjà une souscription pour ce membre pendant la période choisie.'+"("+subs.join(',')+")", OverlappingSubscription );
 		}
 	
@@ -686,13 +687,9 @@ class SubscriptionService
 		check(subscription);
 		subscription.insert();
 
-		if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
-			//CONST
-			this.createCSARecurrentOrders( subscription, ordersData );
-		} else {
-			//VAR
-			SubscriptionService.updateDefaultOrders( subscription, ordersData );
-		}
+		this.createCSARecurrentOrders( subscription, ordersData );
+		this.updateDefaultOrders( subscription, ordersData );
+		
 
 		return subscription;
 	}
@@ -952,12 +949,11 @@ class SubscriptionService
 		for ( order in subscriptionAllOrders ) {
 			OrderService.delete(order,true);
 		}
-
-		var subscriptionDistributions = getSubscriptionDistribs( subscription );		
+	
 		var t = sugoi.i18n.Locale.texts;
 	
 		var orders : Array<db.UserOrder> = [];
-		for ( distribution in subscriptionDistributions ) {
+		for ( distribution in getSubscriptionDistribs(subscription) ) {
 
 			for ( order in ordersData ) {
 
@@ -985,7 +981,7 @@ class SubscriptionService
 		
 		App.current.event( MakeOrder( orders ) );
 
-		if ( subscription.catalog.group.hasPayments() ) {
+		if ( subscription.catalog.hasPayments ) {
 			// create/update a single operation for the subscription total price
 			createOrUpdateTotalOperation( subscription );
 		}
@@ -1087,7 +1083,7 @@ class SubscriptionService
 	/**
 		Update default orders on a variable contract with requiresOrdering
 	**/
-	public static function updateDefaultOrders( subscription:db.Subscription, defaultOrders:Array<CSAOrder>){
+	public function updateDefaultOrders( subscription:db.Subscription, defaultOrders:Array<CSAOrder>){
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );		
 		if( !subscription.catalog.requiresOrdering ) return;
@@ -1095,7 +1091,7 @@ class SubscriptionService
 			throw new Error('La commande par défaut ne peut pas être vide. (Souscription de ${subscription.user.getName()})');
 		}
 
-		if( subscription.catalog.type==Catalog.TYPE_CONSTORDERS) return;
+		// if( subscription.catalog.type==Catalog.TYPE_CONSTORDERS) return;
 		
 		var totalPrice : Float = 0;
 		var totalQuantity : Float = 0;

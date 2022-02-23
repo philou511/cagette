@@ -69,9 +69,12 @@ class Catalog extends Controller
 		possibleAbsences = possibleAbsences.filter(d -> d.orderEndDate.getTime() > now);
 		var lockedDistribs = absenceDistribs.filter( d -> d.orderEndDate.getTime() < now);	//absences that are not editable anymore
 		
-        var post = StringTools.urlDecode( sugoi.Web.getPostData() );
+        var post =  sugoi.Web.getPostData();
         if(post!=null){
-            var newAbsentDistribIds:Array<Int> = Json.parse(post).absentDistribIds;
+            /*
+            POST payload should be like {"absentDistribIds":[1,2,3]}
+            */
+            var newAbsentDistribIds:Array<Int> = Json.parse(StringTools.urlDecode(post)).absentDistribIds;
             if (newAbsentDistribIds==null || newAbsentDistribIds.length==0) {
                 throw new Error(500,"bad parameter");
             }

@@ -1,4 +1,5 @@
 package controller;
+import sys.db.Types.SSerialized;
 import Common;
 import db.Catalog;
 import db.MultiDistrib;
@@ -344,7 +345,7 @@ class Contract extends Controller
 			app.setTemplate( 'contract/orderv.mtt' );
 		}
 
-		var subscriptionService = new SubscriptionService();
+		var ss = new SubscriptionService();
 		var currentOrComingSubscription = SubscriptionService.getCurrentOrComingSubscription( app.user, catalog );
 		var userOrders = new Array<{distrib:db.Distribution, ordersProducts:Array<{order:db.UserOrder, product:db.Product }>, ?isAbsence:Bool}>();
 		var products = catalog.getProducts();
@@ -552,11 +553,11 @@ class Contract extends Controller
 
 						if ( currentOrComingSubscription == null ) {
 							subscriptionIsNew = true;
-							currentOrComingSubscription = subscriptionService.createSubscription( app.user, catalog, varDefaultOrders, app.params.get("absencesNb").parseInt() );
+							currentOrComingSubscription = ss.createSubscription( app.user, catalog, varDefaultOrders, app.params.get("absencesNb").parseInt() );
 						} else {							
-							subscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, varDefaultOrders/*, null, app.params.get("absencesNb").parseInt()*/ );
+							ss.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, varDefaultOrders/*, null, app.params.get("absencesNb").parseInt()*/ );
 							if ( catalog.requiresOrdering && currentOrComingSubscription.getDefaultOrders().length == 0 ) {
-								SubscriptionService.updateDefaultOrders( currentOrComingSubscription, varDefaultOrders );
+								ss.updateDefaultOrders( currentOrComingSubscription, varDefaultOrders );
 							}
 						}
 						
@@ -601,9 +602,9 @@ class Contract extends Controller
 
 				try {
 					if ( currentOrComingSubscription == null ) {						
-						currentOrComingSubscription = subscriptionService.createSubscription( app.user, catalog, constOrders, app.params.get("absencesNb").parseInt() );
+						currentOrComingSubscription = ss.createSubscription( app.user, catalog, constOrders, app.params.get("absencesNb").parseInt() );
 					} else if ( !currentOrComingSubscription.paid() ) {						
-						subscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, constOrders/*, null, app.params.get("absencesNb").parseInt()*/ );
+						ss.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, constOrders/*, null, app.params.get("absencesNb").parseInt()*/ );
 					}
 				} catch ( e : Error ) {
 					throw Error( "/contract/order/" + catalog.id, e.message );

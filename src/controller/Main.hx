@@ -149,12 +149,14 @@ class Main extends Controller {
 			// manage tink Errors (service errors)
 			sugoi.Web.setReturnCode(e.code);
 			Sys.print(Json.stringify({error: {code: e.code, message: e.message, stack: e.exceptionStack}}));
+			app.rollback();
 		} catch (e:Dynamic) {
 			// manage other errors
 			sugoi.Web.setReturnCode(500);
 			var stack = haxe.CallStack.toString(haxe.CallStack.exceptionStack());
 			App.current.logError(e, stack);
 			Sys.print(Json.stringify({error: {code: 500, message: Std.string(e), stack: stack}}));
+			app.rollback();
 		}
 	}
 

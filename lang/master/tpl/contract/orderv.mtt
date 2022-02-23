@@ -428,7 +428,7 @@
 												::if currentOrComingSubscription != null::
 													::set selectedId = currentOrComingSubscription.getAbsencesNb()::
 												::end::
-												::foreach i loopList(0, subscriptionService.getAbsentDistribsMaxNb( catalog, currentOrComingSubscription ) + 1)::
+												::foreach i loopList(0, subscriptionService.getAbsentDistribsMaxNb( catalog ) + 1)::
 													::if i > 1::
 														::set label = "distributions"::
 													::else::

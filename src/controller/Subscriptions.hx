@@ -448,7 +448,8 @@ class Subscriptions extends controller.Controller
 
 		if( subscription.catalog.group.hasShopMode() ) throw Redirect( "/contract/view/" + subscription.catalog.id );
 		if( subscription.catalog.requiresOrdering == null || !subscription.catalog.requiresOrdering ) throw Redirect( "/contract/order/" + subscription.catalog.id );
-		
+		var ss = new SubscriptionService();
+
 		var form = new sugoi.form.Form("subscriptionDefaultOrders");
 		view.form = form;
 
@@ -475,7 +476,7 @@ class Subscriptions extends controller.Controller
 					var quantity : Float = form.getValueOf( 'quantity' + product.id );
 					defaultOrders.push( { productId : product.id, quantity : quantity } );
 				}
-				SubscriptionService.updateDefaultOrders( subscription, defaultOrders );
+				ss.updateDefaultOrders( subscription, defaultOrders );
 			} catch( error : Error ) {
 				throw Error( '/subscriptions/defaultOrders/' + subscription.id, error.message );
 			}
