@@ -27,6 +27,7 @@ class Catalog extends Controller
             distributions : catalog.getDistribs(false).array().map( d -> d.getInfos() ),
             constraints : SubscriptionService.getContractDescription(catalog),
             absences : SubscriptionService.getAbsencesDescription(catalog),
+            absentDistribsMaxNb : catalog.absentDistribsMaxNb,
         }
 
         json(out);
@@ -68,32 +69,16 @@ class Catalog extends Controller
 		possibleAbsences = possibleAbsences.filter(d -> d.orderEndDate.getTime() > now);
 		var lockedDistribs = absenceDistribs.filter( d -> d.orderEndDate.getTime() < now);	//absences that are not editable anymore
 		
-		/*if ( form.checkToken() ) {
-			try {
-				var absentDistribIds = lockedDistribs.map(d->d.id);
-				for ( i in 0...absenceDistribs.length ) {				
-					if(form.getElement('absentDistrib' + i)!=null){
-						absentDistribIds.push( form.getValueOf( 'absentDistrib' + i ) );	
-					}					
-				}
-				subService.updateAbsencesDates( subscription, absentDistribIds );				
-			} catch( error:Error ) {
-				throw Error( '/subscriptions/absences/' + subscription.id, error.message );
-			}
-			throw Ok( App.current.session.data.absencesReturnUrl, 'Les dates d\'absences ont bien été mises à jour.' );
-		}*/
-
         var post = StringTools.urlDecode( sugoi.Web.getPostData() );
         if(post!=null){
             var newAbsentDistribIds:Array<Int> = Json.parse(post).absentDistribIds;
             if (newAbsentDistribIds==null || newAbsentDistribIds.length==0) {
                 throw new Error(500,"bad parameter");
             }
-            
+
             var subService = new SubscriptionService();
             subService.updateAbsencesDates( sub, newAbsentDistribIds );
         }
-
 
         /**
             once the sub is created, absent distribs number cannot be changed.

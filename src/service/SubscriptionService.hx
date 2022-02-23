@@ -17,7 +17,7 @@ enum SubscriptionServiceError {
 	CatalogRequirementsNotMet;
 }
 
-typedef CSAOrder = { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool };
+typedef CSAOrder = { productId:Int, quantity:Float, ?userId2:Int, ?invertSharedOrder:Bool };
 
 /**
  * Subscription service
@@ -651,7 +651,9 @@ class SubscriptionService
 	}
 
 	 /**
-	  *  Creates a new subscription
+		Creates a new subscription
+		* ordersData is defaultOrder or recurrent order
+		* set absences number
 	  */
 	 public function createSubscription( user:db.User, catalog:db.Catalog, ?ordersData:Array<CSAOrder>, ?absencesNb:Int, ?startDate:Date, ?endDate:Date ):db.Subscription {
 

@@ -431,6 +431,11 @@ class Contract extends Controller
 			userOrders.push( { distrib : null, ordersProducts : data } );
 		}
 
+		/**
+
+		UPDATE
+
+		**/
 		if ( checkToken() ) {
 
 			if ( !catalog.isUserOrderAvailable() ) throw Error( '/contract/order/' + catalog.id , t._("This catalog is not opened for orders") );
@@ -441,10 +446,10 @@ class Contract extends Controller
 			var varOrdersToMake = [];
 			var pricesQuantitiesByDistrib = new Map< db.Distribution, Array< { productQuantity:Float, productPrice:Float }>>();
 			//For const catalogs
-			var constOrders = new Array<{ productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }> (); 
+			var constOrders = new Array<{ productId:Int, quantity:Float, userId2:Int, invertSharedOrder:Bool }> (); 
 
 			var firstDistrib = null;
-			var varDefaultOrders = new Array<{ productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
+			var varDefaultOrders = new Array<{ productId:Int, quantity:Float, ?userId2:Int, ?invertSharedOrder:Bool } >();
 
 			for ( key in app.params.keys() ) {
 				
@@ -456,13 +461,10 @@ class Contract extends Controller
 				var distribId = null;
 				var distribution = null;
 				try {
-
 					productId = Std.parseInt( key.split("-")[1].substr(1) );
 					distribId = Std.parseInt( key.split("-")[0].substr(1) );
 					distribution = db.Distribution.manager.get( distribId, false );
-				}
-				catch ( e:Dynamic ) {
-
+				}catch ( e:Dynamic ) {
 					trace( 'unable to parse key' + key );
 				}
 				
@@ -484,36 +486,28 @@ class Contract extends Controller
 				
 				var quantity = Std.parseInt( qty );				
 				
-				
 				if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
-
+					//VAR ORDERS
 					if ( orderProduct.order != null && orderProduct.order.id != null ) {
-
 						if ( orderProduct.order.distribution.orderEndDate.getTime() > Date.now().getTime() ) {
-
 							varOrdersToEdit.push( { order : orderProduct.order, quantity : quantity } );
 							if ( pricesQuantitiesByDistrib[orderProduct.order.distribution] == null ) {
-		
 								pricesQuantitiesByDistrib[orderProduct.order.distribution] = [];
 							}
 							pricesQuantitiesByDistrib[orderProduct.order.distribution].push( { productQuantity : quantity, productPrice : orderProduct.order.productPrice } );
 						}
 					} else {
-
 						if ( distribution.orderEndDate.getTime() > Date.now().getTime() ) {
-
 							varOrdersToMake.push( { distribId : distribId, product : orderProduct.product, quantity : quantity } );
 							if ( pricesQuantitiesByDistrib[distribution] == null ) {
-		
 								pricesQuantitiesByDistrib[distribution] = [];
 							}
 							pricesQuantitiesByDistrib[distribution].push( { productQuantity : quantity, productPrice : orderProduct.product.price } );
-					
 						}
 					}
 
+					//populate varDefaultOrders
 					if ( catalog.requiresOrdering ) {
-
 						if ( firstDistrib == null && quantity != null && quantity != 0 ) {
 							firstDistrib = distribution;
 						}
@@ -533,13 +527,17 @@ class Contract extends Controller
 					}
 
 				} else {
+					//CONST ORDERS
 					constOrders.push( { productId : orderProduct.product.id, quantity : quantity, userId2 : null, invertSharedOrder : false } );					
 				}
 
 			}
 
+			//ACTUAL UPDATE
 			var hasRequirementsError = false;
 			if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
+
+				//VAR ORDERS
 
 				if( varOrdersToEdit.length == 0  && varOrdersToMake.length == 0 ) {
 					throw Error( sugoi.Web.getURI(), "Merci de choisir quelle quantité de produits vous désirez" );
@@ -593,7 +591,9 @@ class Contract extends Controller
 				}
 
 			} else {
-				
+
+				//CONST ORDERS
+
 				//Create or edit an existing subscription for the coming distribution
 				if( constOrders == null || constOrders.length == 0 ){
 					throw Error( sugoi.Web.getURI(), 'Merci de choisir quelle quantité de produits vous désirez' );
@@ -610,10 +610,16 @@ class Contract extends Controller
 				}
 			}
 
+
+
+
 			//Create or update a single order operation for the subscription total orders price
 			if ( currentOrComingSubscription != null && catalog.hasPayments ) {
 				service.SubscriptionService.createOrUpdateTotalOperation( currentOrComingSubscription );
 			}
+
+
+			//FINAL MESSAGE
 
 			if ( !hasRequirementsError ) {
 				var msg = "Votre souscription a bien été mise à jour.";
@@ -626,7 +632,14 @@ class Contract extends Controller
 				throw Ok( "/contract/order/" + catalog.id, msg );
 			}
 
-		}
+
+
+
+		}//end update
+
+
+
+
 		
 		App.current.breadcrumb = [ { link : "/home", name : "Commandes", id : "home" } ]; 
 		view.subscriptionService = SubscriptionService;
