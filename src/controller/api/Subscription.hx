@@ -29,11 +29,8 @@ class Subscription extends Controller
 
             var ss = new SubscriptionService();
             var ordersData = newSubData.distributions[0].orders.map( o -> {productId:o.productId, quantity:o.qty,userId2:null,invertSharedOrder:null});
-            sub = ss.createSubscription(user,catalog,ordersData);
-            if(newSubData.absentDistribsIds!=null){
-                sub.setAbsences(newSubData.absentDistribsIds);
-                sub.update();
-            }
+            sub = ss.createSubscription(user,catalog,ordersData,newSubData.absentDistribsIds);
+            
         }    
 
         return json({

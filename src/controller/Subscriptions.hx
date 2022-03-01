@@ -164,13 +164,11 @@ class Subscriptions extends controller.Controller
 						} else {
 							ordersData.push( { productId : product.id, quantity : quantity } );
 						}
-					}
-					
+					}					
 				}
 
-				var absencesNb = Std.parseInt( app.params.get( 'absencesNb' ) );
-				subscriptionService.createSubscription( user, catalog, ordersData, absencesNb, startDate, endDate );
-
+				var absencesNb = Std.parseInt( app.params.get( 'absencesNb' ) );				
+				subscriptionService.createSubscription( user, catalog, ordersData, null, absencesNb, startDate, endDate );
 				throw Ok( '/contractAdmin/subscriptions/' + catalog.id, 'La souscription pour ' + user.getName() + ' a bien été ajoutée.' );
 
 			} catch( error : Error ) {
@@ -263,13 +261,12 @@ class Subscriptions extends controller.Controller
 					}						
 				}
 
-				subscriptionService.updateSubscription( subscription, startDate, endDate, ordersData);
-				
-				subscriptionService.setAbsencesNb( subscription, app.params.get('absencesNb').parseInt() );
+				subscriptionService.updateSubscription( subscription, startDate, endDate, ordersData);				
+				// subscriptionService.setAbsencesNb( subscription, app.params.get('absencesNb').parseInt() );
 				subscription.update();
 
 			} catch( error : Error ) {				
-				throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, error.message );
+				throw Error( '/contractAdmin/subscriptions/edit/${subscription.id}', error.message );
 			}
 
 			throw Ok( '/contractAdmin/subscriptions/${subscription.catalog.id}', 'La souscription de ${subscription.user.getName()} a bien été mise à jour.' );
