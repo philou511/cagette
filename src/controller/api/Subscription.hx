@@ -1,14 +1,14 @@
 package controller.api;
-import service.SubscriptionService;
 import haxe.Json;
 import neko.Web;
+import service.SubscriptionService;
 import tink.core.Error;
 
 typedef NewSubscriptionDto = {
     userId:Int,
     catalogId:Int,
     distributions:Array<{id:Int,orders:Array<{id:Int,productId:Int,qty:Float}>}>,
-    absentDistribsIds:Array<Int>
+    absentDistribIds:Array<Int>
 };
 
 class Subscription extends Controller
@@ -29,7 +29,7 @@ class Subscription extends Controller
 
             var ss = new SubscriptionService();
             var ordersData = newSubData.distributions[0].orders.map( o -> {productId:o.productId, quantity:o.qty,userId2:null,invertSharedOrder:null});
-            sub = ss.createSubscription(user,catalog,ordersData,newSubData.absentDistribsIds);
+            sub = ss.createSubscription(user,catalog,ordersData,newSubData.absentDistribIds);
             
         }    
 
