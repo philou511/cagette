@@ -1416,6 +1416,8 @@ class Distribution extends Controller {
 
 		view.toBeDone = genericRolesToBeDone + contractRolesToBeDone;
 		view.done = genericRolesDone + contractRolesDone;
+
+		view.userId = app.user.id;
 	}
 
 	/**
