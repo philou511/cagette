@@ -85,6 +85,15 @@
 	::end::
 
 	<div class="col-md-12">
+		<div id="news-neo-container"></div>
+	</div>
+	<script>
+		document.addEventListener("DOMContentLoaded", function(event) {
+			neo.createNeoModule("news-neo-container", "newsFeed");
+		});
+	</script>
+
+	<div class="col-md-12">
 		<h2>::_("Hello")::
 		::if whichUser()==0::
 			::user.firstName::

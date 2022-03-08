@@ -1,6 +1,4 @@
 package controller.admin;
-import tools.ObjectListTool;
-import mangopay.db.MangopayGroupPayOut;
 import Common;
 import db.BufferedJsonMail;
 import db.Catalog;
@@ -8,10 +6,12 @@ import db.MultiDistrib;
 import db.TxpProduct;
 import haxe.web.Dispatch;
 import hosted.db.GroupStats;
+import mangopay.db.MangopayGroupPayOut;
 import pro.db.VendorStats;
 import service.GraphService;
 import sugoi.Web;
 import sugoi.db.Variable;
+import tools.ObjectListTool;
 import tools.Timeframe;
 
 class Admin extends Controller {
@@ -430,4 +430,7 @@ class Admin extends Controller {
 
 	@tpl('admin/process.mtt')
 	function doProcess() {}
+
+	@tpl('admin/news.mtt')
+	function doNews() {}
 }
