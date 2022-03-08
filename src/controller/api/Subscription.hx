@@ -39,7 +39,9 @@ class Subscription extends Controller
             endDate : sub.endDate,
             user : sub.user.infos(),
             user2 : sub.user2==null ? null : sub.user2.infos(),
-            catalogId : sub.catalog.id
+            catalogId : sub.catalog.id,
+            totalOrdered : sub.getTotalPrice(),
+            balance : sub.getBalance()
         });
 
     }

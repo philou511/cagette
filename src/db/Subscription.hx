@@ -37,6 +37,9 @@ class Subscription extends Object {
 		}
 	}
 
+	/**
+		get total cost of subscription orders
+	**/
 	public function getTotalPrice() : Float {
 
 		if( this.id == null ) return 0;
@@ -44,7 +47,6 @@ class Subscription extends Object {
 		var totalPrice : Float = 0;
 		var orders = db.UserOrder.manager.search( $subscription == this, false );
 		for ( order in orders ) {
-
 			totalPrice += Formatting.roundTo( order.quantity * order.productPrice, 2 );
 		}
 
@@ -71,11 +73,14 @@ class Subscription extends Object {
 		return Formatting.roundTo( paymentsTotal, 2 );
 	}
 
+	/**
+		get subscription balance
+	**/
 	public function getBalance() : Float {
 
 		if( this.id == null ) return 0;
 
-		var total : Float = 0;
+		var total = 0.0;
 		var totalOperation = getTotalOperation();
 		if ( totalOperation != null ) total = totalOperation.amount;
 
