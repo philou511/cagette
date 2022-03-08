@@ -25,7 +25,7 @@ class Catalog extends Controller
             contact: catalog.contact==null ? null : catalog.contact.infos(),
             documents : catalog.getVisibleDocuments(app.user).array().map(ef -> {name:ef.file.name,url:"/file/"+sugoi.db.File.makeSign(ef.file.id)}),
             distributions : catalog.getDistribs(false).array().map( d -> d.getInfos() ),
-            constraints : SubscriptionService.getContractDescription(catalog),
+            constraints : SubscriptionService.getContractConstraints(catalog),
             absences : SubscriptionService.getAbsencesDescription(catalog),
             absentDistribsMaxNb : catalog.absentDistribsMaxNb,
         }
@@ -47,7 +47,7 @@ class Catalog extends Controller
     }
 
     /**
-        absences infos once a sub is created
+        Get and set asbences of a Subscription
     **/
     public function doSubscriptionAbsences(sub:db.Subscription){
 

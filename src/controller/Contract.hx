@@ -337,6 +337,9 @@ class Contract extends Controller
 	function doOrder( catalog : db.Catalog ) {
 		view.catalog = catalog;
 		view.userId = app.user.id;
+
+		var sub = SubscriptionService.getCurrentOrComingSubscription(app.user,catalog);
+		view.subscriptionId = sub==null ? null : sub.id;
 	}
 
 	function doOldOrder( catalog : db.Catalog ) {
