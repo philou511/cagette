@@ -685,7 +685,8 @@ class SubscriptionService
 			setAbsences(subscription,absenceDistribIds);
 		}else{
 			//only absence number is defined, thus we get absence dates automatically
-			setAbsences(subscription,getAutomaticAbsentDistribs(catalog, catalog.absentDistribsMaxNb).map(d->d.id));
+			var nb = absenceNb!=null ? absenceNb : catalog.absentDistribsMaxNb; 
+			setAbsences(subscription,getAutomaticAbsentDistribs(catalog, nb).map(d->d.id));
 		}
 		
 		check(subscription);
@@ -694,6 +695,33 @@ class SubscriptionService
 		this.createCSARecurrentOrders( subscription, ordersData );
 		this.updateDefaultOrders( subscription, ordersData );
 		
+		//Email notification
+		var html = 'Vous venez de souscrire au contrat AMAP "${catalog.name}" avec le paysan "${catalog.vendor.name}".<br/>';
+		html += 'Votre engagement : ${SubscriptionService.getSubscriptionConstraints(subscription)}<br/>';
+		if(catalog.type == db.Catalog.TYPE_VARORDER){
+			html += 'Votre commande par défaut est :<ul>';
+			html += subscription.getDefaultOrders().map( o -> {
+				var p = db.Product.manager.get(o.productId,false);
+				return '<li>o.quantity x ${p.getName()} : ${o.quantity*p.price} €</li>';
+			} ).join('');
+			html += '</ul>';
+			html += 'sur ${SubscriptionService.getSubscriptionDistribsNb(subscription)} distributions<br/>';
+			html += 'C\'est un contrat AMAP variable, votre commande est donc modifiable date par date';
+		}
+		if(catalog.hasAbsencesManagement()){
+			var absentDistribs = subscription.getAbsentDistribs();
+			var absencesTxt = absentDistribs.map( d -> Formatting.hDate(d.date) ).join(", ");
+			html += 'Vous avez choisi d\'être absent(e) pendant ${absentDistribs.length} distributions : $absencesTxt.<br/>';
+		}
+		if(catalog.type == db.Catalog.TYPE_VARORDER){
+			html += 'Merci de préparer un chèque de provision correspondant au total de votre commande par défaut multiplié par le nombre de distribution, soit ${subscription.getTotalPrice()} €.<br/>';
+			html += 'Si un contrat papier est associé à votre souscription, pensez à la compléter et à remettre le(s) chèque(s).</br>';	
+			html += 'Une régularisation pourra être demandée en fin de contrat en fonction de votre solde.<br/>';
+		}else{
+			html += 'Si un contrat papier est associé à votre souscription, pensez à le compléter et à remettre le(s) chèque(s) pour un total de ${subscription.getTotalPrice()} €.';
+		}
+		
+		App.quickMail(subscription.user.email,'Souscription au contrat "${catalog.name}"',html,catalog.group);
 
 		return subscription;
 	}
