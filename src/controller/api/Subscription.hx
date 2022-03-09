@@ -13,7 +13,7 @@ typedef NewSubscriptionDto = {
 };
 
 typedef UpdateOrdersDto = {  
-    distributions:Array<{id:Int,orders:Array<{id:Int,productId:Int,qty:Float}>}>,
+    distributions:Array<{id:Int,orders:Array<{productId:Int,qty:Float}>}>,
 };
 
 class Subscription extends Controller
@@ -76,14 +76,14 @@ class Subscription extends Controller
                     for( order in d.orders){
                         var p = db.Product.manager.get(order.productId,false);
                         
-                        if(order.id==null){
+                        var prevOrder = db.UserOrder.manager.select($product==p && $user==sub.user && $distributionId==d.id, true);
+                        if(prevOrder==null){
                             OrderService.make( sub.user, order.qty, p , d.id , null, sub );
                         }else{
-                            var userOrder = db.UserOrder.manager.get(order.id,false);
                             if(p.multiWeight){
-                                OrderService.editMultiWeight( userOrder, order.qty );
+                                OrderService.editMultiWeight( prevOrder, order.qty );
                             }else{
-                                OrderService.edit( userOrder, order.qty );
+                                OrderService.edit( prevOrder, order.qty );
                             }
                         }
                     }

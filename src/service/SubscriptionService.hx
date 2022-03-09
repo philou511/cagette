@@ -538,8 +538,8 @@ class SubscriptionService
 				distribTotal = Formatting.roundTo( distribTotal, 2 );
 
 				if ( distribTotal < catalog.distribMinOrdersTotal ) {
-					var message = '<strong>Distribution du ' + Formatting.hDate( distrib.date ) + ' :</strong><br/>';
-					message += 'Le montant votre commande doit être d\'au moins ' + catalog.distribMinOrdersTotal + ' € par distribution.';
+					var message = 'Distribution du ${Formatting.hDate( distrib.date )} : ';
+					message += 'Le montant votre commande doit être d\'au moins ${catalog.distribMinOrdersTotal} € par distribution.';
 					throw TypedError.typed( message, CatalogRequirementsNotMet );
 				}
 			}
@@ -596,8 +596,8 @@ class SubscriptionService
 
 				if ( doCheckMin ) {
 					if ( subscriptionNewTotal < catalogMinOrdersTotal ) {
-						var message = 'Le nouveau total de toutes vos commandes sur la durée du contrat serait de $subscriptionNewTotal€ 
-						alors qu\'il doit être supérieur à $catalogMinOrdersTotal€. Veuillez rajouter des produits.';
+						var message = 'Le nouveau total de toutes vos commandes sur la durée du contrat serait de $subscriptionNewTotal € 
+						alors qu\'il doit être supérieur à $catalogMinOrdersTotal €. Veuillez rajouter des produits.';
 						throw TypedError.typed( message, CatalogRequirementsNotMet );
 					}
 				}
@@ -696,29 +696,30 @@ class SubscriptionService
 		this.updateDefaultOrders( subscription, ordersData );
 		
 		//Email notification
-		var html = 'Vous venez de souscrire au contrat AMAP "${catalog.name}" avec le paysan "${catalog.vendor.name}".<br/>';
+		var html = '<p><b>Vous venez de souscrire au contrat AMAP "${catalog.name}" avec le paysan "${catalog.vendor.name}".</b></p>';
+		html += "<p>";
 		html += 'Votre engagement : ${SubscriptionService.getSubscriptionConstraints(subscription)}<br/>';
+		html += 'Nombre de distributions : ${SubscriptionService.getSubscriptionDistribsNb(subscription)}<br/>';
 		if(catalog.type == db.Catalog.TYPE_VARORDER){
 			html += 'Votre commande par défaut est :<ul>';
 			html += subscription.getDefaultOrders().map( o -> {
 				var p = db.Product.manager.get(o.productId,false);
-				return '<li>o.quantity x ${p.getName()} : ${o.quantity*p.price} €</li>';
+				return '<li>${o.quantity} x ${p.getName()} : ${o.quantity*p.price} €</li>';
 			} ).join('');
-			html += '</ul>';
-			html += 'sur ${SubscriptionService.getSubscriptionDistribsNb(subscription)} distributions<br/>';
-			html += 'C\'est un contrat AMAP variable, votre commande est donc modifiable date par date';
+			html += '</ul>C\'est un contrat AMAP variable, votre commande est donc modifiable date par date<br/>';
 		}
+		html += "</p>";
 		if(catalog.hasAbsencesManagement()){
 			var absentDistribs = subscription.getAbsentDistribs();
 			var absencesTxt = absentDistribs.map( d -> Formatting.hDate(d.date) ).join(", ");
-			html += 'Vous avez choisi d\'être absent(e) pendant ${absentDistribs.length} distributions : $absencesTxt.<br/>';
+			html += '<p>Vous avez choisi d\'être absent(e) pendant ${absentDistribs.length} distributions : $absencesTxt.</p>';
 		}
 		if(catalog.type == db.Catalog.TYPE_VARORDER){
-			html += 'Merci de préparer un chèque de provision correspondant au total de votre commande par défaut multiplié par le nombre de distribution, soit ${subscription.getTotalPrice()} €.<br/>';
+			html += '<p>Merci de préparer un chèque de provision correspondant au total de votre commande par défaut multiplié par le nombre de distribution, soit ${subscription.getTotalPrice()} €.<br/>';
 			html += 'Si un contrat papier est associé à votre souscription, pensez à la compléter et à remettre le(s) chèque(s).</br>';	
-			html += 'Une régularisation pourra être demandée en fin de contrat en fonction de votre solde.<br/>';
+			html += 'Une régularisation pourra être demandée en fin de contrat en fonction de votre solde.</p>';
 		}else{
-			html += 'Si un contrat papier est associé à votre souscription, pensez à le compléter et à remettre le(s) chèque(s) pour un total de ${subscription.getTotalPrice()} €.';
+			html += '<p>Si un contrat papier est associé à votre souscription, pensez à le compléter et à remettre le(s) chèque(s) pour un total de ${subscription.getTotalPrice()} €.</p>';
 		}
 		
 		App.quickMail(subscription.user.email,'Souscription au contrat "${catalog.name}"',html,catalog.group);

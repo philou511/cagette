@@ -68,15 +68,11 @@ class OrderService
 			for ( i in 0...Math.round(quantity) ) {
 
 				if( shopMode ) {
-
 					newOrder = make( user, 1, product, distribId, paid, null, user2, invert );
-				}
-				else {
-
+				} else {
 					newOrder = make( user, 1, product, distribId, paid, subscription );
 				}
 			}
-
 			return newOrder;
 		}
 		
@@ -274,7 +270,7 @@ class OrderService
 	}
 
 	/**
-		edit a multiweight order from a single qt input ( CSA order form ).
+		edit a multiweight product order from a single qty input ( CSA order form ).
 	**/
 	public static function editMultiWeight( order:db.UserOrder, newquantity:Float ):db.UserOrder {
 
