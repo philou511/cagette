@@ -12,10 +12,5 @@
 			});
 		});
 	</script>
-
-	::if DEBUG::
-	<pre>SubscriptionId : ::subscriptionId::
-	</pre>
-	::end::
 </div>
 ::end::
