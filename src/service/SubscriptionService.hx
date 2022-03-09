@@ -743,7 +743,6 @@ class SubscriptionService
 
 		//check if absent distribs are correct
 		var possibleDistribs = subscription.getPossibleAbsentDistribs().map(d -> d.id);
-		throw possibleDistribs;
 		for(did in distribIds){
 			if(!possibleDistribs.has(did)){
 				throw new Error('Distrib #${did} is not in possible absent distribs');
