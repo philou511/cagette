@@ -1,5 +1,6 @@
 package controller;
 
+import haxe.macro.CompilationServer.ModuleCheckPolicy;
 import mangopay.MangopayPlugin;
 import db.Operation;
 import mangopay.Types.Refund;
@@ -1234,10 +1235,12 @@ class Distribution extends Controller {
 		view.roles = volunteerRoles;
 	}
 
-	// Remove user from role for the specified multidistrib
-
+	/**
+		Remove a user from a volunteer role
+	**/ 
 	@tpl("form.mtt")
 	function doUnsubscribeFromRole(distrib:db.MultiDistrib, role:db.VolunteerRole, ?args:{returnUrl:String, ?to:String}) {
+
 		if (args != null && args.returnUrl != null) {
 			var toArg = args.to != null ? "&to=" + args.to : "";
 			App.current.session.data.volunteersReturnUrl = args.returnUrl + toArg;
@@ -1274,7 +1277,8 @@ class Distribution extends Controller {
 	}
 
 	/**
-		Members can view volunteers planning for each role and multidistrib date
+		Members can view volunteers calendar for each role and multidistrib date.
+		They can register or unregister to a volunteer role 
 	**/
 	@tpl('distribution/volunteersCalendar.mtt')
 	function doVolunteersCalendar(?args:{
@@ -1283,7 +1287,7 @@ class Distribution extends Controller {
 		?_from:Date,
 		?_to:Date
 	}) {
-		var multidistribs:Array<db.MultiDistrib> = [];
+		
 		var from:Date = null;
 		var to:Date = null;
 
@@ -1318,110 +1322,38 @@ class Distribution extends Controller {
 
 		from = timeframe.from;
 		to = timeframe.to;
-
-		view.fromField = new form.CagetteDatePicker("from", "Date de début", from);
-		view.toField = new form.CagetteDatePicker("to", "Date de fin", to);
-
-		multidistribs = db.MultiDistrib.getFromTimeRange(app.user.getGroup(), from, to);
+		
+		var multidistribs = db.MultiDistrib.getFromTimeRange(app.user.getGroup(), from, to);
 
 		// Let's find all the unique volunteer roles for this set of multidistribs
 		var uniqueRoles = [];
-		for (multidistrib in multidistribs) {
-			if (multidistrib.volunteerRolesIds != null) {
-				var multidistribVolunteerRoles = multidistrib.getVolunteerRoles();
-				for (role in multidistribVolunteerRoles) {
-					if (!Lambda.has(uniqueRoles, role)) {
-						uniqueRoles.push(role);
-					}
+		for (md in multidistribs) {
+			for (role in md.getVolunteerRoles()) {
+				if (!Lambda.has(uniqueRoles, role)) {
+					uniqueRoles.push(role);
 				}
 			}
 		}
 
-		view.multidistribs = multidistribs;
+		//sort by catalog id and role name
 		uniqueRoles.sort(function(b, a) {
 			var a_str = (a.catalog == null ? "null" : Std.string(a.catalog.id)) + a.name.toLowerCase();
 			var b_str = (b.catalog == null ? "null" : Std.string(b.catalog.id)) + b.name.toLowerCase();
 			return a_str < b_str ? 1 : -1;
 		});
-		view.uniqueRoles = uniqueRoles;
-		// view.initialUrl = args != null && args.from != null && args.to != null ? "/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to : "/distribution/volunteersCalendar";
-		view.from = from.toString().substr(0, 10);
-		view.to = to.toString().substr(0, 10);
+		
+		var participation = VolunteerService.getUserParticipation([me],app.getCurrentGroup(),timeframe.from,timeframe.to).get(me.id);
 
-		var multiDistribs = db.MultiDistrib.getFromTimeRange(me.getGroup(), timeframe.from, timeframe.to);
-		var members = me.getGroup().getMembers();
-		var genericRolesDone = 0;
-		var genericRolesToBeDone = 0;
-		var contractRolesDone = 0;
-		var contractRolesToBeDone = 0;
-		var contractRolesToBeDoneByContractId = new Map<Int, Int>();
-		var membersNumByContractId = new Map<Int, Int>();
-		var membersListByContractId = new Map<Int, Array<db.User>>();
-		for (md in multiDistribs) {
-			var roles = md.getVolunteerRoles();
-			for (role in roles) {
-				if (role.isGenericRole()) {
-					genericRolesToBeDone++;
-				} else {
-					if (contractRolesToBeDoneByContractId[role.catalog.id] == null) {
-						contractRolesToBeDoneByContractId[role.catalog.id] = 1;
-					} else {
-						contractRolesToBeDoneByContractId[role.catalog.id]++;
-					}
-				}
-			}
-		}
-
-		// contract roles
-		for (cid in contractRolesToBeDoneByContractId.keys())
-			membersListByContractId[cid] = [];
-
-		for (md in multiDistribs) {
-			// populate member list by contract id
-			for (d in md.getDistributions()) {
-				if (membersListByContractId[d.catalog.id] == null) {
-					// this contract has no roles
-					continue;
-				}
-				for (u in members) {
-					if (d.hasUserOrders(u)) {
-						membersListByContractId[d.catalog.id].push(u);
-					}
-				}
-			}
-
-			// volunteers
-			for (v in md.getVolunteers()) {
-				if (v.user.id != me.id)
-					continue;
-				if (v.volunteerRole.isGenericRole()) {
-					genericRolesDone++;
-				} else {
-					contractRolesDone++;
-				}
-			}
-		}
-
-		// roles to be done spread over members
-		genericRolesToBeDone = Math.ceil(genericRolesToBeDone / members.length);
-		for (cid in membersListByContractId.keys()) {
-			membersListByContractId[cid] = tools.ObjectListTool.deduplicate(membersListByContractId[cid]);
-			membersNumByContractId[cid] = membersListByContractId[cid].length;
-		}
-
-		for (cid in membersListByContractId.keys()) {
-			// if this user is involved in this contract
-			if (Lambda.find(membersListByContractId[cid], function(u) return u.id == me.id) != null) {
-				// role to be done for this user = contract roles to be done for this contract / members num involved in this contract
-				contractRolesToBeDone += Math.ceil(contractRolesToBeDoneByContractId[cid] / membersNumByContractId[cid]);
-			}
-		}
-
-		view.toBeDone = genericRolesToBeDone + contractRolesToBeDone;
-		view.done = genericRolesDone + contractRolesDone;
-
+		view.toBeDone = participation.genericRolesToBeDone + participation.contractRolesToBeDone;
+		view.done = participation.genericRolesDone + participation.contractRolesDone;
 		view.userId = app.user.id;
 		view.daysBeforeDutyPeriodsOpen = app.user.getGroup().daysBeforeDutyPeriodsOpen;
+		view.from = from.toString().substr(0, 10);
+		view.to = to.toString().substr(0, 10);
+		view.fromField = new form.CagetteDatePicker("from", "Date de début", from);
+		view.toField = new form.CagetteDatePicker("to", "Date de fin", to);
+		view.uniqueRoles = uniqueRoles;
+		view.multidistribs = multidistribs;
 	}
 
 	/**
@@ -1591,97 +1523,22 @@ class Distribution extends Controller {
 		view.fromField = new form.CagetteDatePicker("from", "Date de début", from);
 		view.toField = new form.CagetteDatePicker("to", "Date de fin", to);
 
-		var multiDistribs = db.MultiDistrib.getFromTimeRange(app.user.getGroup(), from, to);
-		var members = app.user.getGroup().getMembers();
+		var multiDistribs = db.MultiDistrib.getFromTimeRange(app.getCurrentGroup(), from, to);
+		var members = app.user.getGroup().getMembers().array();
 
-		// init + generic roles
-		var totalRolesToBeDone = 0;
-		var totalRolesDone = 0;
-		var genericRolesToBeDone = 0;
-		var genericRolesDoneByMemberId = new Map<Int, Int>();
-		var contractRolesDoneByMemberId = new Map<Int, Int>();
-		var contractRolesToBeDoneByMemberId = new Map<Int, Int>();
-		var contractRolesToBeDoneByContractId = new Map<Int, Int>();
-		var membersNumByContractId = new Map<Int, Int>();
-		var membersListByContractId = new Map<Int, Array<db.User>>();
-		for (u in members) {
-			genericRolesDoneByMemberId[u.id] = 0;
-			contractRolesDoneByMemberId[u.id] = 0;
-			contractRolesToBeDoneByMemberId[u.id] = 0;
-		}
-		for (md in multiDistribs) {
-			var roles = md.getVolunteerRoles();
-			for (role in roles) {
-				totalRolesToBeDone++;
-				if (role.isGenericRole()) {
-					genericRolesToBeDone++;
-				} else {
-					if (contractRolesToBeDoneByContractId[role.catalog.id] == null) {
-						contractRolesToBeDoneByContractId[role.catalog.id] = 1;
-					} else {
-						contractRolesToBeDoneByContractId[role.catalog.id]++;
-					}
-				}
-			}
-		}
-
-		// contract roles
-		for (cid in contractRolesToBeDoneByContractId.keys())
-			membersListByContractId[cid] = [];
-
-		for (md in multiDistribs) {
-			// populate member list by contract id
-			for (d in md.getDistributions()) {
-				if (membersListByContractId[d.catalog.id] == null) {
-					// this contract has no roles
-					continue;
-				}
-				for (u in members) {
-					if (d.hasUserOrders(u)) {
-						// if(d.getUserOrders(u).length>0){
-						membersListByContractId[d.catalog.id].push(u);
-					}
-				}
-			}
-
-			// volunteers
-			for (v in md.getVolunteers()) {
-				totalRolesDone++;
-				if (v.volunteerRole.isGenericRole()) {
-					if (genericRolesDoneByMemberId[v.user.id] != null)
-						genericRolesDoneByMemberId[v.user.id]++;
-				} else {
-					if (contractRolesDoneByMemberId[v.user.id] != null)
-						contractRolesDoneByMemberId[v.user.id]++;
-				}
-			}
-		}
-
-		// roles to be done spread over members
-		genericRolesToBeDone = Math.ceil(genericRolesToBeDone / members.length);
-		for (cid in membersListByContractId.keys()) {
-			membersListByContractId[cid] = tools.ObjectListTool.deduplicate(membersListByContractId[cid]);
-			membersNumByContractId[cid] = membersListByContractId[cid].length;
-		}
-
-		for (m in members) {
-			for (cid in membersListByContractId.keys()) {
-				// if this user is involved in this contract
-				if (Lambda.find(membersListByContractId[cid], function(u) return u.id == m.id) != null) {
-					// role to be done for this user = contract roles to be done for this contract / members num involved in this contract
-					contractRolesToBeDoneByMemberId[m.id] += Math.ceil(contractRolesToBeDoneByContractId[cid] / membersNumByContractId[cid]);
-				}
-			}
-		}
-
+		var participation = VolunteerService.getUserParticipation(members,app.getCurrentGroup(),from,to);
+		view.participation = participation;
 		view.members = members;
 		view.multiDistribs = multiDistribs;
-		view.genericRolesToBeDone = genericRolesToBeDone;
-		view.genericRolesDoneByMemberId = genericRolesDoneByMemberId;
-		view.contractRolesDoneByMemberId = contractRolesDoneByMemberId;
-		view.contractRolesToBeDoneByMemberId = contractRolesToBeDoneByMemberId;
-		view.totalRolesToBeDone = totalRolesToBeDone;
+
+		var totalRolesDone = 0;
+		var totalRolesToBeDone = 0;
+		for(p in participation){
+			totalRolesDone += p.genericRolesDone + p.contractRolesDone;
+			totalRolesToBeDone += p.genericRolesToBeDone + p.contractRolesToBeDone;
+		}
 		view.totalRolesDone = totalRolesDone;
+		view.totalRolesToBeDone = totalRolesToBeDone;
 
 		view.from = from.toString().substr(0, 10);
 		view.to = to.toString().substr(0, 10);

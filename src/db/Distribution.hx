@@ -104,16 +104,11 @@ class Distribution extends Object
 	}
 
 	/**
-		Has user Orders ?
-		This includes secondary user.
-	**/
-	@:skip var pids : Array<Int>;
+		Has user Orders in this distrib ?
+	**/	
 	public function hasUserOrders(user:db.User):Bool{
-		if ( this.catalog.type == db.Catalog.TYPE_CONSTORDERS){			
-			return db.UserOrder.manager.search($distribution == this  && ($user==user || $user2==user),{limit:1}, false).length > 0; 
-		}else{
-			return db.UserOrder.manager.search($distribution == this  && $user==user,{limit:1}, false).length > 0; 
-		}
+		return db.UserOrder.manager.select($distribution == this  && ($user==user || $user2==user), false) != null; 
+		
 	}
 
 	/**

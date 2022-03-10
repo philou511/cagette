@@ -103,7 +103,7 @@
                             ::end::
                         </tr>
                         ::foreach subscription subscriptions::
-                            ::set orderName = subscriptionService.getSubDescription(subscription)::
+                            ::set orderName = subscriptionService.getSubscriptionConstraints(subscription)::
                             ::if orderName == null::
                                 ::set class="danger text-danger"::
                             ::else::
