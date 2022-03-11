@@ -66,8 +66,8 @@ class Api extends Controller
 		d.dispatch(new controller.api.Order());
 	}	
 
-	public function doDistributions(d:haxe.web.Dispatch, distrib: db.MultiDistrib) {
-		d.dispatch(new controller.api.Distributions(distrib));
+	public function doDistributions(d:haxe.web.Dispatch) {
+		d.dispatch(new controller.api.Distributions());
 	}	
 
 	public function doPlaces(d:haxe.web.Dispatch, place: db.Place) {

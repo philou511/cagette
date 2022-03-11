@@ -1,5 +1,8 @@
 package controller;
 
+import tools.ArrayTool;
+import db.VolunteerRole;
+import haxe.display.JsonModuleTypes.JsonPos;
 import haxe.macro.CompilationServer.ModuleCheckPolicy;
 import mangopay.MangopayPlugin;
 import db.Operation;
@@ -1281,79 +1284,39 @@ class Distribution extends Controller {
 		They can register or unregister to a volunteer role 
 	**/
 	@tpl('distribution/volunteersCalendar.mtt')
-	function doVolunteersCalendar(?args:{
-		?distrib:db.MultiDistrib,
-		?role:db.VolunteerRole,
-		?_from:Date,
-		?_to:Date
-	}) {
+	function doVolunteersCalendar(?args:{?distrib:db.MultiDistrib,?role:db.VolunteerRole}) {
 		
-		var from:Date = null;
-		var to:Date = null;
-
-		if (args != null) {
-			// register to a role
-			if (args.distrib != null && args.role != null) {
-				try {
-					service.VolunteerService.addUserToRole(app.user, args.distrib, args.role);
-				} catch (e:tink.core.Error) {
-					throw Error("/distribution/volunteersCalendar", e.message);
-				}
-
-				throw Ok("/distribution/volunteersCalendar", t._("You have been successfully assigned to the selected role."));
+		var user = app.user;
+		var group = user.getGroup();
+		
+		if (args != null && args.distrib != null && args.role != null) {
+			// register to a role	
+			try {
+				service.VolunteerService.addUserToRole(user, args.distrib, args.role);
+			} catch (e:tink.core.Error) {
+				throw Error("/distribution/volunteersCalendar", e.message);
 			}
 
-			// set timeframe
-			if (args._from != null && args._to != null) {
-				from = args._from;
-				to = args._to;
-			}
+			throw Ok("/distribution/volunteersCalendar", t._("You have been successfully assigned to the selected role."));
 		}
 
-		if (from == null || to == null) {
-			from = Date.now();
-			to = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * app.user.getGroup().daysBeforeDutyPeriodsOpen);
-		}
+		// duty periods user's participation		
+		var timeframe = group.getMembershipTimeframe(Date.now());
+		var multidistribs = db.MultiDistrib.getFromTimeRange(group, timeframe.from, timeframe.to);
 
-		// duty periods user's participation
-		var me = app.user;
-		var timeframe = me.getGroup().getMembershipTimeframe(Date.now());
-		view.timeframe = timeframe;
-
-		from = timeframe.from;
-		to = timeframe.to;
 		
-		var multidistribs = db.MultiDistrib.getFromTimeRange(app.user.getGroup(), from, to);
-
-		// Let's find all the unique volunteer roles for this set of multidistribs
-		var uniqueRoles = [];
-		for (md in multidistribs) {
-			for (role in md.getVolunteerRoles()) {
-				if (!Lambda.has(uniqueRoles, role)) {
-					uniqueRoles.push(role);
-				}
-			}
-		}
-
-		//sort by catalog id and role name
-		uniqueRoles.sort(function(b, a) {
-			var a_str = (a.catalog == null ? "null" : Std.string(a.catalog.id)) + a.name.toLowerCase();
-			var b_str = (b.catalog == null ? "null" : Std.string(b.catalog.id)) + b.name.toLowerCase();
-			return a_str < b_str ? 1 : -1;
-		});
+		var uniqueRoles = VolunteerService.getUsedRolesInMultidistribs(multidistribs);
 		
-		var participation = VolunteerService.getUserParticipation([me],app.getCurrentGroup(),timeframe.from,timeframe.to).get(me.id);
+		var participation = VolunteerService.getUserParticipation([user],app.getCurrentGroup(),timeframe.from,timeframe.to).get(user.id);
 
+		view.multidistribs = multidistribs;
+		
+		//needed at component init
+		view.daysBeforeDutyPeriodsOpen = app.user.getGroup().daysBeforeDutyPeriodsOpen;
+		view.uniqueRoles = uniqueRoles;
 		view.toBeDone = participation.genericRolesToBeDone + participation.contractRolesToBeDone;
 		view.done = participation.genericRolesDone + participation.contractRolesDone;
-		view.userId = app.user.id;
-		view.daysBeforeDutyPeriodsOpen = app.user.getGroup().daysBeforeDutyPeriodsOpen;
-		view.from = from.toString().substr(0, 10);
-		view.to = to.toString().substr(0, 10);
-		view.fromField = new form.CagetteDatePicker("from", "Date de début", from);
-		view.toField = new form.CagetteDatePicker("to", "Date de fin", to);
-		view.uniqueRoles = uniqueRoles;
-		view.multidistribs = multidistribs;
+		view.timeframe = timeframe;
 	}
 
 	/**

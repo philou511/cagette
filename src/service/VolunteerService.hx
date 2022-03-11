@@ -94,20 +94,20 @@ class VolunteerService
 		if ( userAlreadyAssigned != null ) {
 			throw new Error(t._("A volunteer can't be assigned to multiple roles for the same distribution!"));
 		}
-		else {*/
+		*/
 			
-			var existingVolunteer = multidistrib.getVolunteerForRole(role);
-			if ( existingVolunteer == null ) {
-				var volunteer = new db.Volunteer();
-				volunteer.user = user;
-				volunteer.multiDistrib = multidistrib;
-				volunteer.volunteerRole = role;					
-				volunteer.insert();
-				return volunteer;
-			} else {
-				throw new Error(t._("This role is already filled by a volunteer!"));
-			}				
-		//}
+		var existingVolunteer = multidistrib.getVolunteerForRole(role);
+		if ( existingVolunteer == null ) {
+			var volunteer = new db.Volunteer();
+			volunteer.user = user;
+			volunteer.multiDistrib = multidistrib;
+			volunteer.volunteerRole = role;					
+			volunteer.insert();
+			return volunteer;
+		} else {
+			throw new Error(t._("This role is already filled by a volunteer!"));
+		}				
+		
 	}
 
 	public static function removeUserFromRole(user: db.User, multidistrib: db.MultiDistrib, role: db.VolunteerRole, reason: String ) {
@@ -341,6 +341,30 @@ class VolunteerService
 		}
 
 		return out;
+	}
+
+
+	/**
+		get unique roles needed in a list of multidistribs
+	**/
+	public static function getUsedRolesInMultidistribs(multidistribs:Array<db.MultiDistrib>):Array<db.VolunteerRole>{
+
+		// Let's find all the unique volunteer roles for this set of multidistribs
+		var uniqueRolesIds = [];
+		for (md in multidistribs) {
+			uniqueRolesIds = uniqueRolesIds.concat(md.getVolunteerRoleIds());			
+		}
+		var uniqueRoles = tools.ArrayTool.deduplicate(uniqueRolesIds).map( rid -> return db.VolunteerRole.manager.get(rid,false));
+
+		//sort by catalog id and role name
+		uniqueRoles.sort(function(b, a) {
+			var a_str = (a.catalog == null ? "null" : Std.string(a.catalog.id)) + a.name.toLowerCase();
+			var b_str = (b.catalog == null ? "null" : Std.string(b.catalog.id)) + b.name.toLowerCase();
+			return a_str < b_str ? 1 : -1;
+		});
+
+		return uniqueRoles;
+
 	}
 	
 	

@@ -370,7 +370,6 @@ class Group extends Object
 		}else {
 			return { from : renewalDate , to : renewalDate.setYear(renewalDate.getFullYear()+1)};
 		}
-
 	}
 	
 	/**
