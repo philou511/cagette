@@ -1,7 +1,7 @@
 import bootstrap.Modal;
 import js.Browser;
 import Common;
-import thx.semver.Version;
+// import thx.semver.Version;
 
 //React lib
 import react.ReactMacro.jsx;
@@ -33,7 +33,7 @@ import react.ReactComponent;
 class App {
 
     public static var instance : App;    
-    public static var VERSION = ([0,14]  : Version).withPre(GitMacros.getGitShortSHA(), GitMacros.getGitCommitDate());
+    // public static var VERSION = ([0,14]  : Version).withPre(GitMacros.getGitShortSHA(), GitMacros.getGitCommitDate());
     	
 	public var currency : String; //currency symbol like &euro; or $
 	public var t : sugoi.i18n.GetText;//gettext translator

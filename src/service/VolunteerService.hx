@@ -162,14 +162,10 @@ class VolunteerService
 				//delete assignment
 				foundVolunteer.lock();
 				foundVolunteer.delete();
-			}
-			else {
-				
+			} else {				
 				throw new Error(t._("This user is not assigned to this role!"));				
 			}
-		}
-		else {
-
+		} else {
 			throw new Error(t._("Missing distribution or role in the url!"));
 		}			
 	}
@@ -262,10 +258,7 @@ class VolunteerService
 		var multiDistribs = db.MultiDistrib.getFromTimeRange(group, from, to);
 		var members = group.getMembers();
 		
-		var genericRolesDone = 0; 		//generic roles done (registered to a generic role)
-		var genericRolesToBeDone = 0;	//number of generic role occurences divided by the number of group members (same for all group users)
-		var contractRolesDone = 0;		//contract roles done (registered to a contract role)
-		var contractRolesToBeDone = 0;	//sum of (contract roles occurences divided by the number of contract suscribers) for each contract
+		var genericRolesToBeDone = 0;	
 
 		var contractRolesToBeDoneByContractId = new Map<Int, Int>();
 		var membersNumByContractId = new Map<Int, Int>();
@@ -317,10 +310,10 @@ class VolunteerService
 		for( user in users ){
 
 			var o = {
-				genericRolesDone : 0,
-				genericRolesToBeDone : genericRolesToBeDone,
-				contractRolesDone : 0,
-				contractRolesToBeDone : 0
+				genericRolesDone : 0,   	//generic roles done (registered to a generic role)
+				genericRolesToBeDone : genericRolesToBeDone, //number of generic role occurences divided by the number of group members (same for all group users)
+				contractRolesDone : 0, 		//contract roles done (registered to a contract role)
+				contractRolesToBeDone : 0 	//sum of (contract roles occurences divided by the number of contract suscribers) for each contract
 			};
 
 			// populate genericRolesDone and contractRolesDone

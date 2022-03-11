@@ -1236,7 +1236,7 @@ class Distribution extends Controller {
 	}
 
 	/**
-		Remove a user from a volunteer role
+		Remove current user from a volunteer role
 	**/ 
 	@tpl("form.mtt")
 	function doUnsubscribeFromRole(distrib:db.MultiDistrib, role:db.VolunteerRole, ?args:{returnUrl:String, ?to:String}) {
