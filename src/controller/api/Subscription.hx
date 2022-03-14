@@ -91,14 +91,30 @@ class Subscription extends Controller
             }
 
 			if ( sub.catalog.hasPayments ) SubscriptionService.createOrUpdateTotalOperation( sub );
-			
         }    
 
         getSubscription(sub);
     }
 
 
+	public function doUpdateDefaultOrder(sub:db.Subscription){
 
+        // Create a new sub
+        var post = sugoi.Web.getPostData();
+        if(post!=null){
+            var updateDefaultOrderData:Array<CSAOrder> = Json.parse(StringTools.urlDecode(post));
+
+            if(!app.user.isAdmin() && !app.user.canManageContract(sub.catalog) && app.user.id!=sub.user.id){
+                throw new Error(403,"You're not allowed to edit a subscription for this user");
+            }
+
+            var ss = new SubscriptionService();
+            ss.updateDefaultOrders(sub, updateDefaultOrderData);
+            
+        }    
+
+        getSubscription(sub);
+    }
 
     private function getSubscription(sub:db.Subscription){
 
@@ -121,7 +137,8 @@ class Subscription extends Controller
             totalOrdered : sub.getTotalPrice(),
             balance : sub.getBalance(),
             distributions:distributionsWithOrders,
-            absentDistribIds:sub.getAbsentDistribIds()
+            absentDistribIds:sub.getAbsentDistribIds(),
+            defaultOrder : sub.getDefaultOrders()
         });
     }
 
