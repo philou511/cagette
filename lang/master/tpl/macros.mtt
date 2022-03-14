@@ -549,6 +549,7 @@
 		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
 		_paq.push(['trackPageView']);
 		_paq.push(['enableLinkTracking']);
+		::if(user!=null):: _paq.push(['setUserId', '::user.id::']); ::end::
 		(function() {
 			var u="https://matomo.alilo.fr/";
 			_paq.push(['setTrackerUrl', u+'piwik.php']);

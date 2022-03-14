@@ -596,8 +596,8 @@ class SubscriptionService
 
 				if ( doCheckMin ) {
 					if ( subscriptionNewTotal < catalogMinOrdersTotal ) {
-						var message = 'Le nouveau total de toutes vos commandes sur la durée du contrat serait de $subscriptionNewTotal € 
-						alors qu\'il doit être supérieur à $catalogMinOrdersTotal €. Veuillez rajouter des produits.';
+						var message = 'Le nouveau total de toutes vos commandes sur la durée du contrat serait de $subscriptionNewTotal € '; 
+						message += 'alors qu\'il doit être supérieur à $catalogMinOrdersTotal €. Vous devez commander plus.';
 						throw TypedError.typed( message, CatalogRequirementsNotMet );
 					}
 				}
@@ -1152,7 +1152,8 @@ class SubscriptionService
 	**/
 	public function updateDefaultOrders( subscription:db.Subscription, defaultOrders:Array<CSAOrder>){
 
-		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );		
+		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );	
+		subscription.lock();	
 		if( !subscription.catalog.requiresOrdering ) return;
 		if ( subscription.catalog.requiresOrdering && (defaultOrders==null || defaultOrders.length==0 ) ) {
 			throw new Error('La commande par défaut ne peut pas être vide. (Souscription de ${subscription.user.getName()})');
@@ -1167,6 +1168,8 @@ class SubscriptionService
 			var product = db.Product.manager.get( order.productId, false );
 			if ( product != null && order.quantity != null && order.quantity != 0 ) {
 
+				if(product.catalog.id!=subscription.catalog.id) throw 'Product #${product.id} does not belon to catalog #${subscription.catalog.id}';
+
 				totalPrice += Formatting.roundTo( order.quantity * product.price, 2 );
 				totalQuantity += order.quantity;
 			}
@@ -1177,20 +1180,18 @@ class SubscriptionService
 		if ( subscription.catalog.distribMinOrdersTotal != null && subscription.catalog.distribMinOrdersTotal != 0 ) {
 
 			if ( totalPrice < subscription.catalog.distribMinOrdersTotal ) {
-				var message = '<strong>Engagement du catalogue :</strong> ' + subscription.catalog.name + '<br/>';
-				message += 'Le total de votre commande par défaut doit être d\'au moins ' + subscription.catalog.distribMinOrdersTotal + ' €. Veuillez rajouter des produits.';
+				var message = 'Engagement du catalogue : ${subscription.catalog.name}. ';
+				message += 'Le total de votre commande par défaut doit être d\'au moins ${subscription.catalog.distribMinOrdersTotal} €. Veuillez rajouter des produits.';
 				throw TypedError.typed( message, CatalogRequirementsNotMet );
 			}
 		} else {
-
 			if ( totalQuantity < 0.1 ) {
-				var message = '<strong>Engagement du catalogue :</strong> ' + subscription.catalog.name + '<br/>';
+				var message = 'Engagement du catalogue : ${subscription.catalog.name}. ';
 				message += 'La commande par défaut ne peut pas être vide.';
 				throw TypedError.typed( message, CatalogRequirementsNotMet );
 			}
 		}
-
-		subscription.lock();
+		
 		subscription.setDefaultOrders( defaultOrders );
 		subscription.update();
 	}
