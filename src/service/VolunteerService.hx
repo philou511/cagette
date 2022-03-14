@@ -38,7 +38,7 @@ class VolunteerService
 	}
 
 	/**
-		Update volunteers for a distrib (coordinator action)
+		Update volunteers for a distrib (admin action)
 	**/
 	public static function updateVolunteers(multiDistrib: db.MultiDistrib, roleIdsToUserIds: Map<Int, Int>) {
 
@@ -49,7 +49,7 @@ class VolunteerService
 			throw new Error(t._("You need to first select the volunteer roles for this distribution."));
 		}
 
-		//syncrhonize the map to a volunteer list
+		//synchronize the map to a volunteer list
 		var ls = new tools.ListSynchronizer< {role:Int,user:Int} , db.Volunteer>();
 
 		var source = [];
@@ -76,76 +76,6 @@ class VolunteerService
 			return v;
 		};
 		var newList = ls.sync();
-
-
-		//remove others (previously created)
-
-
-		/*
-
-		var userIdByRoleId = new Map<Int, Int>();
-		var uniqueUserIds = [];
-		
-
-		for ( role in volunteerRoles ) {
-
-			var userId = roleIdsToUserIds[role.id];
-
-			if ( !Lambda.has(uniqueUserIds, userId) ) {
-
-				if( userId != null ) {
-					uniqueUserIds.push(userId);
-				}
-				userIdByRoleId[role.id] = userId;
-			}
-			else {
-				throw new Error(t._("A volunteer can't be assigned to multiple roles for the same distribution!"));
-			}				
-		}
-
-		var volunteers = multidistrib.getVolunteers();
-		for ( volunteer in volunteers ) {
-
-			var userIdForThisRole = userIdByRoleId[volunteer.volunteerRole.id];
-			if ( userIdForThisRole != volunteer.user.id ) {
-			
-				volunteer.lock();
-				if ( userIdForThisRole == null ) {
-
-					volunteer.delete();
-				} 
-				else {
-
-					var volunteerCopy = new db.Volunteer();
-					volunteerCopy.user = db.User.manager.get(userIdForThisRole);
-					volunteerCopy.multiDistrib = multidistrib;
-					volunteerCopy.volunteerRole = volunteer.volunteerRole;					
-					volunteerCopy.insert();		
-					volunteer.delete();				
-				}
-
-				userIdByRoleId.remove(volunteer.volunteerRole.id);
-			
-			}
-			else {
-				
-				userIdByRoleId.remove(volunteer.volunteerRole.id);
-			}
-		}
-
-		for ( roleId in userIdByRoleId.keys() ) {
-
-			var userIdForThisRole = userIdByRoleId[roleId];
-			if ( userIdForThisRole != null ) {
-
-				var volunteer = new db.Volunteer();
-				volunteer.user = db.User.manager.get(userIdForThisRole);
-				volunteer.multiDistrib = multidistrib;
-				volunteer.volunteerRole = db.VolunteerRole.manager.get(roleId);					
-				volunteer.insert();
-			}					
-		}*/
-		
 	}
 
 	/**
@@ -164,20 +94,20 @@ class VolunteerService
 		if ( userAlreadyAssigned != null ) {
 			throw new Error(t._("A volunteer can't be assigned to multiple roles for the same distribution!"));
 		}
-		else {*/
+		*/
 			
-			var existingVolunteer = multidistrib.getVolunteerForRole(role);
-			if ( existingVolunteer == null ) {
-				var volunteer = new db.Volunteer();
-				volunteer.user = user;
-				volunteer.multiDistrib = multidistrib;
-				volunteer.volunteerRole = role;					
-				volunteer.insert();
-				return volunteer;
-			} else {
-				throw new Error(t._("This role is already filled by a volunteer!"));
-			}				
-		//}
+		var existingVolunteer = multidistrib.getVolunteerForRole(role);
+		if ( existingVolunteer == null ) {
+			var volunteer = new db.Volunteer();
+			volunteer.user = user;
+			volunteer.multiDistrib = multidistrib;
+			volunteer.volunteerRole = role;					
+			volunteer.insert();
+			return volunteer;
+		} else {
+			throw new Error(t._("This role is already filled by a volunteer!"));
+		}				
+		
 	}
 
 	public static function removeUserFromRole(user: db.User, multidistrib: db.MultiDistrib, role: db.VolunteerRole, reason: String ) {
@@ -232,14 +162,10 @@ class VolunteerService
 				//delete assignment
 				foundVolunteer.lock();
 				foundVolunteer.delete();
-			}
-			else {
-				
+			} else {				
 				throw new Error(t._("This user is not assigned to this role!"));				
 			}
-		}
-		else {
-
+		} else {
 			throw new Error(t._("Missing distribution or role in the url!"));
 		}			
 	}
@@ -279,8 +205,7 @@ class VolunteerService
 			role.name += " " + c.name + " " + i;
 			role.group = c.group;
 			role.catalog = c;
-			role.insert();
-		
+			role.insert();	
 		}
 	}
 
@@ -291,29 +216,23 @@ class VolunteerService
 		switch( type ) {
 
 			case "volunteersCanJoin":
-			
 				if ( numberOfDays <  7 ) {
 					throw new Error(t._("The number of days before the volunteers can join a duty period needs to be greater than 6 days."));
-				}
-				else if ( numberOfDays > 181 ) {
+				} else if ( numberOfDays > 181 ) {
 					throw new Error(t._("The number of days before the volunteers can join a duty period needs to be lower than 181 days."));
 				}
 
 			case "instructionsMail":
-
 				if ( numberOfDays <  2 ) {
 					throw new Error(t._("The number of days before the duty periods to send the instructions mail to all the volunteers needs to be greater than 1 day."));
-				}
-				else if ( numberOfDays > 15 ) {
+				} else if ( numberOfDays > 15 ) {
 					throw new Error(t._("The number of days before the duty periods to send the instructions mail to all the volunteers needs to be lower than 15 days."));
 				}
 
 			case "vacantRolesMail":
-
 				if ( numberOfDays <  2 ) {
 					throw new Error(t._("The number of days before the duty periods to send the vacant roles mail to all members needs to be greater than 1 day."));
-				}
-				else if ( numberOfDays > 15 ) {
+				} else if ( numberOfDays > 15 ) {
 					throw new Error(t._("The number of days before the duty periods to send the instructions mail to all members needs to be lower than 15 days."));
 				}
 		}
@@ -328,6 +247,125 @@ class VolunteerService
 		return Lambda.array(db.VolunteerRole.manager.search($catalog==catalog,{orderBy:[catalogId,name]}));
 	}
 
+	/**
+		Get user participation in this group on a defined timeframe.
+	**/
+	public static function getUserParticipation(users:Array<db.User>,group:db.Group,from:Date,to:Date){
+
+		//map key is userId
+		var out = new Map<Int,{genericRolesDone:Int, genericRolesToBeDone:Int, contractRolesDone:Int, contractRolesToBeDone:Int}>();
+
+		var multiDistribs = db.MultiDistrib.getFromTimeRange(group, from, to);
+		var members = group.getMembers();
+		
+		var genericRolesToBeDone = 0;	
+
+		var contractRolesToBeDoneByContractId = new Map<Int, Int>();
+		var membersNumByContractId = new Map<Int, Int>();
+		var membersListByContractId = new Map<Int, Array<db.User>>();
+
+		for (md in multiDistribs) {
+			for (role in md.getVolunteerRoles()) {
+				if (role.isGenericRole()) {
+					genericRolesToBeDone++;
+				} else {
+					if (contractRolesToBeDoneByContractId[role.catalog.id] == null) {
+						contractRolesToBeDoneByContractId[role.catalog.id] = 1;
+					} else {
+						contractRolesToBeDoneByContractId[role.catalog.id]++;
+					}
+				}
+			}
+		}
+
+		// generic roles to be done spread over members
+		genericRolesToBeDone = Math.ceil(genericRolesToBeDone / members.length);
+
+		// populate member list by contract id
+		for (cid in contractRolesToBeDoneByContractId.keys()){
+			membersListByContractId[cid] = [];
+		}
+		for (md in multiDistribs) {			
+			for (d in md.getDistributions()) {
+				if (membersListByContractId[d.catalog.id] == null) {
+					// this contract has no roles
+					continue;
+				}
+				for (u in members) {
+					if (d.hasUserOrders(u)) {
+						membersListByContractId[d.catalog.id].push(u);
+					}
+				}
+			}
+		}
+
+		//populate members num by contract Id
+		for (cid in membersListByContractId.keys()) {
+			membersListByContractId[cid] = tools.ObjectListTool.deduplicate(membersListByContractId[cid]);
+			membersNumByContractId[cid] = membersListByContractId[cid].length;
+		}
+
+
+		//compute values for each user
+		for( user in users ){
+
+			var o = {
+				genericRolesDone : 0,   	//generic roles done (registered to a generic role)
+				genericRolesToBeDone : genericRolesToBeDone, //number of generic role occurences divided by the number of group members (same for all group users)
+				contractRolesDone : 0, 		//contract roles done (registered to a contract role)
+				contractRolesToBeDone : 0 	//sum of (contract roles occurences divided by the number of contract suscribers) for each contract
+			};
+
+			// populate genericRolesDone and contractRolesDone
+			for (md in multiDistribs) {			
+				for (v in md.getVolunteers()) {
+					if (v.user.id != user.id)
+						continue;
+					if (v.volunteerRole.isGenericRole()) {
+						o.genericRolesDone++;
+					} else {
+						o.contractRolesDone++;
+					}
+				}
+			}
+
+			for (cid in membersListByContractId.keys()) {
+				// if this user is involved in this contract
+				if ( membersListByContractId[cid].find( u -> u.id == user.id) != null) {
+					// role to be done for this user = contract roles to be done for this contract / members num involved in this contract
+					o.contractRolesToBeDone += Math.ceil(contractRolesToBeDoneByContractId[cid] / membersNumByContractId[cid]);
+				}
+			}
+
+			out.set(user.id,o);
+		}
+
+		return out;
+	}
+
+
+	/**
+		get unique roles needed in a list of multidistribs
+	**/
+	public static function getUsedRolesInMultidistribs(multidistribs:Array<db.MultiDistrib>):Array<db.VolunteerRole>{
+
+		// Let's find all the unique volunteer roles for this set of multidistribs
+		var uniqueRolesIds = [];
+		for (md in multidistribs) {
+			uniqueRolesIds = uniqueRolesIds.concat(md.getVolunteerRoleIds());			
+		}
+		var uniqueRoles = tools.ArrayTool.deduplicate(uniqueRolesIds).map( rid -> return db.VolunteerRole.manager.get(rid,false));
+
+		//sort by catalog id and role name
+		uniqueRoles.sort(function(b, a) {
+			var a_str = (a.catalog == null ? "null" : Std.string(a.catalog.id)) + a.name.toLowerCase();
+			var b_str = (b.catalog == null ? "null" : Std.string(b.catalog.id)) + b.name.toLowerCase();
+			return a_str < b_str ? 1 : -1;
+		});
+
+		return uniqueRoles;
+
+	}
 	
 	
 

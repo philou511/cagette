@@ -511,32 +511,31 @@ class MultiDistrib extends Object
 
 	public function getVolunteerRoles() {
 
-		var volunteerRoles: Array<db.VolunteerRole> = [];
-		if (this.volunteerRolesIds != null) {
+		var volunteerRoles = [];
 
-			var multidistribRoleIds = getVolunteerRoleIds();
-			volunteerRoles = new Array<db.VolunteerRole>();
-			for ( roleId in multidistribRoleIds ) {
-				var volunteerRole = db.VolunteerRole.manager.get(roleId);
-				if ( volunteerRole != null ) {
-					volunteerRoles.push( volunteerRole );
-				}
+		for ( roleId in getVolunteerRoleIds() ) {
+			var volunteerRole = db.VolunteerRole.manager.get(roleId);
+			if ( volunteerRole != null ) {
+				volunteerRoles.push( volunteerRole );
 			}
-
-			volunteerRoles.sort(function(b, a) { 
-				var a_str = (a.catalog == null ? "null" : Std.string(a.catalog.id)) + a.name.toLowerCase();
-				var b_str = (b.catalog == null ? "null" : Std.string(b.catalog.id)) + b.name.toLowerCase();
-				return  a_str < b_str ? 1 : -1;
-			});
 		}
+
+		volunteerRoles.sort(function(b, a) { 
+			var a_str = (a.catalog == null ? "null" : Std.string(a.catalog.id)) + a.name.toLowerCase();
+			var b_str = (b.catalog == null ? "null" : Std.string(b.catalog.id)) + b.name.toLowerCase();
+			return  a_str < b_str ? 1 : -1;
+		});
+
 		
 		return volunteerRoles;
 	}
 
+	
 	public function getVolunteerRoleIds():Array<Int>{
 		if(volunteerRolesIds==null) return [];
 		var rolesIds = volunteerRolesIds.split(",").map(Std.parseInt);
 		rolesIds = tools.ArrayTool.deduplicate(rolesIds);
+		rolesIds = rolesIds.filter( rid -> rid!=null);
 		return rolesIds;
 	}
 
