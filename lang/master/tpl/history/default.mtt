@@ -139,7 +139,7 @@
 										<th class="text-center col-md-1">Payé</th>
 									::end::
 								</tr>
-								::set orderName = subscriptionService.getSubDescription(subscription)::
+								::set orderName = subscriptionService.getSubscriptionConstraints(subscription)::
 								::if i == 1 && orderName == null::
 									::set class="danger text-danger"::
 								::else::

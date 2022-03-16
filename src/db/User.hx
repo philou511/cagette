@@ -478,7 +478,7 @@ class User extends Object {
 		
 	}
 	
-	public function sendInvitation(group:db.Group,?force=false) {
+	/*public function sendInvitation(group:db.Group,?force=false) {
 		
 		var t = sugoi.i18n.Locale.texts;
 		
@@ -508,7 +508,7 @@ class User extends Object {
 		e.setHtmlBody(html);
 		
 		App.sendMail(e);	
-	}
+	}*/
 	
 	/**
 	 * cleaning before saving

@@ -37,19 +37,19 @@ class Member extends Controller
 	/**
 	 * Send an invitation to a new member
 	 */
-	function doInviteMember(u:db.User){
+	/*function doInviteMember(u:db.User){
 		
 		if (checkToken() ) {
 			u.sendInvitation(app.user.getGroup());
 			throw Ok('/member/view/'+u.id, t._("Invitation sent.") );
 		}
 		
-	}
+	}*/
 	
 	/**
 	 * Invite 'never logged' users
 	 */
-	function doInvite() {
+	/*function doInvite() {
 		if (checkToken()) {
 			
 			var users = db.User.getUsers_NewUsers();
@@ -68,7 +68,7 @@ class Member extends Controller
 			throw Ok('/member', t._("Congratulations, you just sent <b>::userLength::</b> invitations", {userLength:users.length}));
 		}
 		
-	}
+	}*/
 	
 	
 	@tpl("member/view.mtt")
