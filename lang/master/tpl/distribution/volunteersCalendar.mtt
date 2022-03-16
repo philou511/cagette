@@ -7,37 +7,6 @@
 				userId: ::user.id::,
 				toBeDone: ::toBeDone::,
 				done: ::done::,
-				multiDistribs: [
-					:: foreach d multidistribs::
-                    {
-						id: ::d.id::,
-						distribStartDate: "::d.distribStartDate::",
-						hasVacantVolunteerRoles: ::d.hasVacantVolunteerRoles()::,
-						canVolunteersJoin: ::d.canVolunteersJoin()::,
-						volunteersRequired: ::d.getVolunteerRoles().length::,
-						volunteersRegistered: ::d.getVolunteers().length::,
-						hasVolunteerRole: {
-							:: foreach r uniqueRoles::
-								[::r.id::]: ::d.hasVolunteerRole(r)::,
-							:: end::
-						},
-						volunteerForRole: {
-							:: foreach r uniqueRoles::
-							::set volunteer = d.getVolunteerForRole(r)::
-								[::r.id::]:
-								::if volunteer!=null::
-								{
-									id: ::volunteer._user.id::,
-									coupleName: "::volunteer._user.getCoupleName()::"
-								},
-								::else::
-								null,
-								::end::
-							:: end::
-						},
-					},
-                    :: end::
-				],
 				roles:[
 					:: foreach r uniqueRoles::
                     {
