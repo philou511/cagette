@@ -203,17 +203,21 @@
     
     <macro name="placeOsm(place,unique)">
         <i class="icon icon-map-marker"></i>		
-		<a onclick="neo.createNeoModule('::unique::', 'place-dialog', {placeId: ::place.id::})">::place::</a>
-		<br/>
-		<span class="address">
-			$$nullSafe(::place.address1::)
-			$$nullSafe(::place.address2::)
-			$$nullSafe(::place.zipCode::)
-			$$nullSafe(::place.city::)
-        </span>
+		<a onclick="neo.createNeoModule('::unique::', 'place-dialog', {placeId: ::place.id::})">::place::</a>		
+		
         <div style="width: 0px; height: 0px; overflow: hidden">
             <span id="::unique::"></span>	
         </div>
+	</macro>
+
+	<macro name="subscriptionBalance(sub)">
+        ::set balance = sub.getBalance()::
+		::if balance < 0::
+			::set color = "#d9534f"::
+		::else::
+			::set color = "#84bd55"::
+		::end::
+		<a href="/history/subscriptionPayments/::sub.id::" style="color: ::color::;"><i class="icon icon-euro"></i> Solde : ::balance::€</a>
 	</macro>
 	
 	<macro name="today(dow,d,m,y,h,place)">

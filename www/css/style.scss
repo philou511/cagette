@@ -921,9 +921,10 @@ div.reportHeader{
 		border-top-right-radius:8px;		
 		color:#FFF;
 		background-color:#B2823F;
-		vertical-align:middle;			
+		// vertical-align:middle;			
 		margin:0;
 		padding: 6px 6px 6px 90px;
+		min-height: 70px;
 		
 		&.disabled{
 			background-color:#999;
@@ -938,7 +939,7 @@ div.reportHeader{
 		
 		.info{
 			font-size:16px;
-			line-height: 22px;
+			line-height: 27px;
 			/* place link */
 			a{
 				color: #FFFFFF !important;
@@ -965,17 +966,16 @@ div.reportHeader{
 		}
 	}
 	
-	
 	.content{
 		padding: 12px;
 		background-color:white;
 
+		//used in home.mtt
 		&.myorder{
-			background:#FFF;
-			font-weight:bold;
+			background:#EEE;
 			color:#999;
-			background:white;
-			padding: 11px 0 4px 16px;
+			padding: 8px 8px 8px 20px;
+    		font-weight: bold;
 		}
 		
 		&.disabled{
@@ -991,16 +991,24 @@ div.reportHeader{
 		.alert{
 			margin-bottom: 0;
 		}
+
+		//footer of orders : attendance list, subscription balance
+		.footer{
+			color:#999;
+			margin: 10px 0;
+			a{
+				color:#999;
+				margin-right: 12px;
+			}
+		}
 	}
 
 	.footer{
-		min-height: 8px;
-		color:#999;
-		a{color:#999;}
-		font-size:0.9em;
+		height: 8px;		
+		// font-size:0.9em;
 		border-bottom-left-radius:8px;
 		border-bottom-right-radius:8px;
-		background:#FFF;		
+		background:#FFF;
 	}
 	
 

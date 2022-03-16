@@ -1215,7 +1215,8 @@ class Distribution extends Controller {
 	}
 
 	/**
-		View volunteers list for this distribution and you can sign up for a role
+		View volunteers list for a given distribution.
+		Members can sign up for a role.
 	**/
 	@tpl('distribution/volunteersSummary.mtt')
 	function doVolunteersSummary(distrib:db.MultiDistrib, ?args:{role:db.VolunteerRole}) {

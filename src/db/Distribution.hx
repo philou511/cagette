@@ -115,14 +115,12 @@ class Distribution extends Object
 		Get user orders
 		This includes secondary user.
 	**/
-	public function getUserOrders(user:db.User):List<db.UserOrder>{
-
-		if( user == null || user.id == null ) throw new tink.core.Error( "Un membre doit être fourni." );
-
+	public function getUserOrders(user:db.User):Array<db.UserOrder>{
+		if( user == null || user.id == null ) throw new tink.core.Error( "user is null" );
 		if ( this.catalog.type == db.Catalog.TYPE_CONSTORDERS){
-		 	return db.UserOrder.manager.search($distribution == this  && ($user==user || $user2==user) , false); 
+		 	return db.UserOrder.manager.search($distribution == this  && ($user==user || $user2==user) , false).array(); 
 		}else{
-			return db.UserOrder.manager.search($distribution == this  && $user==user, false); 
+			return db.UserOrder.manager.search($distribution == this  && $user==user, false).array(); 
 		}
 	}
 	

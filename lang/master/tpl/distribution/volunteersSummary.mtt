@@ -1,5 +1,6 @@
 ::use 'design.mtt'::
 <div id="content" class="col-md-12">
+	<h3>Permanences du ::hDate(multidistrib.distribStartDate)::</h3>
 	<div class="article">
 		::set d = multidistrib::
 		<div style="margin-bottom:30px;">

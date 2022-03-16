@@ -379,7 +379,7 @@ div.reportHeader {
 .blockIconBadge {
   position: absolute;
   top: -18px;
-  right: 0px;
+  right: 10px;
   z-index: 50;
   width: 40px;
   height: 40px;
@@ -653,9 +653,9 @@ div.reportHeader {
     border-top-right-radius: 8px;
     color: #FFF;
     background-color: #B2823F;
-    vertical-align: middle;
     margin: 0;
-    padding: 6px 6px 6px 90px; }
+    padding: 6px 6px 6px 90px;
+    min-height: 70px; }
     .distrib .header.disabled {
       background-color: #999;
       opacity: 1; }
@@ -665,7 +665,7 @@ div.reportHeader {
       background-color: #85B14D; }
     .distrib .header .info {
       font-size: 16px;
-      line-height: 22px;
+      line-height: 27px;
       /* place link */ }
       .distrib .header .info a {
         color: #FFFFFF !important; }
@@ -688,11 +688,10 @@ div.reportHeader {
     padding: 12px;
     background-color: white; }
     .distrib .content.myorder {
-      background: #FFF;
-      font-weight: bold;
+      background: #EEE;
       color: #999;
-      background: white;
-      padding: 11px 0 4px 16px; }
+      padding: 8px 8px 8px 20px;
+      font-weight: bold; }
     .distrib .content.disabled {
       opacity: 1; }
     .distrib .content.orders {
@@ -700,15 +699,17 @@ div.reportHeader {
       padding-left: 50px; }
     .distrib .content .alert {
       margin-bottom: 0; }
+    .distrib .content .footer {
+      color: #999;
+      margin: 10px 0; }
+      .distrib .content .footer a {
+        color: #999;
+        margin-right: 12px; }
   .distrib .footer {
-    min-height: 8px;
-    color: #999;
-    font-size: 0.9em;
+    height: 8px;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
     background: #FFF; }
-    .distrib .footer a {
-      color: #999; }
 
 div.groupImg {
   background: no-repeat center;
