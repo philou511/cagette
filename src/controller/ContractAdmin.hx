@@ -612,21 +612,16 @@ class ContractAdmin extends Controller
 	 * Purchase order to print
 	 */
 	@tpl("contractadmin/ordersByProductList.mtt")
-	function doOrdersByProductList(contract:db.Catalog, args:{?d:db.Distribution}) {
+	function doOrdersByProductList(contract:db.Catalog, args:{d:db.Distribution}) {
 		
 		sendNav(contract);		
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("Forbidden access"));
-		if (contract.type == db.Catalog.TYPE_VARORDER && args.d == null ) throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
-		
-		if (contract.type == db.Catalog.TYPE_VARORDER ) view.distribution = args.d;
+		if(args.d.catalog.id!=contract.id) throw 'Distribution does not belong to this catalog';
+				
+		view.distribution = args.d;
 		view.c = contract;
 		view.group = contract.group;
-		var d = args != null ? args.d : null;
-		if (d == null) d = contract.getDistribs(false).first();
-		if (d == null) throw t._("No delivery in this catalog");
-		
-		var orders = service.ReportService.getOrdersByProduct(d,false);
-		view.orders = orders;
+		view.orders = service.ReportService.getOrdersByProduct(args.d,false);
 	}
 	
 	/**
