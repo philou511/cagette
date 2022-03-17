@@ -1,4 +1,4 @@
-:: use 'mail/design.mtt'::
+:: use 'mail/design-group.mtt'::
 
 <p>
 	Bonjour, vous êtes le coordinateur du contrat <b>::d._catalog.name::</b>.<br/>
