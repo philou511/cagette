@@ -15,9 +15,7 @@
 			</td>
 			<td>
 				<h1>::group.name::</h1>
-				::if distribution!=null::
-					<h2>Livraison du <b>::hDate(distribution.date)::</b></h2>
-				::end::
+				<h2>Bon de commande pour le <b>::hDate(distribution.date)::</b></h2>
 				<h2>::c.name:: - ::c._vendor.name::</h2>		
 			</td>
 			<td>
