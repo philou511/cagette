@@ -1,4 +1,4 @@
-:: use 'mail/design.mtt'::
+:: use 'mail/layout-group.mtt'::
 
 <p>
     ::raw __( "<b>::fullname::</b> has left the role <b>::role::</b> for the following reason:",{fullname:fullname,role:role})::

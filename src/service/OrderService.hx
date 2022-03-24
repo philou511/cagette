@@ -534,7 +534,8 @@ class OrderService
 
 
 	/**
-	 *  Send an order-by-products report to the coordinator
+	 *  Send an order-by-products report to the coordinator.
+	 	Used in wholesaleOrder service
 	 */
 	public static function sendOrdersByProductReport(d:db.Distribution){
 		
@@ -564,6 +565,7 @@ class OrderService
 	/**
 	 *  Send Order summary for a member
 	 *  WARNING : its for one distrib, not for a whole basket !
+	 	used in WholeSaleService
 	 */
 	public static function sendOrderSummaryToMembers(d:db.Distribution){
 

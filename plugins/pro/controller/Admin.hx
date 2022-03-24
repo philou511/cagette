@@ -1263,37 +1263,7 @@ class Admin extends controller.Controller {
 		view.form = f;
 	}
 
-	/**
-		envoi du mail aux producteur pour qu'il remplissent leurs infos légales.
-	**/
-	function doSendLegalInfosMail() {
-		for (v in db.Vendor.manager.unsafeObjects("SELECT v.* FROM Vendor v, VendorStats vs where v.id=vs.vendorId and vs.active=1 and v.companyNumber is null and disabled is null",
-			false)) {
-			var vs = VendorStats.getOrCreate(v);
-
-			if (vs.type == VTStudent)
-				continue;
-			if (v.disabled != null)
-				continue;
-			if (v.email == null)
-				continue;
-
-			Sys.println('send to <a href="/admin/vendor/view/${v.id}">${v.name}</a><br/>');
-
-			var m = new sugoi.mail.Mail();
-			m.setSender(App.config.get("default_email"), "Cagette.net");
-			m.setRecipient(v.email);
-			m.setReplyTo("support@cagette.net", "Cagette.net");
-			m.setSubject("Important : mise en conformité des comptes producteurs sur Cagette.net");
-			var link = "http://app.cagette.net/vendorNoAuthEdit/"
-				+ v.id
-				+ "/"
-				+ haxe.crypto.Md5.encode(App.config.KEY + "_updateWithoutAuth_" + v.id);
-
-			m.setHtmlBody(app.processTemplate("plugin/pro/mail/vendorLegalInfos.mtt", {vendor: v, link: link, type: vs.type.getIndex()}));
-			App.sendMail(m);
-		}
-	}
+	
 
 	/**
 		block "covid" cpro tests on 2020-10-01

@@ -235,7 +235,6 @@ class WholesaleOrderService {
 				//changes won't be commited thanks to MySQL Transactions				
 				throw new Error('Balancing not possible : quantity ${t.quantity} of "${t.pname}" should be integer. ( ${t.quantity} != ${Math.round(t.quantity)} )');
 			}
-
 		}
 
 		sendMailToMembers(d);
