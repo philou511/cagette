@@ -478,37 +478,7 @@ class User extends Object {
 		
 	}
 	
-	public function sendInvitation(group:db.Group,?force=false) {
-		
-		var t = sugoi.i18n.Locale.texts;
-		
-		if (isFullyRegistred() && !force) throw t._("This user cannot receive an invitation");
-		
-		//store token
-		var k = sugoi.db.Session.generateId();
-		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 30 * 3); //expire in 3 month
-		
-		var e = new sugoi.mail.Mail();
-		if (group != null){
-			e.setSubject(t._("Invitation")+" "+group.name);	
-		}else{
-			e.setSubject(t._("Invitation Cagette.net"));
-		}
-		
-		e.addRecipient(this.email,this.getName());
-		e.setSender(App.config.get("default_email"),t._("Cagette.net"));			
-		
-		var html = App.current.processTemplate("mail/invitation.mtt", { 
-			email:email,
-			email2:email2,
-			groupName:(group == null?null:group.name),			
-			name:firstName,
-			k:k 			
-		} );		
-		e.setHtmlBody(html);
-		
-		App.sendMail(e);	
-	}
+	
 	
 	/**
 	 * cleaning before saving

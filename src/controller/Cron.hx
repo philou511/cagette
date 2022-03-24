@@ -765,7 +765,7 @@ class Cron extends Controller
 	/**
 	 *  Email product report when orders close				
 	 **/  
-	function sendOrdersByProductWhenOrdersClose(){
+	/*function sendOrdersByProductWhenOrdersClose(){
 	
 		var range = tools.DateTool.getLastHourRange();
 		// Sys.println("Time is "+Date.now()+"<br/>");
@@ -774,7 +774,7 @@ class Cron extends Controller
 		for ( d in db.Distribution.manager.search($orderEndDate >= range.from && $orderEndDate < range.to, false)){
 			service.OrderService.sendOrdersByProductReport(d);
 		}
-	}
+	}*/
 	
 	public static function print(text:Dynamic){
 		var text = Std.string(text);
