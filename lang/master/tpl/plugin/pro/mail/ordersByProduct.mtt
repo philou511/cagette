@@ -1,4 +1,4 @@
-:: use 'mail/design-group.mtt'::
+:: use 'mail/layout-group.mtt'::
 
    <p>
 	   Vos commandes du catalogue <b>::catalog.name::</b> ont fermé le <b>::hDate(distribution.orderEndDate)::</b>.

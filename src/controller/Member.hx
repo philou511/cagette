@@ -34,43 +34,6 @@ class Member extends Controller
 		checkToken();
 	}
 	
-	/**
-	 * Send an invitation to a new member
-	 */
-	function doInviteMember(u:db.User){
-		
-		if (checkToken() ) {
-			u.sendInvitation(app.user.getGroup());
-			throw Ok('/member/view/'+u.id, t._("Invitation sent.") );
-		}
-		
-	}
-	
-	/**
-	 * Invite 'never logged' users
-	 */
-	function doInvite() {
-		if (checkToken()) {
-			
-			var users = db.User.getUsers_NewUsers();
-			try{
-				for ( u in users) {
-					u.sendInvitation(app.user.getGroup());
-					Sys.sleep(0.2);
-				}
-			}catch (e:String){
-				if (e.indexOf("curl") >-1) {
-					App.current.logError(e, haxe.CallStack.toString(haxe.CallStack.exceptionStack()));
-					throw Error("/member", t._("An error occurred while sending emails, please retry"));
-				}
-			}
-			
-			throw Ok('/member', t._("Congratulations, you just sent <b>::userLength::</b> invitations", {userLength:users.length}));
-		}
-		
-	}
-	
-	
 	@tpl("member/view.mtt")
 	function doView(member:db.User) {
 		var group = app.user.getGroup();
@@ -229,7 +192,7 @@ class Member extends Controller
 		}
 	}
 	
-	@tpl('form.mtt')
+	/*@tpl('form.mtt')
 	function doMerge(user:db.User) {
 		
 		if (!app.user.canAccessMembership()) throw Error("/","Action interdite");
@@ -292,7 +255,7 @@ class Member extends Controller
 		
 		view.form = form;
 		
-	}
+	}*/
 	
 	/**
 	 * user payments history

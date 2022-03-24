@@ -1,8 +1,13 @@
-:: use 'mail/design.mtt'::
+::if(group!=null)::
 
+    :: use 'mail/layout-group.mtt'::
+        ::raw text::
+    ::end::
 
-::raw text::
+::else::
 
-
+    :: use 'mail/layout-cagette.mtt'::
+        ::raw text::
+    ::end::
 
 ::end::
