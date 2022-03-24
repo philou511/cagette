@@ -1,8 +1,8 @@
 package db;
+import Common;
+import db.UserGroup;
 import sys.db.Object;
 import sys.db.Types;
-import db.UserGroup;
-import Common;
 
 enum UserFlags {
 	HasEmailNotif4h;	//send notifications by mail 4h before
@@ -145,10 +145,6 @@ class User extends Object {
 
 	public function getUserGroups(){
 		return Lambda.array(db.UserGroup.manager.search($user == this, false));
-	}
-	
-	public function isFullyRegistred(){
-		return (pass != null && pass != "") || (pass2 != null && pass2 != "");
 	}
 	
 	public function makeMemberOf(group:db.Group){
