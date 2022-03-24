@@ -1,4 +1,5 @@
 package controller.admin;
+import sys.FileSystem;
 import Common;
 import db.BufferedJsonMail;
 import db.Catalog;
@@ -433,4 +434,48 @@ class Admin extends Controller {
 
 	@tpl('admin/news.mtt')
 	function doNews() {}
+
+	function doTestMails(?args:{tpl:String}){
+
+		//list existing mail templates
+		var dirs = [
+			Web.getCwd()+"/../lang/master/tpl/mail/",
+			Web.getCwd()+"/../lang/master/tpl/plugin/pro/who/mail/",
+			Web.getCwd()+"/../lang/master/tpl/plugin/pro/mail/"
+		];
+		var tpls = [];
+
+		for( dir in dirs){
+			var files = FileSystem.readDirectory(dir);
+			for(file in files) tpls.push(dir+file);	
+		}
+
+		Sys.print("<ul>");
+		for(tpl in tpls){
+			var i = tpl.indexOf("/lang/master/tpl/") + "/lang/master/tpl/".length;
+			tpl = tpl.substr(i);
+			Sys.print('<li><a href="/admin/testMails?tpl=$tpl">$tpl</a></li>');
+		} 
+		Sys.print("</ul>");
+		
+		var group = db.Group.manager.select(true,false);
+		var user = db.User.manager.select(true,false);
+		var d = db.Distribution.manager.select(true,false);
+		var contract = d.catalog;
+		var catalog = d.catalog;
+
+
+		if(args!=null && args.tpl!=null){
+			var res = App.current.processTemplate(args.tpl, {
+				group:group,
+				user:user,
+				d:d,
+				catalog:catalog,
+				contract:contract,
+				text:"Lorem Ipsum"
+			} );
+			Sys.print(res);
+		}
+
+	}
 }

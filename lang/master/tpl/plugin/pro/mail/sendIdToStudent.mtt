@@ -1,4 +1,4 @@
-:: use '/mail/design-cagette.mtt'::
+:: use '/mail/layout-cagette.mtt'::
 
     Bonjour ::companyCourse._user.firstName::,<br/>
 
