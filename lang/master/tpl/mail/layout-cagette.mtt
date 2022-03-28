@@ -53,7 +53,17 @@
 
 		<footer id="footer">
 			<p>Cagette.net - ALILO SCOP, 4 impasse Durban, 33000 Bordeaux</p>
-			<p><a href="https://cagette.net" target="_blank" rel="noreferrer noopener">WWW.CAGETTE.NET</a></p>
+			<div style="display: flex; justify-content: center; align-items: center;">
+				<a href="https://cagette.net" target="_blank" rel="noreferrer noopener" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
+					<img src="http://::HOST::/img/emails/website.png" alt="Site web" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>Site web
+				</a>
+				<a href="https://www.facebook.com/cagette" target="_blank" rel="noreferrer noopener" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
+					<img src="http://::HOST::/img/emails/facebook.png" alt="Facebook" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>Facebook
+				</a>
+				<a href="https://www.youtube.com/channel/UC3cvGxAUrbN9oSZmr1oZEaw" target="_blank" rel="noreferrer noopener" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
+					<img src="http://::HOST::/img/emails/youtube.png" alt="YouTube" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>YouTube
+				</a>
+			</div>
 		</footer>
 	</body>
 
