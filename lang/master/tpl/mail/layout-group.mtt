@@ -4,7 +4,7 @@
 		<meta name="viewport" content="width=device-width"/>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 		<style>
-			#body {
+			body {
 				color: #333;
 				font-family: sans-serif;
 				background-color: #f8f4e5;
@@ -129,7 +129,7 @@
 		<title>Cagette.net</title>
 	</head>
 
-	<body id="body">
+	<body>
 		<header id="header">
 			<b>::group.name::</b>
 		</header>
@@ -148,8 +148,8 @@
 			<p>Ce courriel a été envoyé depuis <a href="http://::HOST::" target="_blank" rel="noreferrer noopener">Cagette.net</a>.</p>
 			<p>Vous recevez ce message car vous faites partie de <b>::group.name::</b>::if list!=null:: (::list::) ::end::</p>
 			::if (user!=null)::
-			<p><a href="::user.getEditNotificationsLink(group)::">Changer les préférences de notification.</a></p>
-			<p><a href="::user.getQuitGroupLink(group)::">Quitter ce groupe.</a></p>
+			<p><a href="::user.getEditNotificationsLink(group)::">Changer les préférences de notification</a></p>
+			<p><a href="::user.getQuitGroupLink(group)::">Quitter ce groupe</a></p>
 			::end::
 		</footer>
 	</body>
