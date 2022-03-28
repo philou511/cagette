@@ -169,7 +169,7 @@ class Main extends controller.Controller
 	
 	
 	/**
-	 * CRM page
+	 * Group page
 	 */
 	@admin @tpl("plugin/pro/hosted/default.mtt")
 	public function doDefault() {
