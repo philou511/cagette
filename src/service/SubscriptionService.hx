@@ -816,7 +816,7 @@ class SubscriptionService
 		}
 	}
 
-	public static function getAbsentDistribsMaxNb( catalog:Catalog/*, ?subscription:Subscription*/ ) {
+	public static function getAbsentDistribsMaxNb( catalog:Catalog, ?subscription:Subscription ) {
 
 
 		if ( !catalog.hasAbsencesManagement() ) return 0;

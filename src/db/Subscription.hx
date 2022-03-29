@@ -1,10 +1,8 @@
 package db;
-import service.SubscriptionService;
+import Common;
 import db.Operation.OperationType;
 import sys.db.Object;
 import sys.db.Types;
-import Common;
-import tink.core.Error;
 
 class Subscription extends Object {
 
@@ -144,16 +142,25 @@ class Subscription extends Object {
 		return label;
 	}
 
-	
+	/**
+		set subscriptions absence distributions
+	**/
+	public function setAbsences( distribIds:Array<Int> ) {
+
+		//check there is no duplicates
+		if(tools.ArrayTool.deduplicate(distribIds).length != distribIds.length){
+			throw new tink.core.Error(500,"Vous ne pouvez pas choisir deux fois la même distribution");
+		}
+
+		if( distribIds != null && distribIds.length != 0 ) {
+			distribIds.sort( function(b, a) { return  a < b ? 1 : -1; } );
+			this.absentDistribIds = distribIds.join(',');
+		} else {
+			this.absentDistribIds = null;
+		}
+	}
 
 	public function getAbsencesNb():Int {
-
-		/*if ( this.absentDistribIds == null ) return 0;
-		var distribIds = this.absentDistribIds.split(',');
-		if ( this.catalog.absentDistribsMaxNb < distribIds.length ) {
-			return this.catalog.absentDistribsMaxNb;
-		}
-		return distribIds.length;*/
 		return getAbsentDistribIds().length;
 	}
 	
