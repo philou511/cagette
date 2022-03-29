@@ -609,7 +609,7 @@ class ContractAdmin extends Controller
 	}
 	
 	/**
-	 * Purchase order (bon de commande) to print
+	 * Purchase order to print
 	 */
 	@tpl("contractadmin/ordersByProductList.mtt")
 	function doOrdersByProductList(contract:db.Catalog, args:{d:db.Distribution}) {
