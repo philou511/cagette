@@ -244,8 +244,8 @@ class Group extends controller.Controller
 					Date.now(),
 					DateTools.delta( Date.now(), 1000.0 * 60 * 60 * 24 * 13)
 				);	
-				var ordersData = new Array< { productId : Int, quantity : Float, invertSharedOrder : Bool, userId2 : Int } >();
-				ordersData.push( { productId : product.id, quantity : 1, invertSharedOrder : false, userId2 : null } );
+				var ordersData = new Array<CSAOrder>();
+				ordersData.push( { productId : product.id, productPrice: product.price, quantity : 1, invertSharedOrder : false, userId2 : null } );
 				var ss = new SubscriptionService();
 				ss.createSubscription( user, contract, ordersData, null );
 			}
@@ -300,9 +300,9 @@ class Group extends controller.Controller
 				DateTools.delta( Date.now(), 1000.0 * 60 * 60 * 24 * 13)
 			);
 
-			var ordersData = new Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
-			ordersData.push( { productId : egg.id, quantity : 2 } );
-			ordersData.push( { productId : p.id, quantity : 1 } );
+			var ordersData = new Array<CSAOrder>();
+			ordersData.push( { productId : egg.id, productPrice: egg.price, quantity : 2 } );
+			ordersData.push( { productId : p.id, productPrice:p.price, quantity : 1 } );
 			var ss = new SubscriptionService();
 			var subscription = ss.createSubscription( user, contract, ordersData, null );
 			

@@ -282,8 +282,7 @@ class App extends sugoi.BaseApp {
 		if (group == null) group = App.current.user == null ? null:App.current.user.getGroup();
 		current.event(SendEmail(m));
 		var params = group==null ? null : {remoteId:group.id};
-		getMailer().send(m,params,function(o){});
-		
+		getMailer().send(m,params,function(o){});		
 	}
 	
 	public static function quickMail(to:String, subject:String, html:String,?group:db.Group){

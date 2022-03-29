@@ -18,7 +18,7 @@ enum SubscriptionServiceError {
 	CatalogRequirementsNotMet;
 }
 
-typedef CSAOrder = { productId:Int, quantity:Float, ?userId2:Int, ?invertSharedOrder:Bool };
+typedef CSAOrder = { productId:Int, productPrice:Float, quantity:Float, ?userId2:Int, ?invertSharedOrder:Bool }
 
 /**
  * Subscription service
@@ -130,7 +130,8 @@ class SubscriptionService
 	}
 
 	/**
-		Get subscription distributions
+		Get subscription distributions.
+		@param type : "all" returns all distribs of subscription - except absence distribs.
 	**/
 	public static function getSubscriptionDistributions( subscription:db.Subscription, ?type='all' ) : Array<db.Distribution> {
 
@@ -206,6 +207,9 @@ class SubscriptionService
 		return subscriptionDistribsNb;
 	}
 
+	/**
+		Get all the userOrders of a subscription
+	**/
 	public static function getSubscriptionAllOrders( subscription : db.Subscription ) : Array<db.UserOrder> {
 		if( subscription == null || subscription.id == null ) return [];
 		return db.UserOrder.manager.search( $subscription == subscription, false ).array();
@@ -508,31 +512,51 @@ class SubscriptionService
 
 
 	 /*
-	  *	Checks if variable orders for one or several distributions meet all the catalog requirements 
+	  *	Checks if recorded variable orders meet all the catalog requirements.
 	  */
-	 public static function areVarOrdersValid( subscription:db.Subscription, pricesQuantitiesByDistrib:Map<db.Distribution,Array<{productQuantity:Float, productPrice:Float}>> ) : Bool {
+	 public static function areVarOrdersValid( subscription:db.Subscription ) : Bool {
 
-		var catalog : db.Catalog = null;
-		if ( subscription != null ) {
-			catalog = subscription.catalog;
-		} else {
-			catalog = pricesQuantitiesByDistrib.keys().next().catalog;
-		}
-
+		var catalog = subscription.catalog;
+		
 		var catalogMinOrdersTotal = getCatalogMinOrdersTotal( catalog, subscription );
-		if ( ( catalog.distribMinOrdersTotal == null || catalog.distribMinOrdersTotal == 0 ) && ( catalogMinOrdersTotal == null || catalogMinOrdersTotal == 0 /*|| catalog.allowedOverspend == null*/ ) ) {
+		if ( ( catalog.distribMinOrdersTotal == null || catalog.distribMinOrdersTotal == 0 ) && ( catalogMinOrdersTotal == null || catalogMinOrdersTotal == 0) ) {
 			return true;
 		}
+
+		//format data
+		var ordersByDistrib = new Map<db.Distribution,Array<CSAOrder>>();
+		for( order in getSubscriptionAllOrders(subscription)){
+
+			var o:CSAOrder = {
+				quantity : order.quantity,
+				productPrice : order.productPrice,
+				productId : order.product.id,
+				invertSharedOrder : null,
+				userId2 : null
+			};     
+
+			var d = order.distribution;
+			var existing = ordersByDistrib.get(d);
+			if(existing == null){
+				ordersByDistrib.set(d,[o]);
+			}else{
+				existing.push(o);
+				ordersByDistrib.set(d, existing );
+			}
+		}
+
+		//remove absences distribs
+		
 
 		//Distribution minimum orders total
 		if ( catalog.distribMinOrdersTotal != null && catalog.distribMinOrdersTotal != 0 ) {
 
 			var distribTotal : Float = 0;
-			for ( distrib in pricesQuantitiesByDistrib.keys() ) {
+			for ( distrib in ordersByDistrib.keys() ) {
 
 				distribTotal = 0;
-				for ( quantityPrice in pricesQuantitiesByDistrib[distrib] ) {
-					distribTotal += Formatting.roundTo( quantityPrice.productQuantity * quantityPrice.productPrice, 2 );
+				for ( o in ordersByDistrib[distrib] ) {
+					distribTotal += Formatting.roundTo( o.quantity * o.productPrice, 2 );
 				}
 
 				distribTotal = Formatting.roundTo( distribTotal, 2 );
@@ -551,10 +575,10 @@ class SubscriptionService
 			//Computes orders total
 			var ordersTotal : Float = 0;
 			var ordersDistribIds = new Array<Int>();
-			for ( distrib in pricesQuantitiesByDistrib.keys() ) {
+			for ( distrib in ordersByDistrib.keys() ) {
 				ordersDistribIds.push( distrib.id );
-				for ( quantityPrice in pricesQuantitiesByDistrib[distrib] ) {
-					ordersTotal += Formatting.roundTo( quantityPrice.productQuantity * quantityPrice.productPrice, 2 );
+				for ( o in ordersByDistrib[distrib] ) {
+					ordersTotal += Formatting.roundTo( o.quantity * o.productPrice, 2 );
 				}
 			}
 			ordersTotal = Formatting.roundTo( ordersTotal, 2 );
@@ -650,8 +674,7 @@ class SubscriptionService
 
 	 /**
 		Creates a new subscription
-		* ordersData is defaultOrder or recurrent order
-		* set absences number
+		@param OrdersData : defaultOrder or recurrent order
 	  */
 	 public function createSubscription( user:db.User, catalog:db.Catalog, ?ordersData:Array<CSAOrder>, ?absenceDistribIds:Array<Int>,?absenceNb:Int,?startDate:Date, ?endDate:Date ):db.Subscription {
 
@@ -692,10 +715,16 @@ class SubscriptionService
 		check(subscription);
 		subscription.insert();
 
-		this.createCSARecurrentOrders( subscription, ordersData );
 		this.updateDefaultOrders( subscription, ordersData );
 		
 		//Email notification
+		sendSubscriptionCreatedEmail(subscription);
+
+		return subscription;
+	}
+
+	function sendSubscriptionCreatedEmail(subscription:db.Subscription){
+		var catalog = subscription.catalog;
 		var html = '<p><b>Vous venez de souscrire au contrat AMAP "${catalog.name}" avec le paysan "${catalog.vendor.name}".</b></p>';
 		html += "<p>";
 		html += 'Votre engagement : ${SubscriptionService.getSubscriptionConstraints(subscription)}<br/>';
@@ -723,8 +752,6 @@ class SubscriptionService
 		}
 		
 		App.quickMail(subscription.user.email,'Souscription au contrat "${catalog.name}"',html,catalog.group);
-
-		return subscription;
 	}
 
 	/**
@@ -806,13 +833,7 @@ class SubscriptionService
 		subscription.update();
 
 		if(ordersData!=null){
-			if( subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
-				//CONST
-				createCSARecurrentOrders( subscription, ordersData );
-			}else{
-				//VAR
-				updateDefaultOrders( subscription, ordersData );			
-			}
+			updateDefaultOrders( subscription, ordersData );						
 		}
 	}
 
@@ -944,18 +965,16 @@ class SubscriptionService
 	}
 
 	/**
-	 *  Checks whether there are orders with non zero quantity in the past
-	 */
+		*  Checks whether there are orders with non zero quantity in the past
+		*/
+		
 	public static function hasPastDistribOrders( subscription:db.Subscription ) : Bool {
-
 		if ( !hasPastDistributions( subscription ) ) {
 			return false;
 		} else {
-
 			var pastDistributions = getSubscriptionDistributions( subscription, 'past' );
 			for ( distribution in pastDistributions ) {
-
-				if ( db.UserOrder.manager.count( $distribution == distribution && $subscription == subscription ) != 0 ) {					
+				if ( db.UserOrder.manager.count( $distribution == distribution && $subscription == subscription && $quantity>0 ) != 0 ) {					
 					return true;
 				}
 			}
@@ -1007,36 +1026,52 @@ class SubscriptionService
 	}
 
 	/**
-		Create contract's recurrent orders
+		(re)create contract's recurrent orders.
+		If contract is CONST : recreate all orders, not possible if there is orders in the past
+		if contract is VAR : recreate all orders of future open distribs. 
 	**/
-	public function createCSARecurrentOrders(subscription:db.Subscription, ordersData:Array<CSAOrder>, ?oldAbsentDistribIds:Array<Int> ) : Array<db.UserOrder> {
+	private function createRecurrentOrders(subscription:db.Subscription, ordersData:Array<CSAOrder>/*, ?oldAbsentDistribIds:Array<Int>*/ ) : Array<db.UserOrder> {
 
-		if ( ordersData == null || ordersData.length == 0 ) {
+		/*if ( ordersData == null || ordersData.length == 0 ) {
 			ordersData = [];
 			var subscriptionOrders = getCSARecurrentOrders( subscription, oldAbsentDistribIds );
 			for ( order in subscriptionOrders ) {
 				ordersData.push( { productId : order.product.id, quantity : order.quantity, userId2 : order.user2 != null ? order.user2.id : null, invertSharedOrder : order.hasInvertSharedOrder() } );
 			}
-		} else if ( hasPastDistribOrders( subscription ) && !adminMode ) {
+		} else*/
+		var catalog = subscription.catalog;
 
-			throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées, il faut modifier la date de fin de
-			la souscription et en recréer une nouvelle pour la nouvelle période. Vous pourrez ensuite définir une nouvelle commande pour cette nouvelle souscription.', SubscriptionServiceError.PastOrders );
+		if(catalog.isConstantOrders()){
+			if ( hasPastDistribOrders(subscription) && !adminMode ) {
+				throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées, il faut recréer une nouvelle souscription avec une nouvelle commande.', SubscriptionServiceError.PastOrders );
+			}
 		}
 
+		//delete existing userOrders
 		var subscriptionAllOrders = getSubscriptionAllOrders( subscription );
+		var now = Date.now().getTime();
 		for ( order in subscriptionAllOrders ) {
+
+			if( catalog.isVarOrders() && order.distribution.orderEndDate.getTime() < now ){
+				//if catalog is variable and distrib is closed, do not delete order
+				continue;
+			}
+
 			OrderService.delete(order,true);
 		}
 	
-		var t = sugoi.i18n.Locale.texts;
-	
+		//recreate orders
+		var t = sugoi.i18n.Locale.texts;	
 		var orders : Array<db.UserOrder> = [];
 		for ( distribution in getSubscriptionDistributions(subscription) ) {
 
+			if( !catalog.isConstantOrders() && distribution.orderEndDate.getTime() < now ){
+				//if catalog is variable and distrib is closed, do not recreate order
+				continue;
+			}
+
 			for ( order in ordersData ) {
-
 				if ( order.quantity > 0 ) {
-
 					var product = db.Product.manager.get( order.productId, false );
 					// User2 + Invert
 					var user2 : db.User = null;
@@ -1058,9 +1093,8 @@ class SubscriptionService
 		}
 		
 		App.current.event( MakeOrder( orders ) );
-
-		if ( subscription.catalog.hasPayments ) {
-			// create/update a single operation for the subscription total price
+		
+		if ( subscription.catalog.hasPayments ) {			
 			createOrUpdateTotalOperation( subscription );
 		}
 
@@ -1135,7 +1169,7 @@ class SubscriptionService
 
 		if ( subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
 			//regen recurrent orders
-			this.createCSARecurrentOrders( subscription, null, oldAbsentDistribIds );
+			this.createRecurrentOrders( subscription, null/*, oldAbsentDistribIds*/ );
 		} else {
 			//remove orders in new absence dates
 			var absentDistribsOrders = db.UserOrder.manager.search( $subscription == subscription && $distributionId in newAbsentDistribIds, false );
@@ -1148,20 +1182,33 @@ class SubscriptionService
 	}
 
 	/**
-		Update default orders on a variable contract with requiresOrdering
+		Update default orders.
+		DefaultOrders can be on a variable contract with requiresOrdering=true
+		Or can be the recurring order of a constant CSA contrat
 	**/
 	public function updateDefaultOrders( subscription:db.Subscription, defaultOrders:Array<CSAOrder>){
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );	
 		subscription.lock();	
-		if( !subscription.catalog.requiresOrdering ) return;
-		if ( subscription.catalog.requiresOrdering && (defaultOrders==null || defaultOrders.length==0 ) ) {
-			throw new Error('La commande par défaut ne peut pas être vide. (Souscription de ${subscription.user.getName()})');
-		}
-
-		// if( subscription.catalog.type==Catalog.TYPE_CONSTORDERS) return;
+		if( subscription.catalog.type==Catalog.TYPE_VARORDER){
+			if( !subscription.catalog.requiresOrdering ) return;
+			if ( subscription.catalog.requiresOrdering && (defaultOrders==null || defaultOrders.length==0 ) ) {
+				throw new Error('La commande par défaut ne peut pas être vide. (Souscription de ${subscription.user.getName()})');
+			}
+		}else{
+			if ( defaultOrders==null || defaultOrders.length==0 ) {
+				throw new Error('La commande par défaut ne peut pas être vide. (Souscription de ${subscription.user.getName()})');
+			}
+		}	
 		
-		var totalPrice : Float = 0;
+		createRecurrentOrders( subscription, defaultOrders );
+
+		//check if default Orders meet the catalog requirements
+		if( subscription.catalog.type==Catalog.TYPE_VARORDER){			
+			areVarOrdersValid(subscription);
+		}
+		
+		/*var totalPrice : Float = 0;
 		var totalQuantity : Float = 0;
 		for ( order in defaultOrders ) {
 
@@ -1190,10 +1237,11 @@ class SubscriptionService
 				message += 'La commande par défaut ne peut pas être vide.';
 				throw TypedError.typed( message, CatalogRequirementsNotMet );
 			}
-		}
+		}*/
 		
-		subscription.setDefaultOrders( defaultOrders );
+		subscription.defaultOrders = haxe.Json.stringify( defaultOrders );
 		subscription.update();
+
 	}
 
 	public static function createOrUpdateTotalOperation( subscription:db.Subscription ) : db.Operation {

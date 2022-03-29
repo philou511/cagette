@@ -88,6 +88,10 @@ class Catalog extends Object
 	public function isConstantOrders(){
 		return type == TYPE_CONSTORDERS;
 	}
+
+	public function isVarOrders(){
+		return type == TYPE_VARORDER;
+	}
 	
 	/**
 	 * The products can be displayed in a shop ?

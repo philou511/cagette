@@ -107,8 +107,7 @@ class Subscriptions extends controller.Controller
 
 		if ( checkToken() ) {
 
-			try {
-				
+			try {				
 				var userId = Std.parseInt( app.params.get( "user" ) );
 				if ( userId == null || userId == 0 ) {
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, 'Veuillez sélectionner un membre.' );
@@ -130,7 +129,7 @@ class Subscriptions extends controller.Controller
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, "Vous devez sélectionner une date de début et de fin pour la souscription." );
 				}
 				
-				var ordersData = new Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
+				var ordersData = new Array<CSAOrder>();
 				for ( product in catalogProducts ) {
 
 					var quantity : Float = 0;
@@ -139,7 +138,6 @@ class Subscriptions extends controller.Controller
 					var user2 : db.User = null;
 					var userId2 : Int = null;
 					if( catalog.type == Catalog.TYPE_CONSTORDERS ) {
-
 						userId2 = Std.parseInt( app.params.get( 'user2' + product.id ) );
 					}
 					var invert = false;
@@ -160,9 +158,15 @@ class Subscriptions extends controller.Controller
 
 					if ( quantity != 0 ) {
 						if( catalog.type == Catalog.TYPE_CONSTORDERS ) {
-							ordersData.push( { productId : product.id, quantity : quantity, userId2 : userId2, invertSharedOrder : invert } );
+							ordersData.push( { 
+								productId : product.id,
+								productPrice : product.price,
+								quantity : quantity,
+								userId2 : userId2,
+								invertSharedOrder : invert
+							});
 						} else {
-							ordersData.push( { productId : product.id, quantity : quantity } );
+							ordersData.push( { productId : product.id, productPrice : product.price, quantity : quantity } );
 						}
 					}					
 				}
@@ -220,7 +224,7 @@ class Subscriptions extends controller.Controller
 					throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous devez sélectionner une date de début et de fin pour la souscription." );
 				}
 
-				var ordersData = new Array<{ productId:Int, quantity:Float, ?userId2:Int, ?invertSharedOrder:Bool }>();
+				var ordersData = new Array<CSAOrder>();
 				
 				//get orders from the form ( constant order, ou default order is catalog.requiresOrdering)
 				for ( product in catalogProducts ) {
@@ -254,9 +258,15 @@ class Subscriptions extends controller.Controller
 
 					if ( quantity!=null && quantity > 0 ) {
 						if( subscription.catalog.type == Catalog.TYPE_CONSTORDERS ) {
-							ordersData.push( { productId : product.id, quantity : quantity, userId2 : userId2, invertSharedOrder : invert } );
+							ordersData.push( { 
+								productId : product.id,
+								productPrice : product.price,
+								quantity : quantity,
+								userId2 : userId2,
+								invertSharedOrder : invert
+							} );
 						} else {
-							ordersData.push( { productId : product.id, quantity : quantity } );
+							ordersData.push( { productId : product.id, productPrice: product.price,  quantity : quantity } );
 						}
 					}						
 				}
@@ -440,49 +450,6 @@ class Subscriptions extends controller.Controller
 		throw Ok("/contractAdmin/subscriptions/"+catalog.id,'Souscriptions dévalidées');
 	}
 
-	@logged @tpl("form.mtt")
-	function doDefaultOrders( subscription : db.Subscription ) {
-
-		if( subscription.catalog.group.hasShopMode() ) throw Redirect( "/contract/view/" + subscription.catalog.id );
-		if( subscription.catalog.requiresOrdering == null || !subscription.catalog.requiresOrdering ) throw Redirect( "/contract/order/" + subscription.catalog.id );
-		var ss = new SubscriptionService();
-
-		var form = new sugoi.form.Form("subscriptionDefaultOrders");
-		view.form = form;
-
-		form.addElement( new sugoi.form.elements.Html( 'title', '<h4 style="font-style: normal; text-align: center; margin-bottom: 20px;">Ma commande par défaut</h4>' ) );
-
-		var catalogProducts = subscription.catalog.getProducts();
-		for ( product in catalogProducts ) {
-
-			var defaultProductOrder = subscription.getDefaultOrders( product.id );
-			var defaultQuantity : Float = 0;
-			if ( defaultProductOrder.length != 0 && defaultProductOrder[0] != null ) {
-
-				defaultQuantity = defaultProductOrder[0].quantity;
-			}
-			form.addElement( new sugoi.form.elements.FloatInput( "quantity" + product.id, product.name + ' ' + product.price + ' €', defaultQuantity ) );
-		}
-		
-		
-		if ( form.checkToken() ) {
-
-			try {
-				var defaultOrders = new Array<CSAOrder>();
-				for ( product in catalogProducts ) {
-					var quantity : Float = form.getValueOf( 'quantity' + product.id );
-					defaultOrders.push( { productId : product.id, quantity : quantity } );
-				}
-				ss.updateDefaultOrders( subscription, defaultOrders );
-			} catch( error : Error ) {
-				throw Error( '/subscriptions/defaultOrders/' + subscription.id, error.message );
-			}
-
-			throw Ok( '/contract/order/' + subscription.catalog.id, 'Votre commande par défaut a bien été mise à jour.' );
-		}
-
-	}
-
 	/**
 	 * inserts a payment for a CSA contract
 	 */
@@ -580,8 +547,6 @@ class Subscriptions extends controller.Controller
 				}else{
 					catalogSubscriptions.remove(sub);
 				}
-
-
 			}
 
 			throw Ok(sugoi.Web.getURI(),catalogSubscriptions.length+" paiements saisis, les soldes ont été mis à jour.");

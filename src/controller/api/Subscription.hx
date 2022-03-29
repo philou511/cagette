@@ -12,7 +12,8 @@ typedef NewSubscriptionDto = {
     absentDistribIds:Array<Int>
 };
 
-typedef UpdateOrdersDto = {  
+typedef UpdateOrdersDto = { 
+    //id is distributionId 
     distributions:Array<{id:Int,orders:Array<{productId:Int,qty:Float}>}>,
 };
 
@@ -57,39 +58,26 @@ class Subscription extends Controller
                 throw new Error(403,"You're not allowed to edit a subscription for this user");
             }
 
-            //format Data for SubscriptionService.areVarOrdersValid()
-            var pricesQuantitiesByDistrib = new Map<db.Distribution,Array<{productQuantity:Float, productPrice:Float}>>();
             for( d in updateOrdersData.distributions){
-                pricesQuantitiesByDistrib.set( db.Distribution.manager.get(d.id,false) , d.orders.map( o -> {
-                    var p = db.Product.manager.get(o.productId,false);
-                    return {
-                        productQuantity:o.qty,
-                        productPrice:p.price
-                    };                    
-                }) );
-            }
-
-            if( SubscriptionService.areVarOrdersValid( sub, pricesQuantitiesByDistrib ) ) {
-
-                for( d in updateOrdersData.distributions){
-                    for( order in d.orders){
-                        var p = db.Product.manager.get(order.productId,false);
-                        
-                        var prevOrder = db.UserOrder.manager.select($product==p && $user==sub.user && $distributionId==d.id, true);
-                        if(prevOrder==null){
-                            OrderService.make( sub.user, order.qty, p , d.id , null, sub );
+                for( order in d.orders){
+                    var p = db.Product.manager.get(order.productId,false);
+                    
+                    var prevOrder = db.UserOrder.manager.select($product==p && $user==sub.user && $distributionId==d.id, true);
+                    if(prevOrder==null){
+                        OrderService.make( sub.user, order.qty, p , d.id , null, sub );
+                    }else{
+                        if(p.multiWeight){
+                            OrderService.editMultiWeight( prevOrder, order.qty );
                         }else{
-                            if(p.multiWeight){
-                                OrderService.editMultiWeight( prevOrder, order.qty );
-                            }else{
-                                OrderService.edit( prevOrder, order.qty );
-                            }
+                            OrderService.edit( prevOrder, order.qty );
                         }
                     }
-                }            
-            }
-
+                }
+            }            
+                 
 			if ( sub.catalog.hasPayments ) SubscriptionService.createOrUpdateTotalOperation( sub );
+
+            SubscriptionService.areVarOrdersValid( sub );
         }    
 
         getSubscription(sub);

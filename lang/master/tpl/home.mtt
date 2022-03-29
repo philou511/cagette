@@ -96,73 +96,74 @@ $$browserDetection()
 		::if(!hasShopMode)::
 			<div class="content myorder">Mes contrats AMAP classiques</div>
 			::if md.userHasOrders(user,0)::
-			<div class="content orders">
-				::foreach dist md.getDistributions(0)::
-				::set orders = dist.getUserOrders(user)::
-				::if orders.length>0::
-				<h4><a href="/contract/view/::dist._catalog.id::">::dist._catalog.name::</a></h4>
+				<div class="content orders">
+					::foreach dist md.getDistributions(0)::
+						::set orders = dist.getUserOrders(user)::
+						::if orders.length>0::
+							<h4><a href="/contract/view/::dist._catalog.id::">::dist._catalog.name::</a></h4>
 
-				<div class="row">
-					::foreach c prepare(orders)::
-					<div class="col-xs-12 col-sm-6 col-lg-4" ::cond orders.length>0:: >
+							<div class="row">
+								::foreach c prepare(orders)::
+								<div class="col-xs-12 col-sm-6 col-lg-4" ::cond orders.length>0:: >
 
-						<div style="background-image:url('::c.productImage::');float:left;margin-right:12px;" class="productImg small hidden-xs" />
-						<span ::cond c.quantity>1:: ><b>::raw c.smartQt::</b></span>
-						<span style="background-color: #B00;color:white;padding: 2px;border-radius: 3px;margin-right:3px;" ::cond c.quantity==0::>
-							::_("Canceled")::
-						</span>
-						::c.productName::
+									<div style="background-image:url('::c.productImage::');float:left;margin-right:12px;" class="productImg small hidden-xs" />
+									<span ::cond c.quantity>1:: ><b>::raw c.smartQt::</b></span>
+									<span style="background-color: #B00;color:white;padding: 2px;border-radius: 3px;margin-right:3px;" ::cond c.quantity==0::>
+										::_("Canceled")::
+									</span>
+									::c.productName::
 
-						<!--ALTERNATED ORDER-->
-						::if c.userId2!=null::
-							::if user.id==c.userId::
-								::set you = c.userName::
-								::set mate = c.userName2::
-							::else::
-								::set mate = c.userName::
-								::set you = c.userName2::
-							::end::
-							<br />(
-							::raw __("alternated with ::mate::",{mate:mate})::,
-							::if getWhosTurn(c.id,dist)==false::
-								::if c.userName == you::
-									<span style="color:#080">::_("It's your turn")::</span>
-								::else::
-									::_("It's his/her turn")::
+									<!--ALTERNATED ORDER-->
+									::if c.userId2!=null::
+										::if user.id==c.userId::
+											::set you = c.userName::
+											::set mate = c.userName2::
+										::else::
+											::set mate = c.userName::
+											::set you = c.userName2::
+										::end::
+										<br />(
+										::raw __("alternated with ::mate::",{mate:mate})::,
+										::if getWhosTurn(c.id,dist)==false::
+											::if c.userName == you::
+												<span style="color:#080">::_("It's your turn")::</span>
+											::else::
+												::_("It's his/her turn")::
+											::end::
+										::else::
+											::if c.userName2 == you::
+												<span style="color:#080">::_("It's your turn")::</span>
+											::else::
+												::_("It's his/her turn")::
+											::end::
+										::end::
+										)
+									::end::
+								</div>
 								::end::
-							::else::
-								::if c.userName2 == you::
-									<span style="color:#080">::_("It's your turn")::</span>
-								::else::
-									::_("It's his/her turn")::
+							</div>
+
+							<div class="footer">
+								<!-- attendence list-->
+								::if user.isContractManager(dist._catalog) || md.getVolunteerForUser(user).length>0::
+								<a href="/distribution/list/::dist.id::"><i class="icon icon-print"></i> ::_("Distribution list")::</a>
 								::end::
-							::end::
-							)
+
+								<!-- subscription balance-->
+								::if(orders!=null && orders[0]!=null)::
+									::set sub = orders[0]._subscription::
+									::if(sub!=null)::
+										$$subscriptionBalance(::sub::)
+									::end::
+								::end::
+							</div>
 						::end::
-					</div>
-
 					::end::
 				</div>
-
-				<div class="footer">
-					<!-- attendence list-->
-					::if user.isContractManager(dist._catalog) || md.getVolunteerForUser(user).length>0::
-					<a href="/distribution/list/::dist.id::"><i class="icon icon-print"></i> ::_("Distribution list")::</a>
-					::end::
-
-					<!-- subscription balance-->
-					::set sub = orders[0]._subscription::
-					$$subscriptionBalance(::sub::)
-				</div>
-
-				::end::
-
-				::end::
-			</div>
 			::else::
-			<div class="content">
-				<span class="disabled">Vous n'avez rien à récupérer ce jour là.</span>
-			</div>
+				<div class="content">
+					<span class="disabled">Vous n'avez rien à récupérer ce jour là.</span>
+				</div>
 			::end::
 		::end::
 		<!-- === END AMAP BLOCK === -->
@@ -214,8 +215,12 @@ $$browserDetection()
 							::end::
 
 							<!-- subscription balance-->
-							::set sub = orders[0]._subscription::
-							::if(sub!=null):: $$subscriptionBalance(::sub::) ::end::
+							::if(orders!=null && orders[0]!=null)::
+								::set sub = orders[0]._subscription::
+								::if(sub!=null)::
+									$$subscriptionBalance(::sub::)
+								::end::
+							::end::
 						</div>
 		
 						::end::
