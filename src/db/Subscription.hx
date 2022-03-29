@@ -13,8 +13,8 @@ class Subscription extends Object {
 	public var startDate : SDateTime;
 	public var endDate : SDateTime;
 	@hideInForms public var isPaid : SBool;
-	public var defaultOrders : SNull<SText>;
-	public var absentDistribIds : SNull<SText>;
+	var defaultOrders : SNull<SText>;
+	var absentDistribIds : SNull<SText>;
 
 	public function populate() {		
 		return App.current.user.getGroup().getMembersFormElementData();
@@ -149,8 +149,20 @@ class Subscription extends Object {
 
 		//check there is no duplicates
 		if(tools.ArrayTool.deduplicate(distribIds).length != distribIds.length){
-			throw new tink.core.Error(500,"Vous ne pouvez pas choisir deux fois la même distribution");
+			throw new Error(500,"Vous ne pouvez pas choisir deux fois la même distribution");
 		}
+
+		var possibleDistribs = this.getPossibleAbsentDistribs().map(d -> d.id);
+		for(did in distribIds){
+			if(!possibleDistribs.has(did)){
+				throw new Error('Distrib #${did} is not in possible absent distribs');
+			} 
+		}
+
+		if(distribIds.length != this.getAbsencesNb()){
+			throw new Error('There should be ${this.getAbsencesNb()} absent distribs');
+		}
+		
 
 		if( distribIds != null && distribIds.length != 0 ) {
 			distribIds.sort( function(b, a) { return  a < b ? 1 : -1; } );

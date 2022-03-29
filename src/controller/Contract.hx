@@ -555,7 +555,7 @@ class Contract extends Controller
 
 						if ( currentOrComingSubscription == null ) {
 							subscriptionIsNew = true;
-							currentOrComingSubscription = subscriptionService.createSubscription( app.user, catalog, varDefaultOrders, app.params.get("absencesNb").parseInt() );
+							currentOrComingSubscription = ss.createSubscription( app.user, catalog, varDefaultOrders, app.params.get("absencesNb").parseInt() );
 						} else {							
 							subscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, varDefaultOrders/*, null, app.params.get("absencesNb").parseInt()*/ );
 							if ( catalog.requiresOrdering && currentOrComingSubscription.getDefaultOrders().length == 0 ) {
@@ -602,7 +602,7 @@ class Contract extends Controller
 
 				try {
 					if ( currentOrComingSubscription == null ) {						
-						currentOrComingSubscription = subscriptionService.createSubscription( app.user, catalog, constOrders, app.params.get("absencesNb").parseInt() );
+						currentOrComingSubscription = ss.createSubscription( app.user, catalog, constOrders, app.params.get("absencesNb").parseInt() );
 					} else if ( !currentOrComingSubscription.paid() ) {						
 						subscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, constOrders/*, null, app.params.get("absencesNb").parseInt()*/ );
 					}
