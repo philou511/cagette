@@ -201,10 +201,7 @@ class Subscription extends Object {
 	/**
 		get subscription POSSIBLE absence distribs, including closed distributions
 	**/
-	public function getPossibleAbsentDistribs() : Array<db.Distribution>
-	{
-		if (this.catalog.absencesStartDate == null) return [];
-
+	public function getPossibleAbsentDistribs() : Array<db.Distribution> {
 		//get all subscription distribs
 		var subDistributions = db.Distribution.manager.search( $catalog == this.catalog && $date >= this.startDate && $end <= this.endDate, { orderBy:date }, false );
 		
