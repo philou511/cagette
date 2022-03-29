@@ -28,6 +28,7 @@
 				padding: 16px;
 				padding-top: 0px;
 				margin: auto;
+				margin-top: 24px;
 			}
 
 			.bold-green {

@@ -32,6 +32,7 @@
 				padding: 16px;
 				padding-top: 0px;
 				margin: auto;
+				margin-top: 24px;
 			}
 
 			.bold-green {
@@ -145,6 +146,7 @@
 		</div>
 
 		<footer id="footer">
+			<img src="http://::HOST::/img/logo3.png" alt="logo Cagette.net" style="margin-bottom: 16px; max-width: 200px;"/>
 			<p>Ce courriel a été envoyé depuis <a href="http://::HOST::" target="_blank" rel="noreferrer noopener">Cagette.net</a>.</p>
 			<p>Vous recevez ce message car vous faites partie de <b>::group.name::</b>::if list!=null:: (::list::) ::end::</p>
 			::if (user!=null)::
