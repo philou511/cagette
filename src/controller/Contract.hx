@@ -18,7 +18,6 @@ import sugoi.form.elements.Checkbox;
 import sugoi.form.elements.Input;
 import sugoi.form.elements.IntInput;
 import sugoi.form.elements.Selectbox;
-import sys.db.Types.SSerialized;
 import tink.core.Error;
 import tools.DateTool;
 
@@ -335,12 +334,7 @@ class Contract extends Controller
 	 */
 	
 	function doOrder( catalog : db.Catalog ) {
-		view.catalog = catalog;
-		view.userId = app.user.id;
-	}
 
-	function doOldOrder( catalog : db.Catalog ) {
-	
 		if( catalog.group.hasShopMode() ) throw Redirect( '/contract/view/' + catalog.id );
 		if( app.user == null ) throw Redirect( '/user/login?__redirect=/contract/order/' + catalog.id );
 
@@ -560,7 +554,7 @@ class Contract extends Controller
 
 						if ( currentOrComingSubscription == null ) {
 							subscriptionIsNew = true;
-							currentOrComingSubscription = ss.createSubscription( app.user, catalog, varDefaultOrders, app.params.get("absencesNb").parseInt() );
+							currentOrComingSubscription = subscriptionService.createSubscription( app.user, catalog, varDefaultOrders, app.params.get("absencesNb").parseInt() );
 						} else {							
 							subscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, varDefaultOrders/*, null, app.params.get("absencesNb").parseInt()*/ );
 							if ( catalog.requiresOrdering && currentOrComingSubscription.getDefaultOrders().length == 0 ) {
@@ -607,7 +601,7 @@ class Contract extends Controller
 
 				try {
 					if ( currentOrComingSubscription == null ) {						
-						currentOrComingSubscription = ss.createSubscription( app.user, catalog, constOrders, app.params.get("absencesNb").parseInt() );
+						currentOrComingSubscription = subscriptionService.createSubscription( app.user, catalog, constOrders, app.params.get("absencesNb").parseInt() );
 					} else if ( !currentOrComingSubscription.paid() ) {						
 						subscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, constOrders/*, null, app.params.get("absencesNb").parseInt()*/ );
 					}
@@ -637,12 +631,39 @@ class Contract extends Controller
 		App.current.breadcrumb = [ { link : "/home", name : "Commandes", id : "home" } ]; 
 		view.subscriptionService = SubscriptionService;
 		view.catalog = catalog;
-		view.userId = app.user.id;
 
-		var sub = SubscriptionService.getCurrentOrComingSubscription(app.user,catalog);
-		view.subscriptionId = sub==null ? null : sub.id;
+		//small balance warning
+		/*if ( currentOrComingSubscription != null && catalog.type == db.Catalog.TYPE_VARORDER && catalog.hasPayments ) {
+			var balance = currentOrComingSubscription.getBalance();
+			var remainingDistribsNb = SubscriptionService.getSubscriptionRemainingDistribsNb( currentOrComingSubscription );
+			var averageSpentPerDistrib = SubscriptionService.getDistribOrdersAverageTotal( currentOrComingSubscription );
+			if( averageSpentPerDistrib != 0 && remainingDistribsNb != 0 ) {
+				var remainingDistribsToZero = Math.floor( balance / averageSpentPerDistrib );
+					// si j'ai de la réserve pour moins de 4 distribs,
+					// et que ce que j'ai en réserve fait moins que les distribs qu'ils reste à faire
+					// et que la souscription a plus de 4 distribs.
+				if( remainingDistribsToZero < 4  && remainingDistribsToZero < remainingDistribsNb && SubscriptionService.getSubscriptionDistribsNb( currentOrComingSubscription )>4 ) {
+					view.smallBalance = balance < ( remainingDistribsNb * averageSpentPerDistrib ) ? balance : null;
+				}
+			}
+		}*/
+
+		view.currentOrComingSubscription = currentOrComingSubscription;
+		view.hasComingOpenDistrib = hasComingOpenDistrib;
+		view.catalogDistribsNb = db.Distribution.manager.count( $catalog == catalog );
+		view.newSubscriptionDistribsNb = db.Distribution.manager.count( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
+		view.canOrder = if( currentOrComingSubscription == null || !currentOrComingSubscription.paid() ) {
+			catalog.isUserOrderAvailable();
+		} else {
+			false;
+		};
+		view.userOrders = userOrders;
+		var subscriptions = SubscriptionService.getUserCatalogSubscriptions( app.user, catalog );
+		view.subscriptions = subscriptions;
+		view.visibleDocuments = catalog.getVisibleDocuments( app.user );
 	}
 
+	
 	/**
 	 * Edit var orders for a multidistrib in CSA mode.
 	 */

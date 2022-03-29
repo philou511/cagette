@@ -2,10 +2,11 @@ package service;
 import db.Group.RegOption;
 import db.Operation.OperationType;
 import db.Subscription;
+import db.Catalog;
+import Common;
 import tink.core.Error;
-
-using Lambda;
 using tools.DateTool;
+using Lambda;
 
 enum SubscriptionServiceError {
 	NoSubscription;
@@ -539,8 +540,8 @@ class SubscriptionService
 				distribTotal = Formatting.roundTo( distribTotal, 2 );
 
 				if ( distribTotal < catalog.distribMinOrdersTotal ) {
-					var message = 'Distribution du ${Formatting.hDate( distrib.date )} : ';
-					message += 'Le montant votre commande doit être d\'au moins ${catalog.distribMinOrdersTotal} € par distribution.';
+					var message = '<strong>Distribution du ' + Formatting.hDate( distrib.date ) + ' :</strong><br/>';
+					message += 'Le montant votre commande doit être d\'au moins ' + catalog.distribMinOrdersTotal + ' € par distribution.';
 					throw TypedError.typed( message, CatalogRequirementsNotMet );
 				}
 			}
@@ -597,8 +598,8 @@ class SubscriptionService
 
 				if ( doCheckMin ) {
 					if ( subscriptionNewTotal < catalogMinOrdersTotal ) {
-						var message = 'Le nouveau total de toutes vos commandes sur la durée du contrat serait de $subscriptionNewTotal € 
-						alors qu\'il doit être supérieur à $catalogMinOrdersTotal €. Veuillez rajouter des produits.';
+						var message = 'Le nouveau total de toutes vos commandes sur la durée du contrat serait de $subscriptionNewTotal€ 
+						alors qu\'il doit être supérieur à $catalogMinOrdersTotal€. Veuillez rajouter des produits.';
 						throw TypedError.typed( message, CatalogRequirementsNotMet );
 					}
 				}
@@ -683,43 +684,9 @@ class SubscriptionService
 		check(subscription);
 		subscription.insert();
 
-		this.createCSARecurrentOrders( subscription, ordersData );
-		this.updateDefaultOrders( subscription, ordersData );
-		
-
-		return subscription;
-	}
-
-	/**
-		set subscriptions absence distributions
-	**/
-	public function setAbsences( subscription:db.Subscription, distribIds:Array<Int> ) {
-
-		//check there is no duplicates
-		if(tools.ArrayTool.deduplicate(distribIds).length != distribIds.length){
-			throw new Error(500,"Vous ne pouvez pas choisir deux fois la même distribution");
-		}
-
-		//check if absent distribs are correct
-		var possibleDistribs = [];
-		/*if(subscription.id==null){
-			possibleDistribs = SubscriptionService.getContractAbsencesDistribs(catalog).map(d -> d.id);
-		}else{*/
-			possibleDistribs = subscription.getPossibleAbsentDistribs().map(d -> d.id);
-		//}
-		for(did in distribIds){
-			if(!possibleDistribs.has(did)){
-				throw new Error('Distrib #${did} is not in possible absent distribs');
-			} 
-		}
-
-		if(subscription.id!=null && distribIds.length != subscription.getAbsencesNb()){
-			throw new Error('There should be ${subscription.getAbsencesNb()} absent distribs');
-		}
-		
-		if( distribIds != null && distribIds.length != 0 ) {
-			distribIds.sort( function(b, a) { return  a < b ? 1 : -1; } );
-			subscription.absentDistribIds = distribIds.join(',');
+		if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
+			//CONST
+			this.createCSARecurrentOrders( subscription, ordersData );
 		} else {
 			//VAR
 			SubscriptionService.updateDefaultOrders( subscription, ordersData );
@@ -988,7 +955,7 @@ class SubscriptionService
 		var t = sugoi.i18n.Locale.texts;
 	
 		var orders : Array<db.UserOrder> = [];
-		for ( distribution in getSubscriptionDistribs(subscription) ) {
+		for ( distribution in subscriptionDistributions ) {
 
 			for ( order in ordersData ) {
 
@@ -1098,7 +1065,7 @@ class SubscriptionService
 		}
 		if ( !datesHaveChanged ) return;
 
-		setAbsences( subscription, newAbsentDistribIds );
+		subscription.setAbsences( newAbsentDistribIds );
 		subscription.update();
 
 		if ( subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) {

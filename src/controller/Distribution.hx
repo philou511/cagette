@@ -1,29 +1,29 @@
 package controller;
 
-import Common;
-import db.Catalog;
-import db.DistributionCycle;
-import db.Operation;
-import db.TmpBasket;
-import db.UserOrder;
-import mangopay.Mangopay;
 import mangopay.MangopayPlugin;
-import mangopay.Types.Error;
+import db.Operation;
 import mangopay.Types.Refund;
-import pro.payment.MangopayECPayment;
-import service.DistributionService;
-import service.OrderFlowService;
-import service.VolunteerService;
+import mangopay.Mangopay;
+import mangopay.Types.Error;
 import sugoi.BaseApp;
+import pro.payment.MangopayECPayment;
+import db.Catalog;
+import db.TmpBasket;
+import service.OrderFlowService;
+import tools.ObjectListTool;
+import db.DistributionCycle;
+import db.UserOrder;
 import sugoi.form.Form;
 import sugoi.form.elements.IntSelect;
-import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
 import sugoi.form.elements.TextArea;
-import tools.ObjectListTool;
+import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
+import Common;
+import service.VolunteerService;
+import service.DistributionService;
 
+using tools.DateTool;
 using Formatting;
 using Std;
-using tools.DateTool;
 
 class Distribution extends Controller {
 	public function new() {
@@ -1311,14 +1311,6 @@ class Distribution extends Controller {
 			to = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * app.user.getGroup().daysBeforeDutyPeriodsOpen);
 		}
 
-		// duty periods user's participation
-		var me = app.user;
-		var timeframe = me.getGroup().getMembershipTimeframe(Date.now());
-		view.timeframe = timeframe;
-
-		from = timeframe.from;
-		to = timeframe.to;
-
 		view.fromField = new form.CagetteDatePicker("from", "Date de début", from);
 		view.toField = new form.CagetteDatePicker("to", "Date de fin", to);
 
@@ -1347,6 +1339,11 @@ class Distribution extends Controller {
 		// view.initialUrl = args != null && args.from != null && args.to != null ? "/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to : "/distribution/volunteersCalendar";
 		view.from = from.toString().substr(0, 10);
 		view.to = to.toString().substr(0, 10);
+
+		// duty periods user's participation
+		var me = app.user;
+		var timeframe = me.getGroup().getMembershipTimeframe(Date.now());
+		view.timeframe = timeframe;
 
 		var multiDistribs = db.MultiDistrib.getFromTimeRange(me.getGroup(), timeframe.from, timeframe.to);
 		var members = me.getGroup().getMembers();
