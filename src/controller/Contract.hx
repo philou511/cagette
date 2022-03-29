@@ -335,7 +335,12 @@ class Contract extends Controller
 	 */
 	
 	function doOrder( catalog : db.Catalog ) {
+		view.catalog = catalog;
+		view.userId = app.user.id;
+	}
 
+	function doOldOrder( catalog : db.Catalog ) {
+	
 		if( catalog.group.hasShopMode() ) throw Redirect( '/contract/view/' + catalog.id );
 		if( app.user == null ) throw Redirect( '/user/login?__redirect=/contract/order/' + catalog.id );
 

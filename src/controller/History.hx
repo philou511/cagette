@@ -152,11 +152,14 @@ class History extends Controller
 		var ug = db.UserGroup.get(app.user, app.user.getGroup());
 		if (ug == null) throw Error("/", t._("You are not a member of this group"));
 	
-		view.distribs = SubscriptionService.getSubscriptionDistributions(sub);
+		view.distribs = SubscriptionService.getSubscriptionDistribs(sub);
 		view.prepare = OrderService.prepare;
 		view.catalog = sub.catalog;
+		// view.history = true;
 		view.now = Date.now();
 		view.member = app.user;
+		
+		// checkToken();
 	}
 	
 	@logged
