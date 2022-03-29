@@ -244,17 +244,40 @@ class Distribution extends Object
 	}
 
 	public function getInfos():DistributionInfos{
-		return {
+		var out = {
 			id:id,
 			groupId		: place.group.id,
 			groupName 	: place.group.name,
 			vendorId				: this.catalog.vendor.id,
-			distributionStartDate	: date==null ? multiDistrib.distribStartDate : date,
-			distributionEndDate		: end==null ? multiDistrib.distribEndDate : end,
-			orderStartDate			: orderStartDate==null ? multiDistrib.orderStartDate : orderStartDate,
-			orderEndDate			: orderEndDate==null ? multiDistrib.orderEndDate : orderEndDate,
+			distributionStartDate	: date==null ? multiDistrib.distribStartDate.getTime() : date.getTime(),
+			distributionEndDate		: end==null ? multiDistrib.distribEndDate.getTime() : end.getTime(),
+			orderStartDate			: null,
+			orderEndDate			: null,
 			place 					: multiDistrib.place.getInfos()
 		};
+
+		out.orderStartDate = if(orderStartDate==null){
+			if(multiDistrib.orderStartDate==null){
+				null;
+			}else{
+				multiDistrib.orderStartDate.getTime();
+			}
+		}else{ 
+			orderStartDate.getTime(); 
+		};
+
+		out.orderEndDate = if(orderEndDate==null){
+			if(multiDistrib.orderEndDate==null){
+				null;
+			}else{
+				multiDistrib.orderEndDate.getTime();
+			}
+		}else{ 
+			orderEndDate.getTime(); 
+		};
+
+		return out;
+
 	}
 
 	/**

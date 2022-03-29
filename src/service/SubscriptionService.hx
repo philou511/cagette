@@ -251,7 +251,7 @@ class SubscriptionService
 	}
 
 	/**
-		Get contract constraints (no subscription for the current user)
+		Get contract description if no subscription for the current user
 	**/
 	public static function getContractConstraints( catalog:db.Catalog ):String{
 		var label = '';

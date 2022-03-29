@@ -96,10 +96,10 @@ typedef DistributionInfos = {
 	vendorId:Int,
 	groupId:Int,
 	groupName:String,
-	distributionStartDate:Date,
-	distributionEndDate:Date,
-	orderStartDate:Date,
-	orderEndDate:Date,
+	distributionStartDate:Float,
+	distributionEndDate:Float,
+	orderStartDate:Float,
+	orderEndDate:Float,
 	place:PlaceInfos,
 }
 enum Unit{
