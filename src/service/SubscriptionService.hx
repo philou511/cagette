@@ -1,13 +1,14 @@
 package service;
+import Common;
 import controller.Distribution;
+import db.Catalog;
 import db.Group.RegOption;
 import db.Operation.OperationType;
 import db.Subscription;
-import db.Catalog;
-import Common;
 import tink.core.Error;
-using tools.DateTool;
+
 using Lambda;
+using tools.DateTool;
 
 enum SubscriptionServiceError {
 	NoSubscription;
@@ -424,8 +425,7 @@ class SubscriptionService
 		}
 			
 		if ( subscriptions1.length != 0 || subscriptions2.length != 0 || subscriptions3.length != 0 ) {
-			var subs = subscriptions1.concat(subscriptions2).concat(subscriptions3).array();
-			subs = tools.ObjectListTool.deduplicate(subs);
+			var subs = subscriptions1.concat(subscriptions2).concat(subscriptions3);
 			throw TypedError.typed( 'Il y a déjà une souscription pour ce membre pendant la période choisie.'+"("+subs.join(',')+")", OverlappingSubscription );
 		}
 	
@@ -690,37 +690,13 @@ class SubscriptionService
 		check(subscription);
 		subscription.insert();
 
-		this.createCSARecurrentOrders( subscription, ordersData );
-		this.updateDefaultOrders( subscription, ordersData );
-		
-		//Email notification
-		var html = '<p><b>Vous venez de souscrire au contrat AMAP "${catalog.name}" avec le paysan "${catalog.vendor.name}".</b></p>';
-		html += "<p>";
-		html += 'Votre engagement : ${SubscriptionService.getSubscriptionConstraints(subscription)}<br/>';
-		html += 'Nombre de distributions : ${SubscriptionService.getSubscriptionDistribsNb(subscription)}<br/>';
-		if(catalog.type == db.Catalog.TYPE_VARORDER){
-			html += 'Votre commande par défaut est :<ul>';
-			html += subscription.getDefaultOrders().map( o -> {
-				var p = db.Product.manager.get(o.productId,false);
-				return '<li>${o.quantity} x ${p.getName()} : ${o.quantity*p.price} €</li>';
-			} ).join('');
-			html += '</ul>C\'est un contrat AMAP variable, votre commande est donc modifiable date par date<br/>';
+		if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
+			//CONST
+			this.createCSARecurrentOrders( subscription, ordersData );
+		} else {
+			//VAR
+			SubscriptionService.updateDefaultOrders( subscription, ordersData );
 		}
-		html += "</p>";
-		if(catalog.hasAbsencesManagement()){
-			var absentDistribs = subscription.getAbsentDistribs();
-			var absencesTxt = absentDistribs.map( d -> Formatting.hDate(d.date) ).join(", ");
-			html += '<p>Vous avez choisi d\'être absent(e) pendant ${absentDistribs.length} distributions : $absencesTxt.</p>';
-		}
-		if(catalog.type == db.Catalog.TYPE_VARORDER){
-			html += '<p>Merci de préparer un chèque de provision correspondant au total de votre commande par défaut multiplié par le nombre de distribution, soit ${subscription.getTotalPrice()} €.<br/>';
-			html += 'Si un contrat papier est associé à votre souscription, pensez à la compléter et à remettre le(s) chèque(s).</br>';	
-			html += 'Une régularisation pourra être demandée en fin de contrat en fonction de votre solde.</p>';
-		}else{
-			html += '<p>Si un contrat papier est associé à votre souscription, pensez à le compléter et à remettre le(s) chèque(s) pour un total de ${subscription.getTotalPrice()} €.</p>';
-		}
-		
-		App.quickMail(subscription.user.email,'Souscription au contrat "${catalog.name}"',html,catalog.group);
 
 		return subscription;
 	}
@@ -1025,11 +1001,12 @@ class SubscriptionService
 		for ( order in subscriptionAllOrders ) {
 			OrderService.delete(order,true);
 		}
-	
+
+		var subscriptionDistributions = getSubscriptionDistribs( subscription );		
 		var t = sugoi.i18n.Locale.texts;
 	
 		var orders : Array<db.UserOrder> = [];
-		for ( distribution in getSubscriptionDistributions(subscription) ) {
+		for ( distribution in subscriptionDistributions ) {
 
 			for ( order in ordersData ) {
 
@@ -1057,7 +1034,7 @@ class SubscriptionService
 		
 		App.current.event( MakeOrder( orders ) );
 
-		if ( subscription.catalog.hasPayments ) {
+		if ( subscription.catalog.group.hasPayments() ) {
 			// create/update a single operation for the subscription total price
 			createOrUpdateTotalOperation( subscription );
 		}
@@ -1148,7 +1125,7 @@ class SubscriptionService
 	/**
 		Update default orders on a variable contract with requiresOrdering
 	**/
-	public function updateDefaultOrders( subscription:db.Subscription, defaultOrders:Array<CSAOrder>){
+	public static function updateDefaultOrders( subscription:db.Subscription, defaultOrders:Array<CSAOrder>){
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );		
 		if( !subscription.catalog.requiresOrdering ) return;
@@ -1156,7 +1133,7 @@ class SubscriptionService
 			throw new Error('La commande par défaut ne peut pas être vide. (Souscription de ${subscription.user.getName()})');
 		}
 
-		// if( subscription.catalog.type==Catalog.TYPE_CONSTORDERS) return;
+		if( subscription.catalog.type==Catalog.TYPE_CONSTORDERS) return;
 		
 		var totalPrice : Float = 0;
 		var totalQuantity : Float = 0;
