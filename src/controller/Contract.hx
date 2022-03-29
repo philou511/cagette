@@ -1,5 +1,4 @@
 package controller;
-import sys.db.Types.SSerialized;
 import Common;
 import db.Catalog;
 import db.MultiDistrib;
@@ -19,6 +18,7 @@ import sugoi.form.elements.Checkbox;
 import sugoi.form.elements.Input;
 import sugoi.form.elements.IntInput;
 import sugoi.form.elements.Selectbox;
+import sys.db.Types.SSerialized;
 import tink.core.Error;
 import tools.DateTool;
 
@@ -335,6 +335,302 @@ class Contract extends Controller
 	 */
 	 @tpl("contract/order.mtt")
 	function doOrder( catalog : db.Catalog ) {
+
+		if( catalog.group.hasShopMode() ) throw Redirect( '/contract/view/' + catalog.id );
+		if( app.user == null ) throw Redirect( '/user/login?__redirect=/contract/order/' + catalog.id );
+
+		if( catalog.isConstantOrders() ) {
+			app.setTemplate( 'contract/orderc.mtt' );
+		} else {
+			app.setTemplate( 'contract/orderv.mtt' );
+		}
+
+		var subscriptionService = new SubscriptionService();
+		var currentOrComingSubscription = SubscriptionService.getCurrentOrComingSubscription( app.user, catalog );
+		var userOrders = new Array<{distrib:db.Distribution, ordersProducts:Array<{order:db.UserOrder, product:db.Product }>, ?isAbsence:Bool}>();
+		var products = catalog.getProducts();
+		
+		var hasComingOpenDistrib = false;
+
+		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
+
+			view.shortDate = Formatting.csaShortDate;
+			view.closingDate  = Formatting.csaClosingDate;
+			view.json = function(d) return haxe.Json.stringify(d);
+			view.multiWeightQuantity  = function( order : db.UserOrder ) {
+				return db.UserOrder.manager.count( $subscription == order.subscription && $distribution == order.distribution && $product == order.product && $quantity > 0 );
+			}
+
+			// var openDistributions = SubscriptionService.getOpenDistribsForSubscription( app.user, catalog, currentOrComingSubscription );
+			// hasComingOpenDistrib = openDistributions.length != 0;
+
+			var distribs = catalog.getDistribs(true);
+			// hasComingOpenDistrib = distribs.find(d -> d.orderStartDate.getTime() < Date.now().getTime())!=null;
+	
+			for ( distrib in distribs ) {
+
+				var data = [];
+				for ( product in products ) {
+
+					var orderProduct = { order : null, product : product };
+					var order = db.UserOrder.manager.select( $user == app.user && $productId == product.id && $distributionId == distrib.id, true );
+					var useOrder = false;
+
+					if ( !app.params.exists("token") ) {
+						
+						if ( order != null ) {							
+							orderProduct.order = order;
+						}
+					
+					} else {
+
+						var paramKey = 'd' + distrib.id + '-p' + product.id;
+						if( app.params.exists( paramKey ) ) {
+
+							var paramQuantity = app.params.get( paramKey );
+							if ( paramQuantity != null && paramQuantity != '' ) {
+
+								if ( order == null ) {
+									order = new db.UserOrder();
+									order.distribution = distrib;
+									order.product = product;
+									order.productPrice = product.price;
+								}
+								
+								order.quantity = Std.parseInt( paramQuantity );
+								useOrder = true;
+							}
+						}
+						if ( useOrder ) {							
+							orderProduct.order = order;
+						}
+					}
+					data.push( orderProduct );
+				}
+
+				userOrders.push( { 
+					distrib:distrib,
+					ordersProducts:data,
+					isAbsence: currentOrComingSubscription==null? false : currentOrComingSubscription.getAbsentDistribIds().has(distrib.id) 
+				} );
+			}
+			
+		} else {
+			//CSA contracts
+			hasComingOpenDistrib = SubscriptionService.getComingOpenDistrib( catalog ) != null;
+
+			var data = [];
+			for ( product in products ) {
+				var orderProduct = { order : null, product : product };
+				if ( currentOrComingSubscription != null ) {
+					var subscriptionOrders = SubscriptionService.getCSARecurrentOrders( currentOrComingSubscription, null );
+					var order = subscriptionOrders.find( function ( order ) return order.product.id == product.id );
+					if ( order != null ) orderProduct.order = order;
+				}
+				data.push( orderProduct );
+			}
+			userOrders.push( { distrib : null, ordersProducts : data } );
+		}
+
+		if ( checkToken() ) {
+
+			if ( !catalog.isUserOrderAvailable() ) throw Error( '/contract/order/' + catalog.id , t._("This catalog is not opened for orders") );
+			
+			//For variable catalogs
+			var varOrders = []; 
+			var varOrdersToEdit = [];
+			var varOrdersToMake = [];
+			var pricesQuantitiesByDistrib = new Map< db.Distribution, Array< { productQuantity:Float, productPrice:Float }>>();
+			//For const catalogs
+			var constOrders = new Array<{ productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }> (); 
+
+			var firstDistrib = null;
+			var varDefaultOrders = new Array<{ productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
+
+			for ( key in app.params.keys() ) {
+				
+				if ( key.substr(0, 1) != "d" ) continue;
+				var qty = app.params.get( key );
+				if ( qty == "" ) continue;
+				
+				var productId = null;
+				var distribId = null;
+				var distribution = null;
+				try {
+
+					productId = Std.parseInt( key.split("-")[1].substr(1) );
+					distribId = Std.parseInt( key.split("-")[0].substr(1) );
+					distribution = db.Distribution.manager.get( distribId, false );
+				}
+				catch ( e:Dynamic ) {
+
+					trace( 'unable to parse key' + key );
+				}
+				
+				var orderProduct = null;
+				for ( userOrder in userOrders ) {
+					if ( userOrder.distrib != null && userOrder.distrib.id != distribId ) {
+						continue;
+					} else {
+						for ( x in userOrder.ordersProducts ) {
+							if ( x.product.id == productId ) {
+								orderProduct = x;
+								break;
+							}
+						}
+					}
+				}
+				
+				if ( orderProduct == null ) throw t._( "Could not find the product ::product:: and delivery ::delivery::", { product : productId, delivery : distribId } );
+				
+				var quantity = Std.parseInt( qty );				
+				
+				
+				if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
+
+					if ( orderProduct.order != null && orderProduct.order.id != null ) {
+
+						if ( orderProduct.order.distribution.orderEndDate.getTime() > Date.now().getTime() ) {
+
+							varOrdersToEdit.push( { order : orderProduct.order, quantity : quantity } );
+							if ( pricesQuantitiesByDistrib[orderProduct.order.distribution] == null ) {
+		
+								pricesQuantitiesByDistrib[orderProduct.order.distribution] = [];
+							}
+							pricesQuantitiesByDistrib[orderProduct.order.distribution].push( { productQuantity : quantity, productPrice : orderProduct.order.productPrice } );
+						}
+					} else {
+
+						if ( distribution.orderEndDate.getTime() > Date.now().getTime() ) {
+
+							varOrdersToMake.push( { distribId : distribId, product : orderProduct.product, quantity : quantity } );
+							if ( pricesQuantitiesByDistrib[distribution] == null ) {
+		
+								pricesQuantitiesByDistrib[distribution] = [];
+							}
+							pricesQuantitiesByDistrib[distribution].push( { productQuantity : quantity, productPrice : orderProduct.product.price } );
+					
+						}
+					}
+
+					if ( catalog.requiresOrdering ) {
+
+						if ( firstDistrib == null && quantity != null && quantity != 0 ) {
+							firstDistrib = distribution;
+						}
+	
+						if ( firstDistrib != null && distribution.date.getTime() < firstDistrib.date.getTime() ) {
+							firstDistrib = distribution;
+							varDefaultOrders = new Array< { productId:Int, quantity:Float, ?userId2:Int, ?invertSharedOrder:Bool } >();
+						}
+	
+						if( firstDistrib != null && distribution.id == firstDistrib.id ) {
+							if ( orderProduct.order != null && orderProduct.order.id != null ) {
+								varDefaultOrders.push( { productId : orderProduct.order.product.id, quantity : quantity } );
+							} else {
+								varDefaultOrders.push( { productId : orderProduct.product.id, quantity : quantity } );
+							}
+						}
+					}
+
+				} else {
+					constOrders.push( { productId : orderProduct.product.id, quantity : quantity, userId2 : null, invertSharedOrder : false } );					
+				}
+
+			}
+
+			var hasRequirementsError = false;
+			if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
+
+				if( varOrdersToEdit.length == 0  && varOrdersToMake.length == 0 ) {
+					throw Error( sugoi.Web.getURI(), "Merci de choisir quelle quantité de produits vous désirez" );
+				}
+				
+				try {
+					//Catalog Constraints to respect
+					//We check again that the distrib is not closed to prevent automated orders and actual orders for a given distrib
+					if( SubscriptionService.areVarOrdersValid( currentOrComingSubscription, pricesQuantitiesByDistrib ) ) {
+
+						var subscriptionIsNew = false;
+
+						if ( currentOrComingSubscription == null ) {
+							subscriptionIsNew = true;
+							currentOrComingSubscription = subscriptionService.createSubscription( app.user, catalog, varDefaultOrders, app.params.get("absencesNb").parseInt() );
+						} else {							
+							subscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, varDefaultOrders/*, null, app.params.get("absencesNb").parseInt()*/ );
+							if ( catalog.requiresOrdering && currentOrComingSubscription.getDefaultOrders().length == 0 ) {
+								SubscriptionService.updateDefaultOrders( currentOrComingSubscription, varDefaultOrders );
+							}
+						}
+						
+						var newSubscriptionAbsentDistribs = [];
+						if( subscriptionIsNew ) {
+							newSubscriptionAbsentDistribs = currentOrComingSubscription.getAbsentDistribs();
+						}
+
+						for ( orderToEdit in varOrdersToEdit ) {
+							if( newSubscriptionAbsentDistribs.length == 0 || newSubscriptionAbsentDistribs.find( d -> d.id == orderToEdit.order.distribution.id ) == null ) {			
+								if( !orderToEdit.order.product.multiWeight ) {
+									varOrders.push( OrderService.edit( orderToEdit.order, orderToEdit.quantity ) );
+								} else {
+									varOrders.push( OrderService.editMultiWeight( orderToEdit.order, orderToEdit.quantity ) );
+								}
+							}
+						}
+
+						for ( orderToMake in varOrdersToMake ) {
+							if( newSubscriptionAbsentDistribs.length == 0 || newSubscriptionAbsentDistribs.find( d -> d.id == orderToMake.distribId ) == null ) {
+								varOrders.push( OrderService.make( app.user, orderToMake.quantity, orderToMake.product, orderToMake.distribId, null, currentOrComingSubscription ) );
+							}
+						}
+					}
+				} catch ( e : Error ) {
+					if( e.data == SubscriptionServiceError.CatalogRequirementsNotMet ) {
+						hasRequirementsError = true;
+						App.current.session.addMessage( e.message, true );
+					} else { 
+						throw Error( "/contract/order/" + catalog.id, e.message );
+					}
+				}
+
+			} else {
+				
+				//Create or edit an existing subscription for the coming distribution
+				if( constOrders == null || constOrders.length == 0 ){
+					throw Error( sugoi.Web.getURI(), 'Merci de choisir quelle quantité de produits vous désirez' );
+				}
+
+				try {
+					if ( currentOrComingSubscription == null ) {						
+						currentOrComingSubscription = subscriptionService.createSubscription( app.user, catalog, constOrders, app.params.get("absencesNb").parseInt() );
+					} else if ( !currentOrComingSubscription.paid() ) {						
+						subscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, constOrders/*, null, app.params.get("absencesNb").parseInt()*/ );
+					}
+				} catch ( e : Error ) {
+					throw Error( "/contract/order/" + catalog.id, e.message );
+				}
+			}
+
+			//Create or update a single order operation for the subscription total orders price
+			if ( currentOrComingSubscription != null && catalog.hasPayments ) {
+				service.SubscriptionService.createOrUpdateTotalOperation( currentOrComingSubscription );
+			}
+
+			if ( !hasRequirementsError ) {
+				var msg = "Votre souscription a bien été mise à jour.";
+				//message if no payments has been made and there is a catalogMinOrdersTotal
+				if(catalog.hasPayments && catalog.catalogMinOrdersTotal > 0){
+					if(currentOrComingSubscription.getPaymentsTotal()==0){
+						msg += " <b>Pensez à payer votre provision initiale de "+SubscriptionService.getCatalogMinOrdersTotal(catalog,currentOrComingSubscription)+"€</b>";
+					}					
+				}
+				throw Ok( "/contract/order/" + catalog.id, msg );
+			}
+
+		}
+		
+		App.current.breadcrumb = [ { link : "/home", name : "Commandes", id : "home" } ]; 
+		view.subscriptionService = SubscriptionService;
 		view.catalog = catalog;
 		view.userId = app.user.id;
 
