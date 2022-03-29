@@ -333,7 +333,7 @@ class Contract extends Controller
 	 * It should work for constant orders ( will display one column )
 	 * or varying orders ( with as many columns as distributions dates )
 	 */
-	 @tpl("contract/order.mtt")
+	
 	function doOrder( catalog : db.Catalog ) {
 
 		if( catalog.group.hasShopMode() ) throw Redirect( '/contract/view/' + catalog.id );
