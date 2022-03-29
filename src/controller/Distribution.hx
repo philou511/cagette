@@ -1,29 +1,29 @@
 package controller;
 
-import mangopay.MangopayPlugin;
-import db.Operation;
-import mangopay.Types.Refund;
-import mangopay.Mangopay;
-import mangopay.Types.Error;
-import sugoi.BaseApp;
-import pro.payment.MangopayECPayment;
+import Common;
 import db.Catalog;
-import db.TmpBasket;
-import service.OrderFlowService;
-import tools.ObjectListTool;
 import db.DistributionCycle;
+import db.Operation;
+import db.TmpBasket;
 import db.UserOrder;
+import mangopay.Mangopay;
+import mangopay.MangopayPlugin;
+import mangopay.Types.Error;
+import mangopay.Types.Refund;
+import pro.payment.MangopayECPayment;
+import service.DistributionService;
+import service.OrderFlowService;
+import service.VolunteerService;
+import sugoi.BaseApp;
 import sugoi.form.Form;
 import sugoi.form.elements.IntSelect;
-import sugoi.form.elements.TextArea;
 import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
-import Common;
-import service.VolunteerService;
-import service.DistributionService;
+import sugoi.form.elements.TextArea;
+import tools.ObjectListTool;
 
-using tools.DateTool;
 using Formatting;
 using Std;
+using tools.DateTool;
 
 class Distribution extends Controller {
 	public function new() {
@@ -1419,9 +1419,6 @@ class Distribution extends Controller {
 
 		view.toBeDone = genericRolesToBeDone + contractRolesToBeDone;
 		view.done = genericRolesDone + contractRolesDone;
-
-		view.userId = app.user.id;
-		view.daysBeforeDutyPeriodsOpen = app.user.getGroup().daysBeforeDutyPeriodsOpen;
 	}
 
 	/**
