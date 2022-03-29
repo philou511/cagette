@@ -542,7 +542,7 @@ class OrderService
 		var m = new sugoi.mail.Mail();
 		m.addRecipient(d.catalog.contact.email , d.catalog.contact.getName());
 		m.setSender(App.config.get("default_email"),"Cagette.net");
-		m.setSubject('[${d.catalog.group.name}] Distribution du ${Formatting.dDate(d.date)} (${d.catalog.name})');
+		m.setSubject('Distribution du ${Formatting.dDate(d.date)} (${d.catalog.name})');
 		var orders = service.ReportService.getOrdersByProduct(d);
 
 		var html = App.current.processTemplate("mail/ordersByProduct.mtt", { 
@@ -557,8 +557,7 @@ class OrderService
 		} );
 		
 		m.setHtmlBody(html);
-		App.sendMail(m);					
-
+		App.sendMail(m, d.catalog.group);
 	}
 
 
@@ -569,7 +568,7 @@ class OrderService
 	 */
 	public static function sendOrderSummaryToMembers(d:db.Distribution){
 
-		var title = '[${d.catalog.group.name}] Votre commande pour le ${App.current.view.dDate(d.date)} (${d.catalog.name})';
+		var title = 'Votre commande pour le ${App.current.view.dDate(d.date)} (${d.catalog.name})';
 
 		for( user in d.getUsers() ){
 
@@ -592,7 +591,7 @@ class OrderService
 			} );
 			
 			m.setHtmlBody(html);
-			App.sendMail(m);
+			App.sendMail(m, d.catalog.group);
 		}
 		
 	}

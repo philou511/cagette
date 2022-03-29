@@ -1,15 +1,16 @@
 package controller;
-import sys.db.Mysql;
+import Common;
 import db.Catalog;
-import service.GraphService;
+import db.MultiDistrib;
 import haxe.CallStack;
 import haxe.display.Display.CompletionModeKind;
-import db.MultiDistrib;
-import sugoi.tools.TransactionWrappedTask;
-import sugoi.db.Cache;
+import service.GraphService;
 import sugoi.Web;
+import sugoi.db.Cache;
 import sugoi.mail.Mail;
-import Common;
+import sugoi.tools.TransactionWrappedTask;
+import sys.db.Mysql;
+
 using Lambda;
 using tools.DateTool;
 
@@ -92,7 +93,7 @@ class Cron extends Controller
 					}
 					volunteersList += "</ul>";
 					
-					mail.setSubject( "["+multidistrib.group.name+"] "+ t._("Instructions for the volunteers of the ::date:: distribution",{date : view.hDate(multidistrib.distribStartDate)}) );
+					mail.setSubject( t._("Instructions for the volunteers of the ::date:: distribution",{date : view.hDate(multidistrib.distribStartDate)}) );
 					
 					//Let's replace all the tokens
 					var ddate = t._("::date:: from ::startHour:: to ::endHour::",{date:view.dDate(multidistrib.distribStartDate),startHour:view.hHour(multidistrib.distribStartDate),endHour:view.hHour(multidistrib.distribEndDate)});
@@ -100,7 +101,7 @@ class Cron extends Controller
 					emailBody = StringTools.replace( emailBody, "[LIEU_DISTRIBUTION]", multidistrib.place.name ); 
 					emailBody = StringTools.replace( emailBody, "[LISTE_BENEVOLES]", volunteersList ); 
 					mail.setHtmlBody( app.processTemplate("mail/message.mtt", { text: emailBody, group: multidistrib.group  } ) );
-					App.sendMail(mail);
+					App.sendMail(mail, multidistrib.group);
 				}
 			}			
 		});
@@ -135,17 +136,17 @@ class Cron extends Controller
 
 				//vacant roles
 				var vacantVolunteerRolesList = "<ul>"+Lambda.map( multidistrib.getVacantVolunteerRoles(),function (r) return "<li>"+r.name+"</li>").join("\n")+"</ul>";
-				mail.setSubject( t._("[::group::] We need more volunteers for ::date:: distribution",{group : multidistrib.group.name, date : view.hDate(multidistrib.distribStartDate)}) );
+				mail.setSubject("Besoin de volontaires pour la distribution du " + view.hDate(multidistrib.distribStartDate));
 				
 				//Let's replace all the tokens
-				var ddate = t._("::date:: from ::startHour:: to ::endHour::",{date:view.dDate(multidistrib.distribStartDate),startHour:view.hHour(multidistrib.distribStartDate),endHour:view.hHour(multidistrib.distribEndDate)});
+				var ddate = view.dDate(multidistrib.distribStartDate) + " de " + view.hHour(multidistrib.distribStartDate) + " à " + view.hHour(multidistrib.distribEndDate);
 				var emailBody = StringTools.replace( multidistrib.group.alertMailContent, "[DATE_DISTRIBUTION]", ddate );
 				emailBody = StringTools.replace( emailBody, "[LIEU_DISTRIBUTION]", multidistrib.place.name ); 
 				emailBody = StringTools.replace( emailBody, "[ROLES_MANQUANTS]", vacantVolunteerRolesList ); 										
 				mail.setHtmlBody( app.processTemplate("mail/message.mtt", { text: emailBody, group: multidistrib.getGroup()  } ) );
 
-				App.sendMail(mail);
-			}			
+				App.sendMail(mail, multidistrib.getGroup());
+			}
 		});
 		task.execute(!App.config.DEBUG);
 
@@ -547,7 +548,7 @@ class Cron extends Controller
 						if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
 						m.addRecipient(u.user.email, u.user.getName());
 						if (u.user.email2 != null) m.addRecipient(u.user.email2);
-						m.setSubject( group.name+" : "+t._("Distribution on ::date::",{date:app.view.hDate(u.distrib.distribStartDate)})  );
+						m.setSubject( t._("Distribution on ::date::",{date:app.view.hDate(u.distrib.distribStartDate)})  );
 						
 						//time slots
 						var status = null;
@@ -556,7 +557,7 @@ class Cron extends Controller
 						};
 
 						m.setHtmlBody( app.processTemplate("mail/orderNotif.mtt", { text:text,group:group,multiDistrib:u.distrib,user:u.user,hHour:Formatting.hHour,timeSlotService:timeSlotService } ) );
-						App.sendMail(m , u.distrib.group);	
+						App.sendMail(m, group);	
 
 						if(App.config.DEBUG){
 							//task.log("distrib is "+u.distrib);
@@ -633,7 +634,7 @@ class Cron extends Controller
 							if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
 							m.addRecipient(user.email, user.getName());
 							if (user.email2 != null) m.addRecipient(user.email2);
-							m.setSubject( group.name+" : "+t._("Distribution on ::date::",{date:app.view.hDate(md.distribStartDate)})  );
+							m.setSubject( t._("Distribution on ::date::",{date:app.view.hDate(md.distribStartDate)})  );
 							
 							m.setHtmlBody( app.processTemplate("mail/orderNotif.mtt", { 
 								text:text,
