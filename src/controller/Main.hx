@@ -142,7 +142,6 @@ class Main extends Controller {
 	 */
 	function doApi(d:Dispatch) {
 		sugoi.Web.setHeader("Content-Type", "application/json");
-		sugoi.Web.setHeader("Access-Control-Allow-Credentials","true");
 		try {
 			d.dispatch(new controller.Api());
 		} catch (e:tink.core.Error) {
