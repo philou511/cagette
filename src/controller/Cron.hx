@@ -691,12 +691,12 @@ class Cron extends Controller
 		}
 		var view = App.current.view;
 		for ( d in distribs ){
-			var subj = t._("[::group::] Validation of the ::date:: distribution",{group : d.getGroup().name , date : view.hDate(d.distribStartDate)});
+			var subj = "Validation de la distribution du " + view.hDate(d.distribStartDate);
 			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.id;
 			var html = t._("<p>Your distribution just finished, don't forget to <b>validate</b> it</p>");
 			html += explain;
 			html += t._("<p><a href='::distriburl::'>Click here to validate the distribution</a> (You must be connected to your group Cagette)", {distriburl:url});
-			App.quickMail(d.getGroup().contact.email, subj, html);
+			App.quickMail(d.getGroup().contact.email, subj, html, d.getGroup());
 		}
 		
 		/*
@@ -717,14 +717,14 @@ class Cron extends Controller
 		
 		for ( d in distribs ){
 		
-			var subj = t._("[::group::] Validation of the ::date:: distribution",{group : d.getGroup().name , date : view.hDate(d.distribStartDate)});
+			var subj = "Validation de la distribution du " + view.hDate(d.distribStartDate);
 			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.id;		
 			var html = t._("<p>Reminder: you have a delivery to validate.</p>");
 			html += explain;
 			html += t._("<p><a href='::distriburl::'>Click here to validate the delivery</a> (You must be connected to your Cagette group)", {distriburl:url});
 			
 			if(d.getGroup().contact!=null){
-				App.quickMail(d.getGroup().contact.email, subj, html);
+				App.quickMail(d.getGroup().contact.email, subj, html, d.getGroup());
 			}
 			
 		}

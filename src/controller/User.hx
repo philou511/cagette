@@ -258,8 +258,9 @@ class User extends Controller
 			var text = t._("A new member joined the group without ordering : <br/><strong>::newMember::</strong><br/> <a href='::url::'>See contact details</a>",{newMember:app.user.getCoupleName(),url:url});
 			App.quickMail(
 				group.contact.email,
-				group.name +" - "+ t._("New member") + " : " + app.user.getCoupleName(),
-				app.processTemplate("mail/message.mtt", { text:text } ) 
+				t._("New member") + " : " + app.user.getCoupleName(),
+				text,
+				group
 			);	
 		}
 
