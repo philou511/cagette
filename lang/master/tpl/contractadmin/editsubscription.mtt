@@ -104,7 +104,7 @@
 			::end::
 
 			<!-- help for VARORDERS -->
-			::if (!catalog.isConstantOrders())::
+			::if (!catalog.isConstantOrdersCatalog())::
 			<div class="alert alert-warning">
 				<p>
 					<i class="icon icon-info"></i> 

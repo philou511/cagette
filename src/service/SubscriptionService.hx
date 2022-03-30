@@ -433,7 +433,7 @@ class SubscriptionService
 			throw TypedError.typed( 'Il y a déjà une souscription pour ce membre pendant la période choisie.'+"("+subs.join(',')+")", OverlappingSubscription );
 		}
 	
-		if ( subscription.id != null && hasPastDistribOrdersOutsideSubscription(subscription) && !subscription.catalog.isConstantOrders() ) {
+		if ( subscription.id != null && hasPastDistribOrdersOutsideSubscription(subscription) && subscription.catalog.isVariableOrdersCatalog() ) {
 			throw TypedError.typed( 
 				'La nouvelle période sélectionnée exclue des commandes déjà passées, Il faut élargir la période sélectionnée $subName.',
 				PastOrders
@@ -1040,7 +1040,7 @@ class SubscriptionService
 		} else*/
 		var catalog = subscription.catalog;
 
-		if(catalog.isConstantOrders()){
+		if(catalog.isConstantOrdersCatalog()){
 			if ( hasPastDistribOrders(subscription) && !adminMode ) {
 				throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées, il faut recréer une nouvelle souscription avec une nouvelle commande.', SubscriptionServiceError.PastOrders );
 			}
@@ -1051,7 +1051,7 @@ class SubscriptionService
 		var now = Date.now().getTime();
 		for ( order in subscriptionAllOrders ) {
 
-			if( catalog.isVarOrders() && order.distribution.orderEndDate.getTime() < now ){
+			if( catalog.isVariableOrdersCatalog() && order.distribution.orderEndDate.getTime() < now ){
 				//if catalog is variable and distrib is closed, do not delete order
 				continue;
 			}
@@ -1064,7 +1064,7 @@ class SubscriptionService
 		var orders : Array<db.UserOrder> = [];
 		for ( distribution in getSubscriptionDistributions(subscription) ) {
 
-			if( !catalog.isConstantOrders() && distribution.orderEndDate.getTime() < now ){
+			if( !catalog.isVariableOrdersCatalog() && distribution.orderEndDate.getTime() < now ){
 				//if catalog is variable and distrib is closed, do not recreate order
 				continue;
 			}

@@ -115,7 +115,7 @@ class Catalog extends Object
 		var now = Date.now();
 		var contractOpen = flags.has(UsersCanOrder) && now.getTime() < this.endDate.getTime() && now.getTime() > this.startDate.getTime();
 
-		if(this.isConstantOrders()){
+		if(this.isConstantOrdersCatalog()){
 			return contractOpen;
 		}else{			
 			var d = db.Distribution.manager.count( $orderStartDate <= now && $orderEndDate > now && $catalogId==this.id);
