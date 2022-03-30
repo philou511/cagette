@@ -193,9 +193,10 @@ $$browserDetection()
 					::foreach dist md.getDistributions(1)::
 						::set orders = dist.getUserOrders(user)::
 						::if orders.length>0::
-						<h4><a href="/contract/view/::dist._catalog.id::">::dist._catalog.name::</a></h4>
+						
 		
 						<div class="row">
+							<h4><a href="/contract/view/::dist._catalog.id::">::dist._catalog.name::</a></h4>
 							::foreach c prepare(orders)::
 							<div class="col-xs-12 col-sm-6 col-lg-4" ::cond orders.length>0:: >
 								<div style="background-image:url('::c.productImage::');float:left;margin-right:12px;" class="productImg small hidden-xs" />

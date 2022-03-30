@@ -109,10 +109,38 @@ class Subscription extends Controller
         for( d in SubscriptionService.getSubscriptionDistributions(sub,"allIncludingAbsences")){
             distributionsWithOrders.push({
                 id:d.id,
-                orders:d.getUserOrders(sub.user).array().map(o -> {id:o.id,productId:o.product.id,qty:o.quantity})
+                orders:d.getUserOrders(sub.user).array().map(o -> {
+                    id : o.id,
+                    productId : o.product.id,
+                    qty : o.quantity
+                })
             });
         }
 
+        //merge multiweight products on each distrib
+        var distributionsWithOrders2 = [];
+        for(d in distributionsWithOrders){
+            var orders:Array<{id:Int,productId:Int,qty:Float}> = [];
+            for(a in d.orders){
+                if(a.qty==0) continue;
+                var p = db.Product.manager.get(a.productId,false);
+                if(p.multiWeight){
+                    var existing = orders.find( a -> a.productId==p.id );
+                    if(existing==null){
+                        a.qty = 1;
+                        orders.push(a);
+                    }else{
+                        existing.qty++;
+                        existing.id = null;
+                    }      
+                }else{
+                    orders.push(a);
+                }
+            }
+            distributionsWithOrders2.push({id:d.id,orders:orders});
+
+        }
+        
         json({
             id : sub.id,
             startDate : sub.startDate,
@@ -123,7 +151,7 @@ class Subscription extends Controller
             constraints : SubscriptionService.getSubscriptionConstraints(sub),
             totalOrdered : sub.getTotalPrice(),
             balance : sub.getBalance(),
-            distributions:distributionsWithOrders,
+            distributions:distributionsWithOrders2,
             absentDistribIds:sub.getAbsentDistribIds(),
             defaultOrder : sub.getDefaultOrders()
         });

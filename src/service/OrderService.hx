@@ -277,39 +277,37 @@ class OrderService
 		if( !tools.FloatTool.isInt(newquantity) ) {
 			throw new Error( "Erreur : la quantité du produit" + order.product.name + " devrait être un entier." );
 		}
-	
-		var shopMode = order.product.catalog.group.hasShopMode();
 
-		if( !shopMode && order.product.multiWeight ) {
+		if( !order.product.catalog.group.hasShopMode() && order.product.multiWeight ) {
 
 			var currentOrdersNb = db.UserOrder.manager.count( $subscription == order.subscription && $distribution == order.distribution && $product == order.product && $quantity > 0 );
-			if ( newquantity == currentOrdersNb ) { return order; }
+			if ( newquantity == currentOrdersNb ) return order;
 			
 			var orders = db.UserOrder.manager.search( $subscription == order.subscription && $distribution == order.distribution && $product == order.product && $quantity > 0, false).array();
 			if ( newquantity != 0 ) {
 
-				var quantityDiff : Int = Std.int(newquantity) - currentOrdersNb;
+				var quantityDiff = Std.int(newquantity) - currentOrdersNb;
 				if ( quantityDiff < 0 ) {
 
 					for ( i in 0...-quantityDiff ) {
-
 						edit( orders[i], 0 );
-						orders.remove( orders[i] );
+						// orders.remove( orders[i] );
 					}
 				} else if ( quantityDiff > 0 ) {
-
-					for ( i in 0...quantityDiff ) {
-						orders.push( make( order.user, 1, order.product, order.distribution.id, null, order.subscription ) );
-					}
+					make( order.user, 1, order.product, order.distribution.id, null, order.subscription );
+					// for ( i in 0...quantityDiff ) {
+					// 	orders.push( make( order.user, 1, order.product, order.distribution.id, null, order.subscription ) );
+					// }
 				}
 
-				for ( orderToEdit in orders ) {
-					edit( orderToEdit, 1 );
-				}
+				// for ( order in orders ) {
+				// 	edit( order , 1 );
+				// }
 			}else{
 
-				for ( orderToEdit in orders ) {
-					edit( orderToEdit, 0 );
+				//set all orders to zero
+				for ( order in orders ) {
+					edit( order , 0 );
 				}
 			}
 			
