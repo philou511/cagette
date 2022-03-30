@@ -33,7 +33,7 @@
 			::end::
 
 			<!-- constant order , or default order if variable -->
-			::if (catalog.type == TYPE_CONSTORDERS) || catalog.requiresOrdering ::
+			::if (catalog.isConstantOrdersCatalog()) || catalog.requiresOrdering ::
 
 				<div class="form-group" >
 					<label class="col-sm-3 control-label"></label>
@@ -51,7 +51,7 @@
 				<div class="form-group" style="font-weight: bold;">				
 					<div class="col-sm-3"></div>
 					<div class="col-sm-2">Quantité</div>
-					::if catalog.type == TYPE_CONSTORDERS::
+					::if catalog.isConstantOrdersCatalog()::
 						<div class="col-sm-5">Alterner avec</div>
 						<div class="col-sm-2">Inverser alternance</div>
 					::end::
@@ -64,7 +64,7 @@
 					::set invert = false::
 
 					::if edit ::
-						::if catalog.type == TYPE_CONSTORDERS::
+						::if catalog.isConstantOrdersCatalog()::
 							::set productOrder = getProductOrder(product.id)::
 							::if productOrder != null::
 								::set quantity = productOrder.quantity::
@@ -86,7 +86,7 @@
 						<div class="col-sm-2">
 							<input class="form-control" type="text" name="quantity::product.id::" id="quantity::product.id::" value="::quantity::" />
 						</div>
-						::if catalog.type == TYPE_CONSTORDERS::
+						::if catalog.isConstantOrdersCatalog()::
 							<div class="col-sm-6">
 								<select name="user2::product.id::" id="user2::product.id::" class="form-control">
 									<option value="0">-</option>

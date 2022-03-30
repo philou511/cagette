@@ -57,18 +57,6 @@
 		
 		$$matomo()
 		  
-		<script type="text/javascript"> 
-			//Tooltips & popovers
-			/*
-			document.addEventListener("DOMContentLoaded", function(event) {			  
-				//tutorials
-				::if tuto!=null::		
-				_Cagette.getTuto("::tuto.name::",::tuto.step::);
-				::end::			  
-			})
-			*/
-		</script>
-
 		::foreach script getNeoModuleScripts()::
 			<script src="::script::"></script>
 		::end::

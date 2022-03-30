@@ -104,7 +104,7 @@
 
 				::foreach catalog subscriptionsByCatalog.keys()::
 
-					::if ( i == 0 && catalog.type == TYPE_VARORDER ) || ( i == 1 && catalog.type == TYPE_CONSTORDERS )::
+					::if ( i == 0 && catalog.isVariableOrdersCatalog() ) || ( i == 1 && catalog.isConstantOrdersCatalog() )::
 
 						::set subscriptionsFound = true::
 

@@ -704,11 +704,11 @@ class SubscriptionService
 		}
 		
 		if(absenceDistribIds!=null){
-			//absences are define
+			//absences are defined
 			setAbsences(subscription,absenceDistribIds);
 		}else{
 			//only absence number is defined, thus we get absence dates automatically
-			var nb = absenceNb!=null ? absenceNb : catalog.absentDistribsMaxNb; 
+			var nb = absenceNb!=null ? absenceNb : 0; 
 			setAbsences(subscription,getAutomaticAbsentDistribs(catalog, nb).map(d->d.id));
 		}
 		
@@ -942,9 +942,8 @@ class SubscriptionService
 		}
 
 		//cant delete if some payment has been recorded
-		var hasPayments = subscription.catalog.hasPayments;
 		var subscriptionOperations = db.Operation.manager.count( $subscription == subscription && $type==Payment );
-		if ( hasPayments && subscriptionOperations > 0 ) {
+		if ( subscription.catalog.hasPayments && subscriptionOperations > 0 ) {
 			throw new Error( 'Impossible de supprimer cette souscription car il y a des paiements enregistrés.' );
 		}
 
@@ -974,7 +973,7 @@ class SubscriptionService
 		} else {
 			var pastDistributions = getSubscriptionDistributions( subscription, 'past' );
 			for ( distribution in pastDistributions ) {
-				if ( db.UserOrder.manager.count( $distribution == distribution && $subscription == subscription && $quantity>0 ) != 0 ) {					
+				if ( db.UserOrder.manager.count( $distribution == distribution && $subscription == subscription && $quantity>0 ) > 0 ) {					
 					return true;
 				}
 			}
@@ -1149,13 +1148,6 @@ class SubscriptionService
 		
 	}
 
-	/**
-		can change absences ?
-	**/
-	public static function canAbsencesBeEdited( catalog:db.Catalog ) : Bool {
-		// return catalog.hasAbsencesManagement() && Date.now().getTime() < getLastDistribBeforeAbsences( catalog ).date.getTime();
-		return catalog.hasAbsencesManagement();
-	}
 
 	/**
 		Updates a subscription's absences
@@ -1182,7 +1174,7 @@ class SubscriptionService
 	}
 
 	/**
-		Update default orders.
+		Update default orders (store it in the subscription entity) and create the recurrent UserOrders
 		DefaultOrders can be on a variable contract with requiresOrdering=true
 		Or can be the recurring order of a constant CSA contrat
 	**/

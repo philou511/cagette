@@ -13,7 +13,7 @@
 				</a>
 			</li>
 			<li id="edit">
-				<a href="/contract/edit/::c.id::">
+				<a href="/contractAdmin/edit/::c.id::">
 					<i class="icon icon-edit"></i> ::_("Edit catalog")::
 				</a>
 			</li>
@@ -30,7 +30,7 @@
 			
 			::if (!c._group.hasShopMode() && (c.requiresOrdering || c.type==0) )::
 			<li id="absences" ::attr class if(nav[1]=="absences") 'active'::>
-				<a href="/contract/absences/::c.id::">
+				<a href="/contractAdmin/absences/::c.id::">
 					<i class="icon icon-vacation"></i>  Période d'absences
 				</a>
 			</li>

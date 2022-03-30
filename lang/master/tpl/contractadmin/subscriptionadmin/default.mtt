@@ -21,7 +21,7 @@
 
         </div>
         
-        <div class="row" ::cond catalog.type == TYPE_VARORDER:: >
+        <div class="row" ::cond catalog.isVariableOrdersCatalog():: >
 
 			<div id="content" class="col-md-12">
                 <p style="font-weight: bold;">Contraintes du contrat</p>
@@ -92,7 +92,7 @@
                     <table class="table table-striped table-bordered">
                         <tr class="greyhead">
                             <th>Membre</th>
-                            <th ::cond catalog.type == TYPE_CONSTORDERS::>Engagement</th>
+                            <th ::cond catalog.isConstantOrdersCatalog()::>Engagement</th>
                             <th>Période d'engagement</th>
                             <th>Nbre de distributions</th>
                             <th>Total commandé</th>
@@ -122,7 +122,7 @@
                                     ::if !hasPayments::
                                         <div ::cond !subscription.paid():: >
                                             <br/>
-                                            ::if(catalog.type == TYPE_CONSTORDERS)::                                        
+                                            ::if(catalog.isConstantOrdersCatalog())::                                        
                                             ::set confirmTxt = "Vous confirmez avoir reçu le contrat signé de cet adhérent avec le paiement. La commande saisie dans Cagette correspond bien à ce qui est inscrit sur le contrat."::
                                             ::else::
                                             ::set confirmTxt = "Vous confirmez avoir reçu le contrat signé de cet adhérent avec le chèque d'acompte. Si il y a un minimum de commande sur la durée du contrat, le chèque doit correspondre à ce minimum."::
@@ -134,7 +134,7 @@
                                         </div>
                                     ::end::               
                                 </td>
-                                <td  ::cond catalog.type == TYPE_CONSTORDERS:: class="::class::" style="vertical-align: middle;">
+                                <td  ::cond catalog.isConstantOrdersCatalog():: class="::class::" style="vertical-align: middle;">
                                     ::if orderName == null::
                                         Aucune commande
                                     ::else::
@@ -146,7 +146,9 @@
                                     au ::dateToString(subscription.endDate)::
                                 </td>
                                 <td style="vertical-align: middle;">
-                                    <a title="Voir les commandes" target="_blank" href="/member/orders/::subscription._user.id::/::catalog.id::">::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::</a>
+                                    <a title="Voir les commandes" target="_blank" href="/history/subscriptionOrders/::subscription.id::">
+                                        ::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
+                                    </a>
                                 </td>
                                 <td style="vertical-align: middle;">
                                     ::subscription.getTotalPrice()::&nbsp;::currency()::
@@ -181,7 +183,7 @@
                                             
                                             ::if(catalog.hasAbsencesManagement())::
                                             <li>
-                                                <a href="/subscriptions/absences/::subscription.id::?returnUrl=/contractAdmin/subscriptions/::catalog.id::">
+                                                <a href="/contractAdmin/subscriptions/absences/::subscription.id::">
                                                     <i class="icon icon-vacation"></i> Absences
                                                 </a>
                                             </li>

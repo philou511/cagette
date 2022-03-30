@@ -195,7 +195,7 @@
 
 				::foreach catalog subscriptionsByCatalog.keys()::
 
-					::if ( i == 0 && catalog.type == TYPE_VARORDER ) || ( i == 1 && catalog.type == TYPE_CONSTORDERS )::
+					::if ( i == 0 && catalog.isVariableOrdersCatalog() ) || ( i == 1 && catalog.isConstantOrdersCatalog() )::
 
 						::set subscriptionsFound = true::
 
@@ -230,7 +230,7 @@
 										<th class="text-center col-md-1">Payé</th>
 									::end::
 								</tr>
-								::set orderName = subscriptionService.getSubDescription(subscription)::
+								::set orderName = subscriptionService.getSubscriptionConstraints(subscription)::
 								::if i == 1 && orderName == null::
 									::set class="danger text-danger"::
 								::else::

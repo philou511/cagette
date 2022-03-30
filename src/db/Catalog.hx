@@ -85,11 +85,11 @@ class Catalog extends Object
 		
 	}
 
-	public function isConstantOrders(){
+	public function isConstantOrdersCatalog(){
 		return type == TYPE_CONSTORDERS;
 	}
 
-	public function isVarOrders(){
+	public function isVariableOrdersCatalog(){
 		return type == TYPE_VARORDER;
 	}
 	
@@ -122,8 +122,7 @@ class Catalog extends Object
 			return contractOpen && d > 0;
 		}		
 	}
-	
-	
+		
 	public function hasPercentageOnOrders():Bool {
 		return flags.has(PercentageOnOrders) && percentageValue!=null && percentageValue!=0;
 	}
@@ -133,7 +132,7 @@ class Catalog extends Object
 	}
 
 	public function hasConstraints() : Bool {
-		return this.type == TYPE_VARORDER && ( this.requiresOrdering || ( this.distribMinOrdersTotal != null &&  this.distribMinOrdersTotal != 0 ) || ( this.catalogMinOrdersTotal != null &&  this.catalogMinOrdersTotal != 0 ) );
+		return this.isVariableOrdersCatalog() && ( this.requiresOrdering || ( this.distribMinOrdersTotal != null &&  this.distribMinOrdersTotal != 0 ) || ( this.catalogMinOrdersTotal != null &&  this.catalogMinOrdersTotal != 0 ) );
 	}
 
 	public function hasAbsencesManagement() : Bool {
@@ -174,19 +173,16 @@ class Catalog extends Object
 				App.current.session.addMessage('La description du produit "${p.name}" est mal encodée et risque de poser des problèmes d\'affichage.',true);
 			}
 		}
-
 	}
 	
 	/**
-	 * 
-	 * @param	amap
+	 * Get active catalogs
 	 * @param	large = false	Si true, montre les contrats terminés depuis moins d'un mois
 	 * @param	lock = false
 	 */
 	public static function getActiveContracts(amap:db.Group,?large = false, ?lock = false) {
 		var now = Date.now();
-		var end = Date.now();
-	
+		var end = Date.now();	
 		if (large) {
 			end = DateTools.delta(end , -1000.0 * 60 * 60 * 24 * 30);
 			return db.Catalog.manager.search($group == amap && $endDate > end,{orderBy:-vendorId}, lock);	
@@ -198,7 +194,6 @@ class Catalog extends Object
 	/**
 	 * get products in this contract
 	 * @param	onlyActive = true
-	 * @return
 	 */
 	public function getProducts(?onlyActive = true):List<Product> {
 		if (onlyActive) {
@@ -325,7 +320,7 @@ class Catalog extends Object
 	}
 
 	public function isDemoCatalog():Bool{
-		return this.vendor.email != 'jean@cagette.net' && this.vendor.email != 'galinette@cagette.net';
+		return this.vendor.email == 'jean@cagette.net' || this.vendor.email == 'galinette@cagette.net';
 	}
 	
 	override function toString() {

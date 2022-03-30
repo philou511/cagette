@@ -59,8 +59,8 @@ class Catalog extends Controller
 			throw new Error(403,t._('Access forbidden') );
 		} 
 		
-		if( !SubscriptionService.canAbsencesBeEdited( sub.catalog ) ) {
-			throw new Error(403,t._('no absences mgmt in this catalog') );
+		if( !sub.catalog.hasAbsencesManagement() ) {
+			throw new Error(403,t._('no absences management in this catalog') );
 		}
 		
 		var absenceDistribs = sub.getAbsentDistribs();
@@ -85,7 +85,7 @@ class Catalog extends Controller
 
         /**
             once the sub is created, absent distribs number cannot be changed.
-            But asbence distribs can be chosen, until they are 
+            But asbence distribs can be chosen, until they are not-yet-closed distribs
         **/
         var catalog = sub.catalog;
         json({
