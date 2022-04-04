@@ -89,6 +89,7 @@ class Distribution extends Controller {
 
 	@tpl('distribution/CSAList.mtt')
 	function doCsaList(d:db.Distribution){
+		if ( !app.user.canManageContract( d.catalog ) ) throw Error( "/", t._("You do not have the authorization to manage this contract") );
 		view.distribution = d;
 		view.c = d.catalog;
 		view.nav = [];

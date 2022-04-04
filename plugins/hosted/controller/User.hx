@@ -46,8 +46,10 @@ class User extends sugoi.BaseController
 		}
 		view.vendors = ObjectListTool.deduplicate(vendors);
 
+	
+
 		//delete ?		
-		if(checkToken() && args!=null && args.delete){
+		/*if(checkToken() && args!=null && args.delete){
 			var msg  = "";
 			var johnDoe = db.User.manager.select($email=="deleted@cagette.net",false);
 
@@ -94,7 +96,7 @@ class User extends sugoi.BaseController
 			u.delete();
 			throw Ok("/p/hosted",name+" a été effacé.<br/>"+msg.split("\n").join("<br/>"));
 
-		}
+		}*/
 	}
 	
     /**

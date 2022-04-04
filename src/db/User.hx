@@ -143,8 +143,8 @@ class User extends Object {
 		return db.UserGroup.get(this, amap);
 	}
 
-	public function getUserGroups(){
-		return Lambda.array(db.UserGroup.manager.search($user == this, false));
+	public function getUserGroups():Array<db.UserGroup>{
+		return db.UserGroup.manager.search($user == this, false).array();
 	}
 	
 	public function makeMemberOf(group:db.Group){
