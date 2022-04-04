@@ -7,7 +7,7 @@
 			#email-body {
 				color: #333;
 				font-family: sans-serif;
-				background-color: #f8f4e5;
+				background-color: #f8f4e5 !important;
 			}
 
 			#email-root {
