@@ -54,10 +54,8 @@ class Subscription extends Object {
 	}
 
 	public function getTotalOperation() : db.Operation {
-
 		if( this.id == null ) return null;
-
-		return db.Operation.manager.select( $user == this.user && $subscription == this && $type == SubscriptionTotal, true );
+		return db.Operation.manager.select( $user == this.user && $subscription == this && $type == SubscriptionTotal, false );
 	}
 
 	/**

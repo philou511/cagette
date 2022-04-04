@@ -75,7 +75,10 @@ class MultiDistrib extends Object
 		});
 
 		//trigger event
-		for(md in multidistribs) App.current.event(GetMultiDistrib(md));
+		for(md in multidistribs) {
+			md.useCache = true;
+			App.current.event(GetMultiDistrib(md));
+		}
 
 		return multidistribs;
 	}
@@ -311,8 +314,8 @@ class MultiDistrib extends Object
 	@:skip public var useCache:Bool;
 	public function getDistributions(?type:Int){
 		
-		if(distributionsCache==null || useCache!=true){
-			distributionsCache = Lambda.array( db.Distribution.manager.search($multiDistrib==this,false) );
+		if(distributionsCache==null || !useCache){
+			distributionsCache = db.Distribution.manager.search($multiDistrib==this,false).array();
 		}
 
 		if(type==null){
@@ -510,15 +513,17 @@ class MultiDistrib extends Object
 
 
 	public function getVolunteerRoles() {
+		var roleIds = [];
+		roleIds = getVolunteerRoleIds();
+		if(roleIds.length==0) return [];
+		var volunteerRoles = db.VolunteerRole.manager.search($id in roleIds,false).array();
 
-		var volunteerRoles = [];
-
-		for ( roleId in getVolunteerRoleIds() ) {
-			var volunteerRole = db.VolunteerRole.manager.get(roleId);
+		/*for ( roleId in  ) {
+			var volunteerRole = db.VolunteerRole.manager.get(roleId,false);
 			if ( volunteerRole != null ) {
 				volunteerRoles.push( volunteerRole );
 			}
-		}
+		}*/
 
 		volunteerRoles.sort(function(b, a) { 
 			var a_str = (a.catalog == null ? "null" : Std.string(a.catalog.id)) + a.name.toLowerCase();
@@ -539,8 +544,15 @@ class MultiDistrib extends Object
 		return rolesIds;
 	}
 
+	@:skip private var volunteersCache:Array<db.Volunteer>;
+	
 	public function getVolunteers() {
-		return Lambda.array(db.Volunteer.manager.search($multiDistrib == this, false));
+
+		if(!useCache || volunteersCache==null){
+			volunteersCache = db.Volunteer.manager.search($multiDistrib == this, false).array();
+		}
+		return volunteersCache;
+		
 	}
 
 

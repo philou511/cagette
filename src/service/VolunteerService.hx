@@ -264,6 +264,8 @@ class VolunteerService
 		var membersNumByContractId = new Map<Int, Int>();
 		var membersListByContractId = new Map<Int, Array<db.User>>();
 
+		multiDistribs.foreach(md -> md.useCache=true);
+
 		for (md in multiDistribs) {
 			for (role in md.getVolunteerRoles()) {
 				if (role.isGenericRole()) {
@@ -292,8 +294,12 @@ class VolunteerService
 					continue;
 				}
 				for (u in members) {
-					if (d.hasUserOrders(u)) {
-						membersListByContractId[d.catalog.id].push(u);
+					var catId = d.catalog.id;
+					//do not search if user has orders if is already in the list
+					if( membersListByContractId[catId].find(user -> user.id==u.id) == null){
+						if (d.hasUserOrders(u)) {
+							membersListByContractId[catId].push(u);
+						}
 					}
 				}
 			}

@@ -107,8 +107,7 @@ class Distribution extends Object
 		Has user Orders in this distrib ?
 	**/	
 	public function hasUserOrders(user:db.User):Bool{
-		return db.UserOrder.manager.select($distribution == this  && ($user==user || $user2==user), false) != null; 
-		
+		return db.UserOrder.manager.select($distribution == this  && ($user==user || $user2==user), false) != null; 		
 	}
 
 	/**
