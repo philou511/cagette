@@ -1,17 +1,17 @@
 package controller;
-import service.SubscriptionService;
+import Common;
+import db.Catalog;
+import db.MultiDistrib;
+import haxe.Http;
+import haxe.Utf8;
 import haxe.macro.Expr.Catch;
 import payment.Check;
-import db.Catalog;
 import service.OrderService;
-import db.MultiDistrib;
-import Common;
-import haxe.Utf8;
+import service.SubscriptionService;
 import sugoi.form.Form;
 import sugoi.form.elements.Selectbox;
 import sugoi.form.validators.EmailValidator;
 import sugoi.tools.Utils;
-import haxe.Http;
 
 class Member extends Controller
 {
@@ -33,43 +33,6 @@ class Member extends Controller
 		// Set view.token to pass it to Neolithic componant
 		checkToken();
 	}
-	
-	/**
-	 * Send an invitation to a new member
-	 */
-	function doInviteMember(u:db.User){
-		
-		if (checkToken() ) {
-			u.sendInvitation(app.user.getGroup());
-			throw Ok('/member/view/'+u.id, t._("Invitation sent.") );
-		}
-		
-	}
-	
-	/**
-	 * Invite 'never logged' users
-	 */
-	function doInvite() {
-		if (checkToken()) {
-			
-			var users = db.User.getUsers_NewUsers();
-			try{
-				for ( u in users) {
-					u.sendInvitation(app.user.getGroup());
-					Sys.sleep(0.2);
-				}
-			}catch (e:String){
-				if (e.indexOf("curl") >-1) {
-					App.current.logError(e, haxe.CallStack.toString(haxe.CallStack.exceptionStack()));
-					throw Error("/member", t._("An error occurred while sending emails, please retry"));
-				}
-			}
-			
-			throw Ok('/member', t._("Congratulations, you just sent <b>::userLength::</b> invitations", {userLength:users.length}));
-		}
-		
-	}
-	
 	
 	@tpl("member/view.mtt")
 	function doView(member:db.User) {
@@ -229,7 +192,7 @@ class Member extends Controller
 		}
 	}
 	
-	@tpl('form.mtt')
+	/*@tpl('form.mtt')
 	function doMerge(user:db.User) {
 		
 		if (!app.user.canAccessMembership()) throw Error("/","Action interdite");
@@ -292,7 +255,7 @@ class Member extends Controller
 		
 		view.form = form;
 		
-	}
+	}*/
 	
 	/**
 	 * user payments history

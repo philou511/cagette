@@ -234,59 +234,6 @@ class User extends Controller
 	//}
 	
 	
-	@logged
-	@tpl("form.mtt")
-	function doDefinePassword(?key:String, ?u:db.User){
-		
-		if (app.user.isFullyRegistred()) throw Error("/", t._("You already have a password"));
-
-		var form = new Form("definepass");
-		var pass1 = new StringInput("pass1", t._("Your new password"));
-		var pass2 = new StringInput("pass2", t._("Again your new password"));
-		pass1.password = true;
-		pass2.password = true;
-		form.addElement(pass1);
-		form.addElement(pass2);
-		
-		if (form.isValid()) {
-			
-			if ( form.getValueOf("pass1") == form.getValueOf("pass2")) {
-				
-				app.user.lock();
-				app.user.setPass(form.getValueOf("pass1"));
-				app.user.update();
-				throw Ok('/', t._("Congratulations, your account is now protected by a password."));
-				
-			}else {
-				form.addError( t._("You must key-in two times the same password"));
-			}
-		}
-		view.form = form;
-		view.title = t._("Create a password for your account");
-	}
-	
-	/**
-	 * landing page when coming from an invitation
-	 * @param	k
-	 */
-	public function doValidate(k:String ) {
-		
-		var uid = Std.parseInt(sugoi.db.Cache.get("validation" + k));
-		if (uid == null || uid==0) throw Error('/user/login', t._("Your invitation is invalid or expired ($k)"));
-		var user = db.User.manager.get(uid, true);
-		
-		var groups = user.getGroups();
-		if(groups.length>0)	app.session.data.amapId = groups[0].id;
-		
-		sugoi.db.Cache.destroy("validation" + k);
-
-		// Create change password token
-		var token = haxe.crypto.Md5.encode("chp"+Std.random(1000000000));
-		sugoi.db.Cache.set(token, user.id, 60 * 60 * 24 * 30);
-	
-		throw Ok('http://' + App.config.HOST + '/user/forgottenPassword/'+token+'/'+user.id+'/true', t._("Congratulations ::userName::, your account is validated!", {userName:user.getName()}) + " Définissez un mot de passe puis connectez-vous pour finaliser votre inscription.");
-	}
-
 	/**
 		The user just registred or logged in, and want to be a member of this group
 	**/
@@ -311,8 +258,9 @@ class User extends Controller
 			var text = t._("A new member joined the group without ordering : <br/><strong>::newMember::</strong><br/> <a href='::url::'>See contact details</a>",{newMember:app.user.getCoupleName(),url:url});
 			App.quickMail(
 				group.contact.email,
-				group.name +" - "+ t._("New member") + " : " + app.user.getCoupleName(),
-				app.processTemplate("mail/message.mtt", { text:text } ) 
+				t._("New member") + " : " + app.user.getCoupleName(),
+				text,
+				group
 			);	
 		}
 

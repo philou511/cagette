@@ -222,12 +222,11 @@ class VolunteerService
 					}
 				}
 				var date = App.current.view.hDate(multidistrib.distribStartDate);
-				var subject = "["+multidistrib.group.name+"] ";
-				subject += t._( "A role has been left for ::date:: distribution",{date:date});
+				var subject = t._( "A role has been left for ::date:: distribution",{date:date});
 				mail.setSubject( subject );
 				var html = App.current.processTemplate("mail/volunteerUnsuscribed.mtt", { fullname : user.getName(), role : role.name, reason : reason, group: multidistrib.group  } );
 				mail.setHtmlBody( html );
-				App.sendMail(mail);
+				App.sendMail(mail, multidistrib.group);
 
 				//delete assignment
 				foundVolunteer.lock();

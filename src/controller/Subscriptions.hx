@@ -405,9 +405,9 @@ class Subscriptions extends controller.Controller
 		for ( i in 0...subscription.getAbsencesNb() ) {
 			if( lockedDistribs.has(absenceDistribs[i]) ){
 				//absence cannot be modified anymore, too late !
-				form.addElement(new sugoi.form.elements.Html('absenceLocked',Formatting.dDate(absenceDistribs[i].date)+" (trop tard pour changer)","Je serai absent(e) le :"));
+				form.addElement(new sugoi.form.elements.Html('absenceLocked',Formatting.dDate(absenceDistribs[i].date)+" (trop tard pour changer)","Je serai absent·e le :"));
 			}else{
-				form.addElement(new sugoi.form.elements.IntSelect( "absentDistrib" + i, "Je serai absent(e) le :", possibleAbsencesData, absenceDistribs[i].id, true ));
+				form.addElement(new sugoi.form.elements.IntSelect( "absentDistrib" + i, "Je serai absent·e le :", possibleAbsencesData, absenceDistribs[i].id, true ));
 			}			
 		}
 		

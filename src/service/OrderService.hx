@@ -68,15 +68,11 @@ class OrderService
 			for ( i in 0...Math.round(quantity) ) {
 
 				if( shopMode ) {
-
 					newOrder = make( user, 1, product, distribId, paid, null, user2, invert );
-				}
-				else {
-
+				} else {
 					newOrder = make( user, 1, product, distribId, paid, subscription );
 				}
 			}
-
 			return newOrder;
 		}
 		
@@ -274,7 +270,7 @@ class OrderService
 	}
 
 	/**
-		edit a multiweight order from a single qt input ( CSA order form ).
+		edit a multiweight product order from a single qty input ( CSA order form ).
 	**/
 	public static function editMultiWeight( order:db.UserOrder, newquantity:Float ):db.UserOrder {
 
@@ -538,14 +534,15 @@ class OrderService
 
 
 	/**
-	 *  Send an order-by-products report to the coordinator
+	 *  Send an order-by-products report to the coordinator.
+	 	Used in wholesaleOrder service
 	 */
 	public static function sendOrdersByProductReport(d:db.Distribution){
 		
 		var m = new sugoi.mail.Mail();
 		m.addRecipient(d.catalog.contact.email , d.catalog.contact.getName());
 		m.setSender(App.config.get("default_email"),"Cagette.net");
-		m.setSubject('[${d.catalog.group.name}] Distribution du ${Formatting.dDate(d.date)} (${d.catalog.name})');
+		m.setSubject('Distribution du ${Formatting.dDate(d.date)} (${d.catalog.name})');
 		var orders = service.ReportService.getOrdersByProduct(d);
 
 		var html = App.current.processTemplate("mail/ordersByProduct.mtt", { 
@@ -560,18 +557,18 @@ class OrderService
 		} );
 		
 		m.setHtmlBody(html);
-		App.sendMail(m);					
-
+		App.sendMail(m, d.catalog.group);
 	}
 
 
 	/**
 	 *  Send Order summary for a member
 	 *  WARNING : its for one distrib, not for a whole basket !
+	 	used in WholeSaleService
 	 */
 	public static function sendOrderSummaryToMembers(d:db.Distribution){
 
-		var title = '[${d.catalog.group.name}] Votre commande pour le ${App.current.view.dDate(d.date)} (${d.catalog.name})';
+		var title = 'Votre commande pour le ${App.current.view.dDate(d.date)} (${d.catalog.name})';
 
 		for( user in d.getUsers() ){
 
@@ -594,7 +591,7 @@ class OrderService
 			} );
 			
 			m.setHtmlBody(html);
-			App.sendMail(m);
+			App.sendMail(m, d.catalog.group);
 		}
 		
 	}

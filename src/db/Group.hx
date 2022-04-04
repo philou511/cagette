@@ -113,7 +113,7 @@ class Group extends Object
 		
 		//duty periods props
 		daysBeforeDutyPeriodsOpen = 60;
-		volunteersMailContent = "<b>Rappel : Vous êtes inscrit(e) à la permanence du [DATE_DISTRIBUTION],</b><br/>
+		volunteersMailContent = "<b>Rappel : Vous êtes inscrit·e à la permanence du [DATE_DISTRIBUTION],</b><br/>
 		Lieu de distribution : [LIEU_DISTRIBUTION]<br/>
 		<br/>
 		Voici la liste des bénévoles inscrits :<br/>
