@@ -195,6 +195,7 @@ class Group extends Object
 	}
 	
 	public function hasShopMode() {
+		if(flags==null) return true;
 		return flags.has(ShopMode);
 	}
 	
