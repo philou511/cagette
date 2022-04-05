@@ -39,6 +39,7 @@ class PDistributionService
 				currency:App.current.view.currency,
 				dDate:Formatting.dDate,
 				hHour:Formatting.hHour,
+				group:d.catalog.group
 			} );
 			
 			m.setHtmlBody(html);
