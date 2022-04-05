@@ -8,6 +8,8 @@
     <title>
         ::if pageTitle!=null::
         ::pageTitle::
+        ::elseif whiteLabel!=null::
+        ::whiteLabel.name::
         ::else::
         ::NAME::
         ::end::

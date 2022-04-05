@@ -465,8 +465,12 @@
 				<div id="footer" >
 				
 						<div class="col-md-3" >
-							<a href="http://www.cagette.net" target="_blank">
-								<img src="/img/logo.png" alt="::_("Cagette.net")::"/>
+							<a href="::if(whiteLabel!=null)::::whiteLabel.link::::else::http://www.cagette.net::end::" target="_blank">
+								::if(whiteLabel!=null)::
+									<img src="::whiteLabel.logo::" alt="::whiteLabel.name::" style="width:166px;"/>
+								::else::
+									<img src="/img/logo.png" alt="::_("Cagette.net")::"/>
+								::end::
 							</a>  
 						</div>
 						<div class="col-md-3" >
