@@ -379,7 +379,7 @@ div.reportHeader {
 .blockIconBadge {
   position: absolute;
   top: -18px;
-  right: 0px;
+  right: 10px;
   z-index: 50;
   width: 40px;
   height: 40px;
