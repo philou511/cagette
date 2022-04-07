@@ -1,7 +1,7 @@
 package who;
-import db.Catalog;
 import Common;
 import datetime.DateTime;
+import db.Catalog;
 import sugoi.plugin.*;
 
 /**
@@ -45,7 +45,7 @@ class WhoPlugIn extends PlugIn implements IPlugIn{
 					var user = d.catalog.contact;
 					var m = new sugoi.mail.Mail();
 					m.addRecipient(user.email , user.firstName+" " + user.lastName);
-					m.setSender(App.config.get("default_email"),"Cagette.net");
+					m.setSender(App.config.get("default_email"),"::appName::");
 					m.setSubject("Commande à ajuster : "+d.catalog.name);
 					
 					var orders = d.getOrders();

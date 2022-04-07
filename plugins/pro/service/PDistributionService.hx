@@ -26,7 +26,7 @@ class PDistributionService
 			
 			var m = new sugoi.mail.Mail();
 			m.addRecipient(company.vendor.email , company.vendor.name);
-			m.setSender(App.config.get("default_email"),"Cagette.net");
+			m.setSender(App.config.get("default_email"),"::appName::");
 			m.setSubject('[${d.catalog.group.name}] Livraison du ${App.current.view.dDate(d.date)} (${catalog.name})');
 		
 			var ordersObj = pro.service.ProReportService.getOrdersByProduct({distribution:d});

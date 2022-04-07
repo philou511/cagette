@@ -164,9 +164,9 @@ class User extends Controller
 			sugoi.db.Cache.set(token, user.id, 60 * 60 * 24 * 30);
 			
 			var m = new sugoi.mail.Mail();
-			m.setSender(App.config.get("default_email"), t._("Cagette.net"));					
+			m.setSender(App.config.get("default_email"),"::appName::");					
 			m.setRecipient(email, user.getName());					
-			m.setSubject( "["+App.config.NAME+"] : "+t._("Password change"));
+			m.setSubject( "["+App.current.name+"] : "+t._("Password change"));
 			m.setHtmlBody( app.processTemplate('mail/forgottenPassword.mtt', { user:user, link:'http://' + App.config.HOST + '/user/forgottenPassword/'+token+"/"+user.id }) );
 			App.sendMail(m);	
 		}
@@ -195,17 +195,16 @@ class User extends Controller
 				user.update();
 
 				var m = new sugoi.mail.Mail();
-				m.setSender(App.config.get("default_email"), t._("Cagette.net"));					
+				m.setSender(App.config.get("default_email"),"::appName::");					
 				m.setRecipient(user.email, user.getName());					
 				if(user.email2!=null) m.setRecipient(user.email2, user.getName());					
-				m.setSubject( "["+App.config.NAME+"] : "+t._("New password confirmed"));
+				m.setSubject( "["+App.current.name+"] : "+t._("New password confirmed"));
 				var emails = [user.email];
 				if(user.email2!=null) emails.push(user.email2);
 				var params = {
 					user:user,
 					emails:emails.join(", "),
-					password:pass,
-					NAME:App.config.NAME
+					password:pass
 				}
 				m.setHtmlBody( app.processTemplate('mail/newPasswordConfirmed.mtt', params) );
 				App.sendMail(m);	

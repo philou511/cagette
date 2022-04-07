@@ -18,9 +18,9 @@
 					<div style="margin-bottom:22px;" >
 							<a href="::if(whiteLabel!=null)::::whiteLabel.link::::else::http://www.cagette.net::end::" target="_blank">
 								::if(whiteLabel!=null)::
-									<img src="::whiteLabel.logo::" alt="::whiteLabel.name::" style="height:87px;"/>
+									<img src="::whiteLabel.logo::" alt="::appName::" style="height:87px;"/>
 								::else::
-									<img src="/img/logo3.png" alt="::_("Cagette.net")::"/>
+									<img src="/img/logo3.png" alt="::appName::"/>
 								::end::
 							</a> 
 					</div>

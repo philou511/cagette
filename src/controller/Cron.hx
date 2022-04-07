@@ -81,7 +81,7 @@ class Cron extends Controller
 				if ( volunteers.length != 0 ) {
 					task.log(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 					var mail = new Mail();
-					mail.setSender(App.config.get("default_email"),"Cagette.net");
+					mail.setSender(App.config.get("default_email"),"::appName::");
 					var volunteersList = "<ul>";
 					for ( volunteer in  volunteers ) {
 						
@@ -126,7 +126,7 @@ class Cron extends Controller
 			for (multidistrib  in vacantVolunteerRolesMultidistribs) {
 				task.log(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 				var mail = new Mail();
-				mail.setSender(App.config.get("default_email"),"Cagette.net");
+				mail.setSender(App.config.get("default_email"),"::appName::");
 				for ( member in multidistrib.group.getMembers() ) {
 					mail.addRecipient( member.email, member.getName() );
 					if ( member.email2 != null ) {
@@ -356,15 +356,15 @@ class Cron extends Controller
 			var errors = sugoi.db.Error.manager.search( $date < yest24h && $date > yest0h  );		
 			if (errors.length > 0) {
 				var report = new StringBuf();
-				report.add("<h1>" + App.config.NAME + " : ERRORS</h1>");
+				report.add("<h1>" + App.current.name + " : ERRORS</h1>");
 				for (e in errors) {
 					report.add("<div><pre>"+e.error + " at URL " + e.url + " ( user : " + (e.user!=null?e.user.toString():"none") + ", IP : " + e.ip + ")</pre></div><hr/>");
 				}
 				
 				var m = new Mail();
-				m.setSender(App.config.get("default_email"),"Cagette.net");
+				m.setSender(App.config.get("default_email"),"::appName::");
 				m.addRecipient(App.config.get("webmaster_email"));
-				m.setSubject(App.config.NAME+" Errors");
+				m.setSubject(App.current.name+" Errors");
 				m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:report.toString() } ) );
 				App.sendMail(m);
 			}
@@ -544,7 +544,7 @@ class Cron extends Controller
 				
 					try{
 						var m = new Mail();
-						m.setSender(App.config.get("default_email"), "Cagette.net");
+						m.setSender(App.config.get("default_email"), "::appName::");
 						if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
 						m.addRecipient(u.user.email, u.user.getName());
 						if (u.user.email2 != null) m.addRecipient(u.user.email2);
@@ -630,7 +630,7 @@ class Cron extends Controller
 											
 						try{
 							var m = new Mail();
-							m.setSender(App.config.get("default_email"), "Cagette.net");
+							m.setSender(App.config.get("default_email"), "::appName::");
 							if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
 							m.addRecipient(user.email, user.getName());
 							if (user.email2 != null) m.addRecipient(user.email2);

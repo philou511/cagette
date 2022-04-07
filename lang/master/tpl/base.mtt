@@ -7,11 +7,9 @@
     <meta charset="utf-8" />
     <title>
         ::if pageTitle!=null::
-        ::pageTitle::
-        ::elseif whiteLabel!=null::
-        ::whiteLabel.name::
+            ::pageTitle::
         ::else::
-        ::NAME::
+            ::appName::
         ::end::
     </title>
 

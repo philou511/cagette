@@ -1,12 +1,11 @@
-import haxe.EnumTools.EnumValueTools;
+import Common;
 import db.Basket;
+import haxe.EnumTools.EnumValueTools;
+import haxe.Utf8;
 import sugoi.Web;
+import tools.ArrayTool;
 
 using Std;
-
-import Common;
-import haxe.Utf8;
-import tools.ArrayTool;
 
 class View extends sugoi.BaseView {
 	var t:sugoi.i18n.GetText;
@@ -15,6 +14,9 @@ class View extends sugoi.BaseView {
 	var TYPE_VARORDER:Int;
 
 	var tuto:{name:String, step:Int};
+
+	var appName : String;
+	var whiteLabel : WhiteLabel;
 
 	public function new() {
 		super();
@@ -46,6 +48,9 @@ class View extends sugoi.BaseView {
 	override function init() {
 		super.init();
 
+		this.whiteLabel = App.current.whiteLabel;
+		this.appName = App.current.name;
+		
 		// tuto widget display
 		/*var u = App.current.user;
 		if (u != null && u.tutoState != null) {

@@ -144,7 +144,7 @@ class Member extends Controller
 				//warn the user that his email has been updated
 				if (form.getValueOf("email") != member.email) {
 					var m = new sugoi.mail.Mail();
-					m.setSender(App.config.get("default_email"), t._("Cagette.net"));
+					m.setSender(App.config.get("default_email"),"::appName::");
 					m.addRecipient(member.email);
 					m.setSubject(t._("Change your e-mail in your account Cagette.net"));
 					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:app.user.getName() + t._(" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is now:")+form.getValueOf("email")  } ) );
@@ -153,7 +153,7 @@ class Member extends Controller
 				}
 				if (form.getValueOf("email2") != member.email2 && member.email2!=null) {
 					var m = new sugoi.mail.Mail();
-					m.setSender(App.config.get("default_email"),"Cagette.net");
+					m.setSender(App.config.get("default_email"),"::appName::");
 					m.addRecipient(member.email2);
 					m.setSubject(t._("Change the e-mail of your account Cagette.net"));
 					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:app.user.getName() +t._(" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is now:")+form.getValueOf("email2")  } ) );

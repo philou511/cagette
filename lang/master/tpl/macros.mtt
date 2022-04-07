@@ -467,9 +467,9 @@
 						<div class="col-md-3" >
 							<a href="::if(whiteLabel!=null)::::whiteLabel.link::::else::http://www.cagette.net::end::" target="_blank">
 								::if(whiteLabel!=null)::
-									<img src="::whiteLabel.logo::" alt="::whiteLabel.name::" style="width:166px;"/>
+									<img src="::whiteLabel.logo::" alt="::appName::" style="width:166px;"/>
 								::else::
-									<img src="/img/logo.png" alt="::_("Cagette.net")::"/>
+									<img src="/img/logo.png" alt="::appName::"/>
 								::end::
 							</a>  
 						</div>
@@ -666,7 +666,7 @@
             var content = document.createElement("p");
             content.classList.add("browser-detection-content");
             content.textContent =
-            "Votre navigateur Internet est trop ancien pour afficher Cagette.net. \n Cela peut entraîner des problèmes d'affichage. \n Nous vous conseillons fortement de télécharger un navigateur plus récent, comme Firefox ou Brave.";
+            "Votre navigateur Internet est trop ancien pour afficher ::appName::. \n Cela peut entraîner des problèmes d'affichage. \n Nous vous conseillons fortement de télécharger un navigateur plus récent, comme Firefox ou Brave.";
             contentContainer.append(content);
             box.append(contentContainer);
 

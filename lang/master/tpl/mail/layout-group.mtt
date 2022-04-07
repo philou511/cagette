@@ -127,7 +127,7 @@
 				font-size: 20px;
 			}
 		</style>
-		<title>Cagette.net</title>
+		<title>::appName::</title>
 	</head>
 
 	<body id="email-body">
@@ -146,8 +146,8 @@
 		</div>
 
 		<div id="email-footer">
-			<img src="http://::HOST::/img/logo3.png" alt="logo Cagette.net" style="margin-bottom: 16px; max-width: 200px;"/>
-			<p>Ce courriel a été envoyé depuis <a href="http://::HOST::" target="_blank" rel="noreferrer noopener">Cagette.net</a>.</p>
+			<img src="::if(whiteLabel!=null)::::whiteLabel.logo::::else::http://::HOST::/img/logo3.png::end::" alt="logo ::appName::" style="margin-bottom: 16px; max-width: 200px; max-height: 87px;"/>
+			<p>Ce courriel a été envoyé depuis <a href="http://::HOST::" target="_blank" rel="noreferrer noopener">::appName::</a>.</p>
 			<p>Vous recevez ce message car vous faites partie de <b>::group.name::</b>::if list!=null:: (::list::) ::end::</p>
 			::if (user!=null)::
 			<p><a href="::user.getEditNotificationsLink(group)::">Changer les préférences de notification</a></p>

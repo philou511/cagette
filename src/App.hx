@@ -13,6 +13,9 @@ class App extends sugoi.BaseApp {
 	public var eventDispatcher :hxevents.Dispatcher<Event>;	
 	public var plugins : Array<sugoi.plugin.IPlugIn>;
 	public var breadcrumb : Array<Link>;
+	public var whiteLabel	: WhiteLabel;
+	public var name 		: String;
+
 	/**
 	 * Version management
 	 * @doc https://github.com/fponticelli/thx.semver
@@ -53,7 +56,11 @@ class App extends sugoi.BaseApp {
 		plugins.push( new mangopay.MangopayPlugin() );
 		plugins.push( new who.WhoPlugIn() );
 		#end
-	
+
+		var whiteLabelStringified = sugoi.db.Variable.get("whiteLabel");
+		whiteLabel = whiteLabelStringified != null ? haxe.Json.parse(whiteLabelStringified) : null;
+		name = whiteLabel == null ? App.config.NAME : whiteLabel.name;
+
 		super.mainLoop();
 	}
 	
@@ -291,7 +298,7 @@ class App extends sugoi.BaseApp {
 		var e = new sugoi.mail.Mail();		
 		e.setSubject(subject);
 		e.setRecipient(to);			
-		e.setSender(App.config.get("default_email"),"Cagette.net");				
+		e.setSender(App.config.get("default_email"),"::appName::");				
 		var html = App.current.processTemplate("mail/message.mtt", {text:html,group:group});		
 		e.setHtmlBody(html);
 		App.sendMail(e, group);
@@ -305,7 +312,9 @@ class App extends sugoi.BaseApp {
 		
 		//inject usefull vars in view
 		Reflect.setField(ctx, 'HOST', App.config.HOST);
-		Reflect.setField(ctx, 'hDate', date -> return Formatting.hDate(date) );		
+		Reflect.setField(ctx, 'appName', App.current.name);
+		Reflect.setField(ctx, 'whiteLabel', App.current.whiteLabel);
+		Reflect.setField(ctx, 'hDate', date -> return Formatting.hDate(date) );
 
 		ctx._ = App.current.view._;
 		ctx.__ = App.current.view.__;
