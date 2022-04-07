@@ -54,7 +54,8 @@
                         document.addEventListener("DOMContentLoaded", function(event) {
                             neo.createNeoModule("neo-container", "inviteVendor", {
                                     groupId: ::groupId::,
-                                    existingVendorEmail: "::vendor.email::"
+                                    existingVendorEmail: "::vendor.email::",
+                                    userId: ::user.id::
                             });
                         });
                     </script>

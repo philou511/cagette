@@ -324,8 +324,8 @@ class Catalog extends Object
 	}
 
 	public function isDemoCatalog():Bool{
-		return this.vendor.email != 'jean@cagette.net' && this.vendor.email != 'galinette@cagette.net';
-	}
+        return this.vendor.email == 'jean@cagette.net' || this.vendor.email == 'galinette@cagette.net';
+    }
 	
 	override function toString() {
 		return name+" du "+this.startDate.toString().substr(0,10)+" au "+this.endDate.toString().substr(0,10);

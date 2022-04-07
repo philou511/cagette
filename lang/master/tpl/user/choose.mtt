@@ -89,7 +89,9 @@
 	</div>
 	<script>
 		document.addEventListener("DOMContentLoaded", function(event) {
-			neo.createNeoModule("news-neo-container", "newsFeed");
+			neo.createNeoModule("news-neo-container", "newsFeed", {
+				userId: ::user.id::
+			});
 		});
 	</script>
 

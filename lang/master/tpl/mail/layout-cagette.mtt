@@ -3,25 +3,25 @@
 		<meta name="viewport" content="width=device-width"/>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 		<style>
-			body {
+			#email-body {
 				color: #333;
 				font-family: sans-serif;
-				background-color: #d7e7ca;
+				background-color: #d7e7ca !important;
 			}
 
-			#root {
+			#email-root {
 				margin: auto;
 				max-width: 600px;
 				background-color: white;
 				padding: 16px;
 			}
 
-			#header {
+			#email-header {
 				padding: 16px;
 				text-align: center;
 			}
 
-			#footer {
+			#email-footer {
 				font-size: 0.75rem;
 				max-width: 600px;
 				text-align: center;
@@ -43,16 +43,16 @@
 		<title>Cagette.net</title>
 	</head>
 
-	<body>
-		<div id="root">
-			<header id="header">
+	<body id="email-body">
+		<div id="email-root">
+			<div id="email-header">
 				<img src="http://::HOST::/img/logo2.png" alt="logo Cagette.net"/>
-			</header>
+			</div>
 
 			::raw __content__::
 		</div>
 
-		<footer id="footer">
+		<div id="email-footer">
 			<p>Cagette.net - ALILO SCOP, 4 impasse Durban, 33000 Bordeaux</p>
 			<div style="display: flex; justify-content: center; align-items: center;">
 				<a href="https://cagette.net" target="_blank" rel="noreferrer noopener" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
@@ -65,7 +65,7 @@
 					<img src="http://::HOST::/img/emails/youtube.png" alt="YouTube" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>YouTube
 				</a>
 			</div>
-		</footer>
+		</div>
 	</body>
 
 </html>
