@@ -3,17 +3,17 @@
 	Use it with with bootstrap 3
 */
 @import url("https://fonts.googleapis.com/css?family=Cabin:400,500,700");
-@import "_iconfont";
+@import "../../css/_iconfont";
 
 $mediumGreen 	: #3c763d;
-$lightGreen 	: #84bd55; //primary buttons color @brand-success
-$lightBrown 	: #f8f4e5; //background @body-bg
+$lightGreen 	: #e4c94b; //primary buttons color @brand-success
+$lightBrown 	: #efefef; //background @body-bg
 $darkGrey 		: #333;
 $mediumGrey		: #666;
 $lightGrey		: #AAA;
 
 $farmer 		: #e4ba2b;
-$farmerPro		: #84BD55; //@brand-success
+$farmerPro		: #e4c94b; //@brand-success
 $farmerDanger	: #a94442;
 
 

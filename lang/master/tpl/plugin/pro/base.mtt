@@ -6,13 +6,21 @@
 		<title>Compte producteur</title>
 
 		<!-- Cagette CSS -->
-		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
+		::if(whiteLabel!=null)::
+			<link rel="stylesheet" href="/::whiteLabel.name::/css/style.css" />
+		::else::
+			<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css" />
+		::end::
 
 		<!-- Cagette very own icon font -->
 		<link rel="stylesheet" href="/font/icons.css?v=::getVariable('css')::" />
 			
 		<!-- BOOTSTRAP 	-->
-		<link rel="stylesheet" href="/css/::getVariable('css')::/bootstrap.min.css" />
+		::if(whiteLabel!=null)::
+			<link rel="stylesheet" href="/::whiteLabel.name::/css/bootstrap.min.css" />
+		::else::
+			<link rel="stylesheet" href="/css/::getVariable('css')::/bootstrap.min.css" />
+		::end::
 				
 		<!-- polyfill for IE11 : Object.assign() doesnt exists in IE11 , error in libs.prod.js -->
 		<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>

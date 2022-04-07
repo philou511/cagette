@@ -17,7 +17,11 @@
 		crossorigin=""/>
 		
 		<!-- Cagette CSS -->
-		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
+		::if(whiteLabel!=null)::
+			<link rel="stylesheet" href="/::whiteLabel.name::/css/style.css" />
+		::else::
+			<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css" />
+		::end::
 
 
 		<!-- Cagette very own icon font -->

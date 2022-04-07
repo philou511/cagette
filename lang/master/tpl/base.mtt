@@ -14,12 +14,21 @@
     </title>
 
     <!-- Cagette CSS -->
-    <link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css" />
+    
+    ::if(whiteLabel!=null)::
+        <link rel="stylesheet" href="/::whiteLabel.name::/css/style.css" />
+    ::else::
+        <link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css" />
+    ::end::
 
     <!-- BOOTSTRAP -->
     ::if noBootstrap::
     ::else::
-    <link rel="stylesheet" href="/css/::getVariable('css')::/bootstrap.min.css" />
+        ::if(whiteLabel!=null)::
+            <link rel="stylesheet" href="/::whiteLabel.name::/css/bootstrap.min.css" />
+        ::else::
+            <link rel="stylesheet" href="/css/::getVariable('css')::/bootstrap.min.css" />
+        ::end::
     ::end::
 
     <!-- Cagette very own icon font -->
