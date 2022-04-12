@@ -1175,12 +1175,12 @@ div.basketNumber{
 }
 
 tr.success td div.basketNumber{
-	background-color:#070;
+	background-color:#85BD56;
 	color:white;
 }
 
 tr.danger td div.basketNumber{
-	background-color:#d9534f;
+	background-color:#DF3826;
 	color:white;
 }
 
@@ -1225,10 +1225,6 @@ a.btn-warning{
 	color: #8a6d3b;
     background-color: #fcf8e3;
     border-color:lighten(#8a6d3b,10%);
-	&:hover{
-		// background-color:darker(#fcf8e3,10%);
-		// border-color:darker(#8a6d3b,20%);
-	}
 }
 
 i.icon{
