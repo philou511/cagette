@@ -16,7 +16,11 @@
     <!-- Cagette CSS -->
     
     ::if(whiteLabel!=null)::
+        ::if(DEBUG)::
         <link rel="stylesheet" href="/::whiteLabel.name::/css/style.css" />
+        ::else::
+        <link rel="stylesheet" href="/::whiteLabel.name::/css/style.min.css" />
+        ::end::
     ::else::
         <link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css" />
     ::end::

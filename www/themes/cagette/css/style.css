@@ -117,7 +117,7 @@ ul.nav li {
 
 /* Footer */
 #footer {
-  background: #84BD55;
+  background: #85BD56;
   border-radius: 8px;
   padding: 20px;
   min-height: 200px; }
@@ -351,13 +351,13 @@ div.reportHeader {
     color: white;
     font-size: 1.5em; }
   .iconBadge.farmer-pro {
-    color: #84BD55;
-    border-color: #84BD55;
+    color: #85BD56;
+    border-color: #85BD56;
     border: 3px solid;
     background-color: white; }
     .iconBadge.farmer-pro i.icon {
       margin-top: -6px;
-      color: #84BD55; }
+      color: #85BD56; }
   .iconBadge.farmer {
     color: #e4ba2b;
     border-color: #e4ba2b;
@@ -395,7 +395,7 @@ div.reportHeader {
     font-size: 0.9em; }
   .groupBlock .distance {
     font-weight: bold;
-    color: #84bd55;
+    color: #85BD56;
     font-size: 1.2em;
     position: absolute;
     right: 8px;
