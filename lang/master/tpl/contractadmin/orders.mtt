@@ -8,18 +8,17 @@
 		::_("Delivery of the"):: <b>::hDate(distribution.date)::</b>
 		::end::
 		
-
 		<div style="margin:8px 0;">
 
 			<!--::if distribution!=null::-->
 				<a class="btn btn-default btn-sm"
-					onclick="_.initOrderBox(null,::multiDistribId::,::distribution._catalog.id::,::distribution._catalog.type::,'::escapeJS(hDate(distribution.date))::','::escapeJS(distribution._place.toString())::',null,'::user.getGroup().currency::', ::user.getGroup().hasPayments()::, '/contractAdmin/orders/::c.id::?d=::distribution.id::')">
+					onclick="_Cagette.initOrderBox(null,::multiDistribId::,::distribution._catalog.id::,::distribution._catalog.type::,'::escapeJS(hDate(distribution.date))::','::escapeJS(distribution._place.toString())::',null,'::user.getGroup().currency::', ::user.getGroup().hasPayments()::, '/contractAdmin/orders/::c.id::?d=::distribution.id::', ::user.getGroup().hasCagette2()::, ::user.getGroup().id::)">
 					<i class="icon icon-plus"></i>
 					::_("New order")::
 				</a>							
 			<!--::else::
 				<a class="btn btn-default btn-sm"
-					onclick="_.initOrderBox(null, null, ::c.id::,::c.type::, null, null, null,'::user.getGroup().currency::', ::user.getGroup().hasPayments()::, '/contractAdmin/orders/::c.id::')">
+					onclick="_Cagette.initOrderBox(null, null, ::c.id::,::c.type::, null, null, null,'::user.getGroup().currency::', ::user.getGroup().hasPayments()::, '/contractAdmin/orders/::c.id::')">
 					<i class="icon icon-plus"></i>
 					::_("New order")::
 				</a>
@@ -36,8 +35,13 @@
 					<i class="icon icon-print"></i> ::_("Attendance sheet")::
 				</button>
 				<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+					
+					::if(!c._group.hasShopMode())::
+					<li><a href="/distribution/csaList/::distribution.id::"> Liste d'émargement AMAP</a></li>			
+					::else::
 					<li><a href="/distribution/list/::distribution.id::"> ::_("Standard")::</a></li>
 					<li><a href="/distribution/listByProductUser/::distribution.id::"> ::_("By Product-User")::</a></li>			
+					::end::
 				</ul>
 			</div>
 			
@@ -89,13 +93,13 @@
 						<td>
 							<!--::if distribution!=null::-->
 							<a class="btn btn-default btn-xs"
-								onclick="_.initOrderBox(::m.userId::,::multiDistribId::,::distribution._catalog.id::,::distribution._catalog.type::,'::escapeJS(hDate(distribution.date))::','::escapeJS(distribution._place.toString())::','::escapeJS(m.userName)::','::user.getGroup().currency::', ::user.getGroup().hasPayments()::, '/contractAdmin/orders/::c.id::?d=::distribution.id::')">
+								onclick="_Cagette.initOrderBox(::m.userId::,::multiDistribId::,::distribution._catalog.id::,::distribution._catalog.type::,'::escapeJS(hDate(distribution.date))::','::escapeJS(distribution._place.toString())::','::escapeJS(m.userName)::','::user.getGroup().currency::', ::user.getGroup().hasPayments()::, '/contractAdmin/orders/::c.id::?d=::distribution.id::', ::user.getGroup().hasCagette2()::)">
 								<i class="icon icon-edit"></i>
 								::_("Edit")::
 							</a>							
 							<!--::else::
 							<a class="btn btn-default btn-xs"
-								onclick="_.initOrderBox(::m.userId::, null, ::c.id::,::c.type::, null, null, '::escapeJS(m.userName)::','::user.getGroup().currency::', ::user.getGroup().hasPayments()::, '/contractAdmin/orders/::c.id::')">
+								onclick="_Cagette.initOrderBox(::m.userId::, null, ::c.id::,::c.type::, null, null, '::escapeJS(m.userName)::','::user.getGroup().currency::', ::user.getGroup().hasPayments()::, '/contractAdmin/orders/::c.id::')">
 								<i class="icon icon-edit"></i>
 								::_("Edit")::
 							</a>
@@ -178,19 +182,13 @@
 				</tr>
 				::end::
 				
-				
-				
 				<tr style="background:#DDD;">
-					
 					<th colspan="6">::_("Total")::</th>
 					<th>::formatNum(total)::&nbsp;::currency()::</th>
-					
 					<th></th>
 				</tr>
 				
-
 				</table>
-
 
 				<div style="margin-top:18px;margin-bottom:18px;">
 					::raw __("<b>::totalAdh::</b> member(s) in this distribution.",{totalAdh:totalAdh})::					

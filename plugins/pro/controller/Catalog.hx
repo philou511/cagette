@@ -1,11 +1,12 @@
 package pro.controller;
-import form.CagetteForm;
-import sugoi.form.Form;
-import sugoi.form.elements.IntSelect;
-using Std;
 import Common;
 import db.UserGroup;
+import form.CagetteForm;
 import pro.db.PNotif;
+import sugoi.form.Form;
+import sugoi.form.elements.IntSelect;
+
+using Std;
 
 class Catalog extends controller.Controller
 {
@@ -144,47 +145,47 @@ class Catalog extends controller.Controller
 		}
 	}
 	
-	@tpl('plugin/pro/catalog/conditions.mtt')
-	function doConditions(c:pro.db.PCatalog){
-		checkRights(c);
-		view.nav.push("conditions");
-		view.catalog = c;
+	// @tpl('plugin/pro/catalog/conditions.mtt')
+	// function doConditions(c:pro.db.PCatalog){
+	// 	checkRights(c);
+	// 	view.nav.push("conditions");
+	// 	view.catalog = c;
 		
-		view.data = c.deliveryAvailabilities;
+	// 	view.data = c.deliveryAvailabilities;
 		
-		if (app.params.exists("submit")){
-			//delivery availabilities
-			var data = new Array<{startHour:Int,startMinutes:Int,endHour:Int,endMinutes:Int}>();
-			for ( d in 0...7){
+	// 	if (app.params.exists("submit")){
+	// 		//delivery availabilities
+	// 		var data = new Array<{startHour:Int,startMinutes:Int,endHour:Int,endMinutes:Int}>();
+	// 		for ( d in 0...7){
 				
-				if (app.params.exists("day" + d)){
-					data[d] = {
-						startHour:app.params.get('startHour' + d).parseInt(),
-						startMinutes:app.params.get('startMinutes' + d).parseInt(),
-						endHour:app.params.get('endHour' + d).parseInt(),
-						endMinutes:app.params.get('endMinutes' + d).parseInt(),
+	// 			if (app.params.exists("day" + d)){
+	// 				data[d] = {
+	// 					startHour:app.params.get('startHour' + d).parseInt(),
+	// 					startMinutes:app.params.get('startMinutes' + d).parseInt(),
+	// 					endHour:app.params.get('endHour' + d).parseInt(),
+	// 					endMinutes:app.params.get('endMinutes' + d).parseInt(),
 					
-					};
+	// 				};
 					
-				}
-			}
+	// 			}
+	// 		}
 			
-			c.lock();
-			if ( c.deliveryAvailabilities == null) c.deliveryAvailabilities = [];
-			c.deliveryAvailabilities = data;
+	// 		c.lock();
+	// 		if ( c.deliveryAvailabilities == null) c.deliveryAvailabilities = [];
+	// 		c.deliveryAvailabilities = data;
 			
-			//distance
-			if (app.params.exists("maxDistance")){
-				var d = Std.parseInt(app.params.get("maxDistance"));
-				c.maxDistance = d;
-			}else{
-				c.maxDistance = null;
-			}
+	// 		//distance
+	// 		if (app.params.exists("maxDistance")){
+	// 			var d = Std.parseInt(app.params.get("maxDistance"));
+	// 			c.maxDistance = d;
+	// 		}else{
+	// 			c.maxDistance = null;
+	// 		}
 			
-			c.update();
-			throw Ok("/p/pro/catalog/publish/" + c.id, "Conditions mises à jour");
-		}
-	}
+	// 		c.update();
+	// 		throw Ok("/p/pro/catalog/publish/" + c.id, "Conditions mises à jour");
+	// 	}
+	// }
 
 	/**
 	Create a catalog
@@ -325,7 +326,7 @@ class Catalog extends controller.Controller
 		if (notif.type != pro.db.PNotif.NotifType.NTCatalogImportRequest){
 			throw "error";
 		}
-		var content : CatalogImportContent = notif.content;		
+		var content : CatalogImportContent = haxe.Json.parse(notif.content);		
 		var catalog = pro.db.PCatalog.manager.get( content.catalogId );		
 		try{
 			pro.service.PCatalogService.linkCatalogToGroup(catalog, notif.group , content.userId, content.catalogType );
@@ -350,7 +351,7 @@ class Catalog extends controller.Controller
 			throw "error";
 		}
 		
-		var content : pro.db.PNotif.DeliveryRequestContent = notif.content;
+		var content : pro.db.PNotif.DeliveryRequestContent = haxe.Json.parse(notif.content);
 		var catalog = pro.db.PCatalog.manager.get(content.pcatalogId,false);
 		var distrib = db.MultiDistrib.manager.get(content.distribId,false);
 		var rcs = connector.db.RemoteCatalog.getFromCatalog(catalog);

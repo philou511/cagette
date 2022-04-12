@@ -7,7 +7,7 @@
 			::if pageTitle!=null::
 				::pageTitle::
 			::else::
-				::NAME::
+				::appName::
 			::end::
 		</title>
 
@@ -17,7 +17,11 @@
 		crossorigin=""/>
 		
 		<!-- Cagette CSS -->
-		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
+		::if(whiteLabel!=null)::
+			<link rel="stylesheet" href="/::whiteLabel.name::/css/style.css" />
+		::else::
+			<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css" />
+		::end::
 
 
 		<!-- Cagette very own icon font -->
@@ -75,7 +79,7 @@
 		::raw __content__::
 		
 
-		$$ga()
+		$$matomo()
 
 		<script type="text/javascript">
 		
@@ -83,14 +87,14 @@
 			document.addEventListener("DOMContentLoaded", function(event) {
 			  
 				//init lang in js App
-				_.LANG = "::session.lang::";
+				_Cagette.LANG = "::session.lang::";
 				
 				//tutorials
 				//::if tuto!=null::				
-				//_.getTuto("::tuto.name::",::tuto.step::);			
+				//_Cagette.getTuto("::tuto.name::",::tuto.step::);			
 				//::end::
 
-				_.antiDoubleClick();
+				_Cagette.antiDoubleClick();
 			  
 			})
 

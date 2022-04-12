@@ -40,6 +40,7 @@
                         <!--<td>::formatNum(justif.mpFixedFees.ht):: &euro;</td>-->
                         <td>- ::formatNum(justif.mpFixedFees.ttc):: &euro;</td>
                     </tr>
+
                     <tr>
                         <td>Frais techniques (::justif.mpVariableFeeRate*100::%) </td>
                         <!--<td>::formatNum(justif.mpVariableFees.ht):: &euro;</td>-->
@@ -60,6 +61,10 @@
                         <th>Paiements par virement</th>
                         <!--<td>::justif.transferTurnover.ht:: &euro;</td>-->
                         <td>::justif.transferTurnover.ttc:: &euro;</td>
+                    </tr>
+                    <tr>
+                        <th>Paiements par CB sur place</th>
+                        <td>::justif.cardTerminalTurnover.ttc:: &euro;</td>
                     </tr>
                     <tr>
                         <th>TOTAL</th>

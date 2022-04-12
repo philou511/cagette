@@ -83,12 +83,12 @@ class ProductService{
 		p.insert();
 		
 		//custom categs
-		for (source_cat in source_p.getCategories()){
-			var cat = new db.ProductCategory();
-			cat.product = p;
-			cat.category = source_cat;
-			cat.insert();
-		}
+		// for (source_cat in source_p.getCategories()){
+		// 	var cat = new db.ProductCategory();
+		// 	cat.product = p;
+		// 	cat.category = source_cat;
+		// 	cat.insert();
+		// }
 		return p;
 	}
 
@@ -100,9 +100,7 @@ class ProductService{
 		} 
 
 		var f = form.CagetteForm.fromSpod(product);
-
-		f.getElement("bulk").description = "Ce produit est vendu en vrac ( sans conditionnement ). Le poids/volume commandé peut être corrigé après pesée.";
-		f.getElement("hasFloatQt").description = "<div class='alert alert-danger'>Attention cette option <a href='https://wiki.cagette.net/admin:5april' target='_blank'>disparaîtra le lundi 3 Mai 2021</a>. </a>";
+		f.getElement("bulk").description = "Ce produit est vendu en vrac ( sans conditionnement ). Le poids/volume commandé peut être corrigé après pesée.";		
 		f.getElement("variablePrice").description = "Comme au marché, le prix final sera calculé en fonction du poids réel après pesée.";
 		f.getElement("multiWeight").description = "Permet de peser séparément chaque produit. Idéal pour la volaille par exemple.";
 
@@ -124,28 +122,18 @@ class ProductService{
 		
 		//VAT selector
 		f.removeElement( f.getElement('vat') );		
-		var data :sugoi.form.ListData.FormData<Float> = [];
-		for (k in group.getVatRates().keys()) {
-			data.push( { label:k, value:group.getVatRates()[k] } );
-		}
+		var data:sugoi.form.ListData.FormData<Float> = group.getVatRates().map(r -> {label:r.label,value:r.value,desc:null,docLink:null});
 		f.addElement( new sugoi.form.elements.FloatSelect("vat", "TVA", data, product.vat ) );
 
 		f.removeElementByName("catalogId");
 		
 		//Product Taxonomy:
-		if(!group.flags.has(CustomizedCategories)){
-			var txId = product.txpProduct == null ? null : product.txpProduct.id;
-			var html = service.ProductService.getCategorizerHtml(product.name,txId,f.name);
-			f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
-
-			f.addElement(new sugoi.form.elements.Html("html","<a class='alert alert-warning' href='https://docs.google.com/forms/d/e/1FAIpQLSfFQpIabLSBgLTWZkuiIhQR4tO8tmGO2SZDWPd4OrHcXrM8PA/viewform?fbzx=-2048161261692944588&_hsmi=2&_hsenc=p2ANqtz-_nAqLUeyXe4EKO6PgLsD49ReyvUS-nm0FoXfFBZak_nuM_-3GpRCwdXM4ydo_3oKdGFRQ46l_deWgk4proQVALa3hKCA' target='_blank'>Participez au sondage pour améliorer les catégories.</a><br/>",""),2);
-
-		}else{
-			f.removeElementByName("txpProductId");
-		}
+		var txId = product.txpProduct == null ? null : product.txpProduct.id;
+		var html = service.ProductService.getCategorizerHtml(product.name,txId,f.name);
+		f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
+		// f.addElement(new sugoi.form.elements.Html("html","<span class='disabled'>Une catégorie manquante selon vous ? Écrivez au support : support@cagette.net</span><br/>",""),2);
 
 		return f;
-
 	}
 
 
@@ -154,7 +142,11 @@ class ProductService{
 	**/
 	public static function check(product:db.Product){
 
-		if(product.bulk){
+		if(product.txpProduct==null){
+			throw new Error("Vous devez catégoriser ce produit");
+		}
+
+		if(product.bulk){			
 			if(product.smallQt==null) throw new Error("Vous devez définir une petite quantité si l'option 'vrac' est activée");
 			if(product.smallQt>=1 || product.smallQt<=0) throw new Error("La petite quantité doit être supérieure à zéro et inférieure à 1");
 			if(product.unitType==null) throw new Error("Vous devez définir l'unité de votre produit si l'option 'vrac' est activée");

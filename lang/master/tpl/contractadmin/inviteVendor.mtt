@@ -1,0 +1,21 @@
+::use 'design.mtt'::
+
+<div class="col-md-12">
+	
+	<div style="margin-bottom: 16px">
+		<div id="neo-container"></div>
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function(event) {
+				neo.createNeoModule("neo-container", "inviteVendor", {
+					groupId: ::groupId::,
+					::if(vendor!=null):: existingVendorEmail: "::vendor.email::" ::end::,
+					userId: ::user.id::
+				});
+			});
+		</script>
+	</div>
+	
+</div>
+
+::end::

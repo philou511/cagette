@@ -1,6 +1,12 @@
 ::use 'amapadmin/design.mtt'::
 <h2>::_("Duty periods")::</h2>
 
+<p>
+	<a href="https://formation.alilo.fr/mod/page/view.php?id=820" target="_blank" class="btn btn-warning btn-sm">
+		<i class="icon icon-youtube"></i> Tuto vidéo
+	</a>
+</p>
+
 <h3>::_("Volunteer roles")::</h3>
 <p>
 	::raw _("Here you can define volunteers roles.")::

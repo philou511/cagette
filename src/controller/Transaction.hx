@@ -185,16 +185,14 @@ class Transaction extends controller.Controller
 
 		var returnUrl = '/member/payments/' + operation.user.id;
 
-		if ( !hasShopMode ) {
-
+		if ( !hasShopMode &&  operation.subscription!=null ) {
 			App.current.session.data.returnUrl = '/contractAdmin/subscriptions/payments/' + operation.subscription.id;
 			returnUrl = App.current.session.data.returnUrl;
 		}
 
-		if( !hasShopMode && operation.subscription == null ) {
-
+		/*if( !hasShopMode && operation.subscription == null ) {
 			throw Error( '/', 'Cette opération n\'est rattachée à aucune souscription' );
-		}
+		}*/
 
 		if ( !app.user.canAccessMembership() || operation.group.id != app.user.getGroup().id ) throw Error("/member/payments/" + operation.user.id, t._("Action forbidden"));	
 		
@@ -202,7 +200,6 @@ class Transaction extends controller.Controller
 
 		//only an admin can delete an order op
 		if( ( operation.type == db.Operation.OperationType.VOrder || operation.type == db.Operation.OperationType.SubscriptionTotal ) && !app.user.isAdmin() ) {
-
 			throw Error( returnUrl, t._("Action forbidden"));
 		}
 
@@ -210,7 +207,6 @@ class Transaction extends controller.Controller
 
 			operation.delete();
 			service.PaymentService.updateUserBalance( operation.user, operation.group );
-			
 			throw Ok( returnUrl, t._("Operation deleted") );
 			
 		}
@@ -240,11 +236,12 @@ class Transaction extends controller.Controller
 		}
 		
 		var total = tmpBasket.getTotal();
+		var group = tmpBasket.multiDistrib.group;
 		view.amount = total;		
 		view.tmpBasket = tmpBasket;
-		view.paymentTypes = service.PaymentService.getPaymentTypes(PCPayment, app.user.getGroup());
-		view.allowMoneyPotWithNegativeBalance = app.user.getGroup().allowMoneyPotWithNegativeBalance;	
-		view.futurebalance = db.UserGroup.get(app.user, app.user.getGroup()).balance - total;
+		view.paymentTypes = service.PaymentService.getPaymentTypes(PCPayment, group);
+		view.allowMoneyPotWithNegativeBalance = group.allowMoneyPotWithNegativeBalance;	
+		view.futurebalance = db.UserGroup.get(app.user, group).balance - total;
 	}
 
 	@tpl("transaction/tmpBasket.mtt")
@@ -274,6 +271,7 @@ class Transaction extends controller.Controller
 		}
 		#end
 
+		view.group = app.getCurrentGroup();
 		view.tmpBasket = tmpBasket;		
 	}
 	

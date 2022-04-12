@@ -58,14 +58,14 @@ class ReportService{
 
 			//smartQt
 			var p = db.Product.manager.get(r.pid, false);
-			if( p.hasFloatQt || p.variablePrice ){
+			if( OrderService.canHaveFloatQt(p) ){
 				o.smartQt = view.smartQt(o.quantity, p.qt, p.unitType);
 			}else{
 				o.smartQt = Std.string(o.quantity);
 			}
 			o.weightOrVolume = view.smartQt(o.quantity, p.qt, p.unitType);
 			
-			if ( /*p.hasFloatQt || p.variablePrice ||*/ p.qt==null || p.unitType==null){
+			if ( p.qt==null || p.unitType==null){
 				o.pname = p.name;	
 			}else{
 				o.pname = p.name + " " + view.formatNum(p.qt) +" " + view.unit(p.unitType, o.quantity > 1);					

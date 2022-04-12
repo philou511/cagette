@@ -1,13 +1,31 @@
-:: use 'mail/design.mtt'::
+:: use 'mail/layout-group.mtt'::
 
+    ::raw text::
 
-::raw text::
+    ::if(multiDistrib!=null && tsService!=null)::
 
-::if(multiDistrib!=null && status!=null)::   
-<p>
-    <b>Précautions et entraide pendant la crise sanitaire :</b><br/>
-    $$timeSlotUserMessage(::multiDistrib._slots::,::status::,::multiDistrib::)
-</p>   
-::end::
+        ::set tsService = timeSlotService(multiDistrib)::
+        ::set status = tsService.userStatus(user.id)::
+
+        :: if(status!=null)::
+
+            <p>
+                <b>Précautions et entraide pendant la crise sanitaire :</b><br/>
+                ::if(status.isResolved)::
+                <!-- resolved -->
+                    ::if(status.selectedSlotId)::
+                    <p>
+                        <b style="text-decoration:underline;">
+                            Merci de bien vouloir venir chercher votre commande entre 
+                            ::hHour(tsService.getSlotById(status.selectedSlotId).start):: et ::hHour(tsService.getSlotById(status.selectedSlotId).end)::
+                        </b>									
+                    </p>
+                    ::end::
+                ::end::
+            </p>
+
+        ::end::
+
+    ::end::
 
 ::end::

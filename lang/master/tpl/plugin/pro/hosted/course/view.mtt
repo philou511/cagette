@@ -4,36 +4,47 @@
 		<h1>::course.name::</h1>
 		<p>
 			ID : <b>::course.ref::</b><br/>
-			Début de formation <b>::hDate(course.date)::</b><br/>
+			Début de formation <b>::dDate(course.date)::</b><br/>
+			Fin de formation <b>::dDate(course.end)::</b><br/>
+
 			::set companies = course.getCompanies()::
 			Nbre de participants : <b>::companies.length::</b><br/>
+			
 			::if(course._teacher!=null)::
 			Formateur : <b>::course._teacher.getName()::</b><br/>
 			::end::
+			
 			::if (course._group!=null)::  Groupe : <a href="/group/::course._group.id::" target="_blank">::course._group.name::</a><br/> ::end::
 
-			
-			Taux d'actifs : <b>::formatNum(activeRate):: %</b><br/>
+						
 			$$edit(Modifier,/p/hosted/course/edit/::course.id::)
 		</p>
 
 		<table class="table table-striped">
 			<tr>
-				<th>Cagette Pro</th>
+				<th>Compte producteur</th>
+				<th>Formule</th>
+				<th>Stagiaire</th>				
 				<th></th>
-				<th>Responsable</th>
-				<th>Actif</th>
-				<th>Actions</th>
 				
 
 			</tr>
 			::foreach c companies::
 			<tr ::cond c._company!=null::>
 				<td>
-					<a href="/p/pro/admin/vendor/::c._company._vendor.id::" target="_blank">::c._company._vendor.name::</a>
+					<a href="/admin/vendor/view/::c._company._vendor.id::" target="_blank">::c._company._vendor.name::</a>
 				</td>
 				<td>
-					::if(c._company.training==true)::<span  class="glyphicon glyphicon-education" style="color:#336600"></span>::end::
+					::if(c._company.offer==0)::
+					Formule Découverte
+					::elseif(c._company.offer==1)::
+					Formule Membre
+					::elseif(c._company.offer==2)::
+					Formule Pro
+					::elseif(c._company.offer==3)::
+					Compte pédagogique
+					::end::
+
 					::if(c._company.getUsers().length==0)::<span  class="glyphicon glyphicon-ban-circle" style="color:#666"></span>::end::					
 				</td>
 				<td>
@@ -42,26 +53,59 @@
 					::end::
 				</td>
 				<td>
-					::if(c._company.training==false)::
-						$$bool(::c._company.active::)
-					::end::
-				</td>
-				<td>
-					<a ::cond(c._company.training==true):: href="/p/hosted/course/disable/::c._company.id::" class="btn btn-xs btn-default">Couper les accès</a>
-					<a ::cond(c._company.training==true):: href="/p/hosted/course/cproDef/::c._company.id::" class="btn btn-xs btn-default">Créer compte définitif</a>
-					<a ::cond(c._company.training==true):: href="/p/hosted/course/idMail/::c._company.id::/::course.id::" class="btn btn-xs btn-default">Envoyer mail identifiants</a>
-					<a href="/p/hosted/course/switch/::c._company.id::" class="btn btn-xs btn-default">Changer de session</a>
+
+					<div class="dropdown">
+						<button class="btn btn-default dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+							Actions
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+							<li>
+								<a ::cond(c._company.offer == 3 ):: href="/p/hosted/course/disable/::c._company.id::" >
+									<i class="icon icon-delete"></i> Couper les accès
+								</a>
+							</li>
+							
+							<li>
+								<!--can become member only if discovery or pro offer-->
+								<a ::cond(c._company.offer==0 || c._company.offer==2):: href="/p/hosted/course/cproDef/::c._company.id::/::course.id::" >
+									<i class="icon icon-plus"></i> Passer en formule Membre
+								</a>
+							</li>
+							
+							<li>
+								<a ::cond(c._company.offer == 3):: href="/p/hosted/course/linkDiscovery/::c._company.id::/::course.id::" >
+									<i class="icon icon-link"></i> Rattacher compte découverte
+								</a>
+							</li>
+							
+							<li>
+								<a ::cond(c._company.offer == 3):: href="/p/hosted/course/idMail/::c._company.id::/::course.id::" >
+									<i class="icon icon-mail"></i> Envoyer mail identifiants
+								</a>								
+							</li>
+
+							<li>
+								<a href="/p/hosted/course/switch/::c._company.id::" >
+									<i class="icon icon-edit"></i> Changer de session
+								</a>
+							</li>
+							
+						</ul>
+					</div>
+
+					
 				</td>
 			</tr>
 		::end::
 		</table>
 		<p>
 			<a href="/p/hosted/course/identifiers/::course.id::" class="btn btn-default">
-				<span class="glyphicon glyphicon-plus"></span> Création Identifiants
+				<i class="icon icon-plus"></i>  Création Identifiants
 			</a>
 
 			<a href="/p/hosted/course/credentialsSheet/::course.id::" class="btn btn-default">
-				<span class="glyphicon glyphicon-user"></span> feuille d'identifiants
+				<i class="icon icon-user"></i>  feuille d'identifiants
 			</a>
 
 			<a href="/p/hosted/course/moodleCsv/::course.id::" class="btn btn-default">
@@ -73,7 +117,7 @@
 				::set email = email+"&bcc="+e::
 			::end::
 			<a href="::email::" class="btn btn-default">
-				<span class="glyphicon glyphicon-envelope"></span> Leur écrire
+				<i class="icon icon-mail"></i>  Leur écrire
 			</a>
 		</p>
 	</div>

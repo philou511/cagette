@@ -1,17 +1,47 @@
 <macros>
 
+	<macro name="publicVendorIcon(vendor)">
+
+		::if(vendor.isDisabled())::
+			<!--disabled-->						
+			<div class="iconBadge danger" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Compte bloqué : ::vendor.getDisabledReason()::">
+				<i class="icon icon-alert"></i>
+			</div>
+		::else::
+			::set cpro = vendor.getCpro()::
+
+			::if(cpro!=null)::
+				::if(vendor.isTest==true)::
+				<!--cpro test-->
+				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Cagette Pro Test">
+					<i class="icon icon-farmer"></i>
+				</div>
+				::else::
+					::if cpro.offer==0::
+					<!-- offre découverte -->
+					<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur limité à 1000€ de ventes par an">
+						<i class="icon icon-farmer"></i>
+					</div>
+					::else::
+					<!-- offre pro formé ou abonné -->
+					<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur avec ventes illimitées">
+						<i class="icon icon-farmer-pro"></i>
+					</div>
+					::end::
+				::end::
+			::else::
+				<!--invité-->
+				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur limité à 1000€ de ventes par an">
+					<i class="icon icon-farmer"></i>
+				</div>
+			::end::
+		::end::
+	</macro>
+
 	<macro name="jsConfirm(?text)">confirm(::if text==null::'Confirmer cette action ?'::else::'::escapeJS(text)::'::end::)</macro>
 	
 	<macro name="confirm(?text)" onclick="return $$jsConfirm(::text::)"/>
 	
-	<macro name="file(id,?def)">
-		::if id == null && def != null::
-			::def::
-		::else::
-			/file/::makeFileSign(id)::.jpg
-		::end::
-	</macro>
-
 	<macro name="userMenu(user)">
 		::if user != null::
 			<!-- Home -->			
@@ -26,6 +56,7 @@
 				</a>
 
 				<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuUser">
+					<li><a href="/account"><i class="icon icon-user"></i> ::_("My account")::</a></li>
 					::if(isAdmin)::
 					<li><a href="/admin"><i class="icon icon-cog"></i> ::_("Admin")::</a></li>
 					<li><a href="/db"><i class="icon icon-cog"></i> ::_("Database")::</a></li>
@@ -53,13 +84,15 @@
 					<a href="http://wiki.cagette.net" target="_blank"><i class="icon icon-book"></i> Documentation</a> 
 				</li>
 				<li>
-					<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank"><i class="icon icon-facebook"></i> Groupe Facebook</a> 
+					<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank"><i class="icon icon-facebook"></i> Groupe d'entraide Facebook</a> 
+				</li>
+				<li>
+					<a href="https://cagette.uservoice.com/" target="_blank"><i class="icon icon-question"></i> Support & suggestions</a> 
 				</li>
 				<li>
 					<a href="http://www.cagette.pro" target="_blank"><i class="icon icon-student"></i> Formations pour producteurs</a> 
 				</li>				
 			</ul>
-			
 		</div>
 
 		<!-- Home -->
@@ -68,14 +101,9 @@
 				<i class="icon icon-chevron-left"></i> ::_("Home")::
 			</a>
 		</div>
-
-			
-
 			
 	</macro>
 	
-	<macro name="img(id,?def)"><img src="$$file(::id::,::def::)"/></macro>
-
 	<macro name="browse(b,url)">$$browseCustom(::b::,::url::,Page ::b.page:: ::if b.pages::/::b.pages:: ::end::)</macro>
 
 	<macro name="browseCustom(b,url,custom)">
@@ -125,14 +153,13 @@
 
 	<macro name="bigBool(v)">
 		::if v==true::
-		<div class="iconBadge" style="background-color:#84bd55;">
+		<div class="iconBadge" style="background-color:#84bd55;margin: 6px;">
 			<i class="icon icon-check"></i>
 		</div>
 		::else::
-		<div class="iconBadge" style="background-color:#CCC;">
+		<div class="iconBadge" style="background-color:#CCC;margin: 6px;">
 			<i class="icon icon-delete"></i>
-		</div>
-		
+		</div>		
 		::end::
 	</macro>
 	
@@ -252,7 +279,7 @@
 		<!--<span style="margin-left:48px;">::_("Payment"):: ::_(t.getPaymentType())::</span>-->
 		<i class="icon icon-euro" aria-hidden="true"></i> ::t.getPaymentTypeName()::
 		::else::						
-		<i class="fa fa-user" aria-hidden="true"></i> ::_("Subscription")::
+		<i class="icon icon-user" aria-hidden="true"></i> Adhésion
 		::end::
 	</td>
 	
@@ -266,7 +293,7 @@
 	<td style="font-size:1em;">
 		
 		::t.name::<br/>
-		
+
 		::if x==2 && t.pending==true::		
 			::if(t.getPaymentType()=="check")::
 				<span style="color:red;">::_("Check to be given at the collection of products")::</span>
@@ -279,7 +306,12 @@
 			::end::
 			
 		::else::
-			<span style="font-size:0.90em;color:#AAA;">::hDate(t.date)::</span>
+			<span style="font-size:0.90em;color:#AAA;">::sDate(t.date)::</span>
+		::end::
+
+		::set sub = t._subscription:: 
+		::if(sub!=null)::
+			<br/><a href="/contractAdmin/subscriptions/payments/::sub.id::">Souscription ::sub._catalog.name::</a>
 		::end::
 	</td>
 	<td class="text-right">
@@ -433,8 +465,12 @@
 				<div id="footer" >
 				
 						<div class="col-md-3" >
-							<a href="http://www.cagette.net" target="_blank">
-								<img src="/img/logo.png" alt="::_("Cagette.net")::"/>
+							<a href="::if(whiteLabel!=null)::::whiteLabel.link::::else::http://www.cagette.net::end::" target="_blank">
+								::if(whiteLabel!=null)::
+									<img src="::whiteLabel.logo::" alt="::appName::" style="width:166px;"/>
+								::else::
+									<img src="/img/logo.png" alt="::appName::"/>
+								::end::
 							</a>  
 						</div>
 						<div class="col-md-3" >
@@ -446,13 +482,13 @@
 									<a href="/charte/" target="_blank">Charte producteurs</a> 
 								</li>
 								<li> 
-									<a href="http://www.cagette.net/wiki" target="_blank">::_("Documentation")::</a> 
+									<a href="https://wiki.cagette.net" target="_blank">::_("Documentation")::</a> 
 								</li>
 								<li>
 									<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank">::_("Facebook group")::</a> 
 								</li>
 								<li>
-									<a href="http://www.cagette.pro" target="_blank">Formations pour producteurs</a> 
+									<a href="http://www.cagette.net/producteurs" target="_blank">Information producteurs</a> 
 								</li>												
 								<li>
 									<a href="/cgu" target="_blank">Conditions générales d'utilisation</a> 
@@ -510,22 +546,28 @@
 		</div>-->
 	</macro>
 
-	<macro name="ga()">
+	<macro name="matomo()">
 		
-		<!-- Global site tag (gtag.js) - Google Analytics -->
-		<script async="1" src="https://www.googletagmanager.com/gtag/js?id=UA-81371329-2"></script>
-		<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
-		gtag('config', 'UA-81371329-2');
+		<script type="text/javascript">
+		var _paq = window._paq = window._paq || [];
+		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+		::if(user!=null):: _paq.push(['setUserId', '::user.id::']); ::end::
+		_paq.push(['trackPageView']);
+		_paq.push(['enableLinkTracking']);
+		(function() {
+			var u="https://cagette.matomo.cloud/";
+			_paq.push(['setTrackerUrl', u+'matomo.php']);
+	  		_paq.push(['setSiteId', '1']);
+			var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+			g.async=true; g.src='//cdn.matomo.cloud/cagette.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+		})();
 		</script>
 
 	</macro>
 
 	<macro name="vendorType(s)">		
 		::if(s==0)::
-			Cagette Pro				
+			Formule Membre
 		::elseif(s==1)::
 			Gratuit
 		::elseif(s==2)::
@@ -533,108 +575,24 @@
 		::elseif(s==3)::
 			Invité sur un Cagette Pro
 		::elseif(s==4)::
-			Cagette Pro en test 
+			Cagette Pro test 
 		::elseif(s==5)::
-			Cagette Pro pédagogique
+			Compte pédagogique
 		::elseif(s==6)::
-			Cagette Pro inscrit à une formation
+			Formule Découverte
 		::elseif(s==7)::
-			Cagette Découverte
+			Formule Pro (abo mensuel)
+		::elseif(s==8)::
+			Formule Pro (abo annuel)	
 		::end::
 	</macro>
-
-	<macro name="timeSlotUserMessage(slots,status,d)">
-		
-		::if(status.registered==false)::
-			<script>
-				var registerToTimeSlot = function(){
-					var elementId = 'distrib-time-slot::d.id::';
-					_NeolithicViewsGenerator.userDistribSlotsSelector(elementId,{
-						distribId: ::d.id::,
-						onCancel: function() {
-							document.getElementById(elementId).innerHTML=""
-						},
-						onRegister: function() {
-							document.location.reload(true);
-						}
-					});
-				};
-
-			</script>
-		
-			<a onclick="registerToTimeSlot()" class="btn btn-danger">Inscrivez-vous à un créneau horaire</a>
-
-		::elseif(status.has=="inNeed")::
-
-			
-			::if(status.voluntaryOf!=null)::
-				<b>::status.voluntaryOf.firstName:: ::status.voluntaryOf.lastName::</b> s'est engagé à retirer votre commande et à vous l'apporter.
-			::else::
-				Vous avez demandé à ce que votre commande soit retirée par quelqu'un d'autre.<br/>
-				Personne n'a encore proposé son aide pour retirer votre commande.
-			::end::
-
-		::elseif(status.has=="voluntary")::
-			<p ::cond status.voluntaryFor.length>0::>
-			Vous récupérez aussi la commande de :<br/>
-			::foreach u status.voluntaryFor::
-			<b>::u.firstName:: ::u.lastName::</b>, Tél: $$nullSafe(::u.phone::), Adresse : $$nullSafe(::u.address1::) $$nullSafe(::u.address2::) $$nullSafe(::u.zipCode::) $$nullSafe(::u.city::)  <br/>
-			::end::
-			</p>
-
-			::if(status.isResolved)::
-				<p>
-					<b style="text-decoration:underline;">
-						Merci de bien vouloir venir chercher votre commande entre 
-						::hHour(slots[status.selectedSlotId].start):: et ::hHour(slots[status.selectedSlotId].end)::
-					</b>									
-				</p>
-			
-			::else::
-				<p>
-					Créneaux choisis : <br/>
-					::foreach s status.registeredSlotIds::
-					<b>de ::hHour(slots[s].start):: à ::hHour(slots[s].end)::.</b><br/>
-					::end::
-				</p>
-				<p>
-					Votre créneau définitif vous sera attribué à la fermeture des commandes.
-				</p>
-			::end::
-			
-
-		::elseif(status.has=="solo")::
-
-			<p>Vous avez choisi de ne retirer que votre propre commande.</p>
-			
-			::if(status.isResolved)::
-				<p>
-					<b style="text-decoration:underline;">
-						Merci de bien vouloir venir chercher votre commande entre 
-						::hHour(slots[status.selectedSlotId].start):: et ::hHour(slots[status.selectedSlotId].end)::
-					</b>									
-				</p>
-			::else::
-				<p>Créneaux choisis : <br/>
-					::foreach s status.registeredSlotIds::
-					<b>de ::hHour(slots[s].start):: à ::hHour(slots[s].end)::.</b><br/>
-					::end::
-				</p>
-				<p>Votre créneau définitif vous sera attribué à la fermeture des commandes.</p>
-			::end::
-			
-		::end::
-
-    </macro>
     
     <macro name="browserDetection()">
         <script type="text/javascript" src="/js/browser-detect.js"></script>
         <div id="browser-detection-container"></div>
         <script>
         if (!window.IsValidBrowser) {
-            var browserDetectionContainer = document.getElementById(
-            "browser-detection-container"
-            );
+            var browserDetectionContainer = document.getElementById("browser-detection-container");
 
             var style = document.createElement("style");
             style.innerHTML =
@@ -708,7 +666,7 @@
             var content = document.createElement("p");
             content.classList.add("browser-detection-content");
             content.textContent =
-            "Votre navigateur Internet est trop ancien pour afficher Cagette.net. \n Cela peut entraîner des problèmes d'affichage. \n Nous vous conseillons fortement de télécharger un navigateur plus récent, comme Firefox ou Brave.";
+            "Votre navigateur Internet est trop ancien pour afficher ::appName::. \n Cela peut entraîner des problèmes d'affichage. \n Nous vous conseillons fortement de télécharger un navigateur plus récent, comme Firefox ou Brave.";
             contentContainer.append(content);
             box.append(contentContainer);
 

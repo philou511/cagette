@@ -40,14 +40,16 @@ class User extends sugoi.BaseController
 		view.mangopayUserId = mangopay.db.MangopayUser.get(u);
 
 		//vendors
-		var vendors = Lambda.array(db.Vendor.manager.search($user==u,false));
+		var vendors = [];
 		for( uv in PUserCompany.manager.search($user ==u,false)){
 			vendors.push(uv.company.vendor);
 		}
 		view.vendors = ObjectListTool.deduplicate(vendors);
 
+	
+
 		//delete ?		
-		if(checkToken() && args!=null && args.delete){
+		/*if(checkToken() && args!=null && args.delete){
 			var msg  = "";
 			var johnDoe = db.User.manager.select($email=="deleted@cagette.net",false);
 
@@ -94,7 +96,7 @@ class User extends sugoi.BaseController
 			u.delete();
 			throw Ok("/p/hosted",name+" a été effacé.<br/>"+msg.split("\n").join("<br/>"));
 
-		}
+		}*/
 	}
 	
     /**
@@ -106,7 +108,7 @@ class User extends sugoi.BaseController
 		var users = [];
 		for ( g in db.Group.manager.all()) {
 		
-			var h = hosted.db.Hosting.getOrCreate(g.id);
+			var h = hosted.db.GroupStats.getOrCreate(g.id);
 			if(!h.active) continue;
 
 			if(type=="AMAP"){

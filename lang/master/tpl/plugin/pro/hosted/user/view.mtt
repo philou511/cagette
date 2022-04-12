@@ -1,8 +1,8 @@
 ::use 'admin/design.mtt'::
 
 	<div class="article">
-		
-		<h2>#::member.id:: ::member.getName()::</h2>
+		<h4>Utilisateur #::member.id::</h4>
+		<h2>::member.getName()::</h2>
 
 		<p>
 			Tel. <b>::member.phone::</b><br/>
@@ -25,10 +25,19 @@
 		<h3>Membre de :</h3>
 		<p>
 			<table class="table table-bordered table-condensed">
-				::foreach g member.getGroups()::
+				<tr>
+					<th class="col-md-4">Groupe</th>
+					<th class="col-md-8">Droits</th>
+				</tr>
+				::foreach ug member.getUserGroups()::
 				<tr>
 					<td>
-						<a href="/p/hosted/userGroup/::member.id::/::g.id::">::g.name::</a>
+						<a href="/p/hosted/userGroup/::member.id::/::ug.groupId::">::ug._group.name::</a>
+					</td>
+					<td>
+						::foreach r ug.getRights()::
+							::ug.getJsonRightName(r):: - 
+						::end::
 					</td>
 				</tr>
 				::end::
@@ -42,15 +51,11 @@
 				::foreach v vendors::
 					<tr>
 						<td>
-							<a href="/p/pro/admin/vendor/::v.id::">::v.name::</a>
+							<a href="/admin/vendor/view/::v.id::">::v.name::</a>
 						</td>
 					</tr>
 				::end::
 			</table>
-		</p>
-
-		<p>
-			<a href="?token=::token::&delete=1" class="btn btn-danger">DANGEREUX : Effacer ce compte, remplacer ses commandes par Monsieur X.</a>
 		</p>
 		
 	</div>

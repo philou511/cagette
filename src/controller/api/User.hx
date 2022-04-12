@@ -37,48 +37,6 @@ class User extends Controller
 			return Sys.print(haxe.Json.stringify(current.infos()));
 		} else throw new Error(405, "Method Not Allowed");
 	}
-	
-	/**
-	 * Login
-	 */
-	public function doLogin(){
-		
-		//cleaning
-		var email = StringTools.trim(App.current.params.get("email")).toLowerCase();
-		var pass = StringTools.trim(App.current.params.get("password"));
-		var user = service.UserService.login(email, pass);
-		var token : String = JWT.sign({ email: email, id: user.id }, App.config.get("key"));
-		Sys.print(
-			Json.stringify({ 
-				success: true,
-				token:token 
-			})
-		);
-	}
-	
-	/**
-	 * Register
-	 */
-	public function doRegister(){
-
-		//cleaning
-		var p = app.params;
-		var email = StringTools.trim(p.get("email")).toLowerCase();
-		var pass = StringTools.trim(p.get("password"));
-		var firstName = StringTools.trim(p.get("firstName"));
-		var lastName = StringTools.trim(p.get("lastName")).toUpperCase();
-		var phone = p.exists("phone") ? StringTools.trim(p.get("phone")) : null;
-		var address = p.exists("address1") ? StringTools.trim(p.get("address1")) : null;
-		var zipCode = p.exists("zipCode") ? StringTools.trim(p.get("zipCode")) : null;
-		var city = p.exists("city") ? StringTools.trim(p.get("city")) : null;
-		var tos = p.get("tos")=="1";
-
-		
-		service.UserService.register(firstName, lastName, email, phone, pass, address, zipCode, city, tos);
-		
-		json({success:true});
-	}
-
 
 	/**
 	 *  get users of current group

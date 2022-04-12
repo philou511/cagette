@@ -5,8 +5,15 @@ import Common;
 using tools.ObjectListTool;
 using Lambda;
 import haxe.Json;
-import service.TimeSlotsService;
 
+typedef Slot = {
+	id:Int,
+	distribId:Int,
+	selectedUserIds:Array<Int>,
+	registeredUserIds:Array<Int>,
+	start:Date,
+	end:Date
+}
 
 /**
  * MultiDistrib represents a global distributions with many vendors. 	
@@ -23,10 +30,7 @@ class MultiDistrib extends Object
 	public var orderEndDate : SNull<SDateTime>;
 
 	//time slots management
-	@hideInForms public var slotsMode : SNull<SData<String>>;
-	@hideInForms public var slots : SNull<SData<Array<Slot>>>;
-	@hideInForms public var inNeedUserIds : SNull<SData<Map<Int, Array<String>>>>;
-	@hideInForms public var voluntaryUsers : SNull<SData<Map<Int, Array<Int>>>>;
+	@hideInForms public var timeSlots : SNull<SText>; // IN JSON
 	
 	@hideInForms @:relation(groupId) public var group : db.Group;
 	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
@@ -360,7 +364,7 @@ class MultiDistrib extends Object
 	public function getVendors():Array<db.Vendor>{
 		var vendors = new Map<Int,db.Vendor>();
 		for( d in getDistributions()) vendors.set(d.catalog.vendor.id,d.catalog.vendor);
-		return Lambda.array(vendors);
+		return vendors.array();
 	}
 	
 	public function getUsers(?type:Int){
@@ -597,15 +601,5 @@ class MultiDistrib extends Object
 			}
 		}
 		return null;
-	}
-
-		
-
-	public function resolveSlots() {
-		return new service.TimeSlotsService(this).resolveSlots();
-	}
-
-	private function userIsAlreadyAdded(userId: Int) {
-		return new service.TimeSlotsService(this).userIsAlreadyAdded(userId);
 	}
 }

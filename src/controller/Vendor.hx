@@ -1,4 +1,5 @@
 package controller;
+import db.Catalog;
 import haxe.crypto.Md5;
 import service.VendorService;
 import sugoi.form.Form;
@@ -41,8 +42,12 @@ class Vendor extends Controller
 	function doEdit(vendor:db.Vendor) {
 		
 		if( vendor.getGroups().length > 1 && vendor.companyNumber!=null){
-			throw Error("/contractAdmin",t._("You can't edit this vendor profile because he's active in more than one group. If you want him to update his profile, please ask him to do so."));
+			if(app.user.email!=vendor.email){
+				throw Error("/contractAdmin",t._("You can't edit this vendor profile because he's active in more than one group. If you want him to update his profile, please ask him to do so."));
+			}
 		}
+
+		if(!app.user.canManageVendor(vendor))  throw Error("/contractAdmin","Vous n'avez pas les droits de modification de ce producteur");
 
 		if(vendor.email=="jean@cagette.net" || vendor.email=="galinette@cagette.net"){
 			throw Error("/contractAdmin","Il est impossible de modifier les comptes producteurs de démonstration");
@@ -67,50 +72,41 @@ class Vendor extends Controller
 
 		view.form = form;
 	}
-
-	
-
 	
 	@tpl('vendor/addimage.mtt')
 	function doAddImage(vendor:db.Vendor) {
 		
-		/*if(vendor.getGroups().length>1){
-			throw Error("/contractAdmin",t._("You can't edit this vendor profile because he's active in more than one group. If you want him to update his profile, please ask him to do so."));
-		} */
-
 		if(vendor.email != null && vendor.email.indexOf("@cagette.net")>-1) throw Error("/contractAdmin","Il est impossible de modifier ce producteur");
+		if(!app.user.canManageVendor(vendor))  throw Error("/contractAdmin","Vous n'avez pas les droits de modification de ce producteur");
 
 		#if plugins
 		if(pro.db.CagettePro.getFromVendor(vendor)!=null) throw Error("/contractAdmin","Vous ne pouvez pas modifier la fiche de ce producteur, car il gère lui même sa fiche depuis Cagette Pro");
 		#end
 
 		view.vendor = vendor;
-		view.image = vendor.image;		
-		var request = sugoi.tools.Utils.getMultipart(1024 * 1024 * 12); //12Mb
+	}
+
+	/**
+		check id of the user before entering vendor registration form
+	**/
+	@tpl('vendor/checkId.mtt')
+	function doCheckId(catalog:Catalog){
+		view.nav = ["contractadmin","default"];
+		view.catalog = catalog;
+		view.c = catalog;
+		var vendor = catalog.vendor;
+		view.vendor = vendor;
+
+		view.groupId = app.user.getGroup().id;
 		
-		if (request.exists("image")) {
-			
-			//Image
-			var image = request.get("image");
-			if (image != null && image.length > 0) {
-				var img : sugoi.db.File = null;
-				if ( Sys.systemName() == "Windows") {
-					img = sugoi.db.File.create(request.get("image"), request.get("image_filename"));
-				}else {
-					img = sugoi.tools.UploadedImage.resizeAndStore(request.get("image"), request.get("image_filename"), 400, 400);	
-				}
-				
-				vendor.lock();				
-				if (vendor.image != null) {
-					//efface ancienne
-					vendor.image.lock();
-					vendor.image.delete();
-				}				
-				vendor.image = img;
-				vendor.update();
-				throw Ok('/contractAdmin/', t._("Image updated"));
-			}
+		if(checkToken()){
+			vendor.lock();
+			vendor.email = app.user.email;
+			vendor.update();
 		}
-	}	
+
+		if(catalog.vendor.email==app.user.email) throw Redirect('/p/pro/signup/discovery');
+
+	}
 	
 }

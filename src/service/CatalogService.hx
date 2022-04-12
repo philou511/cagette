@@ -1,4 +1,5 @@
 package service;
+import sugoi.form.elements.IntInput;
 import tools.DateTool;
 import db.Catalog;
 import tink.core.Error;
@@ -6,7 +7,7 @@ import tink.core.Error;
 class CatalogService{
 
 
-    public static function getForm( catalog : db.Catalog ) : sugoi.form.Form {
+    public static function getForm( catalog:db.Catalog ) : sugoi.form.Form {
 
 		if ( catalog.group == null || catalog.type == null || catalog.vendor == null ) {
 			throw new tink.core.Error( "Un des éléments suivants est manquant : le groupe, le type, ou le producteur." );
@@ -26,18 +27,19 @@ class CatalogService{
 		form.removeElement(form.getElement("type"));
 		form.removeElement(form.getElement("vendorId"));
 		form.removeElement(form.getElement("hasPayments"));
+
+		//not in this form
+		form.removeElement(form.getElement("absentDistribsMaxNb"));
+		form.removeElement(form.getElement("absencesStartDate"));
+		form.removeElement(form.getElement("absencesEndDate"));
 		
 		if ( catalog.group.hasShopMode() ) {
-
+			//SHOP MODE
 			form.removeElement(form.getElement("orderStartDaysBeforeDistrib"));
 			form.removeElement(form.getElement("orderEndHoursBeforeDistrib"));
 			form.removeElement(form.getElement("requiresOrdering"));
 			form.removeElement(form.getElement("distribMinOrdersTotal"));
-			form.removeElement(form.getElement("catalogMinOrdersTotal"));
-			form.removeElement(form.getElement("allowedOverspend"));
-			form.removeElement(form.getElement("absentDistribsMaxNb"));
-			form.removeElement(form.getElement("absencesStartDate"));
-			form.removeElement(form.getElement("absencesEndDate"));
+			form.removeElement(form.getElement("catalogMinOrdersTotal"));			
 			
 		} else {
 			//CSA MODE
@@ -55,7 +57,6 @@ class CatalogService{
 				form.getElement("orderEndHoursBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#ouverture_et_fermeture_de_commande";
 				if( !catalog.hasPayments ) form.getElement("catalogMinOrdersTotal").label = "Minimum de commandes sur la durée du contrat (en €)";
 				form.getElement("catalogMinOrdersTotal").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#minimum_de_commandes_sur_la_duree_du_contrat";
-				form.getElement("allowedOverspend").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#depassement_autorise";
 				
 			} else { 
 				//CONST
@@ -63,7 +64,6 @@ class CatalogService{
 				form.removeElement(form.getElement("requiresOrdering"));
 				form.removeElement(form.getElement("distribMinOrdersTotal"));
 				form.removeElement(form.getElement("catalogMinOrdersTotal"));
-				form.removeElement(form.getElement("allowedOverspend"));
 
 				form.getElement("orderEndHoursBeforeDistrib").label = "Délai minimum pour saisir une souscription (nbre d'heures avant prochaine distribution)";
 				form.getElement("orderEndHoursBeforeDistrib").docLink = "https://wiki.cagette.net/admin:admin_contratsamap#champs_delai_minimum_pour_saisir_une_souscription";
@@ -71,38 +71,14 @@ class CatalogService{
 				absencesIndex = 9;
 			}
 			
-			var html = "<h4>Gestion des absences</h4><div class='alert alert-warning'>";
-
 			
 			if ( catalog.id == null ) {
 				//if catalog is new
 				if ( catalog.type == Catalog.TYPE_VARORDER ) {
-					form.getElement("orderStartDaysBeforeDistrib").value = 365;
-					if ( hasPayments ) {
-						form.getElement("allowedOverspend").value = 10;
-					} else {
-						form.getElement("allowedOverspend").value = 500;
-					}
+					form.getElement("orderStartDaysBeforeDistrib").value = 365;					
 				}
 				form.getElement("orderEndHoursBeforeDistrib").value = 24;
-
-				form.removeElement(form.getElement("absentDistribsMaxNb"));
-				form.removeElement(form.getElement("absencesStartDate"));
-				form.removeElement(form.getElement("absencesEndDate"));
-
-				html += "<p><i class='icon icon-info'></i> 
-					Vous pourrez définir une période pendant laquelle les membres pourront choisir d'être absent après avoir enregistré ce nouveau contrat et avoir ajouté des distributions.<br/>
-					<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
-				</p></div>";
-			} else {
-				//existing catalog
-				html += "<p><i class='icon icon-info'></i> 
-					Vous pouvez définir une période pendant laquelle les membres pourront choisir d'être absent.<br/>
-					<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
-				</p></div>";
-			}
-
-			form.addElement( new sugoi.form.elements.Html( 'absences', html, '' ), absencesIndex );
+			} 
 		}
 		
 		//For all types and modes
@@ -127,9 +103,18 @@ class CatalogService{
 		contact.required = true;
 
 		//payments management
-		if( !catalog.group.hasShopMode() && catalog.id < db.Catalog.CATALOG_ID_HASPAYMENTS ){
-			form.addElement( new sugoi.form.elements.Html( "payementsHtml", '<h4>Gestion des paiements</h4>' ) );
-			form.addElement( new sugoi.form.elements.Checkbox('hasPayments',"Gérer les paiements liés aux souscriptions à ce contrat", catalog.hasPayments ));
+		if( !catalog.group.hasShopMode() ){
+			
+			if(catalog.id < db.Catalog.CATALOG_ID_HASPAYMENTS ){
+				form.addElement( new sugoi.form.elements.Html( "payementsHtml", '<h4>Gestion des paiements</h4>' ) );
+				form.addElement( new sugoi.form.elements.Checkbox('hasPayments',"Gérer les paiements liés aux souscriptions à ce contrat", catalog.hasPayments ));
+			}else{
+				form.addElement( new sugoi.form.elements.Html( "payementsHtml", '<h4>Gestion des paiements</h4>' ) );
+				form.addElement( new sugoi.form.elements.Html( "payementsHtml2",'La gestion des paiements est obligatoirement activée pour tous les nouveaux contrats' ) );
+				var input = new sugoi.form.elements.IntInput('hasPayments',"",1 );
+				input.inputType = ITHidden;
+				form.addElement( input );
+			}
 		}
 			
 		return form;
@@ -176,15 +161,15 @@ class CatalogService{
 					throw new Error("Si vous activez la commande obligatoire, vous devez définir le montant minimum de commande par distribution.");
 				}
 
-				if( form.getValueOf("requiresOrdering")==true && form.getValueOf('absentDistribsMaxNb')!=null){
-					throw new Error("Si vous n'activez pas la commande obligatoire, la gestion des absences n'est pas nécéssaire, laissez le champs 'Nombre maximum d'absences' vide.");
-				}
+				// if( form.getValueOf("requiresOrdering")==false && form.getValueOf('absentDistribsMaxNb')!=null){
+				// 	throw new Error("Si vous n'activez pas la commande obligatoire, la gestion des absences n'est pas nécéssaire, laissez le champs 'Nombre maximum d'absences' vide.");
+				// }
 
 				var catalogMinOrdersTotal = form.getValueOf("catalogMinOrdersTotal");
-				var allowedOverspend = form.getValueOf("allowedOverspend");
+				/*var allowedOverspend = form.getValueOf("allowedOverspend");
 				if( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 && allowedOverspend == null ) {
 					throw new Error( 'Vous devez obligatoirement définir un dépassement autorisé car vous avez rentré un minimum de commandes/provision minimale sur la durée du contrat.');
-				}
+				}*/
 			}
 
 			if( catalog.type == Catalog.TYPE_CONSTORDERS ) {
@@ -197,38 +182,7 @@ class CatalogService{
 
 			if ( catalog.id != null ) {
 
-				var absentDistribsMaxNb = form.getValueOf('absentDistribsMaxNb');
-				var absencesStartDate : Date = form.getValueOf('absencesStartDate');
-				var absencesEndDate : Date = form.getValueOf('absencesEndDate');
-
-				if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && ( absencesStartDate == null || absencesEndDate == null ) ) {
-					throw new Error( 'Vous avez défini un nombre maximum d\'absences alors vous devez sélectionner des dates pour la période d\'absences.' );
-				}
-
-				if ( ( absencesStartDate != null || absencesEndDate != null ) && ( absentDistribsMaxNb == null || absentDistribsMaxNb == 0 ) ) {
-					throw new Error( 'Vous avez défini des dates pour la période d\'absences alors vous devez entrer un nombre maximum d\'absences.' );
-				}
-			
-				if ( absencesStartDate != null && absencesEndDate != null ) {
-					if ( absencesStartDate.getTime() >= absencesEndDate.getTime() ) {
-						throw new Error( 'La date de début des absences doit être avant la date de fin des absences.' );
-					}
-
-					var absencesDistribsNb = service.SubscriptionService.getCatalogAbsencesDistribsNb( catalog, absencesStartDate, absencesEndDate );
-					if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && absentDistribsMaxNb > absencesDistribsNb ) {
-
-						throw new Error( 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
-						Il doit être inférieur ou égal au nombre de distributions dans la période d\'absences : ' + absencesDistribsNb );
-						
-					}
-
-					if ( absencesStartDate.getTime() < catalog.startDate.getTime() || absencesEndDate.getTime() > catalog.endDate.getTime() ) {
-						throw new Error( 'Les dates d\'absences doivent être comprises entre le début et la fin du contrat.' );
-					}
-
-					catalog.absencesStartDate = new Date( absencesStartDate.getFullYear(), absencesStartDate.getMonth(), absencesStartDate.getDate(), 0, 0, 0 );
-					catalog.absencesEndDate = new Date( absencesEndDate.getFullYear(), absencesEndDate.getMonth(), absencesEndDate.getDate(), 23, 59, 59 );
-				}
+				
 			
 				if ( catalog.hasPercentageOnOrders() && catalog.percentageValue == null ) {
 					throw new Error( t._("If you would like to add fees to the order, define a rate (%) and a label.") );
@@ -246,6 +200,48 @@ class CatalogService{
 
 			}
 
+		}
+	}
+
+	public static function checkAbsences( catalog:db.Catalog ){
+
+		var absentDistribsMaxNb = catalog.absentDistribsMaxNb;
+		var absencesStartDate = catalog.absencesStartDate;
+		var absencesEndDate = catalog.absencesEndDate;
+
+		if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && ( absencesStartDate == null || absencesEndDate == null ) ) {
+			throw new Error( 'Vous avez défini un nombre maximum d\'absences alors vous devez sélectionner des dates pour la période d\'absences.' );
+		}
+
+		// if ( ( absencesStartDate != null || absencesEndDate != null ) && ( absentDistribsMaxNb == null || absentDistribsMaxNb == 0 ) ) {
+		// 	throw new Error( 'Vous avez défini des dates pour la période d\'absences alors vous devez entrer un nombre maximum d\'absences.' );
+		// }
+	
+		if ( absencesStartDate != null && absencesEndDate != null ) {
+			if ( absencesStartDate.getTime() >= absencesEndDate.getTime() ) {
+				throw new Error( 'La date de début des absences doit être avant la date de fin des absences.' );
+			}
+
+			var absencesDistribsNb = service.SubscriptionService.getContractAbsencesDistribs( catalog ).length;
+			if ( absentDistribsMaxNb > 0 && absentDistribsMaxNb > absencesDistribsNb ) {
+				throw new Error( 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
+				Il doit être inférieur ou égal au nombre de distributions dans la période d\'absences : ' + absencesDistribsNb );				
+			}
+
+			//edge case : if absence period == catalog period, check that absentDistribsMaxNb is less than all distribs number
+			if(catalog.startDate.toString().substr(0,10)==absencesStartDate.toString().substr(0,10)){
+				if(catalog.endDate.toString().substr(0,10)==absencesEndDate.toString().substr(0,10)){
+					if ( absentDistribsMaxNb > 0  && absentDistribsMaxNb == absencesDistribsNb ) {
+						throw new Error( 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
+						 Il doit être inférieur au nombre de distributions du contrat' );				
+					}
+				}	
+			}
+
+
+			if ( absencesStartDate.getTime() < catalog.startDate.getTime() || absencesEndDate.getTime() > catalog.endDate.getTime() ) {
+				throw new Error( 'Les dates d\'absences doivent être comprises entre le début et la fin du contrat.' );
+			}
 		}
 	}
 

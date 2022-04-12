@@ -365,7 +365,6 @@ class TestSuite
 		p.price = 15;
 		p.vat = 5.5;
 		p.multiWeight = true;
-		p.hasFloatQt = true;
 		p.catalog = c;
 		p.insert();
 

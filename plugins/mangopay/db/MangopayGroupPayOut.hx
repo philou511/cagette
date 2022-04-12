@@ -10,8 +10,9 @@ class MangopayGroupPayOut extends sys.db.Object
 {
     public var id : SId;
     @:relation(multiDistribId) public var multiDistrib     : db.MultiDistrib;
-	public var payOutId         : SInt; //payout ID in mangopay
-    public var cachedDatas      : SNull<SData<PayOut>>; //payout data stored from Mangopay API
+	public var payOutId         : SString<64>; //payout ID in mangopay
+    // public var cachedDatas      : SNull<SData<PayOut>>; // @deprecated
+    public var data : SString<1024>; //payout data stored from Mangopay API
 
 	public static function get(md:db.MultiDistrib,?lock=false){
 
@@ -32,21 +33,31 @@ class MangopayGroupPayOut extends sys.db.Object
         Get payout datas from Mangopay API
     **/
     function refreshDatas():Void{
-        if(this.payOutId==0) return;
-        if(this.cachedDatas==null || this.cachedDatas.Status!=Succeeded){
+        if(this.payOutId==null || this.payOutId=="") return;
+        if(this.data==null || this.data=="" || getData().Status!=Succeeded){
             this.lock();
-            this.cachedDatas = mangopay.Mangopay.getPayOut(this.payOutId);
+            this.setData( mangopay.Mangopay.getPayOut(this.payOutId) );
             this.update();
         }
     }
 
     public function hasSucceeded():Bool{
-        if(this.payOutId==0) return true;
-        return this.cachedDatas!=null && this.cachedDatas.Status==Succeeded;
+        // if(this.payOutId==0) return true;
+        return this.data!=null && getData().Status==Succeeded;
     }
 
     public function getAmount():Float{
-        if(this.payOutId==0) return 0.0;
-        return this.cachedDatas.DebitedFunds.Amount/100;
+        if(this.payOutId==null || this.payOutId=="") return 0.0;
+        return getData().DebitedFunds.Amount/100;
     }
+
+    public function setData(data:PayOut){
+		this.data = haxe.Json.stringify(data);
+	}
+
+	public function getData():PayOut{
+        if(this.data==null || this.data=="") refreshDatas();
+		return haxe.Json.parse(this.data);
+	}
+
 }

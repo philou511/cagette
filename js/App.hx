@@ -22,25 +22,13 @@ import redux.thunk.ThunkMiddleware;
 import redux.react.Provider as ReduxProvider;
 
 //custom components
-import react.file.ImageUploaderDialog;
 import react.order.OrdersDialog;
 import react.product.*;
 import react.map.*;
 import react.user.*;
 import react.vendor.*;
-import react.CagetteDatePicker;
 import react.ReactComponent;
 
-@:jsRequire('cagette-neo', 'NeolithicViewsGenerator')
-extern class NeolithicViewsGenerator {
-    static public function setApiUrl(
-        url: String
-    ): Void;
-    static public function setGraphUrl(
-        url: String
-    ): Void;
-    static public function placeDialog(elementId: String, props: Dynamic): Void;
-}
 
 class App {
 
@@ -50,7 +38,6 @@ class App {
 	public var currency : String; //currency symbol like &euro; or $
 	public var t : sugoi.i18n.GetText;//gettext translator
 	public var Modal = bootstrap.Modal;
-    public var Collapse = bootstrap.Collapse;
     public var lang : String;
     public var userId : Int;
     public var userName : String;
@@ -78,55 +65,13 @@ class App {
         var app = new App();
         untyped js.Browser.window._ = app;
         untyped js.Browser.window._Cagette = app;//avoid conflicts with lodash
-        
-        NeolithicViewsGenerator.setApiUrl("/api");
-        // NeolithicViewsGenerator.setGraphUrl(sugoi.db.Variable.get("cagette_api") + "/graphql");
-        // NeolithicViewsGenerator.setGraphUrl(App.config.get("cagette_api") + "/graphql");
-		untyped js.Browser.window._NeolithicViewsGenerator = NeolithicViewsGenerator;
     }
     
 
-    /*var sentryInited:Bool;
-
-    public function initSentry(){
-
-        if(sentryInited) return;
-
-        sentry.Sentry.init({
-            dsn: "https://505d95e8dea34941be60ceb06195de50@o394906.ingest.sentry.io/5245923",
-            release: App.VERSION.toString()
-        });
-
-        if(this.userEmail!=null){
-            untyped sentry.Sentry.configureScope(function(scope) {
-                scope.setUser({
-                    "email": this.userEmail,
-                    "userName" : this.userName,
-                    "id" : this.userId,
-                });
-            });
-        }
-
-        sentryInited = true;
-    }*/
-
-	/**
-		Old Shop
-	**/
-	public function getCart() {
-        // //initSentry();
-		return new ShopCart();
-	}
-
-	public function getTagger(cid:Int ) {
-        // //initSentry();
-		return new Tagger(cid);
-	}
-
-	public function getTuto(name:String, step:Int) {
-        // //initSentry();
-		new Tuto(name,step);
-	}
+	// public function getTuto(name:String, step:Int) {
+    
+	// 	new Tuto(name,step);
+	// }
 	
 	/**
 	 * remove method for IE compat
@@ -137,13 +82,23 @@ class App {
 	}
 	
 	public function getVATBox(ttcprice:Float,currency:String,rates:String,vat:Float,formName:String){
-		// //initSentry();
-		var input = js.Browser.document.querySelector('form input[name="${formName}_price"]');
-		
-		remove( js.Browser.document.querySelector('form input[name="${formName}_vat"]').parentElement.parentElement );
-		
-		ReactDOM.render(jsx('<$VATBox ttc=${ttcprice} currency=${currency} vatRates=${rates} vat=${vat} formName=${formName} />'),  input.parentElement);
-	}
+        js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
+            
+            var input = js.Browser.document.querySelector('form input[name="${formName}_price"]');
+            remove( js.Browser.document.querySelector('form input[name="${formName}_vat"]').parentElement.parentElement );		
+            
+            input.parentElement.id = "vat-box-neo-container";
+
+            var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+            neo.createNeoModule(input.parentElement.id, "vatBox", {
+                initialTtc: ttcprice,
+                currency: currency,
+                vatRates: rates,
+                initialVat: vat,
+                formName: formName
+            });
+        });
+    }
 
 	/**
 	 * Removes the form element and replace it by a react js component
@@ -153,98 +108,85 @@ class App {
 	 * @param	formName
 	 */
 	public function getProductInput(divId:String, productName:String, txpProductId:Null<Int>, formName:String ){
-        // //initSentry();
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
 
 			//dirty stuff to remove "real" input, and replace it by the react one
 			remove(Browser.document.querySelector("form input[name='"+formName+"_name']").parentElement.parentElement);
 			remove(Browser.document.querySelector("form select[name='" + formName+"_txpProductId']").parentElement.parentElement);
 
-			ReactDOM.render(jsx('<$ProductInput productName=${productName} txpProductId=${txpProductId} formName=${formName}/>'),  js.Browser.document.getElementById(divId));
+            var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+            neo.createNeoModule(divId, "productCategorizer", {
+                originalProductName: productName,
+                originalTxpProductId: txpProductId,
+                formName: formName
+            });
 		});
 	}
 
-	/**
-	 * TO DO
-	 * @param	divId
-	 * @param	vendorId
-	 */
-	public function getVendorPage(divId:String, vendorId:Int, catalogId:Int ) {
-        
+	public function getVendorPage(divId:String, vendorId:Int, ?catalogId:Int ) {
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
-
-            // //initSentry();
-
-			//Load data from API
-			var vendorInfo:VendorInfos = null;
-			var catalogProducts:Array<ProductInfo> = null;
-			var nextDistributions:Array<DistributionInfos> = null;
-
-			var promises = [];
-			promises.push( utils.HttpUtil.fetch("/api/pro/vendor/"+vendorId, GET, null, JSON) );
-			promises.push(  utils.HttpUtil.fetch("/api/pro/vendor/nextDistributions/"+vendorId, GET, null, JSON) );
-			if(catalogId!=null) promises.push( utils.HttpUtil.fetch("/api/pro/catalog/"+catalogId, GET, null, JSON) );			
-			
-			var initRequest = js.Promise.all(promises).then(
-				function(data:Dynamic) {
-					vendorInfo = data[0];
-					nextDistributions = data[1];
-					catalogProducts = data[2]==null ? [] : data[2].products;
-					
-					ReactDOM.render(jsx('
-						<MuiThemeProvider theme=${CagetteTheme.get()}>
-							<>
-								<CssBaseline />
-								<$VendorPage vendorInfo=${vendorInfo} catalogProducts=${catalogProducts} nextDistributions=${nextDistributions} />
-							</>
-						</MuiThemeProvider>'),  js.Browser.document.getElementById(divId));
-			}
-			).catchError (
-				function(error) {
-					throw error;
-				}
-			);
-
+            var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+            neo.createNeoModule(divId, "vendorPublicPage", {
+                vendorId: vendorId,
+                pCatalogId: catalogId
+            });
 		});
 	}
 
-	public function openImageUploader( uploadURL : String, uploadedImageURL : String, width:Int, height:Int, ?formFieldName: String ) {
-        //initSentry();
-		var node = js.Browser.document.createDivElement();
-		js.Browser.document.body.appendChild(node);
-		ReactDOM.unmountComponentAtNode(node); 
-		ReactDOM.render(jsx('
-			<div>
-				<ImageUploaderDialog uploadURL=$uploadURL uploadedImageURL=$uploadedImageURL width=$width height=$height formFieldName=$formFieldName />
-			</div>'), node);
+	public function openImageUploader( imageUploaderContext : String, entityId: Int, width:Int, height:Int, ?imageType: String, ?currentCagetteProId: Int ) {
+		var nodeId = "image-uploader-container";
+        var node = js.Browser.document.getElementById(nodeId);
+        if (node == null) {
+            node = js.Browser.document.createDivElement();
+            node.id = nodeId;
+            js.Browser.document.body.appendChild(node);
+        }
+
+        var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+        neo.createNeoModule(node.id, "imageUploaderDialog", {
+            context: imageUploaderContext,
+            entityId: entityId,
+            width: width,
+            height: height,
+            imageType: imageType,
+            currentCagetteProId: currentCagetteProId
+        });
 	}
 	
-	public function initReportHeader(){
-        // //initSentry();
-		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
-	}
-	
-	public function initOrderBox(userId : Int, multiDistribId : Int, catalogId : Int, catalogType : Int, date : String, place : String, userName : String, currency : String, hasPayments : Bool, callbackUrl : String) {
-        // //initSentry();
-
-		var node = js.Browser.document.createDivElement();
-		node.id = "ordersdialog-container";
-		js.Browser.document.body.appendChild(node);
-		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
-	
-		var store = createOrderBoxReduxStore();
-		ReactDOM.render(jsx('
-			<ReduxProvider store=${store}>
-				<MuiThemeProvider theme=${CagetteTheme.get()}>
-					<>
-						<CssBaseline />
-						<OrdersDialog userId=$userId multiDistribId=$multiDistribId catalogId=$catalogId catalogType=$catalogType
-						date=$date place=$place userName=$userName callbackUrl=$callbackUrl currency=$currency hasPayments=$hasPayments />							
-					</>
-				</MuiThemeProvider>
-			</ReduxProvider>
-		'), node );
-
+	public function initOrderBox(userId : Int, multiDistribId : Int, catalogId : Int, catalogType : Int, date : String, place : String, userName : String, currency : String, hasPayments : Bool, callbackUrl : String, hasCagette2 : Bool, groupId : Int) {
+        var node = js.Browser.document.createDivElement();
+        node.id = "ordersdialog-container";
+        js.Browser.document.body.appendChild(node);
+        ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
+       
+        if (!hasCagette2) { 
+            var store = createOrderBoxReduxStore();
+            ReactDOM.render(jsx('
+                <ReduxProvider store=${store}>
+                    <MuiThemeProvider theme=${CagetteTheme.get()}>
+                        <>
+                            <CssBaseline />
+                            <OrdersDialog userId=$userId multiDistribId=$multiDistribId catalogId=$catalogId catalogType=$catalogType
+                            date=$date place=$place userName=$userName callbackUrl=$callbackUrl currency=$currency hasPayments=$hasPayments />							
+                        </>
+                    </MuiThemeProvider>
+                </ReduxProvider>
+            '), node );
+        } else {
+            var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+            neo.createNeoModule(node.id, "ordersDialog", {
+                userId: userId,
+                multiDistribId: multiDistribId,
+                catalogId: catalogId,
+                groupId: groupId,
+                date: date,
+                place: place,
+                userName: userName,
+                callbackUrl: callbackUrl,
+                currency: currency,
+                hasPayments: hasPayments,
+            });
+        }
 	}
 
 	private function createOrderBoxReduxStore() {
@@ -285,51 +227,47 @@ class App {
 		r.request();
 	}
 
+    public function modal(divId:String) {		
+
+			var modalElement = Browser.document.getElementById(divId);
+			var modal = new Modal(modalElement);
+			// modalElement.querySelector(".modal-body").innerHTML = data;
+			// if (title != null) modalElement.querySelector(".modal-title").innerHTML = title;
+			// if (!large) modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
+			modal.show();
+	}
+
 	/**
 	 * Displays a login box
 	 */
-	public function loginBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {	
-        // //initSentry();
-
-		var modalElement = Browser.document.getElementById("myModal");
-		modalElement.querySelector(".modal-title").innerHTML = "S'identifier";
-		modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
-		var modal = new bootstrap.Modal(modalElement);
-		modal.show();
-
-		ReactDOM.render(
-			jsx('<$LoginBox redirectUrl=$redirectUrl message=$message phoneRequired=$phoneRequired addressRequired=$addressRequired/>'),
-			js.Browser.document.querySelector('#myModal .modal-body')
-		);
-		return false;
+	public function loginBox(redirectUrl:String,sid:String,?message:String,?phoneRequired=false,?addressRequired=false,?openRegistration=false,?invitedUserEmail:String, ?invitedGroupId:Int, ?asDialog:Bool) {	
+        var node = js.Browser.document.createDivElement();
+		node.id = "login-registration-container";
+		js.Browser.document.body.appendChild(node);
+		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
+        
+        var neo:Dynamic = Reflect.field(js.Browser.window, 'neo');
+        neo.createNeoModule(node.id, "loginRegistration", {
+            redirectUrl: redirectUrl,
+            sid: sid,
+            message: message,
+            phoneRequired: phoneRequired,
+            addressRequired: addressRequired,
+            openRegistration: openRegistration,
+            invitedUserEmail: invitedUserEmail,
+            invitedGroupId: invitedGroupId,
+            asDialog: asDialog
+        });
 	}
 
 	/**
 	 *  Displays a sign up box
 	 */
-	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false,?tmpBasketId:Int) {
-        //initSentry();
-
-		var modalElement = Browser.document.getElementById("myModal");
-		modalElement.querySelector(".modal-title").innerHTML = "S'inscrire";
-		modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
-		var modal = new bootstrap.Modal(modalElement);
-        modal.show();
-        modalElement.addEventListener('hide.bs.modal', function() {
-            if (tmpBasketId!=null){
-                js.Browser.window.location.href = "/transaction/tmpBasket/"+tmpBasketId;
-            }
-        });
-		ReactDOM.render(
-			jsx('<$RegisterBox redirectUrl=$redirectUrl message=$message phoneRequired=$phoneRequired addressRequired=$addressRequired/>'),
-			js.Browser.document.querySelector('#myModal .modal-body')
-		);
-		return false;
+	public function registerBox(redirectUrl:String,sid:String,?message:String,?phoneRequired=false,?addressRequired=false, ?invitedUserEmail:String, ?invitedGroupId:Int) {
+        loginBox(redirectUrl, sid, message, phoneRequired, addressRequired, true, invitedUserEmail, invitedGroupId);
 	}
 
 	public function membershipBox(userId:Int,userName:String,groupId:Int,?callbackUrl:String,?distributionId:Int){
-        //initSentry();
-
 		var node = js.Browser.document.createDivElement();
 		node.id = "membershipBox-container";
 		js.Browser.document.body.appendChild(node);
@@ -343,10 +281,6 @@ class App {
             callbackUrl: callbackUrl,
             distributionId: distributionId
         });
-	}
-
-	public function browser(){
-		return bowser.Bowser.getParser(js.Browser.window.navigator.userAgent);
 	}
 
 	/**
@@ -472,41 +406,6 @@ class App {
 		}
 	}
 
-	public function generateDatePicker(
-		selector: String,
-		name: String,
-		?date: String,
-		?type: String = "date",
-        ?required: Bool = false,
-        ?openTo: String = "date"
-	) {
-		ReactDOM.render(
-			jsx('
-				<MuiThemeProvider theme=${CagetteTheme.get()}>
-					<>
-						<CssBaseline />
-						<CagetteDatePicker name=$name value=$date type=$type required=$required openTo=$openTo />
-					</>
-				</MuiThemeProvider>
-			'),
-			js.Browser.document.querySelector(selector)
-		);
-    }
-
-    public function openPlaceDialog(
-        selector: String,
-        placeId: Int
-    ) {
-        NeolithicViewsGenerator.placeDialog(selector, {
-           placeId: placeId
-        });
-    }
-
-
-    public function tab(el){
-        return new bootstrap.Tab(el);
-    }
-
     // public function showTab(el){
     //     tab(el).show();
     // }
@@ -519,6 +418,11 @@ class App {
 
     public function addTmpBasketIdToSession(tmpBasketId:Int) {
         var req = new haxe.Http("/shop/addTmpBasketId/"+tmpBasketId);
+        req.request();
+    }
+
+    public function resetGroupInSession(groupId:Int) {
+        var req = new haxe.Http("/account/quitGroup/"+groupId);
         req.request();
     }
 

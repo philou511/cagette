@@ -1,0 +1,29 @@
+::use 'plugin/pro/design.mtt'::
+
+::if(vendor.isDisabled())::	
+    ::if(vendor.disabled!=3)::
+    <!--other reason than turnoverLimitReached-->
+    <div class="col-md-12">			
+        <div class="alert alert-danger">
+            <i class="icon icon-alert"></i>
+            Ce compte producteur est bloqué et n'accepte plus de commandes. 
+            Raison : <b>::vendor.getDisabledReason()::</b>
+        </div>
+    </div>	
+    ::end::
+::end::
+
+<div class="col-md-12">
+	<div id="upgrade-page-neo-container" style="margin-bottom: 16px"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            neo.createNeoModule("upgrade-page-neo-container", "upgradePage", {
+                userId: ::user.id::,
+                vendorId: ::vendor.id::,
+                freemiumResetDate: new Date("::vendor.freemiumResetDate::")
+            });
+        }); 
+    </script>
+</div>
+
+::end::

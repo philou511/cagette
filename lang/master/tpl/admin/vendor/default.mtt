@@ -1,0 +1,99 @@
+::use 'admin/design.mtt'::
+
+<h2>Admin Producteurs</h2>
+
+<p>
+	<div class="dropdown">
+	<button class="btn btn-default dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+		Outils
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+		<li><a href="/p/pro/admin/newVendor">
+			<span class="glyphicon glyphicon-plus"></span> Nouveau producteur
+		</a></li>
+		<li><a href="/p/pro/admin/importGroup">Import de groupes</a></li>
+		<li><a href="/p/pro/admin/contractToCatalog" >Contrat -&gt; Cagette Pro</a></li>
+		<li><a href="/p/pro/admin/duplicate">Dupliquer un groupe</a></li>
+		<li><a href="/p/pro/admin/moveCatalog">Déplacer un catalogue</a></li>
+		<li><a href="/p/pro/admin/copyProducts">Copier base de référence</a></li>
+	</ul>
+	</div>
+	
+	::raw form::
+</p>
+
+
+<p>
+	<table class="table table-bordered">
+		<tr>
+			<th style="text-align:center;">Total</th>		
+			<th style="text-align:center;">Cpro</th>
+			<th style="text-align:center;">Actifs</th>				
+		</tr>
+		<tr>
+			<td>
+				<h2 style="text-align:center;">::total::</h2>
+			</td>
+			<td class="text-center">
+				<h2 style="text-align:center;">::totalCpros::</h2>					
+			</td>
+			<td class="text-center">
+				<h2 style="text-align:center;">::totalActive::</h2>					
+			</td>
+			
+		</tr>
+	</table>
+</p>
+
+<table class="table table-bordered table-condensed table-striped" >
+	<tr>
+		<th>Id</th>
+		<th>Nom</th>
+		<th>c.postal</th>
+		<th>Type</th>
+		<th>CA Total</th>
+		<th>CA 3 mois</th>
+		<th>Bloqué</th>
+		<th>Actif</th>
+		
+	</tr>
+	::foreach v vendors::	
+	<tr>
+		<td>::v.id::</td>
+		<td>
+			<a href="/admin/vendor/view/::v.id::" target="_blank">::v.name::</a>			
+		</td>
+		<td>
+			::if(v.zipCode!=null)::
+				::v.zipCode.substr(0,2)::
+			::end::
+		</td>
+		<td>			
+			$$vendorType(::v.type::)
+		</td>
+		<td>
+			::if(v.turnoverTotal!=null)::
+				::roundTo(v.turnoverTotal,0):: &euro;
+			::end::
+		</td>
+		<td>
+			::if(v.turnover90days!=null)::
+				::roundTo(v.turnover90days,0):: &euro;
+			::end::
+		</td>
+		<td>
+			::if(v.disabled!=null)::
+			$$check(::false::)
+			::end::
+		</td>
+		<td>			
+			$$bool(::v.active::)			
+		</td>
+		
+	</tr>
+	::end::
+</table>
+
+
+::end::

@@ -1,11 +1,12 @@
 package pro.controller;
+import Common;
 import form.CagetteForm;
 import sugoi.form.Form;
-import Common;
 import sugoi.form.ListData.FormData;
 import sugoi.form.elements.FloatInput;
 import sugoi.form.elements.FloatSelect;
 import sugoi.form.elements.IntSelect;
+
 using Std;
 
 class Offer extends controller.Controller
@@ -44,9 +45,9 @@ class Offer extends controller.Controller
 		}
 		
 		//for the VATBox component
-		view.rates = Lambda.array(company.getVatRates()).join("|");
+		view.rates = Lambda.map(company.getVatRates(),function(v) return v.value).join("|");
 		view.price = o.price;
-		view.vat = o.vat;		
+		view.vat = o.vat;
 		
 		//add catalogs to update
 		f.addElement(new sugoi.form.elements.Html("html","<hr/>"));
@@ -126,9 +127,9 @@ class Offer extends controller.Controller
 		}
 		
 		//for the VATBox component
-		view.rates = Lambda.array(company.getVatRates()).join("|");
+		view.rates = Lambda.map(company.getVatRates(),function(v) return v.value).join("|");
 		view.price = 0;
-		view.vat = Lambda.array(company.getVatRates())[0];
+		view.vat = company.getVatRates()[0].value;
 
 		if (f.isValid()) {
 			f.toSpod(o);
@@ -141,7 +142,6 @@ class Offer extends controller.Controller
 				if(o.smallQt>=1 || o.smallQt<=0) throw Error(sugoi.Web.getURI(),"La petite quantité doit être supérieure à zéro et inférieure à 1");
 			}
 			
-
 			if ( pro.db.POffer.refExists(company, o.ref) ){
 				throw Error("/p/pro/product", "Cette référence existe dejà dans votre catalogue");
 			}
@@ -176,44 +176,6 @@ class Offer extends controller.Controller
 		view.p = o.getInfos();
 		view.vendor = company.vendor;
 	}
-	
-	
-	
-	/*@tpl('plugin/pro/product/addimage.mtt')
-	function doAddImage(offer:pro.db.POffer) {
-		
-		view.image = offer.image;		
-		var request = sugoi.tools.Utils.getMultipart(1024 * 1024 * 12); //12Mb
-		
-		if (request.exists("image")) {
-			
-			//Image
-			var image = request.get("image");
-			if (image != null && image.length > 0) {
-				var img : sugoi.db.File = null;
-				if ( Sys.systemName() == "Windows") {
-					img = sugoi.db.File.create(request.get("image"), request.get("image_filename"));
-				}else {
-					img = sugoi.tools.UploadedImage.resizeAndStore(request.get("image"), request.get("image_filename"), 400, 400);	
-				}
-				
-				offer.lock();
-				offer.image = img;
-				offer.update();
-				
-				// //if offers are in catalogs, update the lastUpdate field of the catalog (for synch purpose)
-				// var offersId = Lambda.map(product.getOffers(false), function(o) return o.id);
-				// var coffers = pro.db.PCatalogOffer.manager.search($offerId in offersId, false);
-				// var catalogs = pro.db.PCatalog.manager.search( $id in Lambda.map(coffers, function(x) return x.catalog.id) , true);
-				// for ( c in catalogs) c.toSync();		
-				
-				throw Ok('/p/pro/product#product' + offer.product.id,'Image mise à jour');
-			}
-		}
-		
-		view.title = 'Importer une photo pour "${offer.product.name}"';
-	}*/	
-	
 	
 	
 }

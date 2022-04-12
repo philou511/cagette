@@ -6,6 +6,10 @@
 		
 		<p>
 			<input type="checkbox" id="hideDistribs" value="1" /> <label for="hideDistribs">Masquer les distributions auxquelles je ne participe pas</label>
+
+			&nbsp;&nbsp;<a href="https://formation.alilo.fr/course/view.php?id=7&section=7" target="_blank" class="btn btn-warning btn-sm">
+				<i class="icon icon-youtube"></i> Tuto vidéo
+			</a>
 		</p>
 		<script>
 			document.querySelector("#hideDistribs").addEventListener('click', function(e) {

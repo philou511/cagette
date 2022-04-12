@@ -30,6 +30,10 @@
 						::foreach o basket.getOrders(null)::
 							<li>::o.quantity:: x ::o._product.getName()::</li>
 						::end::						
+						<!--<pre>::foreach po prepare(basket.getOrders(null))::
+::po.productName:: : ::po.quantity:: x ::po.productPrice:: = ::po.total::€
+							::end::
+						</pre>-->
 						</ul>
 					::end::
 					
@@ -37,7 +41,7 @@
 					::set basket = md.getUserTmpBasket(member)::
 					::if(basket!=null)::
 					<div style="color:green">
-						<b>Panier en cours #::basket.ref::</b>
+						<b>Panier en cours #::basket.id::</b>
 						<ul>
 						::foreach o basket.getOrders()::
 							::if(o.product!=null)::
@@ -63,7 +67,7 @@
 					$$operation(::op::)
 					
 					<td>
-						<a onclick="_.overlay('/p/hosted/operation/::op.id::','',false)" class="btn btn-default btn-xs">Detail</a>
+						<a onclick="_Cagette.overlay('/p/hosted/operation/::op.id::','',false)" class="btn btn-default btn-xs">Detail</a>
 					</td>
 				</tr>
 				::end::

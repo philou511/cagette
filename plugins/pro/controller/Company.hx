@@ -1,9 +1,9 @@
 package pro.controller;
-import pro.db.PVendorCompany;
-import sugoi.form.elements.StringInput;
 import mangopay.Mangopay;
-import sugoi.form.elements.FloatInput;
+import pro.db.PVendorCompany;
 import service.VendorService;
+import sugoi.form.elements.FloatInput;
+import sugoi.form.elements.StringInput;
 
 class Company extends controller.Controller
 {
@@ -34,16 +34,16 @@ class Company extends controller.Controller
 	function doEdit() {
 		view.nav.push("default");
 
-		var form = VendorService.getForm(vendor, !company.training );
+		var form = VendorService.getForm(vendor, company.offer!=Training );
 
-		if(!company.training){ 
+		if(company.offer!=Training){ 
 			app.session.addMessage("Attention, afin de mieux informer les consommateurs, vous devez maintenant renseigner votre <b>numéro SIRET</b> et confirmer le fait que votre activité est conforme à la <b><a href=\"https://www.cagette.net/charte-producteurs\" target=\"_blank\">Charte Producteurs Cagette.net</a></b>.");
 		}
 				
 		if (form.isValid()) {
 			vendor.lock();
 			try{
-				vendor = VendorService.update(vendor,form.getDatasAsObject(),!company.training);
+				vendor = VendorService.update(vendor,form.getDatasAsObject(),company.offer!=Training);
 			}catch(e:tink.core.Error){
 				throw Error(sugoi.Web.getURI(),e.message);
 			}			
@@ -126,15 +126,19 @@ class Company extends controller.Controller
 		view.form = f;
 	}
 	
-	public function doDeleteUser(u:db.User){
+	public function doDeleteUser(userToDelete:db.User){
 		
 		if (checkToken()){
 			
-			if (u.id == app.user.id && !app.user.isAdmin() ) {
+			if (userToDelete.id == app.user.id && !app.user.isAdmin() ) {
 				throw Error("/p/pro/company/users", "Vous ne pouvez pas vous retirer l'accès à vous même");
 			}
+
+			if(company.getUsers().count(user -> return userToDelete.id!=user.id)==0){
+				throw Error("/p/pro/company/users", "Vous ne pouvez pas supprimer cet utilisateur. Au moins une personne doit avoir accès à un compte producteur.");
+			}
 			
-			var uc = pro.db.PUserCompany.get(u, company);			
+			var uc = pro.db.PUserCompany.get(userToDelete, company);			
 			if (uc != null){
 				uc.lock();
 				uc.delete();
@@ -158,7 +162,7 @@ class Company extends controller.Controller
 	/**
 		1- define the vendor
 	**/
-	@tpl("plugin/pro/form.mtt")
+	/*@tpl("plugin/pro/form.mtt")
 	function doDefineVendor(){
 
 		if(company.getVendors().length >= PVendorCompany.MAX_VENDORS){
@@ -179,7 +183,7 @@ class Company extends controller.Controller
 			var name : String = f.getValueOf('name');
 			var email : String = f.getValueOf('email');
 			
-			var vendors = service.VendorService.findVendors( name , email );
+			var vendors = service.VendorService.findVendors( {name:name , email:email} );
 			app.setTemplate('plugin/pro/company/defineVendor.mtt');
 			view.vendors = vendors;
 			view.email = email;
@@ -188,13 +192,13 @@ class Company extends controller.Controller
 		}
 
 		view.form = f;
-	}
+	}*/
 
 	/**
 	  2- create vendor
 	**/
 	@tpl("plugin/pro/form.mtt")
-	public function doInsertVendor(email:String,name:String) {
+	/*public function doInsertVendor(email:String,name:String) {
 				
 		var vendor = new db.Vendor();
 		var form = VendorService.getForm(vendor);
@@ -220,20 +224,20 @@ class Company extends controller.Controller
 		view.title = t._("Key-in a new vendor");
 		//view.text = t._("We will send him/her an email to explain that your group is going to organize orders for him very soon");
 		view.form = form;
-	}
+	}*/
 
 
 	/**
 	3 - link vendor to this cagettePro
 	**/	
-	public function doLinkVendor(vendor:db.Vendor){
+/*	public function doLinkVendor(vendor:db.Vendor){
 		view.nav.push("vendors");
 		
 		pro.db.PVendorCompany.make(vendor,company);
 
 		throw Ok("/p/pro/company/vendors", "Nouveau producteur référencé");
 		
-	}
+	}*/
 	
 	public function doDeleteVendor(v:db.Vendor){
 		
@@ -285,9 +289,9 @@ class Company extends controller.Controller
 		// Storing 4  values.
 		//Get recorded values
 		var i = 1;
-		for (k in company.vatRates.keys()) {
-			f.addElement(new StringInput(i+"-k", "Nom "+i, k));
-			f.addElement(new FloatInput(i + "-v", "Taux "+i, company.vatRates.get(k) ));
+		for (vatRate in company.getVatRates()) {
+			f.addElement(new StringInput(i+"-k", "Nom "+i, vatRate.label));
+			f.addElement(new FloatInput(i + "-v", "Taux "+i, vatRate.value ));
 			i++;
 		}
 		//fill in to 4 values
@@ -299,14 +303,16 @@ class Company extends controller.Controller
 		
 		if (f.isValid()) {
 			var d = f.getData();
-			var vats = new Map<String,Float>();
+			var vats = new Array<{value:Float,label:String}>();
 			for (i in 1...5) {
 				if (d.get(i + "-k") == null) continue;
-				vats.set( d.get(i + "-k"), d.get(i + "-v") );
+				vats.push({label:d.get(i + "-k"), value: d.get(i + "-v")});
 			}
-			company.lock();
-			company.vatRates = vats;
-			company.update();
+			if (vats.length > 0) { // Prevent setting an empty array of vat rates
+				company.lock();
+				company.setVatRates(vats);
+				company.update();
+			}
 			throw Ok("/p/pro/company/", "Taux mis à jour");
 			
 		}
@@ -315,26 +321,6 @@ class Company extends controller.Controller
 		
 	}
 	
-	
-	
-	/**
-	 * old one
-	 */
-	@tpl('plugin/pro/company/abo2.mtt')
-	function doAbo2(){
-		
-		var abo = new Abo(company);		
-		view.abo = abo;
-	}
-	
-	@tpl('plugin/pro/company/abo.mtt')
-	function doAbo(){
-		
-		var abo = new Abo(company);	
-		abo.offset = Std.parseInt(app.params.get("offset"));
-		view.abo = abo;		
-	}
-
 	@tpl('plugin/pro/company/publicPage.mtt')
 	function doPublicPage(){
 

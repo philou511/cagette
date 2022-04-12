@@ -39,15 +39,15 @@ class Operation extends sys.db.Object
 	public var pending : SBool; //a pending payment means the payment has not been confirmed, a pending order means the ordre can still change before closing.
 
 	//@deprecated
-	public var data : SData<Dynamic>;
+	// public var data : SData<Dynamic>;
 
 	//new fields
 	@hideInForms @:relation(basketId) public var basket : SNull<db.Basket>; 	//relation to basket for variable orders
 	@hideInForms @:relation(subscriptionId) public var subscription : SNull<Subscription>; 	//relation to contract for CSA orders
-	@hideInForms public var data2 : SNull<SString<256>>; 						//json data
+	@hideInForms public var data : SNull<SString<256>>; 						//json data
 
 	public function setData(data:Dynamic){
-		this.data2 = haxe.Json.stringify(data);
+		this.data = haxe.Json.stringify(data);
 	}
 
 	public function setPaymentData(d:PaymentInfos){
@@ -55,7 +55,7 @@ class Operation extends sys.db.Object
 	}
 
 	public function getData():Dynamic{
-		return haxe.Json.parse(this.data2);
+		return haxe.Json.parse(this.data);
 	}
 
 	public function getOrderData(){
@@ -174,6 +174,10 @@ class Operation extends sys.db.Object
 
 	override function update(){
 		check();
+		super.update();
+	}
+
+	public function unsafeUpdate(){
 		super.update();
 	}
 

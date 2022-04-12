@@ -23,6 +23,8 @@ class MangopayController extends controller.Controller
 	@tpl("plugin/pro/transaction/mangopay/pay.mtt")
 	public function doDefault(type:String, tmpBasket:db.TmpBasket){
 		
+		// throw Error("/","Les paiements en ligne par Mangopay sont fermés pour une période indéterminée (panne chez Mangopay). ");
+
 		var url = sugoi.Web.getURI();
 		
 		//check
@@ -71,12 +73,12 @@ class MangopayController extends controller.Controller
 		//If the user doesn't exist already in the mapping table it means that 
 		//we haven't created yet a natural user in Mangopay
 		var mangopayUser = MangopayUser.get(user);
-		var naturalUserId :Int = null;
+		var naturalUserId:String = null;
 		if(mangopayUser == null) {
 			try{
 				naturalUserId = Mangopay.createNaturalUser(user).Id;	
 			}catch(e:tink.core.Error){
-				throw Error("/transaction/pay/", e.message);
+				throw Error("/transaction/pay/", "Erreur de création de compte Mangopay. "+e.message);
 			}		
 		} else {
 			naturalUserId = mangopayUser.mangopayUserId;
@@ -88,9 +90,9 @@ class MangopayController extends controller.Controller
 			//e-commerce : we put the money directly in the group wallet
 			var legalUserId = MangopayPlugin.getGroupLegalUserId(app.user.getGroup());
 			wallet = Mangopay.getOrCreateGroupWallet(legalUserId, user.getGroup());
-		}else if (type==pro.payment.MangopayMPPayment.TYPE){
+		/*}else if (type==pro.payment.MangopayMPPayment.TYPE){
 			//marketplace : we put the money in a user-group wallet
-			wallet = Mangopay.getOrCreateUserWallet(naturalUserId, user.getGroup());
+			wallet = Mangopay.getOrCreateUserWallet(naturalUserId, user.getGroup());*/
 		}else{
 			throw new tink.core.Error("payment type should be either mangopay-ec or mangopay-mp");
 		}
@@ -127,7 +129,7 @@ class MangopayController extends controller.Controller
 	 * Return/success URL
 	 */
 	@tpl("plugin/pro/transaction/mangopay/status.mtt")
-	public function doReturn(type:String,tmpBasket:db.TmpBasket, args : { transactionId : Int }){
+	public function doReturn(type:String,tmpBasket:db.TmpBasket, args : { transactionId:String }){
 
 		// if(App.config.DEBUG) throw "DEBUG : fake mangopay error";
 

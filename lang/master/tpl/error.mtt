@@ -1,7 +1,15 @@
 ﻿<html lang="::LANG::">
 	<head>
-		<link rel="stylesheet" type="text/css" href="/css/0/style.css"/>
-		<link rel="stylesheet" href="/css/bootstrap.min.css" />
+		 ::if(whiteLabel!=null)::
+			<link rel="stylesheet" href="/::whiteLabel.name::/css/style.css" />
+		::else::
+			<link rel="stylesheet" type="text/css" href="/css/0/style.css" />
+		::end::
+		::if(whiteLabel!=null)::
+            <link rel="stylesheet" href="/::whiteLabel.name::/css/bootstrap.min.css" />
+        ::else::
+            <link rel="stylesheet" href="/css/bootstrap.min.css" />
+        ::end::
 	</head>
 	<body class="container">
 		<div class="row" style="margin-top:40px;">

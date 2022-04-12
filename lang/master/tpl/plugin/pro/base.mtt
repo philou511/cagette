@@ -3,27 +3,25 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" xml:lang="::LANG::" lang="::LANG::" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Cagette PRO</title>
+		<title>Compte producteur</title>
 
 		<!-- Cagette CSS -->
-		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
+		::if(whiteLabel!=null)::
+			<link rel="stylesheet" href="/::whiteLabel.name::/css/style.css" />
+		::else::
+			<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css" />
+		::end::
 
 		<!-- Cagette very own icon font -->
 		<link rel="stylesheet" href="/font/icons.css?v=::getVariable('css')::" />
 			
-		<!-- JQUERY 
-		<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-		-->
-
 		<!-- BOOTSTRAP 	-->
-		<link rel="stylesheet" href="/css/::getVariable('css')::/bootstrap.min.css" />
+		::if(whiteLabel!=null)::
+			<link rel="stylesheet" href="/::whiteLabel.name::/css/bootstrap.min.css" />
+		::else::
+			<link rel="stylesheet" href="/css/::getVariable('css')::/bootstrap.min.css" />
+		::end::
 				
-		<!-- bootstrap datepicker 
-		<script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
-		<script type="text/javascript" src="/bower_components/moment/locale/fr.js"></script>
-		<script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
-		<link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />-->
-		
 		<!-- polyfill for IE11 : Object.assign() doesnt exists in IE11 , error in libs.prod.js -->
 		<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
 
@@ -65,24 +63,23 @@
 		
 		::raw __content__::
 		
-		$$ga()
+		$$matomo()
 		  
 		<script type="text/javascript"> 
-		
-			
-		  
 			//Tooltips & popovers
-			document.addEventListener("DOMContentLoaded", function(event) {
-			  
+			/*
+			document.addEventListener("DOMContentLoaded", function(event) {			  
 				//tutorials
-				::if tuto!=null::
-				
-				_.getTuto("::tuto.name::",::tuto.step::);
-			
-				::end::
-			  
+				::if tuto!=null::		
+				_Cagette.getTuto("::tuto.name::",::tuto.step::);
+				::end::			  
 			})
+			*/
 		</script>
+
+		::foreach script getNeoModuleScripts()::
+			<script src="::script::"></script>
+		::end::
 		
 	</body>
 </html>

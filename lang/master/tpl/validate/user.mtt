@@ -13,13 +13,12 @@
 				
 			</div>	
 			
-			::set total = 0::
 			<table class="table table-condensed table-bordered">
 				<tr style="background-color:#DDD;">
 					<th colspan="6" class="text-center">Commande</th>
 					<th colspan="3" class="text-center">
 						<a class="btn btn-default btn-xs"
-						onclick="_.initOrderBox( ::member.id::, ::md.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(member.getName())::','::currency()::', ::user.getGroup().hasPayments()::, '/validate/::md.id::/::member.id::')">
+						onclick="_Cagette.initOrderBox( ::member.id::, ::md.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(member.getName())::','::currency()::', ::user.getGroup().hasPayments()::, '/validate/::md.id::/::member.id::', ::user.getGroup().hasCagette2()::, ::user.getGroup().id::)">
 							<i class="icon icon-edit"></i>
 								::_("Edit")::
 						</a>			
@@ -79,8 +78,6 @@
 					<td>
 						<!-- total -->
 						::formatNum(o.total)::&nbsp;::currency()::
-						::set total = total + o.total::
-						
 					</td>
 					<td>
 						$$check(::o.paid::)
@@ -91,7 +88,7 @@
 				
 				<tr class="subrow">					
 					<th colspan="7" class="text-right">::_("Total ordered")::</th>
-					<th>::formatNum(total)::&nbsp;::currency()::</th>					
+					<th>::formatNum(basket.getOrdersTotal(null))::&nbsp;::currency()::</th>					
 					<th></th>
 				</tr>
 				
@@ -260,7 +257,7 @@
 								<td class="text-center alert-danger">
 									$$check(false) ::_("Membership to renew"):: pour la période <b>::user.getGroup().getPeriodName(null)::</b>
                                     <br/>
-									<a onclick="_.membershipBox(::member.id::,'::user.getName()::',::place._group.id::,'/validate/::distribution.id::/::member.id::',::distribution.id::)" class="btn btn-danger btn-sm">::_("Manage membership fees")::</a>
+									<a onclick="_Cagette.membershipBox(::member.id::,`::user.getName()::`,::place._group.id::,'/validate/::distribution.id::/::member.id::',::distribution.id::)" class="btn btn-danger btn-sm">::_("Manage membership fees")::</a>
 								</td>
 							::end::
 			

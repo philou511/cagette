@@ -191,7 +191,7 @@ class VolunteerService
 
 				//Send notification email to either the coordinators or all the members depending on the current date
 				var mail = new Mail();
-				mail.setSender(App.config.get("default_email"),"Cagette.net");
+				mail.setSender(App.config.get("default_email"),"::appName::");
 				var now = Date.now();
 				var alertDate = DateTools.delta( multidistrib.distribStartDate, - 1000.0 * 60 * 60 * 24 * multidistrib.group.vacantVolunteerRolesMailDaysBeforeDutyPeriod );
 
@@ -222,12 +222,11 @@ class VolunteerService
 					}
 				}
 				var date = App.current.view.hDate(multidistrib.distribStartDate);
-				var subject = "["+multidistrib.group.name+"] ";
-				subject += t._( "A role has been left for ::date:: distribution",{date:date});
+				var subject = t._( "A role has been left for ::date:: distribution",{date:date});
 				mail.setSubject( subject );
 				var html = App.current.processTemplate("mail/volunteerUnsuscribed.mtt", { fullname : user.getName(), role : role.name, reason : reason, group: multidistrib.group  } );
 				mail.setHtmlBody( html );
-				App.sendMail(mail);
+				App.sendMail(mail, multidistrib.group);
 
 				//delete assignment
 				foundVolunteer.lock();

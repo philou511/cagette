@@ -94,7 +94,7 @@ class WholesaleOrderService {
 			//big products should have wholesale enabled ! Otherwise editing an order will round quantities
 			if (!bigOffer.product.wholesale){
 				bigOffer.product.lock();
-				bigOffer.product.hasFloatQt = false;
+				bigOffer.product.bulk = true;
 				bigOffer.product.wholesale = true;
 				bigOffer.product.update();
 				var cat = rc.getCatalog();
@@ -235,7 +235,6 @@ class WholesaleOrderService {
 				//changes won't be commited thanks to MySQL Transactions				
 				throw new Error('Balancing not possible : quantity ${t.quantity} of "${t.pname}" should be integer. ( ${t.quantity} != ${Math.round(t.quantity)} )');
 			}
-
 		}
 
 		sendMailToMembers(d);

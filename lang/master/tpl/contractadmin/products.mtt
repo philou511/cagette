@@ -3,12 +3,13 @@
 	<h3>::_("Products")::</h3>
 		
 	$$insert(::_("New product")::,/product/insert/::c.id::)
-	<a href="/product/import/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-upload"></i> ::_("Import from Excel/CSV")::</a>
-		
-	::if !c._group.hasTaxonomy()::	
-	<a ::cond c.type==1:: href="/product/categorize/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-tag"></i> ::_("Categories")::</a>	
-	::end::
 
+	
+	
+	<div class="btn-group" role="group" style="display: inline-block;">
+		<a href="/product/import/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-upload"></i> ::_("Import from Excel/CSV")::</a>
+		<a href="/product/export/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-download"></i> Export CSV</a>
+	</div>
 
 	<div class="btn-group" role="group" style="display: inline-block;">
 		<a onclick="check();" class="btn btn-default btn-sm btn-noAntiDoubleClick"> ::_("Check all")::</a>
@@ -26,7 +27,7 @@
 	
 	//enable checked products
 	var enableProducts = function(){
-		var ids = _.getCheckboxesId('form.products');
+		var ids = _Cagette.getCheckboxesId('form.products');
 		if(ids.length==0){
 			alert("::_("You need to select at least one product to perform this action")::");
 		}else{
@@ -38,7 +39,7 @@
 	
 	//disable checked products
 	var disableProducts = function(){
-		var ids = _.getCheckboxesId('form.products');
+		var ids = _Cagette.getCheckboxesId('form.products');
 		if(ids.length==0){
 			alert("::_("You need to select at least one product to perform this action")::");
 		}else{
@@ -98,17 +99,11 @@
 				::p.qt::&nbsp;::unit(p._unitType,false)::
 				::end::
 				
-				::if !c._group.hasTaxonomy()::	
-				<div>
-					::foreach c p.getCategories()::
-					<span class='tag' style='background-color: ::c.getColor()::;'>::c.name::</span>
-					::end::
-				</div>
-				::else::
+				
 				<div class="detail">
 					::p.getFullCategorization().join(" / ")::
 				</div>
-				::end::
+				
 				<div style="color:#AAA">
 				::if p.organic ::<i class="icon icon-bio"></i>::end::
 				::if p.variablePrice ::<i class="icon icon-scale"></i>::end::
@@ -132,20 +127,24 @@
 			</td>
 			<td>
 				<div class="btn-group" role="group">
-					$$edit(::_("Edit")::,/product/edit/::p.id::)
+
+					::if(!isRemote)::
+						$$edit(::_("Edit")::,/product/edit/::p.id::)
+						
+						::if(p.imageid!=null)::
+							::set img = "\""+file(p.imageid)+"\""::
+						::else::
+							::set img = null::
+						::end::
 					
-					::if(p._image!=null)::
-						::set img = "\""+file(p._image)+"\""::
-					::else::
-						::set img = null::
+					
+						<a class="btn btn-default btn-sm" onclick="_Cagette.openImageUploader('product', ::p.id::, 300, 300)">
+							<i class="icon icon-image"></i> ::_("Picture")::
+						</a>
+						
+						
+						$$delete(::_("Del.")::,/product/delete/::p.id::?token=::token::)
 					::end::
-					
-					<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/product/image/::p.id::', ::img::, 300, 300)">
-						<i class="icon icon-image"></i> ::_("Picture")::
-					</a>
-					
-					
-					$$delete(::_("Del.")::,/product/delete/::p.id::?token=::token::)
 				</div>
 				<div id="imageUploader"></div>
 			</td>
@@ -155,6 +154,12 @@
 	</table>
 
 	</form>
+
+	::if(isRemote)::
+	<div class="alert alert-warning">
+		<i class="icon icon-info"></i> Ce catalogue n'est pas modifiable, c'est le producteur depuis son <b>compte producteur</b> qui peut le mettre à jour.
+	</div>
+	::end::
 	
 
 ::end::

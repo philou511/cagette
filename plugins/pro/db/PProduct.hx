@@ -26,7 +26,6 @@ class PProduct extends Object
 	public var organic : SBool;
 	public var variablePrice : Bool; 	//price can vary depending on weighting of the product
 	public var multiWeight : Bool;		//product cannot be cumulated in one db.UserOrder
-	public var hasFloatQt:SBool; 		//this product can be ordered in "float" quantity (usefull for vrac)
 	
 	//https://docs.google.com/document/d/1IqHN8THT6zbKrLdHDClKZLWgKWeL0xw6cYOiFofw04I/edit
 	@hideInForms public var wholesale : Bool;  //this product is a wholesale product (crate,bag,pallet)
@@ -45,7 +44,6 @@ class PProduct extends Object
 		unitType = Unit.Piece;
 		variablePrice = false;
 		multiWeight = false;
-		hasFloatQt = false;
 		organic = false;
 		//stockStrategy = ByOffer;
 	}
@@ -54,15 +52,19 @@ class PProduct extends Object
 	 * Returns the URL of the product image
 	 */
 	public function getImage() {
-		if (image == null) {
+		if (imageId == null) {
 			if (txpProduct != null){				
 				return "/img/taxo/grey/" + txpProduct.subCategory.category.image + ".png";
 			}else{
 				return "/img/taxo/grey/fruits-legumes.png";
 			}			
 		}else {
-			return App.current.view.file(image);
+			return App.current.view.file(imageId);
 		}
+	}
+
+	public function getImageId(){
+		return this.imageId;
 	}
 	
 	override function toString() {
@@ -152,13 +154,12 @@ class PProduct extends Object
 			"ref" 				=> t._("Product ID"),
 			"desc" 				=> t._("Description"),
 			"unitType" 			=> t._("Base unit"),
-			"hasFloatQt" 		=> t._("Allow fractional quantities"),			
 			"active" 			=> /*t._("Active")*/"Actif",			
 			"organic" 			=> t._("Organic agriculture"),			
 			"variablePrice" 	=> "Prix variable selon pesée"/*t._("Variable price based on weight")*/,			
 			"multiWeight" 		=> "Multi-pesée",	
 			"stockStrategy"		=> "Gestion des stocks",
-			"bulk"				=> "vrac"
+			"bulk"				=> "Vrac"
 		];
 	}
 }

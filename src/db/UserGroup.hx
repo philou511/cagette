@@ -1,7 +1,7 @@
 package db;
+import Common;
 import sys.db.Object;
 import sys.db.Types;
-import Common;
 
 
 enum Right{
@@ -21,8 +21,7 @@ class UserGroup extends Object
 {
 	@:relation(groupId) public var group : db.Group;
 	@:relation(userId) public var user : db.User;
-	public var rights : SNull<SData<Array<Right>>>;		//@deprecated
-	public var rights2 : SNull<SSmallText>; 			//rights in JSON
+	public var rights : SNull<SSmallText>; 			//rights in JSON
 	public var balance : SFloat; 						//account balance in group currency
 	public static var CACHE = new Map<String,db.UserGroup>();
 	
@@ -54,13 +53,13 @@ class UserGroup extends Object
 		return ua;
 	}
 
-	public function getRights():JsonRights{
-		if(this.rights2==null) return [];
-		// try{
-			return haxe.Json.parse(this.rights2);
-		/*}catch(e:Dynamic){
+	public function getRights():JsonRights{		
+		try{
+			if(this.rights==null) return [];
+			return haxe.Json.parse(this.rights);
+		}catch(e:Dynamic){
 			return [];
-		}*/		
+		}
 	}
 	
 	/**
@@ -70,8 +69,7 @@ class UserGroup extends Object
 	
 		if (hasRight(r)) return;
 		lock();
-		var rights:JsonRights = haxe.Json.parse(this.rights2);
-		if (rights == null) rights = [];
+		var rights = getRights();		
 
 		switch(r){
 			case ContractAdmin(cid):					
@@ -86,7 +84,7 @@ class UserGroup extends Object
 				});			
 		}
 
-		rights2 = haxe.Json.stringify(rights);
+		this.rights = haxe.Json.stringify(rights);
 		update();		
 	}
 		
@@ -112,7 +110,7 @@ class UserGroup extends Object
 							rights.remove(right);													
 						}
 
-						if(cid!=null && right.params.has(Std.string(cid))){
+						if(cid!=null && right.params!=null && right.params.has(Std.string(cid))){
 							right.params.remove( Std.string(cid) );
 						}						
 					}
@@ -126,7 +124,7 @@ class UserGroup extends Object
 				}					
 		}
 
-		rights2 = haxe.Json.stringify(rights);
+		this.rights = haxe.Json.stringify(rights);
 		update();
 	}
 	
@@ -138,7 +136,8 @@ class UserGroup extends Object
 				for ( right in rights){
 					if(right.right==Type.enumConstructor(r).toString()){
 						
-						if(cid==null && right.params==null){
+						if(right.params==null){
+							//can manage all contracts
 							return true;
 						}
 
@@ -234,30 +233,4 @@ class UserGroup extends Object
 		return false;			*/
 	}
 
-	/**
-		sync old rights to new rights system
-	**/
-	public function sync(){
-		lock();
-		var r2 = new Array<{right:String,params:Array<String>}>();
-		if(this.rights!=null){			
-			for(r in this.rights){
-				switch(r){
-					case ContractAdmin(cid):					
-						r2.push({right:"ContractAdmin",params:cid==null? null : [Std.string(cid)]});
-					case GroupAdmin:
-						r2.push({right:"GroupAdmin",params:null});
-					case Membership:
-						r2.push({right:"Membership",params:null});
-					case Messages : 
-						r2.push({right:"Messages",params:null});
-				}
-			}
-		}
-		
-		this.rights2 = haxe.Json.stringify(r2);
-		update();
-		return r2;
-	}
-	
 }

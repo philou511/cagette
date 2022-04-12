@@ -1,7 +1,7 @@
 package service;
+import Common;
 import db.MultiDistrib;
 import db.TmpBasket;
-import Common;
 import tink.core.Error;
 
 /**
@@ -12,8 +12,8 @@ import tink.core.Error;
 class OrderService
 {
 
-	static function canHaveFloatQt(product:db.Product):Bool{
-		return product.hasFloatQt || product.wholesale || product.variablePrice || product.bulk;
+	public static function canHaveFloatQt(product:db.Product):Bool{
+		return product.wholesale || product.variablePrice || product.bulk;
 	}
 
 	/**
@@ -30,7 +30,25 @@ class OrderService
 		if( quantity == null ) throw new Error( "Quantity is null" );
 		if( quantity < 0 ) throw new Error( "Quantity is negative" );
 		var vendor = product.catalog.vendor;
-		if( vendor.isDisabled()) throw new Error(vendor.name+" est désactivé. Raison : "+vendor.getDisabledReason());
+		
+		if( vendor.isDisabled()) {
+			var isVendorDisabled = true;
+			
+			if(vendor.disabled==db.Vendor.DisabledReason.TurnoverLimitReached){
+
+				//Exception : do not block if TurnoverLimitReached and distrib is in whitelist
+				var whitelist : Array<Int> = vendor.turnoverLimitReachedDistribsWhiteList.split(",").map(Std.parseInt);
+				if(whitelist.has(distribId)) isVendorDisabled = false;
+
+				//Exception : do not block if TurnoverLimitReached && CSA subscription
+				if(subscription!=null) isVendorDisabled = false;
+			}
+
+			if (isVendorDisabled) {
+				throw new Error('${vendor.name} est désactivé. Raison : ${vendor.getDisabledReason()}');
+			}
+		}
+		
 		var shopMode = product.catalog.group.hasShopMode();
 
 		//quantity
@@ -50,15 +68,11 @@ class OrderService
 			for ( i in 0...Math.round(quantity) ) {
 
 				if( shopMode ) {
-
 					newOrder = make( user, 1, product, distribId, paid, null, user2, invert );
-				}
-				else {
-
+				} else {
 					newOrder = make( user, 1, product, distribId, paid, subscription );
 				}
 			}
-
 			return newOrder;
 		}
 		
@@ -255,11 +269,12 @@ class OrderService
 		return order;
 	}
 
-
-	public static function editMultiWeight( order : db.UserOrder, newquantity : Float ) : db.UserOrder {
+	/**
+		edit a multiweight product order from a single qty input ( CSA order form ).
+	**/
+	public static function editMultiWeight( order:db.UserOrder, newquantity:Float ):db.UserOrder {
 
 		if( !tools.FloatTool.isInt(newquantity) ) {
-
 			throw new Error( "Erreur : la quantité du produit" + order.product.name + " devrait être un entier." );
 		}
 	
@@ -281,24 +296,19 @@ class OrderService
 						edit( orders[i], 0 );
 						orders.remove( orders[i] );
 					}
-				}
-				else if ( quantityDiff > 0 ) {
+				} else if ( quantityDiff > 0 ) {
 
 					for ( i in 0...quantityDiff ) {
-
 						orders.push( make( order.user, 1, order.product, order.distribution.id, null, order.subscription ) );
 					}
 				}
 
 				for ( orderToEdit in orders ) {
-
 					edit( orderToEdit, 1 );
 				}
-			}
-			else {
+			}else{
 
 				for ( orderToEdit in orders ) {
-
 					edit( orderToEdit, 0 );
 				}
 			}
@@ -313,9 +323,7 @@ class OrderService
 	 */
 	public static function delete( order : db.UserOrder, ?force = false ) {
 		var t = sugoi.i18n.Locale.texts;
-
 		if(order==null) throw new Error( t._( "This order has already been deleted." ) );
-		
 		order.lock();
 		
 		if (order.quantity == 0 || force) {
@@ -350,20 +358,16 @@ class OrderService
 				}
 
 				order.delete();
-			}
-			else {
+			} else {
 
 				order.delete();
 
 				if( hasPayments ) {
-
 					service.SubscriptionService.createOrUpdateTotalOperation( order.subscription );
 				}
 			}
 	
-		}
-		else {
-
+		} else {
 			throw new Error( t._( "Deletion not possible: quantity is not zero." ) );
 		}
 
@@ -401,7 +405,6 @@ class OrderService
 			x.productUnit = o.product.unitType;
 			x.productPrice = o.productPrice;
 			x.productImage = o.product.getImage();
-			x.productHasFloatQt = o.product.hasFloatQt;
 			x.productHasVariablePrice = o.product.variablePrice;
 			//new way
 			x.product = o.product.infos();
@@ -411,7 +414,7 @@ class OrderService
 			//smartQt
 			if (x.quantity == 0.0){
 				x.smartQt = t._("Canceled");
-			}else if(x.productHasFloatQt || x.productHasVariablePrice || o.product.wholesale){
+			}else if( OrderService.canHaveFloatQt(o.product)){
 				x.smartQt = view.smartQt(x.quantity, x.productQt, x.productUnit);
 			}else{
 				x.smartQt = Std.string(x.quantity);
@@ -445,7 +448,14 @@ class OrderService
 			x.catalogId = c.id;
 			x.catalogName = c.name;
 			x.canModify = o.canModify(); 
+			// Sys.print("A : "+x.total+"<br>");
 			
+			//recreate a clean float to prevent a strange bug in neko
+			//if I dont do that 1.665 will round to 1.66 instead of 1.67
+			x.total = Std.string(x.total).parseFloat();
+
+			x.total = Math.round(x.total*100)/100;
+			// Sys.print("B : "+x.total+"<br>");
 			out.push(x);
 		}
 		
@@ -524,14 +534,15 @@ class OrderService
 
 
 	/**
-	 *  Send an order-by-products report to the coordinator
+	 *  Send an order-by-products report to the coordinator.
+	 	Used in wholesaleOrder service
 	 */
 	public static function sendOrdersByProductReport(d:db.Distribution){
 		
 		var m = new sugoi.mail.Mail();
 		m.addRecipient(d.catalog.contact.email , d.catalog.contact.getName());
-		m.setSender(App.config.get("default_email"),"Cagette.net");
-		m.setSubject('[${d.catalog.group.name}] Distribution du ${Formatting.dDate(d.date)} (${d.catalog.name})');
+		m.setSender(App.config.get("default_email"),"::appName::");
+		m.setSubject('Distribution du ${Formatting.dDate(d.date)} (${d.catalog.name})');
 		var orders = service.ReportService.getOrdersByProduct(d);
 
 		var html = App.current.processTemplate("mail/ordersByProduct.mtt", { 
@@ -546,25 +557,25 @@ class OrderService
 		} );
 		
 		m.setHtmlBody(html);
-		App.sendMail(m);					
-
+		App.sendMail(m, d.catalog.group);
 	}
 
 
 	/**
 	 *  Send Order summary for a member
 	 *  WARNING : its for one distrib, not for a whole basket !
+	 	used in WholeSaleService
 	 */
 	public static function sendOrderSummaryToMembers(d:db.Distribution){
 
-		var title = '[${d.catalog.group.name}] Votre commande pour le ${App.current.view.dDate(d.date)} (${d.catalog.name})';
+		var title = 'Votre commande pour le ${App.current.view.dDate(d.date)} (${d.catalog.name})';
 
 		for( user in d.getUsers() ){
 
 			var m = new sugoi.mail.Mail();
 			m.addRecipient(user.email , user.getName(),user.id);
 			if(user.email2!=null) m.addRecipient(user.email2 , user.getName(),user.id);
-			m.setSender(App.config.get("default_email"),"Cagette.net");
+			m.setSender(App.config.get("default_email"),"::appName::");
 			m.setSubject(title);
 			var orders = prepare(d.catalog.getUserOrders(user,d));
 
@@ -580,7 +591,7 @@ class OrderService
 			} );
 			
 			m.setHtmlBody(html);
-			App.sendMail(m);
+			App.sendMail(m, d.catalog.group);
 		}
 		
 	}
@@ -770,7 +781,7 @@ class OrderService
 	/**
 		Create or update orders for variable catalogs
 	**/ 
-	public static function createOrUpdateOrders( user : db.User, multiDistrib : db.MultiDistrib, catalog : db.Catalog, ordersData:Array<{id:Int, productId:Int, qt:Float, paid:Bool}> ) : Array<db.UserOrder> {
+	public static function createOrUpdateOrders( user:db.User, multiDistrib:db.MultiDistrib, catalog:db.Catalog, ordersData:Array<{id:Int, productId:Int, qt:Float, paid:Bool}> ) : Array<db.UserOrder> {
 
 		if ( multiDistrib == null && catalog == null ) {
 			throw new Error('You should provide at least a catalog or a multiDistrib');

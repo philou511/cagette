@@ -1,26 +1,28 @@
 package db;
+import Common;
 import sugoi.form.ListData.FormData;
 import sys.db.Object;
 import sys.db.Types;
-import Common;
+
 using tools.DateTool;
 
 enum GroupFlags {
-	__HasMembership; 	//DEPRECATED membership management  
-	ShopMode; 		//shop mode / standard mode
+	__HasMembership; 	//@deprecated membership management  
+	ShopMode; 		//shop mode / CSA mode
 	HasPayments; 	//manage payments and user balance
-	ComputeMargin;	//compute margin instead of percentage
+	__ComputeMargin;	//compute margin instead of percentage
 	CagetteNetwork; //register in cagette.net groups directory
-	CustomizedCategories;  //the custom categories are not used anymore, use product taxonomy instead
+	__CustomizedCategories;  //the custom categories are not used anymore, use product taxonomy instead
 	HidePhone; 		//Hide manager phone on group public page
 	PhoneRequired;	//phone number of members is required for this group	
 	AddressRequired;//address required for delivery at home
-	UnUsed;
+	__UnUsed;
 	Show3rdCategoryLevel; //Show the third category level in the shop (Only for shop V2)
 }
 
 enum BetaFlags{
-	ShopV2; 		//BETA shop V2
+	___ShopV2; 		//shop V2 @deprecated
+	Cagette2;		//BETA Cagette 2.0
 }
 
 //user registration options
@@ -60,14 +62,14 @@ class Group extends Object
 	@hideInForms public var membershipRenewalDate : SNull<SDate>;
 	@hideInForms public var membershipFee : SNull<STinyInt>;
 	
-	@hideInForms public var vatRates : SNull<SData<Map<String,Float>>>;
+	@hideInForms public var vatRates : SNull<SSmallText>;
 	
 	//options and flags
 	public var flags:SFlags<GroupFlags>;
 	public var betaFlags:SFlags<BetaFlags>;
 	@hideInForms public var hasMembership:SBool;
 
-	public var groupType:SNull<SEnum<GroupType>>;
+	@hideInForms public var groupType:SNull<SEnum<GroupType>>;
 	
 	@hideInForms @:relation(imageId)
 	public var image : SNull<sugoi.db.File>;
@@ -83,8 +85,7 @@ class Group extends Object
 	@formPopulate("getMembersFormElementData") @:relation(legalReprId) public var legalRepresentative : SNull<db.User>;
 	
 	//payments
-	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
-	@hideInForms public var allowedPaymentsType2:SNull<SText>;
+	@hideInForms public var allowedPaymentsType:SNull<SSmallText>; //Array<String>
 	@hideInForms public var checkOrder:SNull<SString<64>>;
 	@hideInForms public var IBAN:SNull<SString<40>>;
 	@hideInForms public var allowMoneyPotWithNegativeBalance:SNull<SBool>;
@@ -103,8 +104,7 @@ class Group extends Object
 		flags.set(CagetteNetwork);
 		flags.set(ShopMode);
 		betaFlags = cast 0;
-		betaFlags.set(ShopV2);
-		vatRates = ["5,5%" => 5.5, "20%" => 20];
+		setVatRates([{label:"TVA alimentaire",value:5.5},{label:"TVA standard",value:20}]);
 		cdate = Date.now();
 		regOption = Open;
 		currency = "€";
@@ -113,7 +113,7 @@ class Group extends Object
 		
 		//duty periods props
 		daysBeforeDutyPeriodsOpen = 60;
-		volunteersMailContent = "<b>Rappel : Vous êtes inscrit(e) à la permanence du [DATE_DISTRIBUTION],</b><br/>
+		volunteersMailContent = "<b>Rappel : Vous êtes inscrit·e à la permanence du [DATE_DISTRIBUTION],</b><br/>
 		Lieu de distribution : [LIEU_DISTRIBUTION]<br/>
 		<br/>
 		Voici la liste des bénévoles inscrits :<br/>
@@ -130,20 +130,24 @@ class Group extends Object
 	}
 
 	/**
-		serialization error proof getter
+		vérifie que le groupe est bien dans un ilot/isolat cagette 2
 	**/
-	public function getVatRates():Map<String,Float>{
-		try{
-			if(this.vatRates==null){
-				return ["5,5%" => 5.5, "20%" => 20];
-			} else return this.vatRates;
-		}catch(e:Dynamic){
-			this.lock();
-			this.vatRates = ["5,5%" => 5.5, "20%" => 20];
-			this.update();
-			return this.vatRates;
-		}
+	public function checkIsolate(){
+	
+		if(this.betaFlags.has(BetaFlags.Cagette2)){
+			var noCagette2Vendors = getVendors().filter(v->!v.betaFlags.has(db.Vendor.VendorBetaFlags.Cagette2));
+			if ( noCagette2Vendors.length>0 ){
+				var name = noCagette2Vendors.map(v -> v.name).join(", ");
+				throw sugoi.ControllerAction.ControllerAction.ErrorAction("/user/choose",'Le groupe "${this.name}" a l\'option Cagette2 activée et ne peut pas fonctionner avec des producteurs qui n\'ont pas activé cette option ($name). Contactez nous sur <b>support@cagette.net</b> pour régler le problème.');
+			}
+			
+		} 
 	}
+
+	public function hasCagette2(){
+		return betaFlags.has(BetaFlags.Cagette2);
+	}
+	
 	
 	/**
 	 * find the most common delivery place
@@ -191,6 +195,7 @@ class Group extends Object
 	}
 	
 	public function hasShopMode() {
+		if(flags==null) return true;
 		return flags.has(ShopMode);
 	}
 	
@@ -203,67 +208,14 @@ class Group extends Object
 		return flags != null && flags.has(HasPayments) && flags.has(ShopMode);
 	}
 	
-	public function hasTaxonomy(){
+	/*public function hasTaxonomy(){
 		return flags != null && !flags.has(CustomizedCategories);
-	}
+	}*/
 	
 	public function hasPhoneRequired(){
 		return flags != null && flags.has(PhoneRequired);
 	}
 
-	public function hasShopV2(){		
-		return betaFlags != null && betaFlags.has(ShopV2);
-	}
-	
-	public function getCategoryGroups() {
-		
-		//if (flags.has(ShopCategoriesFromTaxonomy)){
-			//return Lambda.array( cast db.TxpCategory.manager.all(false) );	
-		//}else{
-			//return Lambda.array( db.CategoryGroup.get(this) );	
-		//}
-		var t = sugoi.i18n.Locale.texts;
-		var categs = new Array<{id:Int,name:String,color:String,pinned:Bool,categs:Array<CategoryInfo>}>();	
-		
-		if (!this.flags.has(db.Group.GroupFlags.CustomizedCategories)){
-			
-			//TAXO CATEGORIES
-			var taxoCategs = db.TxpCategory.manager.all(false);
-			var c : Array<CategoryInfo> = Lambda.array(Lambda.map( taxoCategs, function(c){return cast {id:c.id, name:c.name}; }));
-			
-			categs.push({
-				id:0,
-				name: t._("Product type"),
-				pinned:false,
-				color:"#583816",
-				categs: c				
-			});
-			
-		}else{
-			
-			//CUSTOM CATEGORIES
-			var catGroups = db.CategoryGroup.get(this);
-			for ( cg in catGroups){
-				var color = Formatting.intToHex(db.CategoryGroup.COLORS[cg.color]);
-				categs.push({
-					id:cg.id,
-					name:cg.name,
-					pinned:cg.pinned,
-					color:color,
-					categs: Lambda.array(Lambda.map( cg.getCategories(), function(c) return c.infos()))					
-				});
-			}	
-		}
-		
-		return categs;
-		
-	}
-	
-	
-	//public function canAddMember():Bool {
-	//	return isAboOk(true);
-	//}
-	
 	/**
 	 * Renvoie la liste des contrats actifs
 	 * @param	large=false
@@ -332,7 +284,7 @@ class Group extends Object
 	**/
 	public function getGroupAdmins():Array<db.UserGroup>{
 
-		var users = db.UserGroup.manager.search($rights2 != null && $rights2 != "[]" && $group == this, false);
+		var users = db.UserGroup.manager.search($rights != null && $rights != "[]" && $group == this, false);
 		
 		//cleaning 
 		/*for ( u in users.array()) {
@@ -512,12 +464,46 @@ class Group extends Object
 		];
 	}
 
-	override function update() {
-		sync();
-		super.update();
+	public function setVatRates(rates:Array<{value:Float,label:String}>){
+		vatRates = haxe.Json.stringify(rates);
 	}
 
-	public function sync() {
-		this.allowedPaymentsType2 = this.allowedPaymentsType != null ? haxe.Json.stringify(this.allowedPaymentsType) : null;
+	public function getVatRates():Array<{value:Float,label:String}>{
+		try{
+			return haxe.Json.parse(vatRates);
+		}catch(e:Dynamic){
+			var rates = [{label:"TVA alimentaire",value:5.5},{label:"TVA standard",value:20}];
+			this.lock();
+			setVatRates(rates);
+			this.update();
+			return rates;
+		}
 	}
+
+	/**
+		get vat rates as map
+	**/
+	public function getVatRatesOld():Map<String,Float>{
+		var map = new Map<String,Float>();
+		var rates = getVatRates();
+		if(rates==null) return null;
+		for( r in rates){
+			map.set(r.label,r.value);
+		}
+		return map;
+	}
+
+	public function setAllowedPaymentTypes(pt:Array<String>){
+		allowedPaymentsType = haxe.Json.stringify(pt);
+	}
+
+	public function getAllowedPaymentTypes():Array<String>{
+		try{
+			return haxe.Json.parse(allowedPaymentsType);
+		}catch(e:Dynamic){
+			return [];
+		}
+		
+	}
+
 }

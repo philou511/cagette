@@ -16,8 +16,7 @@ class Subscription extends Object {
 	var defaultOrders : SNull<SText>;
 	var absentDistribIds : SNull<SText>;
 
-	public function populate() {
-		
+	public function populate() {		
 		return App.current.user.getGroup().getMembersFormElementData();
 	}
 
@@ -81,19 +80,17 @@ class Subscription extends Object {
 		return Formatting.roundTo( getPaymentsTotal() + total, 2 );
 	}
 
-	public function setDefaultOrders( defaultOrders : Array< { productId : Int, quantity : Float } > ) {
-
+	public function setDefaultOrders( defaultOrders : Array<{ productId:Int, quantity:Float }> ) {
 		this.defaultOrders = haxe.Json.stringify( defaultOrders );
 	}	
 	
-	public function getDefaultOrders( ?productId : Int ) : Array< { productId : Int, quantity : Float } > {
+	public function getDefaultOrders( ?productId : Int ) : Array<{ productId:Int, quantity:Float }> {
 
 		if ( this.defaultOrders == null ) return [];
 		
-		var defaultOrders : Array< { productId : Int, quantity : Float } > = haxe.Json.parse( this.defaultOrders );
+		var defaultOrders : Array<{ productId:Int, quantity:Float }> = haxe.Json.parse( this.defaultOrders );
 		if ( productId != null ) {
-
-			return [ defaultOrders.find( function( order ) return order.productId == productId ) ];
+			return [ defaultOrders.find( order -> return order.productId == productId ) ];
 		}
 
 		return defaultOrders;
@@ -140,72 +137,77 @@ class Subscription extends Object {
 		return label;
 	}
 
-	public function setAbsentDistribIds( distribIds : Array<Int> ) {
+	/**
+		set subscriptions absence distributions
+	**/
+	public function setAbsences( distribIds:Array<Int> ) {
+
+		//check there is no duplicates
+		if(tools.ArrayTool.deduplicate(distribIds).length != distribIds.length){
+			throw new tink.core.Error(500,"Vous ne pouvez pas choisir deux fois la même distribution");
+		}
 
 		if( distribIds != null && distribIds.length != 0 ) {
-
 			distribIds.sort( function(b, a) { return  a < b ? 1 : -1; } );
 			this.absentDistribIds = distribIds.join(',');
-		}
-		else {
-
+		} else {
 			this.absentDistribIds = null;
 		}
-		
 	}
 
-	public function getAbsencesNb() : Int {
+	public function getAbsencesNb():Int {
 
-		if ( this.absentDistribIds == null ) return 0;
+		/*if ( this.absentDistribIds == null ) return 0;
 		var distribIds = this.absentDistribIds.split(',');
 		if ( this.catalog.absentDistribsMaxNb < distribIds.length ) {
-
 			return this.catalog.absentDistribsMaxNb;
 		}
-
-		return distribIds.length;
+		return distribIds.length;*/
+		return getAbsentDistribIds().length;
 	}
 	
 	public function getAbsentDistribIds() : Array<Int> {
 
 		if ( this.absentDistribIds == null ) return [];
 		var distribIds : Array<Int> = this.absentDistribIds.split(',').map( Std.parseInt );
-		if ( this.catalog.absentDistribsMaxNb < distribIds.length ) {
-
-			var shortenedDistribIds = new Array<Int>();
-			for ( i in 0...this.catalog.absentDistribsMaxNb ) {
-
-				shortenedDistribIds.push( distribIds[i] );
-			}
-
-			return shortenedDistribIds;
+		if ( distribIds.length > catalog.absentDistribsMaxNb ) {
+			//shorten list
+			distribIds = distribIds.slice(0,catalog.absentDistribsMaxNb);
 		}
 
 		return distribIds;
 	}
 
+	/**
+		get subscription absence distribs
+	**/
 	public function getAbsentDistribs() : Array<db.Distribution> {
 
-		var absentDistribIds : Array<Int> = getAbsentDistribIds();
+		var absentDistribIds = getAbsentDistribIds();
 		if ( absentDistribIds == null ) return [];
+		return db.Distribution.manager.search($id in absentDistribIds,false).array();
+	}
 
-		var absentDistribs : Array<db.Distribution> = new Array<db.Distribution>();
-		for ( distribId in absentDistribIds ) {
-
-			var distribution = db.Distribution.manager.get( distribId, false );
-			if ( distribution != null && this.catalog.absencesStartDate.toString() <= distribution.date.toString()
-				&& distribution.date.toString() <= this.catalog.absencesEndDate.toString() ) {
-
-				absentDistribs.push( distribution );
+	/**
+		get subscription POSSIBLE absence distribs
+	**/
+	public function getPossibleAbsentDistribs() : Array<db.Distribution> {
+		//get all subscription distribs
+		var subDistributions = db.Distribution.manager.search( $catalog == this.catalog && $date >= this.startDate && $end <= this.endDate, { orderBy : date }, false );
+		var out = [];
+		//keep only those who are in the absence period
+		for( d in subDistributions ){
+			if(d.date.getTime() >= this.catalog.absencesStartDate.getTime()){
+				if(d.date.getTime() <= this.catalog.absencesEndDate.getTime()){
+					out.push(d);
+				}
 			}
-			
 		}
-
-		return absentDistribs;
+		return out;
 	}
 
 	override public function toString(){
-		return "Souscription #"+id+" de "+user.getName()+" à "+catalog.name;
+		return 'Souscription #$id de ${user.getName()} à ${catalog.name}';
 	}
 
 	public static function getLabels() {

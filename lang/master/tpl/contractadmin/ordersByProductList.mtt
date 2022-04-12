@@ -9,21 +9,19 @@
 	<table class="table table-bordered table-hover"  style="width:100%;">
 		<tr>
 			<td>
-				::if group._image!=null::
-					<img src="::file(group._image)::" style="margin:auto;height:150px;" class="thumbnail" />
+				::if group.imageId!=null::
+					<img src="::file(group.imageId)::" style="margin:auto;height:150px;" class="thumbnail" />
 				::end::
 			</td>
 			<td>
 				<h1>::group.name::</h1>
-				::if distribution!=null::
-					<h2>Livraison du <b>::hDate(distribution.date)::</b></h2>
-				::end::
+				<h2>Bon de commande pour le <b>::hDate(distribution.date)::</b></h2>
 				<h2>::c.name:: - ::c._vendor.name::</h2>		
 			</td>
 			<td>
 				::set cv = c._vendor::
-				::if cv._image!=null::
-					<img src="::file(cv._image)::" class="thumbnail" style="margin:auto;height:150px;" />
+				::if cv.imageid!=null::
+					<img src="::file(cv.imageid)::" class="thumbnail" style="margin:auto;height:150px;" />
 				::end::
 			</td>
 		</tr>

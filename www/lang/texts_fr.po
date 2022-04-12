@@ -852,20 +852,21 @@ msgid ""
 "Each person must have an e-mail to be able to log in. ::user0:: ::user1:: "
 "don't have one. "
 msgstr ""
-"Chaque personne doit avoir un courriel pour pouvoir se connecter. ::user0:: "
-"::user1:: n'en a pas. "
+"Chaque personne doit avoir un courriel pour pouvoir se connecter. ::"
+"user0:: ::user1:: n'en a pas. "
 
 #: ../src/controller/Member.hx:19201
 msgid "The E-mail ::useremail:: is invalid, please modify your file"
-msgstr "Le courriel ::useremail:: est invalide, merci de modifier votre fichier"
+msgstr ""
+"Le courriel ::useremail:: est invalide, merci de modifier votre fichier"
 
 #: ../src/controller/Member.hx:19529
 msgid ""
 "The E-mail of the partner of ::userFirstName:: ::userLastName:: '::"
 "userEmail::' is invalid, please check your file"
 msgstr ""
-"Le courriel du conjoint(e) de ::userFirstName:: ::userLastName:: « "
-"::userEmail:: » est invalide, vérifiez votre fichier"
+"Le courriel du conjoint(e) de ::userFirstName:: ::userLastName:: « ::"
+"userEmail:: » est invalide, vérifiez votre fichier"
 
 #: ../src/controller/Member.hx:21268
 msgid "Send an E-mail to the person in charge of the group"
@@ -1301,7 +1302,7 @@ msgid ""
 "edit'>Please click here to update your account</a>."
 msgstr ""
 "Les membres de ce groupe doivent fournir un numéro de téléphone. <a href='/"
-"account/edit'>Cliquez ici pour mettre à jour votre compte</a>."
+"account'>Cliquez ici pour mettre à jour votre compte</a>."
 
 #: ../src/controller/Shop.hx:6184
 msgid "In order to confirm your order, You need to authenticate."
@@ -1639,8 +1640,8 @@ msgid ""
 "Group and user 'admin' created. Your email is 'admin@cagette.net' and your "
 "password is 'admin'"
 msgstr ""
-"Groupe et utilisateur « admin » créé. Votre courriel est « admin@cagette.net "
-"» et votre mot de passe est « admin »"
+"Groupe et utilisateur « admin » créé. Votre courriel est « admin@cagette."
+"net » et votre mot de passe est « admin »"
 
 #: ../src/controller/Install.hx:4652
 msgid "You must update your database to version "
@@ -2193,8 +2194,8 @@ msgid ""
 "Your account have not been validated yet. We sent an e-mail to ::email:: to "
 "finalize your subscription!"
 msgstr ""
-"Votre compte n'a pas encore été validé. Nous vous avons envoyé un courriel à "
-"::email:: pour finaliser votre inscription !"
+"Votre compte n'a pas encore été validé. Nous vous avons envoyé un courriel "
+"à ::email:: pour finaliser votre inscription !"
 
 #: ../src/service/UserService.hx:1213
 msgid "Invalid password"
@@ -5993,7 +5994,6 @@ msgstr ""
 #~ msgstr "Calendrier"
 
 #, fuzzy
-#~| msgid "Distribution list"
 #~ msgid "Multidistribution is null"
 #~ msgstr "Liste d'émargement"
 

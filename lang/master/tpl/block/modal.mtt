@@ -24,7 +24,7 @@
 				::end::
 			}
 
-			var modal = new _.Modal(myModal);
+			var modal = new _Cagette.Modal(myModal);
 			modal.show();
 		}
 

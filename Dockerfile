@@ -69,10 +69,10 @@ COPY config.xml.dist config.xml
 
 WORKDIR /srv/backend
 
-RUN haxe cagetteAllPlugins.hxml -D i18n_generation;
+RUN haxe build.hxml -D i18n_generation;
 
 WORKDIR /srv/frontend
-RUN haxe cagetteJs.hxml
+RUN haxe build.hxml
 
 WORKDIR /srv/lang/fr/tpl/
 RUN neko ../../../backend/temploc2.n -macros macros.mtt -output ../tmp/ *.mtt */*.mtt */*/*.mtt */*/*/*.mtt */*/*/*/*.mtt

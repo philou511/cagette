@@ -25,7 +25,7 @@ class Product extends Controller
 		
 		if (!app.user.canManageContract(product.catalog)) throw t._("Forbidden access");
 		
-		var f = ProductService.getForm(product);
+		var f = ProductService.getForm(product);		
 		
 		if (f.isValid()) {
 
@@ -33,7 +33,9 @@ class Product extends Controller
 
 			//manage stocks by distributions for CSA contracts
 			if(!product.catalog.group.hasShopMode() && product.catalog.hasStockManagement()){
-				product.stock = (f.getValueOf("stock"):Float) * product.catalog.getDistribs(false).length;
+				var distribNum = product.catalog.getDistribs(false).length;
+				distribNum = distribNum == 0 ? 1 : distribNum;
+				product.stock = (f.getValueOf("stock"):Float) * distribNum;
 			}
 
 			try{
@@ -158,7 +160,7 @@ class Product extends Controller
 					}
 					if (p["stock"] != null) product.stock = fv.filterString(p["stock"]);
 					product.organic = p["organic"] != null;
-					product.hasFloatQt = p["floatQt"] != null;
+					// product.hasFloatQt = p["floatQt"] != null;
 					
 					product.catalog = c;
 					product.insert();
@@ -180,111 +182,30 @@ class Product extends Controller
 		view.step = csv.step;
 	}
 	
-	@tpl("product/categorize.mtt")
-	public function doCategorize(contract:db.Catalog) {
-		
-		
-		if (!app.user.canManageContract(contract)) throw t._("Forbidden access");
-		
-		if (db.CategoryGroup.get(app.user.getGroup()).length == 0) throw Error("/contractAdmin", t._("You must first define categories before you can assign a category to a product"));
-		
-		//var form = new sugoi.form.Form("cat");
-		//
-		//for ( g in db.CategoryGroup.get(app.user.getGroup())) {
-			//var data = [];
-			//for ( c in g.getCategories()) {
-				//data.push({key:Std.string(c.id),value:c.name});
-			//}
-			//form.addElement(new sugoi.form.elements.Selectbox("cats"+g.id,g.name,data));
-		//}
-		//
-		//view.form = form;
-		view.c = contract;
+	public function doExport(c:db.Catalog){
+
+		var data = new Array<Dynamic>();
+		for (p in c.getProducts(false)) {
+			data.push({
+				"id": p.id,
+				"name": p.name,
+				"ref": p.ref,
+				"price": p.price,
+				"vat": p.vat,
+				"catalogId": c.id,
+				"vendorId": c.vendor.id,
+				"unit": p.unitType,
+				"quantity": p.qt,
+				"active": p.active,
+				"image": "https://"+App.config.HOST+p.getImage(),
+			});
+		}
+
+		sugoi.tools.Csv.printCsvDataFromObjects(data, [
+			"id", "name", "ref", "price", "vat", "catalogId", "vendorId", "unit", "quantity", "active", "image"], "Export-produits-" + c.name + "-Cagette");
+		return;
 		
 	}
-	
-	/**
-	 * init du Tagger
-	 * @param	contract
-	 */	
-	public function doCategorizeInit(contract:db.Catalog) {
-		
-		if (!app.user.canManageContract(contract)) throw t._("Forbidden access");
-		
-		var data : TaggerInfos = {
-			products:[],
-			categories:[]
-		}
-		
-		for (p in contract.getProducts()) {
-			
-			data.products.push({product:p.infos(),categories:Lambda.array(Lambda.map(p.getCategories(),function(x) return x.id))});
-		}
-		
-		for (cg in db.CategoryGroup.get(app.user.getGroup())) {
-			
-			var x = { id:cg.id, categoryGroupName:cg.name, color:Formatting.intToHex(db.CategoryGroup.COLORS[cg.color]),tags:[] };
-			
-			for (t in cg.getCategories()) {
-				x.tags.push({id:t.id,name:t.name});
-			}
-			data.categories.push(x);
-			
-		}
-		
-		Sys.print(haxe.Json.stringify(data));
-	}
-	
-	public function doCategorizeSubmit(contract:db.Catalog) {
-		
-		if (!app.user.canManageContract(contract)) throw t._("Forbidden access");
-		
-		var data : TaggerInfos = haxe.Json.parse(app.params.get("data"));
-		
-		db.ProductCategory.manager.unsafeDelete("delete from ProductCategory where productId in (" + Lambda.map(contract.getProducts(), function(t) return t.id).join(",")+")");
-		
-		for (p in data.products) {
-			for (t in p.categories) {
-				var x = new db.ProductCategory();
-				x.category = db.Category.manager.get(t, false);
-				x.product = db.Product.manager.get(p.product.id,false);
-				x.insert();				
-			}
-		}
-		
-		Sys.print(t._("Modifications saved"));
-	}
-	
-	
-
-
-	
-	/*@tpl('product/compose.mtt')
-	function doCompose(){}
-	*/
-
-	//use API now !
-	/*function doGetTaxo(){
-		
-		var out : TxpDictionnary = {products:new Map(), categories:new Map(), subCategories:new Map()};
-		
-		for ( p in db.TxpProduct.manager.all()){
-			out.products.set(p.id, {id:p.id, name:p.name, category:p.category.id, subCategory:p.subCategory.id});			
-		}
-		
-		for ( c in db.TxpCategory.manager.all()){
-			out.categories.set(c.id, c.infos());
-		}
-		
-		for ( c in db.TxpSubCategory.manager.all()){
-			out.subCategories.set(c.id, c.infos());
-		}
-		
-		Sys.print(haxe.Serializer.run(out));
-		
-	}*/
-
-	
 	
 	
 	

@@ -1107,7 +1107,7 @@ msgid "Chicken"
 msgstr ""
 
 #: ../src/controller/Shop.hx:761 ../src/controller/Main.hx:3066 ../src/controller/Main.hx:6086
-msgid "Members of this group should provide a phone number. <a href='/account/edit'>Please click here to update your account</a>."
+msgid "Members of this group should provide a phone number. <a href='/account'>Please click here to update your account</a>."
 msgstr ""
 
 #: ../src/controller/Shop.hx:4848
@@ -1423,8 +1423,8 @@ msgid "The link \"::link::\" does not exists."
 msgstr "El link \"::link::\" no existeix."
 
 #: ../src/controller/Main.hx:3367 ../src/controller/Main.hx:6387
-msgid "Members of this group should provide an address. <a href='/account/edit'>Please click here to update your account</a>."
-msgstr "Els membres d'aquest grup han de donar la seva adreça. <a href='/account/edit'>Clica aquí per actualitzar el vostre compte</a>."
+msgid "Members of this group should provide an address. <a href='/account'>Please click here to update your account</a>."
+msgstr "Els membres d'aquest grup han de donar la seva adreça. <a href='/account'>Clica aquí per actualitzar el vostre compte</a>."
 
 #: ../src/controller/Account.hx:586 ../src/controller/Account.hx:777
 msgid "Email ::em:: is invalid"

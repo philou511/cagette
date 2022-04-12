@@ -17,12 +17,14 @@ class Amap extends Controller
 	
 	@tpl("amap/default.mtt")
 	function doDefault() {
-		var contracts = db.Catalog.getActiveContracts(app.user.getGroup(), true, false).array();
+		var group = app.user.getGroup();
+		var contracts = db.Catalog.getActiveContracts(group, true, false).array();
 		for ( c in contracts.copy()) {
 			if( c.endDate.getTime() < Date.now().getTime() ) contracts.remove(c);
-			if( c.vendor.isDisabled()) contracts.remove(c);
+			if( group.hasShopMode() && c.vendor.isDisabled()  ) contracts.remove(c);
 		}
 		view.contracts = contracts;
+		view.group = app.user.getGroup();
 	}
 	
 	@tpl("form.mtt")
@@ -34,17 +36,27 @@ class Amap extends Controller
 		
 		var form = form.CagetteForm.fromSpod(group);
 
+		form.removeElementByName("betaFlags");
+		// var flags = form.getElement("betaFlags");
+		// untyped flags.excluded = [0];
+
 		//remove "membership", "shop mode", "marge a la place des %", "unused" from flags
 		var flags = form.getElement("flags");
-		untyped flags.excluded = [0,1,3,9];
+		untyped flags.excluded = [0,1,3,5,9];
 		if(!group.hasShopMode()) untyped flags.excluded.push(2);
 
 		//group mode
-		var mode = group.flags.has(db.Group.GroupFlags.ShopMode) ? "Mode Boutique" : "Mode AMAP";
+		var mode = group.flags.has(db.Group.GroupFlags.ShopMode) ? "Mode Marché" : "Mode AMAP";
 		var html = new sugoi.form.elements.Html("mode",mode,"Mode de commande");
 		html.docLink = "https://wiki.cagette.net/admin:admin_boutique";
 		form.addElement(html ,7);
 	
+		if(group.hasShopMode()){
+			//payment help
+			var html = new sugoi.form.elements.Html("payments","<p class='desc'><a href='https://formation.alilo.fr/mod/page/view.php?id=821' target='_blank'><i class=\"icon icon-info\"></i> En savoir plus sur la gestion des paiements</a></p>","");
+			form.addElement(html ,9);
+		}
+
 		if (form.checkToken()) {
 			
 			if(form.getValueOf("id") != app.user.getGroup().id) {
@@ -59,28 +71,6 @@ class Amap extends Controller
 
 			//keep shop mode
 			if(shopMode) group.flags.set(db.Group.GroupFlags.ShopMode);
-
-			//switch to payment enabled in CSA mode
-			// if(!shopMode && !hasPayments && group.hasPayments()){
-			// 	for ( c in group.getActiveContracts(true)){
-			// 		for ( sub in SubscriptionService.getCatalogSubscriptions(c)){
-			// 			//create operation
-			// 			SubscriptionService.createOrUpdateTotalOperation( sub );
-			// 		}
-			// 	}				
-			// }
-
-			if(group.betaFlags.has(db.Group.BetaFlags.ShopV2) && group.flags.has(db.Group.GroupFlags.CustomizedCategories)){
-				App.current.session.addMessage("Vous ne pouvez pas activer les catégories personnalisées et la nouvelle boutique. La nouvelle boutique ne fonctionne pas avec les catégories personnalisées.",true);
-				group.flags.unset(db.Group.GroupFlags.CustomizedCategories);
-				group.update();
-			}
-
-			if(!group.betaFlags.has(db.Group.BetaFlags.ShopV2) && group.flags.has(db.Group.GroupFlags.Show3rdCategoryLevel)){
-				App.current.session.addMessage("Vous ne pouvez classer la boutique par catégorie de troisième niveau seulement avec la nouvelle boutique.",true);
-				group.flags.unset(db.Group.GroupFlags.Show3rdCategoryLevel);
-				group.update();
-			}
 
 			if (group.extUrl != null){
 				if ( group.extUrl.indexOf("http://") ==-1 &&  group.extUrl.indexOf("https://") ==-1 ){

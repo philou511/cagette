@@ -60,7 +60,7 @@ class PProductService
 		//import
 		if (csvData != null){
 			csv = new sugoi.tools.Csv();
-			csv.setHeaders( ["productName", "ref", "desc", "unit", "organic", "floatQt", "txp" ,"offerName", "offerRef","qt", "price", "vat","active","imageUrl","imageDate"] );
+			csv.setHeaders( ["productName", "ref", "desc", "unit", "organic", "bulk", "txp" ,"offerName", "offerRef","qt", "price", "vat","active","imageUrl","imageDate"] );
 			datas = csv.importDatasAsMap( csvData );
 			datas.shift(); //remove second header
 			try{ App.current.session.data.csvImportedData = datas;}catch(e:Dynamic){}
@@ -109,7 +109,7 @@ class PProductService
 				}
 				
 				product.organic = p["organic"] == "1";
-				product.hasFloatQt = p["floatQt"] == "1";
+				product.bulk = p["bulk"] == "1";
 				product.active = if (p["active"] == null || p["active"] == "" || p["active"]=="1") true else false;
 
 				//image
@@ -179,6 +179,8 @@ class PProductService
 			offer.ref = p["offerRef"];
 			offer.name = p["offerName"];
 			offer.active = if (p["active"] == null || p["active"] == "" || p["active"] == "1") true else false;
+
+			if(lastProduct.bulk) offer.smallQt = 0.1;
 			
 			//if (offer.ref == "CS-0212-1" ) trace(p + "----" + offer.htPrice);
 			offer.quantity = fv.filterString(p["qt"]);
@@ -352,9 +354,12 @@ class PProductService
 		f.removeElement( f.getElement("type") );
 
 		f.getElement("bulk").description = "Ce produit est vendu en vrac ( sans conditionnement ). Le poids/volume commandé peut être corrigé après pesée.";
-		f.getElement("hasFloatQt").description = "<div class='alert alert-danger'>Attention cette option <a href='https://wiki.cagette.net/admin:5april' target='_blank'>disparaîtra le lundi 3 Mai 2021</a>. </a>";
+		f.getElement("bulk").docLink = "https://formation.alilo.fr/mod/page/view.php?id=793";		
+	
 		f.getElement("variablePrice").description = "Comme au marché, le prix final sera calculé en fonction du poids réel après pesée.";
+		f.getElement("variablePrice").docLink = "https://formation.alilo.fr/mod/page/view.php?id=792";
 		f.getElement("multiWeight").description = "Permet de peser séparément chaque produit. Idéal pour la volaille par exemple.";
+		f.getElement("multiWeight").docLink = "https://formation.alilo.fr/mod/page/view.php?id=792";
 
 
 
@@ -363,7 +368,7 @@ class PProductService
 		var html = service.ProductService.getCategorizerHtml(d.name,txId,f.name);
 		f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
 
-		f.addElement(new sugoi.form.elements.Html("html","<a class='alert alert-warning' href='https://docs.google.com/forms/d/e/1FAIpQLSfFQpIabLSBgLTWZkuiIhQR4tO8tmGO2SZDWPd4OrHcXrM8PA/viewform?fbzx=-2048161261692944588&_hsmi=2&_hsenc=p2ANqtz-_nAqLUeyXe4EKO6PgLsD49ReyvUS-nm0FoXfFBZak_nuM_-3GpRCwdXM4ydo_3oKdGFRQ46l_deWgk4proQVALa3hKCA' target='_blank'>Participez au sondage pour améliorer les catégories.</a><br/>",""),2);
+		f.addElement(new sugoi.form.elements.Html("html","<span class='disabled'>Une catégorie manquante selon vous ? Écrivez au support : support@cagette.net</span><br/>",""),2);
 
 		return f;
 	}

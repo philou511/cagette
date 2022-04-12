@@ -30,7 +30,6 @@
                         <th>Obligation de commander à chaque distribution</th>
                         <th>Minimum de commande par distribution</th>
                         <th>Minimum de commandes sur la durée du contrat</th>
-                        <th>Dépassement autorisé</th>                        
                     </tr>
                     <tr style="text-align: center;">
                         <td style="vertical-align: middle;">
@@ -54,13 +53,7 @@
                                 Aucun
                             ::end::
                         </td>
-                        <td style="vertical-align: middle;">
-                            ::if catalog.allowedOverspend != null::
-                                ::catalog.allowedOverspend::&nbsp;::currency()::
-                            ::else::
-                                Aucun
-                            ::end::
-                        </td>
+                        
                     </tr>
                 </table>
 			</div>
@@ -71,9 +64,25 @@
 
         $$insert( Nouvelle souscription, /contractAdmin/subscriptions/insert/::catalog.id:: )
 
-        ::if(user.isAdmin())::
+        ::if(user.isAdmin() && !hasPayments)::
         <a href="/contractAdmin/subscriptions/unmarkAll/::catalog.id::" class="btn btn-default btn-sm">
             <i class="icon icon-square"></i> Admin : Marquer toutes les souscriptions comme non payées
+        </a>
+        ::end::
+
+        ::if(hasPayments)::
+        <a href="/contractAdmin/subscriptions/massPayments/::catalog.id::" class="btn btn-default btn-sm">
+            <i class="icon icon-euro"></i> Saisie de paiements en masse
+        </a>
+        ::end::
+
+        ::if(orderBy=="userName")::
+        <a href="?orderBy=subscriptionId" class="btn btn-default btn-sm">
+            Trier par ordre chronologique
+        </a>
+        ::else::
+        <a href="?orderBy=userName" class="btn btn-default btn-sm">
+            Trier par nom
         </a>
         ::end::
         
@@ -168,7 +177,15 @@
                                                 <a href="/contractAdmin/subscriptions/edit/::subscription.id::">
                                                     <i class="icon icon-edit"></i> ::_("Edit")::
                                                 </a>
-                                            </li>                                    
+                                            </li>
+                                            
+                                            ::if(catalog.hasAbsencesManagement())::
+                                            <li>
+                                                <a href="/subscriptions/absences/::subscription.id::?returnUrl=/contractAdmin/subscriptions/::catalog.id::">
+                                                    <i class="icon icon-vacation"></i> Absences
+                                                </a>
+                                            </li>
+                                            ::end::
                                             
                                             ::if(hasPayments)::
                                             <li>

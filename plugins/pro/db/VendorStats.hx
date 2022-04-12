@@ -1,15 +1,17 @@
 package pro.db;
 import sys.db.Types;
+import service.BridgeService;
 
 enum VendorType {
-	VTCpro; 		// 0 Cagette Pro formé
-	VTFree; 		// 1 Gratuit
-	VTInvited; 		// 2 Invité
-	VTInvitedPro;   // 3 Invité Cagette Pro
-	VTCproTest; 	// 4 Cagette Pro test (COVID19)
-	VTStudent; 		// 5 compte pro pédagogique
-	VTCproStudent; 	// 6 compte pro test/découverte inscrit à une formation
-	VTDiscovery; 	// 7 Cagette Découverte
+	VTCpro; 			// 0 Offre Pro formé
+	VTFree; 			// 1 Gratuit
+	VTInvited; 			// 2 Invité
+	VTInvitedPro;   	// 3 Invité Cagette Pro
+	VTCproTest; 		// 4 Cagette Pro test (COVID19 ou en attente de formation)
+	VTStudent; 			// 5 compte pro pédagogique
+	VTDiscovery; 		// 6 Offre Découverte
+	VTCproSubscriberMontlhy; 	// 7 Offre Pro abonné mensuel
+	VTCproSubscriberYearly; 	// 8 Offre Pro abonné annuel
 }
 
 /**
@@ -26,6 +28,7 @@ class VendorStats extends sys.db.Object
 	public var referer:SNull<SString<256>>; // referer list
 	public var turnover90days : SNull<SFloat>; //turnover of the last 90 days
 	public var turnoverTotal : SNull<SFloat>; //turnover since the beginning
+	public var marketTurnoverSinceFreemiumResetDate : SFloat; //market turnover since freemium reset date
 	public var ldate : SDateTime; //last update date
 	
 	public function new(){
@@ -58,14 +61,22 @@ class VendorStats extends sys.db.Object
 		//type
 		if(cpro!=null){
 
-			if(vendor.isTest){
-				vs.type = VTCproTest;
-			}else if(cpro.discovery){	
-				vs.type = VTDiscovery;
-			}else if(cpro.training){				
+			//if(vendor.isTest){
+			//	vs.type = VTCproTest;
+			if(cpro.offer == Training){				
 				vs.type = VTStudent;
-			}else{
+			}else if(cpro.offer==Discovery){
+				vs.type = VTDiscovery;
+			}else if(cpro.offer==Member){
 				vs.type = VTCpro;
+			}else if(cpro.offer==Pro){
+				// Get subscription plan
+				var result:Dynamic = BridgeService.call('/subscriptions/plan/${vendor.stripeCustomerId}');
+				if (result!=null && result.plan=='year'){
+					vs.type = VTCproSubscriberYearly;
+				} else {
+					vs.type = VTCproSubscriberMontlhy;
+				}
 			}
 			
 		}else{
@@ -119,8 +130,16 @@ class VendorStats extends sys.db.Object
 
 		vs.active = vs.turnover90days > 0;
 
+		//freemium turnover 
+		var from = vendor.freemiumResetDate;
+		vs.marketTurnoverSinceFreemiumResetDate = 0;
+		var cids = vendor.getContracts().array().filter( cat -> cat.group.hasShopMode() ).map(c -> c.id);//only shopMode
+		for( d in db.Distribution.manager.search($date > from && $date < now && ($catalogId in cids), false)){
+			vs.marketTurnoverSinceFreemiumResetDate += d.getTurnOver();
+		}
+
 		//a trainee cannot be active
-		if(cpro!=null && cpro.training){
+		if(cpro != null && cpro.offer == Training){
 			vs.active = false;
 		}
 

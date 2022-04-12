@@ -1,7 +1,10 @@
 package service;
 
-import tink.core.Error;
+import pro.db.CagettePro;
+import sugoi.form.elements.Input.InputType;
+import sugoi.form.elements.IntInput;
 import sugoi.form.validators.EmailValidator;
+import tink.core.Error;
 
 typedef VendorDto = {
 	name:String,
@@ -9,7 +12,7 @@ typedef VendorDto = {
 	linkUrl:String,
 	companyNumber:String,
 	country:String,
-	?legalStatus:Int,//0 société,1 entr. individuelle, 2 asso
+	?legalStatus:Int,//0 société, 1 entr. individuelle, 2 asso, 3 particulier
 
 }
 
@@ -22,7 +25,7 @@ class VendorService{
 	/**
 		Get or create+link user account related to this vendor.
 	**/
-	public static function getOrCreateRelatedUser(vendor:db.Vendor){
+	/*public static function getOrCreateRelatedUser(vendor:db.Vendor){
 		if(vendor.user!=null){
 			return vendor.user;
 		}else{
@@ -32,87 +35,74 @@ class VendorService{
 			vendor.update();
 			return u;
 		}
-	}
+	}*/
 
 	/**
-		Get vendors linked to a user account
+		Get vendors accounts linked to a user account
 	**/
-	public static function getVendorsFromUser(user:db.User):Array<db.Vendor>{
+	public static function getCagetteProFromUser(user:db.User):Array<CagettePro>{
 		//get vendors linked to this account
 		//var vendors = Lambda.array( db.Vendor.manager.search($user==user,false) );
-		var vendors = [];
+		// var vendors = [];
 		#if plugins
-		var vendors2 = Lambda.array(Lambda.map(pro.db.PUserCompany.getCompanies(user),function(c) return c.vendor));
-		vendors = vendors2.concat(vendors);
-		vendors = tools.ObjectListTool.deduplicate(vendors);
+		// var vendors2 = Lambda.array(Lambda.map(pro.db.PUserCompany.getCompanies(user),function(c) return c.vendor));
+		// vendors = vendors2.concat(vendors);
+		// vendors = tools.ObjectListTool.deduplicate(vendors);
+		return pro.db.PUserCompany.getCompanies(user);
 		#end
-		return vendors;
+		// return vendors;
 	}
 
-	/**
-		Send an email to the vendor
-	**/
-	public static function sendEmailOnAccountCreation(vendor:db.Vendor,source:db.User,group:db.Group){
-
-		return;
-		
-		// the vendor and the user is the same person
-		if(vendor.email==source.email) return;
-		if(vendor.user==null) throw "Vendor should have a user";
-		if(group==null) throw "a group should be provided";
-
-		#if plugins
-		var k = sugoi.db.Session.generateId();
-		sugoi.db.Cache.set("validation" + k, vendor.user.id, 60 * 60 * 24 * 30); //expire in 1 month
-		
-		var e = new sugoi.mail.Mail();
-		e.setSubject("Vous êtes référencé sur Cagette.net !");
-		e.addRecipient(vendor.email,vendor.name);
-		e.setSender(App.config.get("default_email"),"Cagette.net");			
-		
-		var html = App.current.processTemplate("mail/vendorInvitation.mtt", { 
-			source:source,
-			sourceGroup:group,
-			vendor:vendor,
-			k:k 			
-		} );		
-		e.setHtmlBody(html);
-		
-		App.sendMail(e);	
-		#end
-	}
 
 	/**
-		Search vendor by name or email
+		Search vendors.
 	**/
-	public static function findVendors(name:String,?email:String){
+	public static function findVendors(search:{?name:String,?email:String,?geoloc:Bool,?profession:Int,?fromLat:Float,?fromLng:Float}){
 		var vendors = [];
-		for( n in name.split(" ")){
-			n = n.toLowerCase();
-			if(Lambda.has(["le","la","les","du","de","l'","a","à","au","en","sur","qui","ferme","GAEC","EARL","SCEA","jardin","jardins"],n)) continue;
-			//search for each term
-			//var search = Lambda.array(db.Vendor.manager.unsafeObjects('SELECT * FROM Vendor WHERE name LIKE "%$n%" LIMIT 20',false));
-			var search = Lambda.array(db.Vendor.manager.search( $name.like('%$n%'),{limit:20},false));
-			vendors = vendors.concat(search);
+		var names = [];
+		var where = [];
+		if(search.name!=null){
+			for( n in search.name.split(" ")){
+				n = n.toLowerCase();
+				if(Lambda.has(["le","la","les","du","de","l'","a","à","au","en","sur","qui","ferme","GAEC","EARL","SCEA","jardin","jardins"],n)) continue;
+				if(Lambda.has(["create","delete","drop","select","count"],n)) continue; //no SQL injection !
+			
+				names.push(n);
+			}
+			where.push('(' + names.map(n -> 'name LIKE "%$n%"').join(' OR ') + ')');
 		}
-
+		
 		//search by mail
-		if(email!=null){
-			vendors = vendors.concat(Lambda.array(db.Vendor.manager.search($email==email,false)));
+		// if(search.email!=null){
+		// 	where.push('email LIKE "${search.email}"');
+		// }
+
+		//search by profession
+		if(search.profession!=null){
+			where.push('(profession = ${search.profession} OR production2 = ${search.profession} OR production3 = ${search.profession})');
 		}
 		
-		vendors = tools.ObjectListTool.deduplicate(vendors);
+		var selectDist = '';
+		var orderBy = "";
+
+		if(search.geoloc && search.fromLat!=null){
+			orderBy = "ORDER BY dist ASC";
+			selectDist = ',SQRT(POW(lat-${search.fromLat},2) + POW(lng-${search.fromLng},2)) as dist';
+			where.push("lat is not null");
+		}
+
+		//search for each term
+		vendors = Lambda.array(db.Vendor.manager.unsafeObjects('SELECT * $selectDist FROM Vendor WHERE ${where.join(' AND ')} $orderBy LIMIT 30',false));
+
+		// vendors = tools.ObjectListTool.deduplicate(vendors);
 
 		#if plugins
 		//cpro first
 		for( v in vendors.copy() ){
 			var cpro = v.getCpro();
-			if( cpro !=null ){
-				vendors.remove(v);
-				//do not display students cpro accounts !
-				if(cpro.disabled) continue;
-				vendors.unshift(v);
-			} 
+			if( cpro != null){				
+				if(cpro.offer==Training) vendors.remove(v);				
+			} 			
 		}
 		#end
 
@@ -131,7 +121,7 @@ class VendorService{
 		for( v in vendors.copy()){
 			//remove training pro accounts
 			var cpro = pro.db.CagettePro.getFromVendor(v);
-			if(cpro!=null && cpro.training) vendors.remove(v);
+			if(cpro!=null && cpro.offer==Training) vendors.remove(v);
 		}
 		#end
 		if(vendors.length>0) throw new Error("Un producteur est déjà référencé avec cet email dans notre base de données");
@@ -152,7 +142,8 @@ class VendorService{
 		
 		//country
 		form.removeElementByName("country");
-		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country,true));
+		var country = vendor.country==null ? "FR" : vendor.country.toUpperCase();
+		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),country,true));
 		
 		//profession
 		form.addElement(new sugoi.form.elements.IntSelect('profession',t._("Profession"),sugoi.form.ListData.fromSpod(service.VendorService.getVendorProfessions()),vendor.profession,true),4);
@@ -162,18 +153,26 @@ class VendorService{
 
 		if(legalInfos){
 			form.addElement(new sugoi.form.elements.Html("html","<h4>Informations légales obligatoires</h4>"));
-
-			//form.addElement(new sugoi.form.elements.IntSelect('legalStatus',"Statut juridique",sugoi.form.ListData.fromSpod(service.VendorService.getLegalStatuses()),vendor.legalStatus,true));
-			if(vendor.legalStatus!=null){
+			
+			/*if(vendor.legalStatus!=null){
 				form.addElement(new sugoi.form.elements.Html("html",vendor.getLegalStatus(false),"Statut juridique"));
-			}else{
+				var el = new sugoi.form.elements.IntInput('legalStatus',"Statut juridique",vendor.legalStatus,true);
+				el.inputType = InputType.ITHidden;
+				form.addElement(el);
+
+			}else{*/
+				if(vendor.legalStatus!=null){
+					form.addElement(new sugoi.form.elements.Html("html",vendor.getLegalStatus(false),"Statut juridique actuel :"));
+				}
+
 				var data = [
 					{label:"Société",value:0},
 					{label:"Entreprise individuelle",value:1},
 					{label:"Association",value:2},
-					{label:"Particulier (mettez 0 comme numéro SIRET)",value:3}];
+					// {label:"Particulier (mettez 0 comme numéro SIRET)",value:3}
+				];
 				form.addElement(new sugoi.form.elements.IntSelect('legalStatus',"Forme juridique",data,null,true));
-			}
+			//}
 
 			form.addElement(new sugoi.form.elements.StringInput("companyNumber","Numéro SIRET (14 chiffres) ou numéro RNA pour les associations.",vendor.companyNumber,true));
 			form.addElement(new sugoi.form.elements.StringInput("vatNumber","Numéro de TVA (si assujeti)",vendor.vatNumber,false));
@@ -221,11 +220,10 @@ class VendorService{
 
 		//particulier
 		if(legalInfos && data.legalStatus==3){
-
 			vendor.legalStatus = -1;//particulier
 		}
 
-		//check SIRET if french and not association
+		//check SIRET if french and not association && not particulier
 		if(legalInfos && data.country=="FR" && data.legalStatus!=2 && data.legalStatus!=3){
 			//https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/82902831500010
 			var c = new sugoi.apis.linux.Curl();
@@ -239,9 +237,28 @@ class VendorService{
 				throw new Error("Erreur avec le numéro SIRET ("+res.message+"). Si votre numéro SIRET est correct mais non reconnu, contactez nous sur support@cagette.net");
 			}else{
 				vendor.companyNumber = siret;
-				vendor.siretInfos = res.etablissement;
+				var siretInfos = res.etablissement;
+				
 				//take adress from siretInfos
-				var addr = vendor.getAddressFromSiretInfos();
+				var addr = {
+					address1:"",
+					address2:"",
+					zipCode:siretInfos.code_postal,
+					city:siretInfos.libelle_commune,
+					lat:siretInfos.latitude,
+					lng:siretInfos.longitude
+				}
+		
+				//find address1
+				var a = [];
+				for( k in ["numero_voie","type_voie","libelle_voie"] ){
+					var v = Reflect.field(siretInfos,k);
+					if(v!=null && v!=""){
+						a.push(v);
+					}
+				}
+				addr.address1 = a.join(" ");
+		
 				if(addr!=null && addr.city!=null){
 					vendor.address1 = addr.address1;
 					vendor.zipCode = addr.zipCode;
@@ -269,6 +286,14 @@ class VendorService{
 			App.current.session.addMessage("Merci d'avoir saisi vos informations légales. Votre compte a été débloqué.",false);
 		}
 
+		//training account MUST have "(formation)" in its name
+		var cpro = vendor.getCpro();
+		if(cpro!=null && cpro.offer==Training){
+			if(vendor.name.indexOf("(formation)")==-1){
+				vendor.name += " (formation)";
+			}
+		}
+
 		return vendor;
 	}
 
@@ -293,6 +318,18 @@ class VendorService{
 		var filePath = sugoi.Web.getCwd()+"../data/categoriesJuridiques.json";
 		var json:Array<{id:Int,name:String}> = haxe.Json.parse(sys.io.File.getContent(filePath));
 		return json;
+	}
+
+	public static function getUnlinkedCatalogs(company:pro.db.CagettePro){
+
+		var remoteCatalogs = connector.db.RemoteCatalog.manager.search($remoteCatalogId in company.getCatalogs().map(x -> x.id), false); 
+		var vendor = company.vendor;
+		var catalogs = vendor.getActiveContracts().array();
+		catalogs = catalogs.filter( c -> c.group.hasShopMode() );//remove CSA group
+		catalogs = catalogs.filter( c -> {
+			return remoteCatalogs.find( rc -> rc.getContract().id==c.id) == null;
+		}); //remove linked catalogs
+		return catalogs;
 	}
 
 }

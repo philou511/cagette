@@ -128,7 +128,6 @@ class POffer extends Object
 			subcategories : [],  //used in new shop
 			orderable : false,			//can be currently ordered
 			stock: null,			//available stock
-			hasFloatQt : this.product.hasFloatQt,
 			qt:this.quantity,
 			unitType:this.product.unitType,
 			organic:this.product.organic,
@@ -162,6 +161,31 @@ class POffer extends Object
 		}
 		return offers.length > 0;
 	}
+
+	/**
+		get duplicate refs in offers
+	**/
+	public static function getRefDuplicates(cagettePro:pro.db.CagettePro):Array<String>{
+		//global check on refs unicity
+		var refs = new Map<String,Int>();
+		for ( p in cagettePro.getProducts() ){
+			for ( o in p.getOffers(false)){
+				var i = refs.get(o.ref);
+				if (i == null){
+					refs.set(o.ref, 1);
+				}else{
+					refs.set(o.ref, i + 1);
+				}				
+			}
+		}
+		var duplicates = [];
+		for ( k in refs.keys()){
+			if(refs.get(k)>1) {
+				duplicates.push(k);
+			}
+		}
+		return duplicates;
+	}
 		
 	public static function getLabels(){
 		//var t = sugoi.i18n.Locale.texts;
@@ -177,10 +201,19 @@ class POffer extends Object
 	}
 	
 	public function getImage() {
-		if (image == null) {
-			return this.product.getImage();
+		if (imageId == null) {
+			if(this.product.getImageId() != null){
+				return this.product.getImage();
+			}else{				
+				if (this.product.txpProduct != null){				
+					return "/img/taxo/grey/" + this.product.txpProduct.subCategory.category.image + ".png";
+				}else{
+					return "/img/taxo/grey/legumes.png";
+				}	
+			}
+			
 		}else {
-			return App.current.view.file(image);
+			return App.current.view.file(imageId);
 		}
 	}
 }

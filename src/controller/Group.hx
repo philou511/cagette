@@ -1,11 +1,12 @@
 package controller;
-import service.SubscriptionService;
-import sugoi.form.elements.StringInput;
-import service.OrderService;
-import service.WaitingListService;
-import service.DistributionService;
-import db.Group;
 import Common;
+import db.Group;
+import service.BridgeService;
+import service.DistributionService;
+import service.OrderService;
+import service.SubscriptionService;
+import service.WaitingListService;
+import sugoi.form.elements.StringInput;
 
 /**
  * Groups
@@ -33,11 +34,12 @@ class Group extends controller.Controller
 		group.getMainPlace(); //just to update cache
 
 		var isMemberOfGroup = app.user == null ? false : app.user.isMemberOf(group); 
-		if ( app.user == null ) {
+		view.isInWaitingList = app.user == null ? false : db.WaitingList.manager.select($amapId == group.id && $user == app.user);
 
+		if ( app.user == null ) {
 			service.UserService.prepareLoginBoxOptions(view,group);
 		}	
-
+		view.user = app.user;
 		view.isMember = isMemberOfGroup;
 
 		// Documents
@@ -48,7 +50,6 @@ class Group extends controller.Controller
 			visibleCatalogsDocuments.set( catalog.id, catalog.getVisibleDocuments( app.user ) );
 		}
 		view.visibleCatalogsDocuments = visibleCatalogsDocuments;
-
 	}
 	
 	/**
@@ -57,6 +58,9 @@ class Group extends controller.Controller
 	 */
 	@tpl('form.mtt')
 	function doList(group:db.Group){
+		if ( app.user==null ) {
+			throw Redirect("/group/"+group.id);
+		}
 		
 		//checks
 		if (group.regOption != db.Group.RegOption.WaitingList) throw Redirect("/group/" + group.id);
@@ -70,21 +74,11 @@ class Group extends controller.Controller
 		
 		//build form
 		var form = new sugoi.form.Form("reg");				
-		if (app.user == null){
-			form.addElement(new StringInput("userFirstName", t._("Your firstname"),"",true));
-			form.addElement(new StringInput("userLastName", t._("Your lastname") ,"",true));
-			form.addElement(new StringInput("userEmail", t._("Your e-mail"), "", true));		
-		}
+		
 		form.addElement(new sugoi.form.elements.TextArea("msg", t._("Leave a message")));
 		
 		if (form.isValid()){
 			try{
-				if (app.user == null){
-					var f = form;
-					var user = service.UserService.softRegistration(f.getValueOf("userFirstName"),f.getValueOf("userLastName"), f.getValueOf("userEmail") );
-					db.User.login(user, user.email);				
-				}			
-				
 				WaitingListService.registerToWl(app.user,group,form.getValueOf("msg"));
 				throw Ok("/group/" + group.id,t._("Your subscription to the waiting list has been recorded. You will receive an e-mail as soon as your request is processed.") );
 			}catch(e:tink.core.Error){
@@ -109,70 +103,6 @@ class Group extends controller.Controller
 		throw Ok("/group/" + group.id,t._("You've been removed from the waiting list"));
 	}
 	
-	
-	/**
-	 * 	Register direclty in an open group
-	 * 
-	 * 	the user can be logged or not !
-	
-	@tpl('form.mtt')
-	function doRegister(group:db.Group){
-		
-		if (group.regOption != db.Group.RegOption.Open) throw Redirect("/group/" + group.id);
-		if (app.user != null){			
-			if ( db.UserGroup.manager.select($amapId == group.id && $user == app.user) != null) throw Error("/group/" + group.id, t._("You are already member of this group."));			
-		}
-		
-		var form = new sugoi.form.Form("reg");	
-		form.submitButtonLabel = t._("Join the group");
-		form.addElement(new sugoi.form.elements.Html("html",t._("Confirm your subscription to \"::groupName::\"", {groupName:group.name})));
-		if (app.user == null){
-			form.addElement(new StringInput("userFirstName", t._("Your firstname"),"",true));
-			form.addElement(new StringInput("userLastName", t._("Your lastname"), "", true));
-			var em = new StringInput("userEmail", t._("Your e-mail"), "", true);
-			em.addValidator(new EmailValidator());
-			form.addElement(em);		
-			form.addElement(new StringInput("address", t._("Address"), "", true));					
-			form.addElement(new StringInput("zipCode", t._("Zip code"), "", true));		
-			form.addElement(new StringInput("city", t._("City"), "", true));		
-			form.addElement(new StringInput("phone", t._("Phone"), "", true));		
-		}
-		
-		if (form.isValid()){
-			
-			if (app.user == null){
-				var f = form;
-				var user = new db.User();
-				user.email = f.getValueOf("userEmail");
-				user.firstName = f.getValueOf("userFirstName");
-				user.lastName = f.getValueOf("userLastName");
-				user.address1 = f.getValueOf("address");
-				user.zipCode = f.getValueOf("zipCode");
-				user.city = f.getValueOf("city");
-				user.phone = f.getValueOf("phone");
-				
-				if ( db.User.getSameEmail(user.email).length > 0 ) {
-					throw Ok("/user/login",t._("You already subscribed to Cagette.net, please log in on this page"));
-				}
-				
-				user.insert();				
-				app.session.setUser(user);
-				
-			}			
-			
-			var w = new db.UserGroup();
-			w.user = app.user;
-			w.amap = group;
-			w.insert();
-			
-			throw Ok("/user/choose", t._("Your subscription has been taken into account"));
-		}
-		
-		view.title = t._("Subscription to \"::groupName::\"", {groupName:group.name});
-		view.form = form;
-		
-	}*/
-	
 	/**
 	 * create a new group
 	 */
@@ -186,28 +116,29 @@ class Group extends controller.Controller
 		
 		//group type
 		var data = [
-			{ 
-				label:t._("CSA"),
-				value:"0",
-				desc : "Commandes en <a href='https://wiki.cagette.net/admin:admin_boutique#mode_amap' target='_blank'>Mode AMAP</a> ( contrats AMAP classiques ou variables ), groupe fermé avec liste d'attente et gestion des adhésions."
-			},
 			{
+				label:"Mode marché",
+				value:"2",
+				desc : "Drive de producteurs sans engagement.<br/>Configuration par défaut : Groupe ouvert (n'importe qui peut s'inscrire et commander) <a data-toggle='tooltip' title='En savoir plus' href='https://wiki.cagette.net/admin:admin_boutique#mode_marche' target='_blank'><i class='icon icon-info'></i></a>"
+			},
+			{ 
+				label:"Mode AMAP",
+				value:"0",
+				desc : "Gérer des contrats AMAP classiques ou variables.<br/>Configuration par défaut : Groupe fermé avec liste d'attente et gestion des adhésions. <a data-toggle='tooltip' title='En savoir plus' href='https://wiki.cagette.net/admin:admin_boutique#mode_amap' target='_blank'><i class='icon icon-info'></i></a>"
+			},
+		/*	{
 				label:t._("Grouped orders"),
 				value:"1",
 				desc : "Commandes en <a href='https://wiki.cagette.net/admin:admin_boutique#mode_boutique' target='_blank'>Mode Boutique</a>, groupe fermé avec liste d'attente et gestion des adhésions."
-			},
-			{
-				label:"En direct d'un collectif de producteurs",
-				value:"2",
-				desc : "Commandes en <a href='https://wiki.cagette.net/admin:admin_boutique#mode_boutique' target='_blank'>Mode Boutique</a>, groupe ouvert : n'importe qui peut commander."
-			},
-			{
+			},*/
+			
+			/*{
 				label:"En direct d'un producteur",
 				value:"3",
 				desc : "Commandes en <a href='https://wiki.cagette.net/admin:admin_boutique#mode_boutique' target='_blank'>Mode Boutique</a>, groupe ouvert : n'importe qui peut commander."
-			},
+			},*/
 		];	
-		var gt = new sugoi.form.elements.RadioGroup("type", t._("Group type"), data ,"1", Std.string( db.Catalog.TYPE_VARORDER ), true, true, true);
+		var gt = new sugoi.form.elements.RadioGroup("type", t._("Group type"), data ,"2", Std.string( db.Catalog.TYPE_VARORDER ), true, true, true);
 		f.addElement(gt);
 		
 		if (f.checkToken()) {
@@ -229,17 +160,17 @@ class Group extends controller.Controller
 				g.flags.set(HasPayments);
 				g.hasMembership=true;
 				g.regOption = WaitingList;
+
+				if(!user.isAdmin()) throw Redirect('/group/csa?name='+g.name);
 				
 			case GroupedOrders :
 				g.flags.set(ShopMode);
 				g.hasMembership=true;
-				g.betaFlags.set(ShopV2);
 				g.regOption = WaitingList;
 				
 			case ProducerDrive,FarmShop : 
 				g.flags.set(ShopMode);								
 				g.flags.set(PhoneRequired);
-				g.betaFlags.set(ShopV2);
 				g.regOption = Open;
 			}
 			
@@ -383,9 +314,11 @@ class Group extends controller.Controller
 
 			#if plugins
 			try{
-				//sync if this user is not cpro
-				if(service.VendorService.getVendorsFromUser(app.user).length==0){
-					crm.CrmService.syncToSiB(app.user,true,"group_created",{groupName:g.name,userName:app.user.firstName});
+				//sync if this user is not cpro && market mode group
+				if( service.VendorService.getCagetteProFromUser(app.user).length==0 && g.hasShopMode() ){
+					
+					BridgeService.syncUserToHubspot(app.user);
+					service.BridgeService.triggerWorkflow(29805116, app.user.email);
 				}
 			}catch(e:Dynamic){
 				//fail silently
@@ -403,10 +336,11 @@ class Group extends controller.Controller
 	@admin
 	function doTest(){
 		#if plugins
+		
 		var user = db.User.manager.get(1,false);
-
-		crm.CrmService.syncToSiB(user,true,"group_created",{groupName:"mon Groupe",userName:user.firstName});
-
+		Sys.print("sync user "+user.getName());
+		BridgeService.syncUserToHubspot(user);
+		service.BridgeService.triggerWorkflow(29805116, user.email);
 		#end
 	}
 	
@@ -427,13 +361,21 @@ class Group extends controller.Controller
 	// 	view.addr = view.escapeJS(addr);
 	// }
 
+	@tpl("group/csa.mtt")
+	public function doCsa(args:{name:String}){
+
+		view.groupName = args.name;
+
+	}
+
+
 	@tpl("group/map.mtt")
 	public function doMap(?args:{?lat:Float,?lng:Float,?address:String}){
 
 		view.container = "container-fluid";
 		
 		//if no param is sent, focus on Paris
-		if (args == null || (args.address == null && args.lat == null && args.lng == null)){
+		if (args == null || ((args.address == null || args.address == "") && args.lat == null && args.lng == null)){
 			args = {lat:48.855675, lng:2.3472365};
 		}
 		

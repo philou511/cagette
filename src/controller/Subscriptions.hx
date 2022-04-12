@@ -1,4 +1,7 @@
 package controller;
+import sugoi.form.elements.Html;
+import service.PaymentService;
+import sugoi.Web;
 import payment.Check;
 import sugoi.db.Cache;
 import db.Catalog;
@@ -21,6 +24,14 @@ class Subscriptions extends controller.Controller
 		if ( !app.user.canManageContract( catalog ) ) throw Error( '/', t._('Access forbidden') );
 
 		var catalogSubscriptions = SubscriptionService.getCatalogSubscriptions(catalog);
+
+		//subs sorting
+		var orderBy = app.params.get("orderBy");
+		if(orderBy=="userName" || orderBy==null){
+			catalogSubscriptions.sort( (a,b) -> a.user.lastName > b.user.lastName ? 1 : -1);
+			orderBy = "userName";
+		}
+		view.orderBy = orderBy;
 	
 		view.catalog = catalog;
 		view.c = catalog;
@@ -91,7 +102,6 @@ class Subscriptions extends controller.Controller
 
 		var startDateDP = new form.CagetteDatePicker("startDate","Date de début", SubscriptionService.getNewSubscriptionStartDate( catalog ) );
 		view.startDate = startDateDP;
-
 		var endDateDP = new form.CagetteDatePicker("endDate","Date de fin",catalog.endDate);
 		view.endDate = endDateDP;
 
@@ -158,11 +168,6 @@ class Subscriptions extends controller.Controller
 					
 				}
 
-				if ( ordersData.length == 0 ) {
-
-					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, "La commande par défaut ne peut pas être vide. Vous devez obligatoirement commander quelque chose." );
-				}
-
 				var absencesNb = Std.parseInt( app.params.get( 'absencesNb' ) );
 				subscriptionService.createSubscription( user, catalog, ordersData, absencesNb, startDate, endDate );
 
@@ -173,29 +178,27 @@ class Subscriptions extends controller.Controller
 			}
 
 		}
-	
-		view.title = 'Nouvelle souscription';
+			
 		view.edit = false;
 		view.canOrdersBeEdited = true;
 		view.c = catalog;
 		view.catalog = catalog;
-		view.showmember = true;
 		view.members = app.user.getGroup().getMembersFormElementData();
 		view.products = catalogProducts;
-		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( catalog ), function( distrib ) return Formatting.dDate( distrib.date ) );
 		view.subscriptionService = SubscriptionService;
 
 		view.nav.push( 'subscriptions' );
 	}
 
+	/**
+		An admin user edits a subscription
+	**/
 	@tpl("contractadmin/editsubscription.mtt")
-	public function doEdit( subscription : db.Subscription ) {
+	public function doEdit( subscription:db.Subscription ) {
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
 
 		var catalogProducts = subscription.catalog.getProducts();
-
-		// var canOrdersBeEdited = !SubscriptionService.hasPastDistribOrders( subscription );
 
 		var startDateDP = new form.CagetteDatePicker("startDate","Date de début",subscription.startDate);
 		var endDateDP = new form.CagetteDatePicker("endDate","Date de fin",subscription.endDate);
@@ -204,15 +207,16 @@ class Subscriptions extends controller.Controller
 
 		var subscriptionService = new service.SubscriptionService();
 		subscriptionService.adminMode = true;
+		
 
 		if ( checkToken() ) {
 
 			try {
-
 				startDateDP.populate();
 				endDateDP.populate();
 				var startDate = startDateDP.getValue();
 				var endDate = endDateDP.getValue();
+				subscription.lock();
 
 				if ( startDate == null || endDate == null ) {
 					throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous devez sélectionner une date de début et de fin pour la souscription." );
@@ -220,82 +224,61 @@ class Subscriptions extends controller.Controller
 
 				var ordersData = new Array<{ productId:Int, quantity:Float, ?userId2:Int, ?invertSharedOrder:Bool }>();
 				
-				// if ( canOrdersBeEdited ) {
+				//get orders from the form ( constant order, ou default order is catalog.requiresOrdering)
+				for ( product in catalogProducts ) {
 
-					for ( product in catalogProducts ) {
+					var quantity : Float = 0;
+					var qtyParam = app.params.get( 'quantity' + product.id );
+					if ( qtyParam != "" ) quantity = Std.parseFloat( qtyParam );
+					var user2 : db.User = null;
+					var userId2 : Int = null;
+					if( subscription.catalog.type == Catalog.TYPE_CONSTORDERS ) {							
+						userId2 = Std.parseInt( app.params.get( 'user2' + product.id ) );
+					}
+					var invert = false;
+					if ( userId2 != null && userId2 != 0 ) {
 
-						var quantity : Float = 0;
-						var qtyParam = app.params.get( 'quantity' + product.id );
-						if ( qtyParam != "" ) quantity = Std.parseFloat( qtyParam );
-						var user2 : db.User = null;
-						var userId2 : Int = null;
-						if( subscription.catalog.type == Catalog.TYPE_CONSTORDERS ) {							
-							userId2 = Std.parseInt( app.params.get( 'user2' + product.id ) );
-						}
-						var invert = false;
-						if ( userId2 != null && userId2 != 0 ) {
-
-							user2 = db.User.manager.get( userId2, false );
-							if ( user2 == null ) {
-								throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, t._( "Unable to find user #::num::", { num : userId2 } ) );
-							}
-
-							if ( !user2.isMemberOf( subscription.catalog.group ) ) {
-								throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, subscription.user + " ne fait pas partie de ce groupe." );
-							}
-
-							if ( subscription.user.id == user2.id ) {
-								throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous ne pouvez pas alterner avec la personne qui a la souscription." );
-							}
-
-							invert = app.params.get( 'invert' + product.id ) == "true";
+						user2 = db.User.manager.get( userId2, false );
+						if ( user2 == null ) {
+							throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, t._( "Unable to find user #::num::", { num : userId2 } ) );
 						}
 
-						if ( quantity!=null && quantity > 0 ) {
-							if( subscription.catalog.type == Catalog.TYPE_CONSTORDERS ) {
-								ordersData.push( { productId : product.id, quantity : quantity, userId2 : userId2, invertSharedOrder : invert } );
-							} else {
-								ordersData.push( { productId : product.id, quantity : quantity } );
-							}
-						}						
+						if ( !user2.isMemberOf( subscription.catalog.group ) ) {
+							throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, subscription.user + " ne fait pas partie de ce groupe." );
+						}
+
+						if ( subscription.user.id == user2.id ) {
+							throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous ne pouvez pas alterner avec la personne qui a la souscription." );
+						}
+
+						invert = app.params.get( 'invert' + product.id ) == "true";
 					}
 
-					if ( ordersData.length == 0 ) {
-						throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "La commande par défaut ne peut pas être vide. Vous devez obligatoirement commander quelque chose." );
-					}
-				//}
-
-				//if variable or not paid : can update absences nb
-				var absencesNb = if ( subscription.catalog.type == Catalog.TYPE_VARORDER || !subscription.paid() ) {
-					Std.parseInt( app.params.get( 'absencesNb' ) );
-				}else{
-					null;
-				};
-
-				//if variable or paid : can update absences distribs
-				var absentDistribIds :Array<Int> = null;
-				 if ( subscription.catalog.type == Catalog.TYPE_VARORDER || subscription.paid() ) {
-					absentDistribIds = [];
-					for ( i in 0...subscription.getAbsencesNb() ) {					
-						absentDistribIds.push( Std.parseInt( app.params.get( 'absence' + i ) ) );
-					}					
+					if ( quantity!=null && quantity > 0 ) {
+						if( subscription.catalog.type == Catalog.TYPE_CONSTORDERS ) {
+							ordersData.push( { productId : product.id, quantity : quantity, userId2 : userId2, invertSharedOrder : invert } );
+						} else {
+							ordersData.push( { productId : product.id, quantity : quantity } );
+						}
+					}						
 				}
 
-				subscriptionService.updateSubscription( subscription, startDate, endDate, ordersData, absentDistribIds, absencesNb );
+				subscriptionService.updateSubscription( subscription, startDate, endDate, ordersData);
+				
+				subscriptionService.setAbsencesNb( subscription, app.params.get('absencesNb').parseInt() );
+				subscription.update();
 
 			} catch( error : Error ) {				
 				throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, error.message );
 			}
 
-			throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La souscription pour ' + subscription.user.getName() + ' a bien été mise à jour.' );
+			throw Ok( '/contractAdmin/subscriptions/${subscription.catalog.id}', 'La souscription de ${subscription.user.getName()} a bien été mise à jour.' );
 		}
 
-		view.title = 'Modification de la souscription pour ' + subscription.user.getName();
 		view.edit = true;
 		// view.canOrdersBeEdited = canOrdersBeEdited;
 		view.c = subscription.catalog;
 		view.catalog = subscription.catalog;
-		view.showmember = false;
 		view.members = app.user.getGroup().getMembersFormElementData();
 		view.products = catalogProducts;
 		view.getProductOrder = function( productId : Int ) {		
@@ -306,32 +289,24 @@ class Subscriptions extends controller.Controller
 		view.subscription = subscription;
 		view.nav.push( 'subscriptions' );
 		view.subscriptionService = SubscriptionService;
-		view.absencesDistribs = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
+		// view.absencesDistribs = Lambda.map( SubscriptionService.getAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
 		view.canAbsencesBeEdited = SubscriptionService.canAbsencesBeEdited( subscription.catalog );
 		view.absentDistribs = subscription.getAbsentDistribs();
-		if ( subscription.catalog.type == Catalog.TYPE_VARORDER || !subscription.paid() ) {
-			view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
-		}
+		// if ( subscription.catalog.type == Catalog.TYPE_VARORDER || !subscription.paid() ) {
+		// 	view.absencesDistribDates = Lambda.map( SubscriptionService.getAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
+		// }
 
 	}
 
 
 	public function doMarkAsPaid( subscription : db.Subscription ) {
-
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
-
 		try {
-
 			SubscriptionService.markAsPaid( subscription );
-
-		}
-		catch( error : Error ) {
-
+		} catch( error : Error ) {
 			throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, error.message );
 		}
-
 		throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La souscription de ' + subscription.user.getName() + ' a bien été validée.' );
-		
 	}
 
 	@admin
@@ -399,52 +374,64 @@ class Subscriptions extends controller.Controller
 	}
 
 
-
+	/**
+		user can edit his absences.
+		The user can't change his absence number.
+	**/
 	@logged @tpl("form.mtt")
-	function doAbsences( subscription : db.Subscription, ?args: { returnUrl: String } ) {
+	function doAbsences( subscription:db.Subscription, ?args:{returnUrl:String} ) {
 
 		if( subscription.catalog.group.hasShopMode() ) throw Redirect( "/contract/view/" + subscription.catalog.id );
+		if ( !app.user.canManageContract(subscription.catalog) && !(app.user.id==subscription.user.id) ){
+			throw Error( '/', t._('Access forbidden') );
+		} 
 
 		var subService = new SubscriptionService();
-
 		if ( args != null && args.returnUrl != null ) {
 			App.current.session.data.absencesReturnUrl = args.returnUrl;
 		}
-		
-		var absencesNb = subscription.getAbsencesNb();
-
-		if( !SubscriptionService.canAbsencesBeEdited( subscription.catalog ) || absencesNb == 0 ) {
+		if( !SubscriptionService.canAbsencesBeEdited( subscription.catalog ) ) {
 			throw Redirect( App.current.session.data.absencesReturnUrl );
 		}
 		
-		view.subscription = subscription;
-		view.subscriptionService = SubscriptionService;
-		view.catalog = subscription.catalog;
-		view.absentDistribsMaxNb = SubscriptionService.getAbsentDistribsMaxNb( subscription.catalog, subscription );
-		view.absencesDistribs = SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription );
-
-		var form = new sugoi.form.Form("subscriptionAbsences");
-		var absencesDistribs = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
-		var absentDistribIds = subscription.getAbsentDistribIds();
-		for ( i in 0...absencesNb ) {
-			form.addElement(new sugoi.form.elements.IntSelect( "absentDistrib" + i, "Je ne pourrai pas venir le :", absencesDistribs.array(), absentDistribIds[i], true ));
+		var absenceDistribs = subscription.getAbsentDistribs();
+		var possibleAbsences = subscription.getPossibleAbsentDistribs();
+		var now = Date.now().getTime();
+		possibleAbsences = possibleAbsences.filter(d -> d.orderEndDate.getTime() > now);
+		var lockedDistribs = absenceDistribs.filter( d -> d.orderEndDate.getTime() < now);	//absences that are not editable anymore
+		
+		var form = new sugoi.form.Form("subscriptionAbsences");		
+		var possibleAbsencesData = possibleAbsences.map( d -> { label : Formatting.hDate(d.date,true), value : d.id } );
+		for ( i in 0...subscription.getAbsencesNb() ) {
+			if( lockedDistribs.has(absenceDistribs[i]) ){
+				//absence cannot be modified anymore, too late !
+				form.addElement(new sugoi.form.elements.Html('absenceLocked',Formatting.dDate(absenceDistribs[i].date)+" (trop tard pour changer)","Je serai absent·e le :"));
+			}else{
+				form.addElement(new sugoi.form.elements.IntSelect( "absentDistrib" + i, "Je serai absent·e le :", possibleAbsencesData, absenceDistribs[i].id, true ));
+			}			
 		}
-		view.form = form;
 		
 		if ( form.checkToken() ) {
 
 			try {
-				var absentDistribIds = new Array<Int>();
-				for ( i in 0...absencesNb ) {				
-					absentDistribIds.push( Std.parseInt( form.getValueOf( 'absentDistrib' + i ) ) );
+				var absentDistribIds = lockedDistribs.map(d->d.id);
+				for ( i in 0...absenceDistribs.length ) {				
+					if(form.getElement('absentDistrib' + i)!=null){
+						absentDistribIds.push( form.getValueOf( 'absentDistrib' + i ) );	
+					}					
 				}
 				subService.updateAbsencesDates( subscription, absentDistribIds );				
-			} catch( error : Error ) {
+			} catch( error:Error ) {
 				throw Error( '/subscriptions/absences/' + subscription.id, error.message );
 			}
 
-			throw Ok( App.current.session.data.absencesReturnUrl, 'Vos dates d\'absences ont bien été mises à jour.' );
+			throw Ok( App.current.session.data.absencesReturnUrl, 'Les dates d\'absences ont bien été mises à jour.' );
 		}
+
+		view.form = form;
+		view.text = '<b>${subscription.getAbsencesNb()}</b> absences autorisées dans la période du <b>${DateTools.format( subscription.catalog.absencesStartDate, "%d/%m/%Y" )}</b> au <b>${DateTools.format( subscription.catalog.absencesEndDate, "%d/%m/%Y")}</b>';
+		view.title = "Absences de "+subscription.user.getName()+" pour le contrat \""+subscription.catalog.name+"\"";
+		
 	}
 	
 	@admin
@@ -483,7 +470,7 @@ class Subscriptions extends controller.Controller
 		if ( form.checkToken() ) {
 
 			try {
-				var defaultOrders = new Array< { productId : Int, quantity : Float } >();
+				var defaultOrders = new Array<CSAOrder>();
 				for ( product in catalogProducts ) {
 					var quantity : Float = form.getValueOf( 'quantity' + product.id );
 					defaultOrders.push( { productId : product.id, quantity : quantity } );
@@ -532,24 +519,77 @@ class Subscriptions extends controller.Controller
 		if (form.isValid()){
 
 			var operation = new db.Operation();
-
 			form.toSpod(operation);
-
 			operation.type = db.Operation.OperationType.Payment;			
 			operation.setPaymentData({type:form.getValueOf("Mtype")});
 			operation.group = group;
 			operation.user = subscription.user;
-			operation.date = Date.now();
 			operation.subscription = subscription;
+			operation.pending = false;
 			operation.insert();
 			service.PaymentService.updateUserBalance( subscription.user, group );
-
 			throw Ok( returnUrl, t._("Payment recorded") );
-
 		}
 		
 		view.title = t._("Record a payment for ::user::",{user:subscription.user.getCoupleName()}) ;
 		view.form = form;
+	}
+
+	@tpl("contractadmin/masspayments.mtt")
+	function doMassPayments(catalog:db.Catalog){
+
+		if ( !app.user.canManageContract( catalog ) ) throw Error( '/', t._('Access forbidden') );
+		var catalogSubscriptions = SubscriptionService.getCatalogSubscriptions(catalog);
+
+		view.catalog = catalog;
+		view.c = catalog;
+		view.subscriptions = catalogSubscriptions;
+		catalogSubscriptions.sort(function(a,b){
+			if( a.user.lastName > b.user.lastName ){
+				return 1;
+			}else{
+				return -1;
+			}
+		});
+		
+		var paymentTypes = service.PaymentService.getPaymentTypes(PCManualEntry, catalog.group);
+		var out = [];
+		var selected = null;
+		for (paymentType in paymentTypes){
+			out.push({label: paymentType.name, value: paymentType.type});
+			if(paymentType.type==Check.TYPE) selected=Check.TYPE;
+		}
+		view.paymentTypes = out;
+		view.selected = selected;
+		view.dateToString = Formatting.shortDate;
+		view.subscriptionService = SubscriptionService;
+		view.nav.push( 'subscriptions' );
+
+		if(checkToken()){
+			
+			var params = Web.getParams();
+			for( sub in catalogSubscriptions.copy()){
+				var amount = params.get('sub${sub.id}_amount').parseFloat();
+				if(amount!=null && amount>0){
+					
+					var paymentType = params.get('sub${sub.id}_paymentType');
+					var label = params.get('sub${sub.id}_label');
+
+					var op = PaymentService.makePaymentOperation(sub.user,catalog.group,paymentType,amount,label);
+					op.subscription = sub;
+					op.update();
+
+				}else{
+					catalogSubscriptions.remove(sub);
+				}
+
+
+			}
+
+			throw Ok(sugoi.Web.getURI(),catalogSubscriptions.length+" paiements saisis, les soldes ont été mis à jour.");
+
+		}
+
 	}
 
 }

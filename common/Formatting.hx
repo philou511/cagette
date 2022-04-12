@@ -9,14 +9,6 @@ using Std;
  */
 class Formatting
 {
-
-	/** smart quantity filter : display easier-to-read quantity when it's floats
-	 * 
-	 * 0.33 x Lemon 12kg => 2kg Lemon
-	 */ 
-	public static function smartQt(orderQt:Float,productQt:Float,unit:Unit):String{
-		return formatNum(orderQt * productQt) + "&nbsp;" + Formatting.unit(unit);
-	}
 	
 	public static function formatNum(n:Float):String {
 		if (n == null) return "";
@@ -73,33 +65,6 @@ class Formatting
 		
 	}
 
-	/**
-	 * Price per Kg/Liter...
-	 * @param	qt
-	 * @param	unit
-	 */
-	public static function pricePerUnit(price:Float, qt:Float, u:Unit, ?currency="€"):String{
-		if (u==null || qt == null || qt == 0 || price==null || price==0) return "";
-		var pricePerUnit = price / qt;
-				
-		//turn small prices in Kg
-		if (pricePerUnit < 1 ){
-			switch(u){
-				case Gram: 
-					pricePerUnit *= 1000;
-					u = Kilogram;
-				case Centilitre:
-					pricePerUnit *= 100;
-					u = Litre;
-				case Millilitre:
-					pricePerUnit *= 1000;
-					u = Litre;
-				default :
-			}
-		}			
-		return formatNum(pricePerUnit) + " " + currency + "/" + unit(u,qt);
-	}
-
 	public static var DAYS    = ["Dimanche","Lundi", "Mardi", "Mercredi","Jeudi", "Vendredi", "Samedi"];
 	public static var MONTHS  = ["Janvier","Février","Mars","Avril", "Mai","Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre","Décembre"];
 	public static var MONTHS_LOWERCASE  = ["janvier","février","mars","avril", "mai","juin", "juillet", "août", "septembre", "octobre", "novembre","décembre"];
@@ -130,7 +95,6 @@ class Formatting
 		return StringTools.lpad(date.getHours().string(), "0", 2) + ":" + StringTools.lpad(date.getMinutes().string(), "0", 2);
 	}
 	
-
 	public static function getDate(date:Date) {
 		return {
 			dow: DAYS[date.getDay()],
@@ -172,7 +136,40 @@ class Formatting
 			str.add( Math.round(diff/(3600*24)) +" jours" );
 		}
 		return str.toString();
+	}
 
+	/**
+		date like 01/01/2021
+	**/
+	public static function shortDate(d:Date):String{
+		if(d==null) return "unknown date";
+		return DateTools.format(d,"%d/%m/%Y");
+	}
+
+	public  static function csaShortDate( d : Date ) {
+		if ( d == null ) return "Pas de date";
+		var date = Formatting.getDate( d );
+		if ( date.m == 'Janvier' || date.m == 'Avril' || date.m == 'Octobre' || date.m == 'Novembre' ) {
+			return date.dow + "<br/>" + date.d + " " + date.m.substr(0,3) + ".<br/>" + date.y;
+		} else if ( date.m == 'Février' || date.m == 'Juillet' || date.m == 'Septembre' || date.m == 'Décembre' ) {
+			return date.dow + "<br/>" + date.d + " " + date.m.substr(0,4) + ".<br/>" + date.y;
+		}
+		return date.dow + "<br/>" + date.d + " " + date.m + "<br/>" + date.y;
+	}
+
+	public static  function csaClosingDate( d : Date ) {
+		if ( d == null ) return "Pas de date";
+		var date = Formatting.getDate( d );
+		var closingDate = 'Commandez avant<br/>';
+		if ( date.m == 'Janvier' || date.m == 'Avril' || date.m == 'Octobre' || date.m == 'Novembre' ) {
+			closingDate += date.dow + " " + date.d + " " + date.m.substr(0,3) + ".";
+		} else if ( date.m == 'Février' || date.m == 'Juillet' || date.m == 'Septembre' || date.m == 'Décembre' ) {
+			closingDate += date.dow + " " + date.d + " " + date.m.substr(0,4) + ".";
+		} else {
+			closingDate += date.dow + " " + date.d + " " + date.m;
+		}
+		closingDate += "<br/>à " + StringTools.lpad( Std.string( d.getHours() ), "0", 2 ) + ":" + StringTools.lpad( Std.string( d.getMinutes() ), "0", 2 );
+		return closingDate;
 	}
 
 
@@ -196,21 +193,7 @@ class Formatting
 		return str.split("\\").join("\\\\").split("'").join("\\'").split('\"').join('\\"').split("\r").join("\\r").split("\n").join("\\n");
 	}
 
-	
-	
-	/**
-	 * convert a RVB color from Int to Hexa
-	 * @param	c
-	 * @param	leadingZeros=6
-	 */
-	public static function intToHex(c:Int, ?leadingZeros=6):String {
-		var h = StringTools.hex(c);
-		while (h.length<leadingZeros)
-			h="0"+h;
-		return "#"+h;
-	}
-
-	/**
+    /**
 		If string is not UTF8 encoded, encode it
 	**/
 	#if sys
@@ -229,16 +212,15 @@ class Formatting
 		return str;
 	}
 
-	public static function color(id:Int) {
-		if (id == null) throw "color cant be null";
-		//try{
-			return intToHex(db.CategoryGroup.COLORS[id]);
-		//}catch (e:Dynamic) return "#000000";
-	}
+	// public static function color(id:Int) {
+	// 	if (id == null) throw "color cant be null";
+	// 	//try{
+	// 		return intToHex(db.CategoryGroup.COLORS[id]);
+	// 	//}catch (e:Dynamic) return "#000000";
+	// }
 	#end
 
-
-	/**
+    /**
 		https://www.w3.org/TR/NOTE-datetime
 	**/
 	public static function dateToIso(date:Date):String{
@@ -277,5 +259,12 @@ class Formatting
 		}else {
 			return value;
 		}
+	}
+
+	/**
+		strange float bug in neko : creates a new and clean float
+	**/
+	public static function cleanFloat(f:Float):Float{
+		return Std.string(f).parseFloat();
 	}
 }

@@ -1,28 +1,36 @@
 ﻿::use 'plugin/pro/base.mtt'::
 		
 	<div class="row header" style="margin-top:10px;">
-		<div class="col-md-8">
+		<div class="col-md-6" style="display: flex;">
+			::if(company.offer==2 || company.offer==1)::
+				<a href="/p/pro/upgrade">
+					<div class="iconBadge farmer-pro" style="margin-top:8px; margin-right: 8px;" data-toggle="tooltip" title="::if(company.offer==2)::Formule Pro::else::Formule Membre::end::">
+						<i class="icon icon-farmer-pro"></i>
+					</div>
+				</a>
+			::elseif(company.offer==3)::
+				<div class="iconBadge farmer-pro" style="margin-top:8px; margin-right: 8px;" data-toggle="tooltip" title="Compte pédagogique">
+					<i class="icon icon-student"></i>
+				</div>
+			::end::
 			<h1 ::cond vendor!=null:: >::vendor.name::</h1>
 		</div>
-		
-		<div class="col-md-4 accountBlock">					
+		<div class="col-md-6 accountBlock" ::cond company!=null::>	
 			$$userMenu(::user::)
-		</div>	
-			
+		</div>
 	</div>
-		
 		
 	::if user!= null && company!=null::
 
-			<nav class="navbar navbar-default">
-					<div class="navbar-header">
-					  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#cagette-navbar">
-						<span class="sr-only">Toggle navigation</span>						
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					  </button>				  
-					</div>	
+		<nav class="navbar navbar-default">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#cagette-navbar">
+				<span class="sr-only">Toggle navigation</span>						
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				</button>				  
+			</div>	
 				
 					<div class="collapse navbar-collapse" id="cagette-navbar">
 						::set category = breadcrumb()[1]::
@@ -79,73 +87,68 @@
 									Messagerie
 								</a>								
 							</li>
-
-							
-
-							
 						</ul>
-
-						::if(company!=null && company.discovery==true)::
-						<ul class="nav navbar-nav navbar-right">
-							
-							<li>
-								<a href="http://www.cagette.pro" data-toggle="tooltip" title="Vous avez actuellement un compte Cagette Découverte, limité à un seul point de livraison. Débloquez tout votre potentiel en passant à Cagette Pro !" target="_blank" style="background:#d54d06;border-radius: 5px;color: white;padding: 9px;margin: 4px;">
-									<i class="icon icon-farmer-pro"></i>
-									Passez à Cagette Pro !
-								</a>								
-							</li>
-							
-						</ul>
-						::end::
-						
 					</div>
-
-					
-				
 			</nav>
+			::if(company.offer==0)::
+			<div 
+				style="margin-top: -16px; height: 16px; background: #E1E1E1;">
+			</div>
+			<div 
+				id="vendor-freemium-progress-container" 
+				style="margin-top: -8px; display: flex; height: 50px; background: #E1E1E1; padding-left: 16px; padding-right: 16px; border-radius: 4px; margin-bottom: 8px;">
+			</div>
+			<script>
+					document.addEventListener("DOMContentLoaded", function (event) {
+						neo.createNeoModule("vendor-freemium-progress-container", "vendorFreemiumProgress", {
+							vendorId: ::vendor.id::,
+						});
+					});
+				</script>
+			::end::
 			
 	::end::
 
-	<!-- Breadcrumb -->
-	<div class="row">
-		<div class="col-md-12">
-			<ol class="breadcrumb">
-				<li><a href="/user/choose">Accueil</a></li>
-				::foreach section breadcrumb()::
-					<li id="::section.id::"><a href="::section.link::">::section.name::</a></li>
-				::end::
-			</ol>
-		</div>
-	</div>
-
-	<div class="row">
-		<div id="content" class="col-md-12">
-			::foreach notification getMessages()::
-			<div class="alert ::if notification.error:: alert-danger ::else:: alert-success ::end::" ::cond notification::>
-				::if notification.error::
-				<i class="icon icon-alert"></i>
-				::else::
-				<i class="icon icon-check"></i>
-				::end::
-				
-				::raw notification.text::					
-			</div>
+<!-- Breadcrumb -->
+<div class="row">
+	<div class="col-md-12">
+		<ol class="breadcrumb">
+			<li><a href="/user/choose">Accueil</a></li>
+			::foreach section breadcrumb()::
+			<li id="::section.id::"><a href="::section.link::">::section.name::</a></li>
 			::end::
-		</div>	
+		</ol>
 	</div>
-		
-	<div class="row">
-		::raw __content__::
-	</div>		
-		
-	$$footer()
-	
-	<div class="row">
-		<div class="col-md-12">			
-			<!--  SQL LOG -->
-			<table class="sqlLog table table-bordered" ::cond sqlLog::>
+</div>
+
+<div class="row">
+	<div id="content" class="col-md-12">
+		::foreach notification getMessages()::
+		<div class="alert ::if notification.error:: alert-danger ::else:: alert-success ::end::" ::cond notification::>
+			::if notification.error::
+			<i class="icon icon-alert"></i>
+			::else::
+			<i class="icon icon-check"></i>
+			::end::
+
+			::raw notification.text::
+		</div>
+		::end::
+	</div>
+</div>
+
+<div class="row">
+	::raw __content__::
+</div>
+
+$$footer()
+
+<div class="row">
+	<div class="col-md-12">
+		<!--  SQL LOG -->
+		<table class="sqlLog table table-bordered" ::cond sqlLog::>
 			::foreach r sqlLog::
-			<tr ::attr class if(r.bad) 'badSql'::>
+			<tr ::attr class if(r.bad) 'badSql' ::>
 				<td>::r.t::ms</td>
 				<td>::r.length::</td>
 				<td><a href="#" onclick="javascript:alert('::r.explain::');return false;">Exp</a></td>
@@ -153,7 +156,7 @@
 				<td>::r.sql::</td>
 			</tr>
 			::end::
-			</table>
-		</div>
+		</table>
 	</div>
+</div>
 ::end::

@@ -1,7 +1,6 @@
 package service;
 import db.Subscription;
 import pro.payment.MangopayECPayment;
-import pro.payment.MangopayMPPayment;
 import service.PaymentService.PaymentContext;
 import Common;
 import tink.core.Error;
@@ -204,7 +203,7 @@ class DistributionService
 			throw new Error(Conflict,'Il y a déjà une distribution à cette date.');
 		}
 
-		if(md.slots!=null){
+		if(md.timeSlots!=null){
 			if(md.distribStartDate.getTime()!=distribEndDate.getTime() || md.distribEndDate.getTime()!=distribEndDate.getTime() ){
 				throw new Error(Conflict,'Vous ne pouvez plus changer les horaires de distribution car vous avez activé la gestion des créneaux horaires.');
 			}
@@ -289,6 +288,10 @@ class DistributionService
 				throw new Error(t._("This vendor is already participating to this distribution"));
 			}
 		}
+
+		if(md.group.hasShopMode() && catalog.vendor.isDisabled()){
+			throw new Error('Le compte de "${catalog.vendor.name}" est désactivé. Raison : "${catalog.vendor.getDisabledReason()}"');
+		} 
 
 		if( catalog.type == db.Catalog.TYPE_VARORDER){
 			if(md.orderStartDate==null || md.orderEndDate==null){
@@ -403,7 +406,7 @@ class DistributionService
 	}
 
 	/**
-		Edit attendance of a farmer to a distribution(md)
+		Edit attendance of a vendor  to a multidistribution
 	**/
 	public static function editAttendance(d:db.Distribution,newMd:db.MultiDistrib,orderStartDate:Date,orderEndDate:Date,?dispatchEvent=true):db.Distribution {
 
@@ -423,21 +426,27 @@ class DistributionService
 				throw new Error(d.catalog.vendor.name+" participe déjà à la distribution du "+Formatting.hDate(newMd.getDate()));
 			}
 
+			var oldMd = d.multiDistrib;
+
+			d.multiDistrib = newMd;
+			d.update();
+
 			/* 
 			FORBID THIS WITH CREDIT CARD PAYMENTS 
 			because it would make the order and payment ops out of sync
 			*/
 			var orders = d.getOrders();
+
 			#if plugins
 			if(d.catalog.group.hasPayments() && orders.length>0){
 				var paymentTypes = PaymentService.getPaymentTypes( PaymentContext.PCPayment , newMd.getGroup() );
-				if( paymentTypes.find( p -> return p.type==MangopayECPayment.TYPE || p.type==MangopayMPPayment.TYPE ) != null ){
+				if( paymentTypes.find( p -> return p.type==MangopayECPayment.TYPE ) != null ){
 					throw new Error("Les décalages de distributions sont interdits lorsque le paiement en ligne est activé et que des commandes sont déjà enregistrées.");
 				}
 			}
 			#end
 
-			//different multidistrib id : should change the baskets	
+			//different multidistrib id : assign orders to the newMd baskets
 			for ( o in orders ){
 				o.lock();
 				//find new basket
@@ -445,6 +454,16 @@ class DistributionService
 				o.update();
 			}
 
+			//recompute order operations for oldMd and newMd baskets
+			if(newMd.group.hasShopMode() && newMd.group.hasPayments()){
+				for( b in oldMd.getBaskets()){
+					PaymentService.onOrderConfirm( b.getOrders() );
+				}
+				for( b in newMd.getBaskets()){
+					PaymentService.onOrderConfirm( b.getOrders() );
+				}
+			}
+			
 			//renumbering baskets
 			for( b in newMd.getBaskets()){
 				b.renumber();
@@ -466,7 +485,7 @@ class DistributionService
 				for ( sub in subscriptions ){
 					//if the subscription is closing before the new date, extends it
 					if(sub.endDate.getTime() < newMd.getDate().getTime()){
-						subscriptionService.updateSubscription( sub, sub.startDate, newMd.getDate(), null );
+						subscriptionService.updateSubscription( sub, sub.startDate, newMd.getDate() );
 					}					
 				}
 				/**
@@ -478,7 +497,6 @@ class DistributionService
 			
 		}
 
-		d.multiDistrib = newMd;
 		d.date = newMd.distribStartDate;
 		d.end = newMd.distribEndDate;
 		

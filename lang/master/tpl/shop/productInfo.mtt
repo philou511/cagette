@@ -70,8 +70,8 @@
 	
 	<div class="row">
 
-		<div ::cond vendor._image!=null:: class="col-md-3">
-			<img src="::file(vendor._image)::" class="img-thumbnail" />
+		<div ::cond vendor.imageId!=null:: class="col-md-3">
+			<img src="::file(vendor.imageId)::" class="img-thumbnail" />
 		</div>
 		
 		<div class="col-md-5">
@@ -84,15 +84,6 @@
 				::raw nl2br(vendor.desc)::
 			</p>
 			
-			<!--::if vendor.linkUrl!=null::
-			<p>
-				::if vendor.linkText!=null::
-				<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::vendor.linkText::</a>
-				::else::
-				<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::_("Read more")::</a>
-				::end::
-			</p>
-			::end::-->
 			<p>
 				<a href="::vendor.getLink()::" target="_blank" class="btn btn-default btn-sm">En savoir plus sur ce producteur</a>
 			</p>
@@ -100,16 +91,6 @@
 			
 		</div>
 	
-		::if(product!=null)::
-		::set cats = product.getCategories()::
-		<div class="col-md-4" ::cond cats.length != 0:: >	
-			<h3>::_("Categories")::</h3>
-			<div>
-				::foreach c cats::
-					<span class="tag" style="background-color: ::c.getColor()::;">::c.name::</span><br />
-				::end::
-			</div>
-		</div>
-		::end::
+	
 	</div>
 </div>

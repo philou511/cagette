@@ -40,7 +40,7 @@
 					::set href = "#"::
 					::set warning = _("You do not have sufficient funds to pay this order with your money pot.")::
 				::end::
-				<div class="::class:: payment"  style="min-height:220px;vertical-align:middle;" onclick="_.goto('::href::')">
+				<div class="::class:: payment"  style="min-height:220px;vertical-align:middle;" onclick="_Cagette.goto('::href::')">
 					<h3>::p.name::</h3>
 					<div style="color:#999;margin:24px;">
 						::raw p.icon::

@@ -2,23 +2,33 @@
 <html lang="::LANG::" style="font-size:16px">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" xml:lang="::LANG::" lang="::LANG::" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" xml:lang="::LANG::" lang="::LANG::"/>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
     <title>
         ::if pageTitle!=null::
-        ::pageTitle::
+            ::pageTitle::
         ::else::
-        ::NAME::
+            ::appName::
         ::end::
     </title>
 
     <!-- Cagette CSS -->
-    <link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css" />
+    
+    ::if(whiteLabel!=null)::
+        <link rel="stylesheet" href="/::whiteLabel.name::/css/style.css" />
+    ::else::
+        <link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css" />
+    ::end::
 
     <!-- BOOTSTRAP -->
     ::if noBootstrap::
     ::else::
-    <link rel="stylesheet" href="/css/::getVariable('css')::/bootstrap.min.css" />
+        ::if(whiteLabel!=null)::
+            <link rel="stylesheet" href="/::whiteLabel.name::/css/bootstrap.min.css" />
+        ::else::
+            <link rel="stylesheet" href="/css/::getVariable('css')::/bootstrap.min.css" />
+        ::end::
     ::end::
 
     <!-- Cagette very own icon font -->
@@ -80,56 +90,25 @@
 
     ::raw __content__::
 
-    $$ga()
-
-    <script type="text/javascript">
-        //<![CDATA[
-        (function () {
-            window.sib = {
-                equeue: [],
-                client_key: "m3xgmv4lxb6clilnu7x6d"
-            };
-            /* OPTIONAL: email for identify request*/
-            // window.sib.email_id = 'example@domain.com';
-            window.sendinblue = {};
-            for (var j = ['track', 'identify', 'trackLink', 'page'], i = 0; i < j.length; i++) {
-                (function (k) {
-                    window.sendinblue[k] = function () {
-                        var arg = Array.prototype.slice.call(arguments);
-                        (window.sib[k] || function () {
-                            var t = {};
-                            t[k] = arg;
-                            window.sib.equeue.push(t);
-                        })(arg[0], arg[1], arg[2]);
-                    };
-                })(j[i]);
-            }
-            var n = document.createElement("script"),
-                i = document.getElementsByTagName("script")[0];
-            n.type = "text/javascript", n.id = "sendinblue-js", n.async = !0, n.src = "https://sibautomation.com/sa.js?key=" + window.sib.client_key, i.parentNode.insertBefore(n, i), window.sendinblue.page();
-        })();
-			//]]>s
-    </script>
+    $$matomo()
 
     <script type="text/javascript">
 
         document.addEventListener("DOMContentLoaded", function (event) {
             //init vars in js App
-            _.lang = "::session.lang::";
+            _Cagette.lang = "::session.lang::";
 				:: if (user != null)::
-                _.userId = :: user.id:: ;
-            _.userName = "::user.getName()::";
-            _.userEmail = "::user.email::";
+                _Cagette.userId = :: user.id:: ;
+            _Cagette.userName = "::user.getName()::";
+            _Cagette.userEmail = "::user.email::";
 				:: end::
 
 				//tutorials
 				:: if tuto != null::
-                _.getTuto("::tuto.name::",:: tuto.step:: );			
+                _Cagette.getTuto("::tuto.name::",:: tuto.step:: );			
 				:: end::
 
-            _.antiDoubleClick();
-
-            _NeolithicViewsGenerator.setGraphUrl("::getGraphqlUrl()::");
+            _Cagette.antiDoubleClick();
         })
 
 			//tracking 24x7

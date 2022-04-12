@@ -69,7 +69,14 @@ class GraphService{
         var baskets = db.Basket.manager.search($cdate>=from && $cdate<=to);
 		var value = 0.0;
 		for( b in baskets){
-			value += b.getOrdersTotal();
+            var t  =  b.getOrdersTotal();
+            if(b.total==null){
+                b.lock();
+                b.total = t;
+			    b.update();
+            }
+
+			value += t;
 		}
 		return Math.round(value);
     }

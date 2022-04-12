@@ -28,7 +28,7 @@
 				<tr>
 					<th>Id</th>
 					<th>Nom</th>
-					<th>Type</th>
+					<th>Mode</th>
 					<th>Membres</th>
 					<th>Actif</th>
 					<th>Visible</th>
@@ -37,14 +37,13 @@
 				</tr>
 				::foreach a groups::
 				<tr>
-					<td>::a.id::</td>
-					<td><a href="/p/hosted/group/::a.id::">::a.name::</a></td>
+					<td>::a.groupId::</td>
+					<td><a href="/p/hosted/group/::a.groupId::">::a.name::</a></td>
 					<td>
-						::if a.groupType==null::
-						::elseif a.groupType==0:: AMAP
-						::elseif a.groupType==1:: Groupement d'achat
-						::elseif a.groupType==2:: Drive de producteurs
-						::else:: Vente à la ferme
+						::if a.hasShopMode()::
+						Marché
+						::else::
+						AMAP
 						::end::
 					</td>
 					<td>::a.membersNum::</td>

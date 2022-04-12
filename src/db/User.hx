@@ -1,8 +1,8 @@
 package db;
+import Common;
+import db.UserGroup;
 import sys.db.Object;
 import sys.db.Types;
-import db.UserGroup;
-import Common;
 
 enum UserFlags {
 	HasEmailNotif4h;	//send notifications by mail 4h before
@@ -24,7 +24,8 @@ class User extends Object {
 	public var id : SId;
 	public var lang : SString<2>;
 	//@:skip public var name(get, set) : String;
-	public var pass : STinyText;
+	public var pass : STinyText; //hashed in MD5
+	public var pass2 : STinyText; //hashed en Bcrypt
 	public var rights : SFlags<RightSite>;
 	
 	public var firstName:SString<32>;
@@ -54,9 +55,9 @@ class User extends Object {
 	public var flags : SFlags<UserFlags>;
 	
 	@hideInForms public var tosVersion: SNull<SInt>; //CGU version checked
-	@hideInForms public var tutoState : SNull<SData<{name:String,step:Int}>>; //tutorial state
 	
 	public var apiKey : SNull<SString<128>>; //private API key
+	public var currentRefreshToken : SNull<SString<255>>; 
 	
 	public function new() {
 		super();
@@ -79,18 +80,6 @@ class User extends Object {
 	public function isAdmin() {
 		return rights.has(Admin) || id==1;
 	}
-	
-	public static function login(user:db.User, email:String) {
-		
-		user.lock();
-		user.ldate = Date.now();
-		user.update();
-		
-		App.current.session.setUser(user);
-		if (App.current.session.data == null) App.current.session.data = {};
-		App.current.session.data.whichUser = (email == user.email) ? 0 : 1; 	
-		
-	}
 
 	public static function getForm(user:db.User){
 		var t = sugoi.i18n.Locale.texts;
@@ -100,8 +89,10 @@ class User extends Object {
 		form.removeElement(form.getElement("rights"));
 		form.removeElement(form.getElement("cdate"));
 		form.removeElement(form.getElement("ldate"));
-		form.removeElement( form.getElement("apiKey") );
+		form.removeElement(form.getElement("apiKey") );
 		form.removeElement(form.getElement("nationality"));
+		form.removeElement(form.getElement("pass2"));
+		form.removeElement(form.getElement("currentRefreshToken"));
 		
 		form.addElement(new sugoi.form.elements.StringSelect("nationality", t._("Nationality"), getNationalities(), user.nationality), 15);
 		form.removeElement(form.getElement("countryOfResidence"));
@@ -152,12 +143,8 @@ class User extends Object {
 		return db.UserGroup.get(this, amap);
 	}
 
-	public function getUserGroups(){
-		return Lambda.array(db.UserGroup.manager.search($user == this, false));
-	}
-	
-	public function isFullyRegistred(){
-		return pass != null && pass != "";
+	public function getUserGroups():Array<db.UserGroup>{
+		return db.UserGroup.manager.search($user == this, false).array();
 	}
 	
 	public function makeMemberOf(group:db.Group){
@@ -187,6 +174,19 @@ class User extends Object {
 		}else{
 			return ua.hasRight(Right.ContractAdmin(contract.id));
 		}		
+	}
+
+	/**
+	 * Est ce que ce membre a la gestion d'au moins un catalogue de ce vendor
+	 */
+	public function canManageVendor(vendor:db.Vendor ) {
+		var catalogs = vendor.getActiveContracts();
+		for (c in catalogs) {
+			if (this.canManageContract(c)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public function canManageAllContracts(){
@@ -474,37 +474,7 @@ class User extends Object {
 		
 	}
 	
-	public function sendInvitation(group:db.Group,?force=false) {
-		
-		var t = sugoi.i18n.Locale.texts;
-		
-		if (isFullyRegistred() && !force) throw t._("This user cannot receive an invitation");
-		
-		//store token
-		var k = sugoi.db.Session.generateId();
-		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 30 * 3); //expire in 3 month
-		
-		var e = new sugoi.mail.Mail();
-		if (group != null){
-			e.setSubject(t._("Invitation")+" "+group.name);	
-		}else{
-			e.setSubject(t._("Invitation Cagette.net"));
-		}
-		
-		e.addRecipient(this.email,this.getName());
-		e.setSender(App.config.get("default_email"),t._("Cagette.net"));			
-		
-		var html = App.current.processTemplate("mail/invitation.mtt", { 
-			email:email,
-			email2:email2,
-			groupName:(group == null?null:group.name),			
-			name:firstName,
-			k:k 			
-		} );		
-		e.setHtmlBody(html);
-		
-		App.sendMail(e);	
-	}
+	
 	
 	/**
 	 * cleaning before saving
@@ -540,7 +510,7 @@ class User extends Object {
 		if ( db.User.manager.count( ($email==this.email || $email2==this.email) && $id!=this.id) > 0 ){
 			throw new tink.core.Error("Le mail "+email+" est déjà utilisé par un autre compte.");
 		}
-		if ( email2!=null && db.User.manager.count( ($email==this.email2 || $email2==this.email2) && $id!=this.id) > 0 ){
+		if ( email2!=null && email2!="" && db.User.manager.count( ($email==this.email2 || $email2==this.email2) && $id!=this.id) > 0 ){
 			throw new tink.core.Error("Le mail secondaire "+email2+" est déjà utilisé par un autre compte.");
 		}
 
@@ -552,7 +522,7 @@ class User extends Object {
 	**/
 	public function getQuitGroupLink(group:db.Group){
 		var protocol = App.config.DEBUG ? "http://" : "https://";
-		return protocol+App.config.HOST+"/user/quitGroup/"+group.id+"/"+this.id+"/"+haxe.crypto.Md5.encode(App.config.KEY+group.id+this.id);
+		return protocol+App.config.HOST+"/user/quitGroup/"+group.id+"/"+this.id+"/"+haxe.crypto.Sha1.encode(App.config.KEY+group.id+this.id);
 	}
 
 	/**
@@ -639,7 +609,7 @@ class User extends Object {
 		}else{			
 			var vendor = uc.company.vendor;
 			infos = {
-				type:"Cagette Pro",
+				type:"Producteur",
 				id:vendor.id,
 				name:vendor.name
 			};

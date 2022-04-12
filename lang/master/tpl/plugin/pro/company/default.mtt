@@ -2,7 +2,8 @@
 	
 	<div class=" article">
 		<h3>::vendor.name::</h3>
-		<p>::raw nl2br(vendor.desc)::</p>
+		<h4 class="disabled">Producteur n° ::vendor.id::</h4>
+		
 		<p>
 			$$edit(Modifier les propriétés,/p/pro/company/edit)
 			::if(company!=null)::
@@ -22,7 +23,7 @@
 			<div class="col-md-6">
 				<p>	
 					<h4>Votre logo</h4>
-					<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/pro/company/::company.id::', '::file(images.logo)::', 300, 300, 'logo')">
+					<a class="btn btn-default btn-sm" onclick="_Cagette.openImageUploader('company', ::company.id::, 300, 300, 'logo')">
 						<i class="icon icon-image"></i> ::_("Choose a logo")::
 					</a>
 				</p>
@@ -38,7 +39,7 @@
 			<div class="col-md-6">
 				<p>	
 					<h4>Votre portrait</h4>				
-					<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/pro/company/::company.id::', '::file(images.portrait)::', 300, 300, 'portrait')">
+					<a class="btn btn-default btn-sm" onclick="_Cagette.openImageUploader('company', ::company.id::, 300, 300, 'portrait')">
 						<i class="icon icon-image"></i> Définir un portrait
 					</a>
 				</p>

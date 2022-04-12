@@ -1,8 +1,5 @@
 ::use 'design.mtt'::
 
-
-
-
 	<div class="col-md-12">
 		<div class="article">
 			
@@ -22,7 +19,7 @@
 		<div class="text-center">
 
 			<a class="btn btn-default btn-sm"
-				onclick="_.initOrderBox(null, ::distrib.id::, null, 1,'::escapeJS(hDate(date))::','::escapeJS(place.toString())::', null, '::currency()::', ::user.getGroup().hasPayments()::, '/contractAdmin/ordersByDate/::date::/::place.id::')">
+				onclick="_Cagette.initOrderBox(null, ::distrib.id::, null, 1,'::escapeJS(hDate(date))::','::escapeJS(place.toString())::', null, '::currency()::', ::user.getGroup().hasPayments()::, '/contractAdmin/ordersByDate/::date::/::place.id::', ::user.getGroup().hasCagette2()::, ::user.getGroup().id::)">
 				<i class="icon icon-plus"></i>
 				::_("New order")::
 			</a>
@@ -35,7 +32,7 @@
 			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::?ctotal=1" class="btn btn-default btn-sm">::_("Sub-totals per catalog")::</a>
 			::end::
 			
-			<a href="/contractAdmin/vendorsByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">::_("Totals per supplier")::</a>
+			<a href="/contractAdmin/vendorsByTimeFrame/::date.toString().substr(0,10)::/::date.toString().substr(0,10)::" class="btn btn-default btn-sm">::_("Totals per supplier")::</a>
 		</div>
 
 		
@@ -70,7 +67,7 @@
 							::set contractTotal = 0::
 
 							<a class="btn btn-default btn-xs pull-right"
-						onclick="_.initOrderBox( ::m.userId::, ::distrib.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(m.userName)::','::currency()::', ::user.getGroup().hasPayments()::,'/contractAdmin/ordersByDate/::date::/::place.id::')">
+						onclick="_Cagette.initOrderBox( ::m.userId::, ::distrib.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(m.userName)::','::currency()::', ::user.getGroup().hasPayments()::,'/contractAdmin/ordersByDate/::date::/::place.id::', ::user.getGroup().hasCagette2()::)">
 							<i class="icon icon-edit"></i>
 								::_("Edit")::
 						</a>	

@@ -21,8 +21,7 @@ class PaymentService {
 	/**
 	 * Record a new payment operation
 	 */
-	public static function makePaymentOperation(user:db.User, group:db.Group, type:String, amount:Float, name:String, ?relation:db.Operation,
-			?remoteOpId:String):db.Operation {
+	public static function makePaymentOperation(user:db.User, group:db.Group, type:String, amount:Float, name:String, ?relation:db.Operation,?remoteOpId:String):db.Operation {
 		if (type == payment.OnTheSpotPayment.TYPE) {
 			var onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(group);
 			if (onTheSpotAllowedPaymentTypes.length == 1) {
@@ -95,8 +94,13 @@ class PaymentService {
 
 		var _amount = 0.0;
 		for (o in orders) {
-			var t = o.quantity * o.productPrice;
-			_amount += t + t * (o.feesRate / 100);
+			var a = o.quantity * o.productPrice;
+			//plus fees
+			a = a + a * (o.feesRate / 100);
+			//neko float bug
+			a = Std.string(a).parseFloat();
+			//round
+			_amount += Math.round(a*100)/100;
 		}
 
 		var op = new db.Operation();
@@ -131,10 +135,16 @@ class PaymentService {
 		op.lock();
 		var t = sugoi.i18n.Locale.texts;
 
+		//dont forget to round !!
 		var _amount = 0.0;
 		for (o in orders) {
 			var a = o.quantity * o.productPrice;
-			_amount += a + a * (o.feesRate / 100);
+			//plus fees
+			a = a + a * (o.feesRate / 100);
+			//neko float bug
+			a = Std.string(a).parseFloat();
+			//round
+			_amount += Math.round(a*100)/100;
 		}
 
 		var contract = orders[0].product.catalog;
@@ -181,7 +191,7 @@ class PaymentService {
 		Can handle orders happening on different multidistribs.
 		Orders are supposed to be from the same user.
 	 */
-	public static function onOrderConfirm( orders : Array<db.UserOrder> ) : Array<db.Operation> { 
+	public static function onOrderConfirm( orders:Array<db.UserOrder> ) : Array<db.Operation> { 
 
 		var out = [];
 	
@@ -292,12 +302,12 @@ class PaymentService {
 
 			//For the payment page
 			case PCPayment:
-				if ( group.allowedPaymentsType == null ) return [];
+				if ( group.getAllowedPaymentTypes() == null ) return [];
 				//ontheSpot payment type replaces checks or cash
 			
 				var hasOnTheSpotPaymentTypes = false;
 				var all = getPaymentTypes(PCAll);
-				for ( paymentTypeId in group.allowedPaymentsType ){
+				for ( paymentTypeId in group.getAllowedPaymentTypes() ){
 					var found = all.find(function(a) return a.type == paymentTypeId);
 					if (found != null)  {
 						if(found.onTheSpot==true){
@@ -320,7 +330,7 @@ class PaymentService {
 				paymentTypesInAdmin.remove(moneyPot);
 				#if plugins
 				//cannot make a mgp payment manually !!
-				var mgp = paymentTypesInAdmin.find( x -> x.type == pro.payment.MangopayMPPayment.TYPE || x.type == pro.payment.MangopayECPayment.TYPE );
+				var mgp = paymentTypesInAdmin.find( x -> x.type == pro.payment.MangopayECPayment.TYPE );
 				paymentTypesInAdmin.remove(mgp);
 				#end
 				out = paymentTypesInAdmin;
@@ -334,13 +344,13 @@ class PaymentService {
 	 * @return Array<payment.PaymentType>
 	 */
 	public static function getOnTheSpotAllowedPaymentTypes(group:db.Group):Array<payment.PaymentType> {
-		if (group.allowedPaymentsType == null)
+		if (group.getAllowedPaymentTypes() == null)
 			return [];
 		var onTheSpotAllowedPaymentTypes:Array<payment.PaymentType> = [];
 		var onTheSpotPaymentTypes = payment.OnTheSpotPayment.getPaymentTypes();
 		var all = getPaymentTypes(PCAll);
 		for (paymentType in onTheSpotPaymentTypes) {
-			if (Lambda.has(group.allowedPaymentsType, paymentType)) {
+			if (Lambda.has(group.getAllowedPaymentTypes(), paymentType)) {
 				var found = Lambda.find(all, function(a) return a.type == paymentType);
 				if (found != null) {
 					onTheSpotAllowedPaymentTypes.push(found);
@@ -372,6 +382,13 @@ class PaymentService {
 		// finally validate distrib
 		distrib.validated = true;
 		distrib.update();
+
+		//update vendor stats if distrib is not today
+		if(Date.now().toString().substr(0,10) != distrib.getDate().toString().substr(0,10)){
+			for(vendor in distrib.getVendors()){
+				BridgeService.call('/vendor-summaries/update/${vendor.id}/${distrib.distribStartDate.toString().substr(0,10)}');
+			}
+		}
 	}
 
 	public static function unvalidateDistribution(distrib:db.MultiDistrib) {
@@ -470,6 +487,7 @@ class PaymentService {
 	 */
 	public static function updateUserBalance(user:db.User, group:db.Group) {
 		var ua = db.UserGroup.getOrCreate(user, group);
+		//do not count pending payments
 		var b = sys.db.Manager.cnx.request('SELECT SUM(amount) FROM Operation WHERE userId=${user.id} and groupId=${group.id} and !(type=2 and pending=1)')
 			.getFloatResult(0);
 		b = Math.round(b * 100) / 100;

@@ -2,49 +2,40 @@
 
 	
 <!--<div class="col-md-8 col-md-offset-2" ::cond isCovid==true::>-->
-	::if(vendors!=null && vendors.length>0)::
+	::if(cagettePros!=null && cagettePros.length>0)::
 	<div class="col-md-12" >
-		<div class="alert alert-warning">
+		<div class="alert alert-warning" style="background-color: white;">
 			
 			<div style="font-size:1.3em;font-weight:bold;text-align:center;margin:16px;">
-				<i class="icon icon-info"></i> Pour créer ou rejoindre un point de distribution
+				Ressources techniques et infos
 			</div>			
 		
 			<div class="row">
-				<div class="col-md-3 text-center">
-					
-					<a href="https://www.cagette.net/guide-express" class="btn btn-danger" target="_blank">
-						<i class="icon icon-youtube"></i> Guide Express
-					</a>
-
-					<p style="font-size: 0.9em;margin-top:12px"><b>Commencez par ici !</b><br/> Des vidéos qui vont guideront pas à pas</p>
-					
+				<div class="col-md-6 text-center">	
+					<!--<img src="/img/infos.png" />-->
+					<p>
+						<a href="https://formation.alilo.fr/course/view.php?id=7" class="btn btn-warning" target="_blank">
+							<i class="icon icon-youtube"></i> Guide Découverte
+						</a>
+					</p>				
+					<p><b>Pour prendre en main l’outil c’est par ici !</b><br/>
+						C’est l’espace où vous trouverez tous les tutoriels 
+						pour vous lancer sur Cagette.net. 
+					</p>	
 				</div>
-				<div class="col-md-3 text-center">
-					
-					<a href="https://wiki.cagette.net/cpro:index" class="btn btn-warning" target="_blank">
-						<i class="icon icon-book"></i>
-						Documentation
-					</a>
-					<p style="font-size: 0.9em;margin-top:12px">Pour approfondir <br/>certaines fonctions</p>
-				</div>
-				<div class="col-md-3 text-center">
-					
-					<a href="https://www.facebook.com/groups/EntraideCagettePro/" class="btn btn-warning" target="_blank">
-						<i class="icon icon-facebook"></i>
-						Groupe Facebook
-					</a>
-					<p style="font-size: 0.9em;margin-top:12px">Pour échanger avec<br/>d'autres producteurs et l'équipe Cagette</p>
-				</div>
-				<div class="col-md-3 text-center">
+				
+				<div class="col-md-6 text-center">
+					<!--<img src="/img/question.png" />-->
 					<p>											
-						<b>Visio d'aide aux Producteurs :</b><br/>
+						<!--<b>Visio d'aide aux Producteurs :</b><br/>
 						<a href="https://us02web.zoom.us/meeting/register/tZAkfu-oqTgvGdBOeJj3JGssxcH9HiFXdu5R" target="_blank" title="">1er lundi du mois à 18h</a><br/>
 						<a href="https://us02web.zoom.us/meeting/register/tZEuf-6vqzwpGtTYCjqRtCfGyaqxSLl5gzvq" target="_blank" >3e lundi du mois à 18h</a><br/>
 
 						<b>Webinaire thématiques :</b><br/>
 						<a href="https://us02web.zoom.us/meeting/register/tZcrdOqtpjkpGdcVX_-TGDtl4iVpWzepGyr4" target="_blank" data-toggle="tooltip" title="tous les 2e lundi du mois à 18h">Bonnes pratiques</a><br/>
 						<a href="https://us02web.zoom.us/webinar/register/WN_ljYtX1oATOOy22wu33fmzQ" target="_blank" data-toggle="tooltip" title="Dernier lundi du mois à 18h"> Fonctionnalité</a><br/>
+						-->
+						::raw getVariable("homeVendorMessage")::
 					</p>
 				</div>
 			</div>
@@ -54,53 +45,55 @@
 	</div>
 	::elseif(isGroupAdmin)::
 	<div class="col-md-12" >
-		<div class="alert alert-warning">
+		<div class="alert alert-warning" style="background-color: white;">
 			
 			<div style="font-size:1.3em;font-weight:bold;text-align:center;margin:16px;">
-				<i class="icon icon-info"></i> Pour administrer votre groupe Cagette
+				Ressources techniques et infos
 			</div>			
 		
 			<div class="row">
-				<div class="col-md-3 text-center">
-					
-					<a href="https://www.cagette.net/guide-express-coordinateur/" class="btn btn-danger" target="_blank">
-						<i class="icon icon-youtube"></i> Guide Express
-					</a>
-
-					<p style="font-size: 0.9em;margin-top:12px"><b>Commencez par ici !</b><br/> Des vidéos qui vont guideront pas à pas</p>
-					
-				</div>
-				<div class="col-md-3 text-center">
-					
-					<a href="https://wiki.cagette.net/admin:index" class="btn btn-warning" target="_blank">
-						<i class="icon icon-book"></i>
-						Documentation
-					</a>
-					<p style="font-size: 0.9em;margin-top:12px">Pour approfondir <br/>certaines fonctions</p>
-				</div>
-				<div class="col-md-3 text-center">
-					
-					<a href="https://www.facebook.com/groups/EntraideCagette/" class="btn btn-warning" target="_blank">
-						<i class="icon icon-facebook"></i>
-						Groupe Facebook
-					</a>
-					<p style="font-size: 0.9em;margin-top:12px">Pour échanger avec<br/>d'autres administrateurs et l'équipe Cagette</p>
-				</div>
-				<div class="col-md-3 text-center">
+				<div class="col-md-6 text-center">
+					<!--<img src="/img/infos.png" />-->
 					<p>
-						<a href="https://us02web.zoom.us/meeting/register/tZEuf-6vqzwpGtTYCjqRtCfGyaqxSLl5gzvq" target="_blank" data-toggle="tooltip" title="Tous les 3e lundi du mois à 18h">Visio d'aide aux Coordinateurs</a><br/>
+						<a href="https://formation.alilo.fr/course/view.php?id=8" class="btn btn-warning" target="_blank">
+							<i class="icon icon-youtube"></i> Guide Coordinateur
+						</a>
+					</p>
+					
+					<p>
+						<b>Pour prendre en main l’outil c’est par ici !</b><br/>
+						C’est l’espace où vous trouverez tous les tutoriels<br/> 
+						pour vous lancer sur Cagette.net.
+					</p>
+					
+				</div>
+				
+				<div class="col-md-6 text-center">
+					<!--<img src="/img/question.png" />-->
+					<p>
+						<!--<a href="https://us02web.zoom.us/meeting/register/tZEuf-6vqzwpGtTYCjqRtCfGyaqxSLl5gzvq" target="_blank" data-toggle="tooltip" title="Tous les 3e lundi du mois à 18h">Visio d'aide aux Coordinateurs</a><br/>
 						<b>Webinaire thématiques :</b><br/>
 						<a href="https://us02web.zoom.us/meeting/register/tZcrdOqtpjkpGdcVX_-TGDtl4iVpWzepGyr4" target="_blank" data-toggle="tooltip" title="Tous les 2e lundi du mois à 18h">Bonnes pratiques</a><br/>
 						<a href="https://us02web.zoom.us/webinar/register/WN_ljYtX1oATOOy22wu33fmzQ" target="_blank" data-toggle="tooltip" title="Tous les derniers lundi du mois à 18h"> Fonctionnalité</a><br/>
-
+						-->
+						::raw getVariable("homeGroupAdminMessage")::
 					</p>				
 				</div>
 			</div>
-				
-			
 		</div>
 	</div>
 	::end::
+
+	<div class="col-md-12">
+		<div id="news-neo-container"></div>
+	</div>
+	<script>
+		document.addEventListener("DOMContentLoaded", function(event) {
+			neo.createNeoModule("news-neo-container", "newsFeed", {
+				userId: ::user.id::
+			});
+		});
+	</script>
 
 	<div class="col-md-12">
 		<h2>::_("Hello")::
@@ -113,29 +106,51 @@
 		</h2>				
 	</div>
 
-	<div class="col-md-12" ::cond vendors!=null && vendors.length>0::>
-		<p>Connectez-vous à votre <b>compte producteur Cagette Pro</b> :</p>
+	<div class="col-md-12" ::cond cagettePros!=null && cagettePros.length>0::>
+		<p>Connectez-vous à votre <b>compte producteur</b> :</p>
 	</div>
 
 
-	<!-- cagette pro -->
-	<div class="col-md-12" ::cond vendors!=null::>
+
+
+
+	
+	<div class="col-md-12" ::cond cagettePros!=null || tmpVendors.length>0:: >
 		<div class="row">
-		::foreach v vendors::
+		<!-- cagette pro -->
+		::foreach cp cagettePros::
+			::set v = cp._vendor::
 			<div class="col-md-4">
-				<div class="blockIconBadge" data-toggle="tooltip" title="Producteur équipé de Cagette Pro">
-					<i class="icon icon-farmer-pro"></i>
+				<!--
+				<div class="blockIconBadge">
+					$$publicVendorIcon(::v::)
 				</div>
-				<a class="clickable proBlock" href="/p/pro/?vendor=::v.id::">
-					
-					::if v._image!=null::
-					<img src="::file(v._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
+				-->
+				
+				<a class="clickable proBlock" href="/p/pro/?vendor=::v.id::">					
+					::if v.imageId!=null::
+					<img src="::file(v.imageId)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
 					::end::						
 					<h4>::v.name::</h4>
 					
 				</a>
 			</div>
 		::end::
+
+		<!-- Tmp vendors -->
+		::foreach tmp tmpVendors::
+		<div class="col-md-4">			
+			<a class="clickable proBlock">												
+				<h4>::tmp.farmName::</h4>
+				<p class="disabled">
+					<i class="icon icon-clock"></i>
+					Demande d'ouverture de compte producteur en attente de validation par l'équipe Cagette.net
+				</p>
+			</a>
+		</div>
+		::end::
+
+
 		</div>
 	</div>
 	
@@ -146,22 +161,18 @@
 	<!-- groups -->
 	<div class="col-md-12">
 		<div class="row">
-			::foreach group amaps::				
+			::foreach group groups::				
 				<div class="col-md-4">
-					<div class="blockIconBadge group" >
-						<i class="icon icon-map-marker"></i>
-					</div>
 					<a class="clickable groupBlock"  href="/user/choose?group=::group.id::">					
-						::if group._image!=null::
-						<img src="::file(group._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
+						::if group.imageId!=null::
+						<img src="::file(group.imageId)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
 						::end::						
-						
 						<h4>::group.name::</h4>
 					</a>
 				</div>
 			::end::
 			
-			::if amaps.length==0::
+			::if groups.length==0::
 			<div class="col-md-12">
 				<div class="article text-center">
 					<p>
@@ -216,16 +227,37 @@
 					var txt = "Nous avons réorganisé certains menus et certaines pages pour une meilleure compréhension de Cagette.net.<br/>";
 					txt += "La gestion des distributions a aussi été revue.";
 					txt += "<br/><br/><a href='https://wiki.cagette.net/admin:distributions' target='_blank'>Voir la vidéo pour se mettre à la page</a>";
-					_.newFeature(".row h2","Mise à jour de la rentrée",txt,"bottom");
+					_Cagette.newFeature(".row h2","Mise à jour de la rentrée",txt,"bottom");
 				},2000);
 			});*/
 
+			/*
 			::if(isBlocked)::
-			_.overlay("/data/disabled.mtt","");
+			_Cagette.overlay("/data/disabled.html","");
 			::end::
+			*/
 
+			var displayPopup = function(id,displaysByDay){
+				document.addEventListener("DOMContentLoaded", function(event) {
+					var now = new Date();
+					var storageId = id + "-" + now.toJSON().substr(0,10);
+					if(localStorage[storageId]==null ){
+						localStorage[storageId]=0;
+					}
+					if(localStorage[storageId] < displaysByDay ){
+						_Cagette.overlay("/data/"+id+".html","",true);
+						localStorage[storageId]++;
+					}					
+				});
+			};
+			
+			/*::if(discovery)::
+				displayPopup("offre-formation-2022-01-A",1);							
+			::elseif(isGroupAdmin)::		
+				displayPopup("offre-formation-2022-01-B",1);
+			::end::*/
+			
 			//]]>
 	</script>
-
-
+	
 ::end::

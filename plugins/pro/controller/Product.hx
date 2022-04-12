@@ -31,23 +31,17 @@ class Product extends controller.Controller
 		var products = company.getProducts();
 		view.products = products;
 		
-		
-		//global check on refs unicity
-		var refs = new Map<String,Int>();
-		for ( p in products ){
-			for ( o in p.getOffers(false)){
-				var i = refs.get(o.ref);
-				if (i == null){
-					refs.set(o.ref, 1);
-				}else{
-					refs.set(o.ref, i + 1);
-				}				
-			}
+		var duplicateRefs = pro.db.POffer.getRefDuplicates(company);
+		if(duplicateRefs.length>0){
+			App.current.session.addMessage("Attention, plusieurs offres ont la même référence : <b>"+duplicateRefs.join(" ")+"</b>. Modifiez vos produits pour que chaque référence soit unique.",true);
 		}
-		for ( k in refs.keys()){
-			if(refs.get(k)>1) App.current.session.addMessage("Attention, plusieurs offres ont la même référence : "+k+". ",true);
+
+		var notCategorizedProducts = products.filter(p -> p.txpProduct==null);
+		if(notCategorizedProducts.length>0){
+			App.current.session.addMessage("Attention, les produits suivants n'ont pas de catégorie et risquent de mal s'afficher dans les boutiques : <b>"+notCategorizedProducts.map(p->p.name).join(", ")+".",true);
 		}
 		
+		view.unlinkedCatalogs = service.VendorService.getUnlinkedCatalogs(company);
 		
 		checkToken();
 	}
@@ -90,6 +84,10 @@ class Product extends controller.Controller
 				throw Error(baseUrl, "Cette référence est déjà utilisée dans votre catalogue");
 			}
 			
+			if (d.txpProduct==null){
+				throw Error("/p/pro/product/edit/"+d.id, "Ce produit doit être catégorisé");
+			}
+			
 			//if offers are in catalogs, update the lastUpdate field of the catalog (for synch purpose)
 			var offersId = Lambda.map(d.getOffers(false), function(o) return o.id);
 			var coffers = pro.db.PCatalogOffer.manager.search($offerId in offersId, false);
@@ -121,6 +119,10 @@ class Product extends controller.Controller
 	
 			if (pro.db.PProduct.refExists(company, p.ref)){
 				throw Error(baseUrl, "cette référence est déjà utilisée dans un autre produit");
+			}
+
+			if (p.txpProduct==null){
+				throw Error("/p/pro/product/insert/", "Ce produit doit être catégorisé");
 			}
 			
 			p.insert();
@@ -222,42 +224,4 @@ class Product extends controller.Controller
 		view.step = step;
 	}
 	
-
-	/*@tpl('plugin/pro/product/addimage.mtt')
-	function doAddImage(product:pro.db.PProduct) {
-		
-		view.image = product.image;
-		
-		var request = sugoi.tools.Utils.getMultipart(1024 * 1024 * 12); //12Mb
-		
-		if (request.exists("image")) {
-			
-			//Image
-			var image = request.get("image");
-			if (image != null && image.length > 0) {
-				var img : sugoi.db.File = null;
-				if ( Sys.systemName() == "Windows") {
-					img = sugoi.db.File.create(request.get("image"), request.get("image_filename"));
-				}else {
-					img = sugoi.tools.UploadedImage.resizeAndStore(request.get("image"), request.get("image_filename"), 400, 400);	
-				}
-				
-				product.lock();
-				product.image = img;
-				product.update();
-				
-				
-				//if offers are in catalogs, update the lastUpdate field of the catalog (for synch purpose)
-				var offersId = Lambda.map(product.getOffers(false), function(o) return o.id);
-				var coffers = pro.db.PCatalogOffer.manager.search($offerId in offersId, false);
-				var catalogs = pro.db.PCatalog.manager.search( $id in Lambda.map(coffers, function(x) return x.catalog.id) , true);
-				for ( c in catalogs) c.toSync();		
-				
-				
-				throw Ok('/p/pro/product#product' + product.id,'Image mise à jour');
-			}
-		}
-		
-		view.title = 'Importer une photo pour "${product.name}"';
-	}*/
 }

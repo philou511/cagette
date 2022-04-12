@@ -42,16 +42,16 @@ jobs:
       - name: remove cagette database
         run: |
           # retrieve root DB password from k8s secret
-          DB_ROOT_PW=$(kubectl -n $NAMESPACE get secrets alilo-mysql \
+          DB_ROOT_PW=$(kubectl -n $NAMESPACE get secrets alilo-scalegrid-mysql \
               --output="jsonpath={.data.mysql-root-password}" | base64 --decode)
           # remove user and db from mysql instance using a temporary container
           echo 'drop user if exists "${{ env.project_name }}" ;
                 drop database if exists  `${{ env.project_name }}-db` ; ' \
           | kubectl run alilo-mysql-client --rm -i --restart='Never' \
                 --namespace $NAMESPACE \
-                --image docker.io/bitnami/mysql:8.0.23-debian-10-r0 \
-                -- mysql -h alilo-mysql.$NAMESPACE.svc.cluster.local \
-                -u root --password=$DB_ROOT_PW
+                --image docker.io/bitnami/mysql:8.0 \
+                -- mysql -h SG-aliloMysql-4270-mysql-master.servers.mongodirector.com \
+                -u sgroot --password=$DB_ROOT_PW
 
       - name: remove db-pw secret
         run: |

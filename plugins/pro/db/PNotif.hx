@@ -1,8 +1,8 @@
 
 package pro.db;
+import Common;
 import sys.db.Object;
 import sys.db.Types;
-import Common;
 
 enum NotifType {
 	NTCatalogImportRequest;
@@ -41,15 +41,13 @@ class PNotif extends Object
 	@:relation(userId) 		public var sender 	: SNull<db.User>; //sender of the notif
 	public var type 	: SEnum<NotifType>;
 	public var title	: STinyText;
-	public var content 	: SData<Dynamic>;	
+	public var content 	: SSmallText;	
 	public var date 	: SDateTime;	
-	
 	
 	public function new(){
 		super();
 		date = Date.now();
 	}
-
 
 	public static function distributionInvitation(catalog:pro.db.PCatalog, distrib:db.MultiDistrib,sender:db.User){
 
@@ -62,7 +60,7 @@ class PNotif extends Object
 			pcatalogId : catalog.id,
 			distribId : distrib.id
 		};
-		notif.content  = content;
+		notif.content  = haxe.Json.stringify(content);
 		notif.sender = sender;
 		notif.insert();
 		
@@ -76,14 +74,15 @@ class PNotif extends Object
 		var out = [];
 		if(catalog==null || distrib==null) return out;
 		for( n in manager.search($group==distrib.getGroup() && $type==NotifType.NTDeliveryRequest)){
-			var content : DeliveryRequestContent = n.content;
+			var content : DeliveryRequestContent = haxe.Json.parse(n.content);
 			if(content.pcatalogId==catalog.id && content.distribId==distrib.id){
 				out.push(n);
 			}
 		}
 		return out;
-
 	}
-	
-	
+
+	public function getContent(){
+		return haxe.Json.parse(this.content);
+	}
 }

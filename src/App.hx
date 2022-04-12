@@ -1,7 +1,7 @@
-import db.User;
-import thx.semver.Version;
 import Common;
 import GitMacros;
+import db.User;
+import thx.semver.Version;
  
 class App extends sugoi.BaseApp {
 
@@ -13,6 +13,9 @@ class App extends sugoi.BaseApp {
 	public var eventDispatcher :hxevents.Dispatcher<Event>;	
 	public var plugins : Array<sugoi.plugin.IPlugIn>;
 	public var breadcrumb : Array<Link>;
+	public var whiteLabel	: WhiteLabel;
+	public var name 		: String;
+
 	/**
 	 * Version management
 	 * @doc https://github.com/fponticelli/thx.semver
@@ -43,7 +46,7 @@ class App extends sugoi.BaseApp {
 		eventDispatcher = new hxevents.Dispatcher<Event>();
 		plugins = [];
 		//internal plugins
-		plugins.push(new plugin.Tutorial());
+		// plugins.push(new plugin.Tutorial());
 		
 		//optionnal plugins
 		#if plugins
@@ -53,7 +56,11 @@ class App extends sugoi.BaseApp {
 		plugins.push( new mangopay.MangopayPlugin() );
 		plugins.push( new who.WhoPlugIn() );
 		#end
-	
+
+		var whiteLabelStringified = sugoi.db.Variable.get("whiteLabel");
+		whiteLabel = whiteLabelStringified != null ? haxe.Json.parse(whiteLabelStringified) : null;
+		name = whiteLabel == null ? App.config.NAME : whiteLabel.name;
+
 		super.mainLoop();
 	}
 	
@@ -168,7 +175,6 @@ class App extends sugoi.BaseApp {
 		out.set("uname", "Nom");
 		out.set("pname", "Produit");
 		out.set("organic", "Agriculture biologique");
-		out.set("hasFloatQt", "Autoriser quantités \"à virgule\"");
 		
 		out.set("membershipRenewalDate", "Adhésions : Date de renouvellement");
 		out.set("membershipPrice", "Adhésions : Coût de l'adhésion");
@@ -186,15 +192,17 @@ class App extends sugoi.BaseApp {
 		out.set("desc", "Description");
 		
 		//group options
-		out.set("ShopMode", "Mode boutique");
-		out.set("ComputeMargin", "Appliquer une marge à la place des pourcentages");
+		out.set("ShopMode", "Mode Marché");
 		out.set("CustomizedCategories", "Catégories personnalisées");
 		out.set("HidePhone", "Masquer le téléphone du responsable sur la page publique");
 		out.set("PhoneRequired", "Saisie du numéro de téléphone obligatoire");
 		out.set("AddressRequired", "Saisie de l'adresse obligatoire");
-		
+		out.set("CagetteNetwork", "Lister ce groupe sur la carte Cagette.net et sur les annuaires partenaires");
+		out.set("HasPayments", "Gestion des paiements");
+		out.set("Show3rdCategoryLevel", "Classer les produits de la boutique par catégorie de troisième niveau");	
 
-		out.set("ShopV2", "Nouvelle boutique");
+		out.set("Cagette2", "Cagette 2.0");	
+	
 
 		out.set("ref", "Référence");
 		out.set("linkText", "Intitulé du lien");
@@ -211,9 +219,6 @@ class App extends sugoi.BaseApp {
 		out.set("WaitingList", 	"Liste d'attente");
 		out.set("Open", 		"Ouvert : tout le monde peut s'inscrire");
 		out.set("Full", 		"Complet : Le groupe n'accepte plus de nouveaux membres");
-
-		out.set("CagetteNetwork", "Me lister dans l'annuaire des groupes Cagette.net");
-		out.set("HasPayments", "Gestion des paiements");
 
 		out.set("Soletrader"	, "Micro-entreprise");
 		out.set("Organization"	, "Association");
@@ -240,11 +245,9 @@ class App extends sugoi.BaseApp {
 		out.set("ByOffer"	, "Par offre (produits stockés déja conditionnés)");
 				
 		out.set("variablePrice", "Prix variable selon pesée");	
-		out.set("Show3rdCategoryLevel", "Classer les produits de la boutique par catégorie de troisième niveau");	
-		
-		//shop options
-		out.set("Show3rdCategoryLevel", "Classer par catégorie de troisième niveau");
-
+		out.set("VATAmount", "Montant TVA");	
+		out.set("VATRate", "Taux TVA");
+	
 		return out;
 	}
 	
@@ -284,6 +287,7 @@ class App extends sugoi.BaseApp {
 	public static function sendMail(m:sugoi.mail.Mail, ?group:db.Group, ?listId:String, ?sender:db.User){
 		
 		if (group == null) group = App.current.user == null ? null:App.current.user.getGroup();
+		if (group != null) m.setSender(group.contact == null ? App.config.get("default_email") : group.contact.email, group.name);
 		current.event(SendEmail(m));
 		var params = group==null ? null : {remoteId:group.id};
 		getMailer().send(m,params,function(o){});
@@ -294,10 +298,10 @@ class App extends sugoi.BaseApp {
 		var e = new sugoi.mail.Mail();		
 		e.setSubject(subject);
 		e.setRecipient(to);			
-		e.setSender(App.config.get("default_email"),"Cagette.net");				
+		e.setSender(App.config.get("default_email"),"::appName::");				
 		var html = App.current.processTemplate("mail/message.mtt", {text:html,group:group});		
 		e.setHtmlBody(html);
-		App.sendMail(e);
+		App.sendMail(e, group);
 	}
 	
 	/**
@@ -308,7 +312,9 @@ class App extends sugoi.BaseApp {
 		
 		//inject usefull vars in view
 		Reflect.setField(ctx, 'HOST', App.config.HOST);
-		Reflect.setField(ctx, 'hDate', date -> return Formatting.hDate(date) );		
+		Reflect.setField(ctx, 'appName', App.current.name);
+		Reflect.setField(ctx, 'whiteLabel', App.current.whiteLabel);
+		Reflect.setField(ctx, 'hDate', date -> return Formatting.hDate(date) );
 
 		ctx._ = App.current.view._;
 		ctx.__ = App.current.view.__;

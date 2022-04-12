@@ -1,12 +1,11 @@
-import haxe.EnumTools.EnumValueTools;
+import Common;
 import db.Basket;
+import haxe.EnumTools.EnumValueTools;
+import haxe.Utf8;
 import sugoi.Web;
+import tools.ArrayTool;
 
 using Std;
-
-import Common;
-import haxe.Utf8;
-import tools.ArrayTool;
 
 class View extends sugoi.BaseView {
 	var t:sugoi.i18n.GetText;
@@ -15,6 +14,9 @@ class View extends sugoi.BaseView {
 	var TYPE_VARORDER:Int;
 
 	var tuto:{name:String, step:Int};
+
+	var appName : String;
+	var whiteLabel : WhiteLabel;
 
 	public function new() {
 		super();
@@ -46,12 +48,15 @@ class View extends sugoi.BaseView {
 	override function init() {
 		super.init();
 
+		this.whiteLabel = App.current.whiteLabel;
+		this.appName = App.current.name;
+		
 		// tuto widget display
-		var u = App.current.user;
+		/*var u = App.current.user;
 		if (u != null && u.tutoState != null) {
 			// trace("view init "+u.tutoState.name+" , "+u.tutoState.step);
 			this.displayTuto(u.tutoState.name, u.tutoState.step);
-		}
+		}*/
 	}
 
 	function getCurrentGroup() {
@@ -90,7 +95,7 @@ class View extends sugoi.BaseView {
 			return "";
 
 		// round with 2 digits after comma
-		var out = Std.string(roundTo(n, 2));
+		var out = Std.string( Math.round(n*100)/100 );
 
 		// add a zero, 1,8-->1,80
 		if (out.indexOf(".") != -1 && out.split(".")[1].length == 1)
@@ -190,17 +195,6 @@ class View extends sugoi.BaseView {
 	 */
 	public function hDate(date:Date):String {
 		return Formatting.hDate(date);
-		/*
-			if (date == null) return t._("no date set");
-			if (DAYS == null) initDate();
-
-			var out = DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()];
-			out += " " + date.getFullYear();
-			if ( date.getHours() != 0 || date.getMinutes() != 0){
-
-				out += " " + sugoi.i18n.Locale.texts._("at||time : at 12:30") + " " + StringTools.lpad(Std.string(date.getHours()), "0", 2) + ":" + StringTools.lpad(Std.string(date.getMinutes()), "0", 2);
-			}
-			return out; */
 	}
 
 	/**
@@ -254,7 +248,7 @@ class View extends sugoi.BaseView {
 		return service.OrderService.prepare(orders);
 	}
 
-	public function displayTuto(tuto:String, step:Int) {
+	/*public function displayTuto(tuto:String, step:Int) {
 		if (tuto == null)
 			return;
 		var t = plugin.Tutorial.all().get(tuto);
@@ -273,7 +267,7 @@ class View extends sugoi.BaseView {
 			}
 		}
 		this.tuto = {name: tuto, step: step};
-	}
+	}*/
 
 	/**
 	 * renvoie 0 si c'est user.firstName qui est connecté,
@@ -338,5 +332,9 @@ class View extends sugoi.BaseView {
 
 	public function enumIndex(e:EnumValue) {
 		return EnumValueTools.getIndex(e);
+	}
+
+	public function getSid():String {
+		return App.current.session.sid;
 	}
 }

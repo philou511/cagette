@@ -1,4 +1,5 @@
 package controller;
+import connector.db.RemoteCatalog;
 import service.ProductService;
 import db.Catalog;
 import tink.core.Error;
@@ -61,7 +62,6 @@ class ContractAdmin extends Controller
 		view.contracts = contracts;
 		var vendors = app.user.getGroup().getActiveVendors();
 		view.vendors = vendors;
-		// view.noSiret = vendors.filter(v -> v.companyNumber==null);
 		view.places = app.user.getGroup().getPlaces();
 		view.group = app.user.getGroup();
 		
@@ -88,20 +88,13 @@ class ContractAdmin extends Controller
 	function doProducts(contract:db.Catalog,?args:{?enable:String,?disable:String}) {
 		view.nav.push("products");
 		sendNav(contract);
-		
+
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("Access forbidden") );
 		view.c = contract;
 		
-		//checks
-		if (app.user.getGroup().hasShopMode() && !app.user.getGroup().hasTaxonomy() ) {		
-			for ( p in contract.getProducts(false)) {
-				if (p.getCategories().length == 0) {
-					app.session.addMessage(t._("Warning, at least one product does not have any category. <a href='/product/categorize/::contractid::'>Click here to add categories</a>", {contractid:contract.id}), true);
-					break;
-				}
-			}			
-		}
-		
+		var isRemote = RemoteCatalog.getFromContract(contract)!=null;
+		view.isRemote = isRemote;
+
 		//batch enable / disable products
 		if (args != null){
 			
@@ -295,7 +288,7 @@ class ContractAdmin extends Controller
 	/**
 	 * Global view on orders, producer view
 	 */
-	@tpl('contractadmin/vendorsByDate.mtt')
+	/*@tpl('contractadmin/vendorsByDate.mtt')
 	function doVendorsByDate(date:Date,place:db.Place) {
 
 	    var vendorDataByVendorId = new Map<Int,Dynamic>();//key : vendor id
@@ -307,7 +300,7 @@ class ContractAdmin extends Controller
 		
 		view.orders = Lambda.array(vendorDataByVendorId);
 		view.date = date;
-	}
+	}*/
 	
 	/**
 	 * Global view on orders, producer view
@@ -532,8 +525,8 @@ class ContractAdmin extends Controller
 
 				nc.orderEndHoursBeforeDistrib = catalog.orderEndHoursBeforeDistrib;
 				nc.absentDistribsMaxNb = catalog.absentDistribsMaxNb;
-				nc.absencesStartDate = catalog.absencesStartDate;
-				nc.absencesEndDate = catalog.absencesEndDate;
+				// nc.absencesStartDate = catalog.absencesStartDate;
+				// nc.absencesEndDate = catalog.absencesEndDate;
 
 				if ( nc.type == Catalog.TYPE_VARORDER ) {
 
@@ -541,8 +534,8 @@ class ContractAdmin extends Controller
 					nc.requiresOrdering = catalog.requiresOrdering;
 					nc.distribMinOrdersTotal = catalog.distribMinOrdersTotal;
 					nc.catalogMinOrdersTotal = catalog.catalogMinOrdersTotal;
-					var defaultAllowedOverspend = app.user.getGroup().hasPayments() ? 10 : 500;
-					nc.allowedOverspend = catalog.type == Catalog.TYPE_VARORDER ? catalog.allowedOverspend : defaultAllowedOverspend;
+					// var defaultAllowedOverspend = app.user.getGroup().hasPayments() ? 10 : 500;
+					// nc.allowedOverspend = catalog.type == Catalog.TYPE_VARORDER ? catalog.allowedOverspend : defaultAllowedOverspend;
 				}
 			}
 			nc.vendor = catalog.vendor;
@@ -619,21 +612,16 @@ class ContractAdmin extends Controller
 	 * Purchase order to print
 	 */
 	@tpl("contractadmin/ordersByProductList.mtt")
-	function doOrdersByProductList(contract:db.Catalog, args:{?d:db.Distribution}) {
+	function doOrdersByProductList(contract:db.Catalog, args:{d:db.Distribution}) {
 		
 		sendNav(contract);		
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("Forbidden access"));
-		if (contract.type == db.Catalog.TYPE_VARORDER && args.d == null ) throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
-		
-		if (contract.type == db.Catalog.TYPE_VARORDER ) view.distribution = args.d;
+		if(args.d.catalog.id!=contract.id) throw 'Distribution does not belong to this catalog';
+				
+		view.distribution = args.d;
 		view.c = contract;
 		view.group = contract.group;
-		var d = args != null ? args.d : null;
-		if (d == null) d = contract.getDistribs(false).first();
-		if (d == null) throw t._("No delivery in this catalog");
-		
-		var orders = service.ReportService.getOrdersByProduct(d,false);
-		view.orders = orders;
+		view.orders = service.ReportService.getOrdersByProduct(args.d,false);
 	}
 	
 	/**
@@ -648,7 +636,10 @@ class ContractAdmin extends Controller
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
 
 		var now = Date.now();
-		var timeframe = new tools.Timeframe(now,DateTools.delta(now,1000.0*60*60*24*365));
+		//snap to beggining of the month , end is 3 month later 
+		var from = new Date(now.getFullYear(),now.getMonth(),1,0,0,0);
+		var to = new Date(now.getFullYear(),now.getMonth()+3,-1,23,59,59);
+		var timeframe = new tools.Timeframe(from,to);
 
 		var multidistribs =  db.MultiDistrib.getFromTimeRange(contract.group,timeframe.from , timeframe.to);
 
@@ -680,7 +671,7 @@ class ContractAdmin extends Controller
 			throw Error("/contractAdmin/distributions/"+contract.id,e.message);
 		}
 		
-		throw Ok("/contractAdmin/distributions/"+contract.id,t._("Distribution date added"));
+		throw Ok('/contractAdmin/distributions/${contract.id}?_from=${app.params.get("_from")}&_to=${app.params.get("_to")}',t._("Distribution date added"));
 	}
 	
 	@tpl("contractadmin/view.mtt")
@@ -691,6 +682,8 @@ class ContractAdmin extends Controller
 		checkToken();
 
 		catalog.check();
+
+		view.rc = RemoteCatalog.getFromContract(catalog);
 		
 		if ( !app.user.canManageContract( catalog ) ) throw Error("/", t._("You do not have the authorization to manage this contract"));
 
@@ -785,5 +778,8 @@ class ContractAdmin extends Controller
 		view.md = md;
 		view.tmpBaskets = db.TmpBasket.manager.search($multiDistrib == md,false);
 	}
+
+
+	
 	
 }

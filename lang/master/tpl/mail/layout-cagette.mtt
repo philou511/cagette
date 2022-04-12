@@ -1,0 +1,71 @@
+﻿<html>
+	<head>
+		<meta name="viewport" content="width=device-width"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<style>
+			#email-body {
+				color: #333;
+				font-family: sans-serif;
+				background-color: #d7e7ca !important;
+			}
+
+			#email-root {
+				margin: auto;
+				max-width: 600px;
+				background-color: white;
+				padding: 16px;
+			}
+
+			#email-header {
+				padding: 16px;
+				text-align: center;
+			}
+
+			#email-footer {
+				font-size: 0.75rem;
+				max-width: 600px;
+				text-align: center;
+				padding: 16px;
+				padding-top: 0px;
+				margin: auto;
+				margin-top: 24px;
+			}
+
+			.bold-green {
+				font-weight: bold;
+				color: #61810a;
+			}
+
+			.light-green-background {
+				background-color: #d9ead3; 
+			}
+		</style>
+		<title>::appName::</title>
+	</head>
+
+	<body id="email-body">
+		<div id="email-root">
+			<div id="email-header">
+				<img src="::if(whiteLabel!=null)::::whiteLabel.logo::::else::http://::HOST::/img/logo2.png::end::" alt="logo ::appName::" style="width:166px;"/>
+			</div>
+
+			::raw __content__::
+		</div>
+
+		<div id="email-footer">
+			<p>::appName:: - ALILO SCOP, 4 impasse Durban, 33000 Bordeaux</p>
+			<div style="display: flex; justify-content: center; align-items: center;">
+				<a href="::if(whiteLabel!=null)::::whiteLabel.link::::else::http://www.cagette.net::end::" target="_blank" rel="noreferrer noopener" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
+					<img src="http://::HOST::/img/emails/website.png" alt="Site web" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>Site web
+				</a>
+				<a href="https://www.facebook.com/cagette" target="_blank" rel="noreferrer noopener" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
+					<img src="http://::HOST::/img/emails/facebook.png" alt="Facebook" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>Facebook
+				</a>
+				<a href="https://www.youtube.com/channel/UC3cvGxAUrbN9oSZmr1oZEaw" target="_blank" rel="noreferrer noopener" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
+					<img src="http://::HOST::/img/emails/youtube.png" alt="YouTube" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>YouTube
+				</a>
+			</div>
+		</div>
+	</body>
+
+</html>

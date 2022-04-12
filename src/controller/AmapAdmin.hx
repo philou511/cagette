@@ -1,17 +1,18 @@
 package controller;
+import Common;
 import datetime.DateTime;
-import payment.MoneyPot;
-import sugoi.form.elements.Input.InputType;
-import sugoi.form.elements.IntInput;
 import db.Group.GroupFlags;
 import db.UserGroup;
 import haxe.Http;
 import neko.Web;
+import payment.MoneyPot;
 import sugoi.form.Form;
-import Common;
+import sugoi.form.elements.FloatInput;
+import sugoi.form.elements.Input.InputType;
+import sugoi.form.elements.IntInput;
 import sugoi.form.elements.IntSelect;
 import sugoi.form.elements.StringInput;
-import sugoi.form.elements.FloatInput;
+
 using tools.DateTool;
 
 
@@ -29,10 +30,10 @@ class AmapAdmin extends Controller
 		if (app.user.getGroup().hasPayments()) {
 			nav.push({id:"payments",link:"/amapadmin/payments",name: t._("Means of payment"),icon:"payment-type" });
 		}	
-		if(!app.user.getGroup().hasTaxonomy()){
-			nav.push({id:"categories",link:"/amapadmin/categories",name: t._("Customized categories"),icon:"tag" });
-		}
-		
+
+		// if(!app.user.getGroup().hasTaxonomy()){
+		// 	nav.push({id:"categories",link:"/amapadmin/categories",name: t._("Customized categories"),icon:"tag" });
+		// }
 
 		var e = Nav(nav,"groupAdmin");
 		app.event(e);
@@ -75,13 +76,14 @@ class AmapAdmin extends Controller
 
 	@tpl("amapadmin/default.mtt")
 	function doDefault() {
+
 		var group = app.user.getGroup();
 		view.membersNum = UserGroup.manager.count($group == group);
 		view.contractsNum = group.getActiveContracts().length;
 		
 		//visible on map
 		#if plugins
-		var h = hosted.db.Hosting.getOrCreate(group.id, true);
+		var h = hosted.db.GroupStats.getOrCreate(group.id, true);
 		var o = h.updateVisible();
 		
 		var str = "";
@@ -104,11 +106,6 @@ class AmapAdmin extends Controller
 		#else
 		view.visibleOnMap = true;
 		#end
-
-		
-		
-
-		
 	}
 	
 	@tpl("amapadmin/rights.mtt")
@@ -178,7 +175,7 @@ class AmapAdmin extends Controller
 				ua = db.UserGroup.manager.select($userId == Std.parseInt(form.getValueOf("user")) && $groupId == app.user.getGroup().id, true);
 			}			
 
-			ua.rights2 = "[]";
+			ua.rights = "[]";
 
 			var arr : Array<String> = cast form.getElement("rights").value;
 			for ( r in arr) {
@@ -202,6 +199,7 @@ class AmapAdmin extends Controller
 			}			
 			
 			ua.update();
+			
 			if (ua.getRights().length == 0) {
 				throw Ok("/amapadmin/rights", t._("Rights removed"));
 			}else {
@@ -227,10 +225,11 @@ class AmapAdmin extends Controller
 		var a = app.user.getGroup();
 		
 		var i = 1;
+		var rates = a.getVatRatesOld();
 		//create field with a value
-		for (k in a.getVatRates().keys()) {
+		for (k in rates.keys()) {
 			f.addElement(new StringInput(i+"-k", t._("Name") +" "+ i, k));
-			f.addElement(new FloatInput(i + "-v", t._("Rate") +" "+ i, a.getVatRates().get(k) ));
+			f.addElement(new FloatInput(i + "-v", t._("Rate") +" "+ i, rates.get(k) ));
 			i++;
 		}
 		
@@ -243,13 +242,16 @@ class AmapAdmin extends Controller
 		
 		if (f.isValid()) {
 			var d = f.getData();
-			var vats = new Map<String,Float>();
+			var vats = [];
 			for (i in 1...5) {
 				if (d.get(i + "-k") == null) continue;
-				vats.set(d.get(i + "-k"), d.get(i + "-v") );
+				vats.push({
+					label : d.get(i + "-k"),
+					value : d.get(i + "-v")
+				});
 			}
 			a.lock();
-			a.vatRates = vats;
+			a.setVatRates(vats);
 			a.update();
 			throw Ok("/amapadmin", t._("Rate updated"));
 			
@@ -258,9 +260,9 @@ class AmapAdmin extends Controller
 		view.form = f;
 	}
 	
-	function doCategories(d:haxe.web.Dispatch) {
-		d.dispatch(new controller.amapadmin.Categories());
-	}
+	// function doCategories(d:haxe.web.Dispatch) {
+	// 	d.dispatch(new controller.amapadmin.Categories());
+	// }
 
 	function doVolunteers(d:haxe.web.Dispatch) {
 		d.dispatch(new controller.amapadmin.Volunteers());
@@ -305,7 +307,7 @@ class AmapAdmin extends Controller
 		var f = new sugoi.form.Form("paymentTypes");
 		var types = service.PaymentService.getPaymentTypes(PCGroupAdmin);
 		var formdata = [for (t in types){label:t.name, value:t.type, desc:t.adminDesc, docLink:t.docLink}];		
-		var selected = app.user.getGroup().allowedPaymentsType;
+		var selected = app.user.getGroup().getAllowedPaymentTypes();
 		f.addElement(new sugoi.form.elements.CheckboxGroup("paymentTypes", t._("Authorized payment types"),formdata, selected) );
 		
 		var group = app.user.getGroup();
@@ -328,12 +330,12 @@ class AmapAdmin extends Controller
 			if( f.getValueOf("groupId") != group.id ) throw "Vous avez changé de groupe.";
 
 			group.lock();
-			group.allowedPaymentsType = f.getValueOf("paymentTypes");
-
-			if(group.allowedPaymentsType.has(MoneyPot.TYPE) && group.allowedPaymentsType.length>1) {
+			var paymentTypes:Array<String> = f.getValueOf("paymentTypes");
+			if(paymentTypes.has(MoneyPot.TYPE) && paymentTypes.length>1) {
 				throw Error(sugoi.Web.getURI(),"Le paiement Cagnotte ne peut pas être utilisé en même temps que d'autres moyens de paiements.");
 			}
-
+			
+			group.setAllowedPaymentTypes(paymentTypes);
 			group.checkOrder = f.getValueOf("checkOrder");
 			group.IBAN = f.getValueOf("IBAN");
 			group.allowMoneyPotWithNegativeBalance = f.getValueOf("allowMoneyPotWithNegativeBalance");

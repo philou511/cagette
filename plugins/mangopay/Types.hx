@@ -27,7 +27,7 @@ abstract LegalStatus(String) {
 }
 
 typedef NaturalUser = {
-	?Id: Int,
+	?Id: String, //string because int overflows
 	?CreationDate: Float,
 	?Tag: String,
 	?PersonType: String,
@@ -56,7 +56,7 @@ typedef NaturalUser = {
 
 //@doc https://docs.mangopay.com/endpoints/v2.01/users#e259_create-a-legal-user
 typedef LegalUser = {
-	?Id: Int,
+	?Id: String,
 	?CreationDate: Float,
 	?Tag: String,
 	?PersonType: String,//NATURAL or LEGAL
@@ -94,10 +94,10 @@ typedef LegalUser = {
 };
 
 typedef Wallet = {
-	?Id: Int,
+	?Id: String,
 	?CreationDate: Float,
 	?Tag: String,
-	Owners: Array<Int>,
+	Owners: Array<String>, //userId are strings
 	?Balance:Money,
 	?FundsType: String,
 	Description: String,
@@ -111,10 +111,10 @@ typedef CardWebPayIn = {
 	DebitedFunds	: Money,
 	?CreditedFunds	: Money,
 	Fees			: Money,
-	?DebitedWalletId: Int,
-	CreditedWalletId: Int,
-	AuthorId: Int,
-	?CreditedUserId: Int,
+	?DebitedWalletId: String,
+	CreditedWalletId: String,
+	AuthorId: String,
+	?CreditedUserId: String,
 	?Nature: String,
 	?Status: TransactionStatus,
 	?ExecutionDate: Float,
@@ -139,10 +139,10 @@ typedef Transaction = {
 	DebitedFunds : Money,
 	CreditedFunds: Money,
 	Fees: Money,
-	DebitedWalletId : Int,
-	CreditedWalletId: Int,
-	AuthorId: Int,
-	CreditedUserId: Int,
+	DebitedWalletId : String,
+	CreditedWalletId: String,
+	AuthorId: String,
+	CreditedUserId: String,
 	Nature : String,
 	Status: TransactionStatus,
 	ExecutionDate: Float,
@@ -152,23 +152,23 @@ typedef Transaction = {
 }
 
 typedef Refund = {
-	?Id: Int,
+	?Id: String,
 	?CreationDate: Float,
 	?Tag: String,
 	?DebitedFunds:Money,
 	?CreditedFunds:Money,
 	?Fees:Money,
-	?DebitedWalletId: Int,
-	?CreditedWalletId: Int,
-	AuthorId: Int,
-	?CreditedUserId: Int,
+	?DebitedWalletId: String,
+	?CreditedWalletId: String,
+	AuthorId: String,
+	?CreditedUserId: String,
 	?Nature: String,
 	?Status: String,
 	?ExecutionDate: Float,
 	?ResultCode: String,
 	?ResultMessage: String,
 	?Type: String,
-	InitialTransactionId: Int,
+	InitialTransactionId: String,
 	?InitialTransactionType: String,
 	?RefundReason: {
 		RefusedReasonType: String,
@@ -177,16 +177,16 @@ typedef Refund = {
 };
 
 typedef Transfer = {
-	?Id: Int,
+	?Id: String,
 	?CreationDate: Float,
 	?Tag: String,
 	DebitedFunds:Money,
 	?CreditedFunds:Money,
 	Fees: Money,
-	DebitedWalletId: Int,
-	CreditedWalletId: Int,
-	AuthorId: Int,
-	?CreditedUserId: Int,
+	DebitedWalletId: String,
+	CreditedWalletId: String,
+	AuthorId: String,
+	?CreditedUserId: String,
 	?Nature: String,
 	?Status: TransactionStatus,
 	?ExecutionDate: Float,
@@ -196,7 +196,7 @@ typedef Transfer = {
 };
 
 typedef IBANBankAccount = {
-	?Id: Int,
+	?Id: String,
 	?CreationDate: Float,
 	?Tag: String,
 	?Type: String,
@@ -209,36 +209,36 @@ typedef IBANBankAccount = {
 		Country: String
 	},
 	OwnerName: String,
-	?UserId: Int,
+	?UserId: String,
 	?Active: Bool,
 	IBAN: String,
 	?BIC: String
 };
 
 typedef PayOut = {
-	?Id: Int,
+	?Id: String,
 	?CreationDate: Float,
 	?Tag: String,
 	DebitedFunds:Money,
 	?CreditedFunds: Money,
 	Fees: Money,
-	DebitedWalletId: Int,
-	?CreditedWalletId: Int,
-	AuthorId: Int,
-	?CreditedUserId: Int,
+	DebitedWalletId: String,
+	?CreditedWalletId: String,
+	AuthorId: String,
+	?CreditedUserId: String,
 	?Nature: String,
 	?Status: TransactionStatus,
 	?ExecutionDate: Float,
 	?ResultCode: String,
 	?ResultMessage: String,
 	?Type: String,
-	BankAccountId: Int,
+	BankAccountId: String,
 	BankWireRef: String,
 	?PaymentType: String	
 };
 
-typedef KYCDocument = {
-	?Id: Int,
+/*typedef KYCDocument = {
+	?Id: String,
 	?CreationDate: Float,
 	?Tag: String,
 	?UserId: Int,
@@ -247,12 +247,12 @@ typedef KYCDocument = {
 	?RefusedReasonMessage: String,
 	?RefusedReasonType: String,
 	?ProcessedDate: Float
-};
+};*/
 
 typedef Error = {
   Message: String,
   Type: String,
-  Id: Int,
+  Id: String,
   Date: Float,
   errors: Dynamic,
   /*"errors" : {
@@ -265,8 +265,8 @@ typedef Money = {
 	Amount : Int
 }
 
-typedef UBODeclaration = {
-	Id : Int,
+/*typedef UBODeclaration = {
+	Id : String,
 	UserId : Int,
 	Status : String,
 	Reason : String,
@@ -275,7 +275,7 @@ typedef UBODeclaration = {
 }
 
 typedef UBO = {
-	Id : Int,
+	Id : String,
 	FirstName : String,
 	LastName : String,
-}
+}*/

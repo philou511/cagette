@@ -2,10 +2,10 @@
 
 		<h3>::_("Summary")::</h3>
 		
-		<table class="table table-bordered" style="width:500px;">
+		<table class="table table-bordered" style="width:600px;">
 			<tr>
-				<td>
-					::_("Contract type")::
+				<td class="col-md-3">
+					Type de catalogue
 				</td>
 				<td>
 					::if contract.type==0::
@@ -19,7 +19,7 @@
 					::end::
 
 					::if contract._group.hasShopMode() ::
-						Catalogue standard ( commande variable )
+						Catalogue standard
 					::elseif contract.type == 0::
 						Contrat AMAP classique
 					::else::
@@ -35,47 +35,123 @@
 				<td>::_("End date")::</td>
 				<td>::dDate(contract.endDate)::</td>
 			</tr>
+
+			<tr>
+				<td>Liaison catalogue</td>
+				<td>
+					::if(rc==null)::
+						Catalogue invité ( non relié à un compte producteur)
+					::else::
+						::set pcat = rc.getCatalog()::
+
+						::if(pcat._company._vendor.id==contract._vendor.id)::
+							Catalogue géré depuis un compte producteur.
+						::else::
+							Catalogue <b>invité</b> sur le compte d'un autre producteur (<a href="::pcat._company._vendor.getLink()::">::pcat._company._vendor.name::</a>).
+						::end::
+
+						<p>
+							Si vous souhaitez arrêter de collaborer avec 
+							ce producteur et archiver ce catalogue, cliquez sur le bouton ci-dessous 
+							( les commandes seront conservées, mais il ne sera plus possible d'organiser de nouvelle commande ).
+						</p>
+						<a href="/p/connector/contract/::contract.id::?token=::token::" class="btn btn-danger btn-xs" onclick="return confirm('Voulez vous casser la liaison et archiver ce catalogue ?')">
+							<i class="icon icon-delete"></i> 
+							&nbsp;Casser la liaison
+						</a>
+
+					::end::
+				</td>
+			</tr>
 		</table>
 
 		<div>
 			$$edit(::_("Edit")::,/contract/edit/::c.id::)			
+			
+			::if (!contract._group.hasShopMode())::
 			$$edit(::_("Duplicate")::,/contractAdmin/duplicate/::c.id::)
+			::end::
+
 			::if user.canManageAllContracts()::
-			<div style="margin-top:8px">
-
 				$$delete(Supprimer,/contract/delete/::c.id::?token=::token::)
+				<div style="margin-top:8px">
 
-				<div class="alert alert-warning">
-					<i class="icon icon-info"></i>					
-					Vous ne pourrez pas supprimer ce catalogue si il contient des commandes, afin de ne pas perdre l'historique des commandes.<br/>
-					Si vous souhaitez simplement le faire disparaitre, il suffit de changer sa date de fin. Si la date de fin est plus ancienne qu'un mois avant aujourd'hui, le catalogue sera masqué. Vous pourrez le retrouver si besoin en cliquant sur "anciens catalogues".
+					
+					<div class="alert alert-warning">
+						<i class="icon icon-info"></i>					
+						Vous ne pourrez pas supprimer ce catalogue si il contient des commandes, afin de ne pas perdre l'historique des commandes. 
+						Si vous souhaitez simplement le faire disparaitre, il suffit de changer sa date de fin. Si la date de fin est plus ancienne qu'un mois avant aujourd'hui, le catalogue sera masqué. Vous pourrez le retrouver si besoin en cliquant sur "anciens catalogues".
+					</div>
 				</div>
-			</div>
 			::end::
 		</div>
 
 		<hr/>
 		
 		<h4>::_("Farmer")::</h4>
-		<table class="table table-bordered" style="width:500px;">
+		<table class="table table-bordered" style="width:600px;">
 			<tr>
-				<td>::_("Name")::</td>
+				<td class="col-md-3">::_("Name")::</td>
 				<td><b>::contract._vendor.name::</b></td>
 			</tr>
 			<tr>
-				<td>::_("Email")::</td>
+				<td>Email</td>
 				<td>$$nullSafe(::contract._vendor.email::)</td>
 			</tr>
 			<tr>
 				<td>::_("Phone")::</td>
 				<td>$$nullSafe(::contract._vendor.phone::)</td>
 			</tr>
+			<tr>
+				<td>Statut</td>
+				<td>
+					::set vendor = contract._vendor::
+					::set cpro = vendor.getCpro()::
+					$$publicVendorIcon(::vendor::)
+
+					::if(vendor.isDisabled())::
+					<div class="row">
+						<div class="col-md-12">			
+							<div class="alert alert-danger">
+								<i class="icon icon-alert"></i>
+								Ce compte producteur est bloqué et n'accepte plus de commandes.<br/>
+								Raison : <b>::vendor.getDisabledReason()::</b>
+							</div>
+						</div>
+					</div>
+					::end::
+
+					::if(cpro==null || cpro.offer==0)::
+						<p>
+							Ventes limitées à 1000€ par an.<br/>
+							<span class="disabled">(hors ventes réalisées dans des groupes en mode AMAP)</span><br/>
+						</p>
+						<p>
+							::set frdate = getDate(vendor.freemiumResetDate)::
+							La date anniversaire de remise à zéro du compteur de chiffre d'affaires
+							est le <b>::frdate.d:: ::frdate.m::</b> 
+						</p>
+						::if(cpro==null)::
+							<p>
+								<a href="/vendor/checkId/::c.id::" class="btn btn-primary">Ouvrir un compte Producteur Découverte</a>
+							</p>
+							<p>
+								<div id="discoveryVendorTurnoverLimit"></div>
+								<script>
+									document.addEventListener("DOMContentLoaded", function () {
+										neo.createNeoModule("discoveryVendorTurnoverLimit", "discoveryVendorTurnoverLimit", {vendorId: ::vendor.id::});
+									}); 
+								</script>
+							</p>
+						::end::
+					::end::
+				</td>
+			</tr>
 		</table>
-		
 		
 		<h4><a href="/contractAdmin/products/::c.id::">::_("Products")::</a></h4>
 		<div style="max-height:400px;overflow:auto;">
-			<table class="table table-bordered" style="width:500px;">
+			<table class="table table-bordered" style="width:600px;">
 				::foreach p contract.getProducts(true)::
 				<tr>
 					<td><img src="::p.getImage()::" style="width:32px;height:32px;" />	</td>
@@ -85,7 +161,5 @@
 				::end::
 			</table>
 		</div>
-		
-		
 
 ::end::

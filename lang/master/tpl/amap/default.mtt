@@ -6,18 +6,18 @@
 		<div class="block">
 			
 			<h4>
-				::user.getGroup().name::
+				::group.name::
 			</h4>
 
-			::if user.getGroup()._image!=null::
-			::if user.getGroup().extUrl!=null && user.getGroup().extUrl!=""::
-			<a href="::user.getGroup().extUrl::"><img src="::file(user.getGroup()._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/></a>
+			::if group.imageId!=null::
+			::if group.extUrl!=null && group.extUrl!=""::
+				<a href="::group.extUrl::"><img src="::file(group.imageId)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/></a>
 			::else::
-			<img src="::file(user.getGroup()._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/>
+				<img src="::file(group.imageId)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/>
 			::end::
 			::end::
 			
-			::raw nl2br(user.getGroup().txtIntro)::
+			::raw nl2br(group.txtIntro)::
 			<br/>
 			::if user.isAmapManager()::
 			$$edit(::_("Edit")::,amap/edit)
@@ -27,7 +27,7 @@
 		
 		<div class="block">
 			<b>::_("Main contact"):: :</b><br/>
-			$$contact(::user.getGroup()._contact::)	
+			$$contact(::group._contact::)	
 		</div>
 
 	</div>

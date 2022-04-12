@@ -1,12 +1,15 @@
 package db;
+import Common;
+import pro.db.VendorStats;
 import sugoi.form.validators.EmailValidator;
 import sys.db.Object;
 import sys.db.Types;
-import Common;
 
 enum DisabledReason{
-	IncompleteLegalInfos; //incomplete legal infos
+	IncompleteLegalInfos; 	//incomplete legal infos
 	NotCompliantWithPolicy; //not compliant with policy (charte des producteurs)
+	Banned; 				//banned by network administrateurs
+	TurnoverLimitReached; 	//turnover limit reached
 }
 
 /**
@@ -27,9 +30,15 @@ typedef SiretInfos = {
 	}
 }
 
+enum VendorBetaFlags{
+	Cagette2;		//BETA Cagette 2.0
+}
+
 /**
  * Vendor (farmer/producer/vendor)
  */
+@:index(stripeCustomerId)
+@:index(companyNumber,companySubNumber,country,unique)
 class Vendor extends Object
 {
 	public var id : SId;
@@ -38,6 +47,8 @@ class Vendor extends Object
 	
 	//public var legalStatus : SNull<SEnum<LegalStatus>>;
 	@hideInForms public var profession : SNull<SInt>;
+	@hideInForms public var production2 : SNull<SInt>;
+	@hideInForms public var production3 : SNull<SInt>;
 
 	public var email:SNull<SString<128>>;
 	public var phone:SNull<SString<19>>;
@@ -50,16 +61,18 @@ class Vendor extends Object
 	
 	public var desc : SNull<SText>;
 	@hideInForms public var cdate : SNull<SDateTime>; // date de création
+	@hideInForms public var freemiumResetDate : SDateTime;
+	@hideInForms public var turnoverLimitReachedDistribsWhiteList : SSmallText;
 
 	//legal infos
 	@hideInForms public var companyNumber : SNull<SString<128>>; //SIRET
+	@hideInForms public var companySubNumber : SNull<STinyInt>; 
 	@hideInForms public var vatNumber : SNull<SString<128>>; //VAT number
 	@hideInForms public var legalStatus : SNull<SInt>; //statut juridique
 	@hideInForms public var companyCapital : SNull<SInt>; //capital social
-	@hideInForms public var siretInfos : SNull<SData<SiretInfos>>; //infos from SIRET API
 	@hideInForms public var activityCode:SNull<SString<8>>;//code NAF (NAFRev2)
 	
-	public var vendorPolicy:SBool; //charte producteurs
+	// @hideInForms public var vendorPolicy:SBool; //charte producteurs
 	@hideInForms public var tosVersion: SNull<SInt>; //CGV version checked
 	
 	public var linkText:SNull<SString<256>>;
@@ -70,22 +83,44 @@ class Vendor extends Object
 	@hideInForms public var offCagette 	: SNull<SText>;
 	
 	@hideInForms @:relation(imageId) 	public var image : SNull<sugoi.db.File>;
-	@hideInForms @:relation(userId) 	public var user : SNull<db.User>; //owner of this vendor (when not cpro)
 	
 	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
 	@hideInForms public var disabled : SNull<SEnum<DisabledReason>>; // vendor is disabled
 	
-	@hideInForms public var isTest : SBool; //cpro test account
+	// @hideInForms public var isTest : SBool; //cpro test account
 
 	@hideInForms public var lat:SNull<SFloat>;
 	@hideInForms public var lng:SNull<SFloat>;
+
+	@hideInForms public var betaFlags:SFlags<VendorBetaFlags>;
+
+	@hideInForms public var stripeCustomerId:SNull<SString<255>>;
 
 	public function new() 
 	{
 		super();
 		directory = true;
 		cdate = Date.now();
+		freemiumResetDate = Date.now();
+	}
 
+	public function checkIsolate(){
+	
+		if(this.betaFlags.has(VendorBetaFlags.Cagette2)){
+
+			var cpro = pro.db.CagettePro.getCurrentCagettePro();
+
+			var noCagette2Groups = cpro.getGroups().filter(v->!v.hasCagette2());
+			if ( noCagette2Groups.length>0 ){
+				var name = noCagette2Groups.map(v -> v.name).join(", ");
+				throw sugoi.ControllerAction.ControllerAction.ErrorAction("/user/choose",'Le producteur "${this.name}" a l\'option Cagette2 activée et ne peut pas fonctionner avec des groupes qui n\'ont pas activé cette option ($name). Contactez nous sur <b>support@cagette.net</b> pour régler le problème.');
+			}
+			
+		} 
+	}
+
+	public function hasCagette2(){
+		return betaFlags.has(VendorBetaFlags.Cagette2);
 	}
 	
 	override function toString() {
@@ -102,10 +137,10 @@ class Vendor extends Object
 	}
 
 	public function getImage():String{
-		if (image == null) {
+		if (imageId == null) {
 			return "/img/vendor.png";
 		}else {
-			return App.current.view.file(image);
+			return App.current.view.file(imageId);
 		}
 	}
 
@@ -124,25 +159,25 @@ class Vendor extends Object
 		var files = sugoi.db.EntityFile.getByEntity("vendor",this.id);
 		for( f in files ){
 			switch(f.documentType){				
-				case "logo" 	: out.logo 		= f.file;
-				case "portrait" : out.portrait 	= f.file;
-				case "banner" 	: out.banner 	= f.file;
-				case "farm1" 	: out.farm1 	= f.file;
-				case "farm2" 	: out.farm2 	= f.file;
-				case "farm3" 	: out.farm3 	= f.file;
-				case "farm4" 	: out.farm4 	= f.file;
+				case "logo" 	: out.logo 		= f.getFileId();
+				case "portrait" : out.portrait 	= f.getFileId();
+				case "banner" 	: out.banner 	= f.getFileId();
+				case "farm1" 	: out.farm1 	= f.getFileId();
+				case "farm2" 	: out.farm2 	= f.getFileId();
+				case "farm3" 	: out.farm3 	= f.getFileId();
+				case "farm4" 	: out.farm4 	= f.getFileId();
 			}
 		}
 
-		if(out.logo==null) out.logo = this.image;
+		if(out.logo==null) out.logo = this.imageId;
 
 		return out;
 	}
 
 	public function getInfos(?withImages=false):VendorInfos{
 
-		var file = function(f){
-			return if(f==null)  null else App.current.view.file(f);
+		var file = function(fId: Int){
+			return if(fId==null)  null else App.current.view.file(fId);
 		}
 		var vendor = this;
 		var out : VendorInfos = {
@@ -151,7 +186,7 @@ class Vendor extends Object
 			profession:null,
 			email:vendor.email,
 			offCagette:offCagette,
-			image : file(vendor.image),
+			image : file(vendor.imageId),
 			images : cast {},
 			address1: vendor.address1,
 			address2: vendor.address2,
@@ -167,7 +202,7 @@ class Vendor extends Object
 		};
 
 		if(this.profession!=null){
-			out.profession = Lambda.find(service.VendorService.getVendorProfessions(),function(x) return x.id==this.profession).name;
+			out.profession = getProfession();
 		}
 
 		if(withImages){
@@ -181,6 +216,13 @@ class Vendor extends Object
 			out.images.farm4 = file(images.farm4);
 		}
 		return out;
+	}
+
+	public function getProfession():String {
+		if(this.profession==null) return null;
+		var p = service.VendorService.getVendorProfessions().find(x -> x.id==this.profession);
+		if(p==null) throw new tink.core.Error("Vendor #"+this.id+" has invalid profession code : "+this.profession);
+		return p.name;
 	}
 
 	public function getGroups():Array<db.Group>{
@@ -215,7 +257,6 @@ class Vendor extends Object
 			"linkText" 			=> t._("Link text"),			
 			"linkUrl" 			=> t._("Link URL"),			
 			"companyNumber" 	=> "Numéro SIRET (14 chiffres)",	
-			"vendorPolicy"		=> "Ce producteur est conforme à la <a href=\"https://www.cagette.net/charte-producteurs\" target=\"_blank\">Charte Producteurs Cagette.net</a>"
 		];
 	}
 
@@ -234,32 +275,8 @@ class Vendor extends Object
 		return str.toString();
 	}
 
-	public function getAddressFromSiretInfos(){
-		if(siretInfos==null) return null;
-		
-		var addr = {
-			address1:"",
-			address2:"",
-			zipCode:siretInfos.code_postal,
-			city:siretInfos.libelle_commune,
-			lat:siretInfos.latitude,
-			lng:siretInfos.longitude
-		}
-
-		//find address1
-		var a = [];
-		for( k in ["numero_voie","type_voie","libelle_voie"] ){
-			var v = Reflect.field(siretInfos,k);
-			if(v!=null && v!=""){
-				a.push(v);
-			}
-		}
-		addr.address1 = a.join(" ");
-
-		return addr;
-	}
-
 	public function isDisabled(){
+		if(email=="galinette@cagette.net" || email=="jean@cagette.net") return false;
 		return disabled!=null;
 	}
 
@@ -268,6 +285,8 @@ class Vendor extends Object
 			case null : null;
 			case DisabledReason.IncompleteLegalInfos : "Informations légales incomplètes. Complétez vos informations légales pour débloquer le compte. (SIRET,capital social,numéro de TVA)";
 			case DisabledReason.NotCompliantWithPolicy : "Producteur incompatible avec la charte producteur de Cagette.net";
+			case DisabledReason.Banned : "Producteur bloqué par les administrateurs";
+			case DisabledReason.TurnoverLimitReached : "Ce producteur a atteint sa limite de chiffre d'affaires annuel";
 		};
 	}
 
@@ -315,7 +334,7 @@ class Vendor extends Object
 		#if plugins
 		var cpro = pro.db.CagettePro.getFromVendor(this);
 		if(companyNumber==null){
-			if(cpro!=null && cpro.training){
+			if(cpro!=null && cpro.offer==Training){
 				//do not disable training accounts
 			}else{
 				disabled = DisabledReason.IncompleteLegalInfos;
@@ -333,4 +352,12 @@ class Vendor extends Object
 		check();
 		super.update();
 	}
+
+	function getStats():VendorStats{
+		return VendorStats.getOrCreate(this);
+	}
+
+	public function getImageId(){
+        return this.imageId;
+    }
 }

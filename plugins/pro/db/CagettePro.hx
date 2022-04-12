@@ -1,38 +1,34 @@
 package pro.db;
-import sys.db.Types;
 import Common;
+import sys.db.Types;
+
+enum CagetteProOffer {
+	Discovery;
+	Member;
+	Pro;
+	Training;
+}
 
 /**
- * Cagette Pro account linked to a Vendor Account
- * @author fbarbut
+ * Vendor Account
  */
 class CagettePro extends sys.db.Object
 {
 	public var id : SId;
 	@hideInForms @:relation(vendorId) public var vendor : db.Vendor;
 	@hideInForms @:relation(demoCatalogId) public var demoCatalog : SNull<pro.db.PCatalog>;//catalog used for public page
-	
-	@hideInForms public var vatRates : SData<Map<String,Float>>;
-	@hideInForms public var freeCpro:SBool; //have free access to cpro
-	@hideInForms public var training:SBool;	//training account
-	//@hideInForms public var active:SBool;	//is active
+	@hideInForms public var vatRates : SNull<SSmallText>;	
 	@hideInForms public var network:SBool;	//enable network management features
 	@hideInForms public var captiveGroups:SBool;	//the groups are a captive network
-	@hideInForms public var discovery:SBool;	//Cagette Découverte
-
 	@hideInForms public var networkGroupIds:SNull<SString<512>>; //network groups, ints separated by comas
-
-	@hideInForms public var disabled:SBool;	//disable training accounts when the training sessions is over
 	@hideInForms public var cdate:SNull<SDateTime>; //date when vendor became Cagette Pro
+	@hideInForms public var offer:SEnum<CagetteProOffer>;
 	
 	public function new(){
 		super();
-		vatRates = getVatRates();
-		freeCpro = true;
-		training = false;
-		//active = false;
+		setVatRates([{label:"TVA alimentaire 5,5%",value:5.5},{label:"TVA 20%",value:20},{label:"Non assujeti à TVA", value:0}]);
+		offer = Discovery;
 		network = false;		
-		disabled = false;
 		cdate = Date.now();
 	}
 
@@ -93,14 +89,21 @@ class CagettePro extends sys.db.Object
 		}
 		return out;
 	}
-	
-	public function getVatRates(){
-		if (vatRates == null){
-			return ["TVA Alimentaire 5,5%" => 5.5, "TVA 20%" => 20, "Non assujeti à TVA" => 0];	
-		}else{
-			return vatRates;
+
+	public function setVatRates(rates:Array<{value:Float,label:String}>){
+		vatRates = haxe.Json.stringify(rates);
+	}
+
+	public function getVatRates():Array<{value:Float,label:String}>{
+		try{
+			return haxe.Json.parse(vatRates);
+		}catch(e:Dynamic){
+			var rates = [{label:"TVA alimentaire 5,5%",value:5.5},{label:"TVA 20%",value:20},{label:"Non assujeti à TVA", value:0}];
+			this.lock();
+			setVatRates(rates);
+			this.update();
+			return rates;
 		}
-		
 	}
 	
 	/**
@@ -150,7 +153,7 @@ class CagettePro extends sys.db.Object
 		get vendors linked to this company (product reselling/distribution)
 	**/
 	public function getVendors():Array<db.Vendor>{
-		return Lambda.array(Lambda.map(pro.db.PVendorCompany.manager.search($company == this, false), function(x) return x.vendor));
+		return Lambda.map(pro.db.PVendorCompany.manager.search($company == this, false), x -> x.vendor).array();
 	}
 
 
@@ -181,14 +184,12 @@ class CagettePro extends sys.db.Object
 	public static function canLogIn(user:db.User,vendor:db.Vendor){
 		if(user.isAdmin()) return true;
 
-		var cpro = pro.db.CagettePro.manager.select($vendor==vendor,false);
-
+		var cpro = vendor.getCpro();
 		if(cpro!=null){
 			var cpros = pro.db.PUserCompany.getCompanies(user);
 			return Lambda.exists(cpros, function(a) return a.id == cpro.id);
 		}else{
-			//Not Cpro
-			return vendor.user.id==user.id;
+			return false;
 		}
 	}
 	
@@ -239,5 +240,4 @@ class CagettePro extends sys.db.Object
 			"freeCpro" 	=> "Accès gratuit à Cagette Pro (stagiaire formation)",		
 		];
 	}
-	
 }
