@@ -3,11 +3,10 @@
 	Use it with with bootstrap 3
 */
 @import url("https://fonts.googleapis.com/css?family=Cabin:400,500,700");
-@import "_iconfont";
 
 $mediumGreen 	: #3c763d;
-$lightGreen 	: #85BD56; //primary buttons color @brand-success
-$lightBrown 	: #f8f4e5; //background @body-bg
+$secondaryColor	: #85BD56; //primary buttons color @brand-success
+$backgroundColor: #f8f4e5; //background @body-bg
 $darkGrey 		: #333;
 $mediumGrey		: #666;
 $lightGrey		: #AAA;
@@ -171,7 +170,7 @@ ul.nav{
 /* Footer */
 
 #footer {
-	background: $lightGreen;
+	background: $secondaryColor;
 	border-radius: 8px;
 	padding: 20px;
 	min-height: 200px;
@@ -554,7 +553,7 @@ div.reportHeader{
 	}
 	.distance {
 		font-weight: bold;
-		color: $lightGreen;
+		color: $secondaryColor;
 		font-size: 1.2em;
 		position: absolute;
 		right: 8px;
@@ -1232,3 +1231,13 @@ a.btn-warning{
 	}
 }
 
+i.icon{
+	position: relative;
+	display: inline-block;
+	font-style: normal;
+	-webkit-font-smoothing: antialiased;
+	vertical-align: middle;
+
+	min-width: 1em;//use always same width
+	text-align: center;
+}

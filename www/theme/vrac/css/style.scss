@@ -3,17 +3,16 @@
 	Use it with with bootstrap 3
 */
 @import url("https://fonts.googleapis.com/css?family=Cabin:400,500,700");
-@import "../../css/_iconfont";
 
 $mediumGreen 	: #3c763d;
-$lightGreen 	: #e4c94b; //primary buttons color @brand-success
-$lightBrown 	: #efefef; //background @body-bg
+$secondaryColor	: #e4c94b; //primary buttons color @brand-success
+$backgroundColor: #efefef; //background @body-bg
 $darkGrey 		: #333;
 $mediumGrey		: #666;
 $lightGrey		: #AAA;
 
 $farmer 		: #e4ba2b;
-$farmerPro		: #e4c94b; //@brand-success
+$farmerPro		: #85BD56; //@brand-success
 $farmerDanger	: #a94442;
 
 
@@ -171,7 +170,7 @@ ul.nav{
 /* Footer */
 
 #footer {
-	background: #84BD55;
+	background: $secondaryColor;
 	border-radius: 8px;
 	padding: 20px;
 	min-height: 200px;
@@ -554,7 +553,7 @@ div.reportHeader{
 	}
 	.distance {
 		font-weight: bold;
-		color: #84bd55;
+		color: $secondaryColor;
 		font-size: 1.2em;
 		position: absolute;
 		right: 8px;
@@ -1232,3 +1231,13 @@ a.btn-warning{
 	}
 }
 
+i.icon{
+	position: relative;
+	display: inline-block;
+	font-style: normal;
+	-webkit-font-smoothing: antialiased;
+	vertical-align: middle;
+
+	min-width: 1em;//use always same width
+	text-align: center;
+}

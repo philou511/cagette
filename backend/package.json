@@ -6,13 +6,12 @@
   "homepage": "http://www.cagette.net",
   "devDependencies": {
     "@types/react": "^16.9.55",
-    "node-sass": "^4.11.0",
     "npm-run-all": "^4.1.2"
   },
   "scripts": {
-    "build2:sass": "sass ../www/css/style.scss ../www/css/style.css",
-    "build:sass": "node-sass ../www/css -o ../www/css",
-    "watch:sass": "npm run build:sass -- --watch"
+    "build:sass": "./buildSass.sh",
+    "dev:sass": "sass ../www/theme",
+    "watch:sass": "npm run dev:sass -- --watch"
   },
   "repository": {
     "type": "git",
