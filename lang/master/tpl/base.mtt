@@ -14,25 +14,16 @@
     </title>
 
     <!-- Cagette CSS -->
-    
-    ::if(whiteLabel!=null)::
-        ::if(DEBUG)::
-        <link rel="stylesheet" href="/::whiteLabel.name::/css/style.css" />
-        ::else::
-        <link rel="stylesheet" href="/::whiteLabel.name::/css/style.min.css" />
-        ::end::
+    ::if(DEBUG)::
+        <link rel="stylesheet" type="text/css" href="/theme/::theme.id::/css/::getVariable('css')::/style.css" />
     ::else::
-        <link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css" />
+        <link rel="stylesheet" type="text/css" href="/theme/::theme.id::/css/::getVariable('css')::/style.min.css" />
     ::end::
 
     <!-- BOOTSTRAP -->
     ::if noBootstrap::
     ::else::
-        ::if(whiteLabel!=null)::
-            <link rel="stylesheet" href="/::whiteLabel.name::/css/bootstrap.min.css" />
-        ::else::
-            <link rel="stylesheet" href="/css/::getVariable('css')::/bootstrap.min.css" />
-        ::end::
+        <link rel="stylesheet" href="/theme/::theme.id::/css/::getVariable('css')::/bootstrap.min.css" />
     ::end::
 
     <!-- Cagette very own icon font -->

@@ -356,7 +356,7 @@ class Cron extends Controller
 			var errors = sugoi.db.Error.manager.search( $date < yest24h && $date > yest0h  );		
 			if (errors.length > 0) {
 				var report = new StringBuf();
-				report.add("<h1>" + App.current.name + " : ERRORS</h1>");
+				report.add("<h1>" + App.current.theme.name + " : ERRORS</h1>");
 				for (e in errors) {
 					report.add("<div><pre>"+e.error + " at URL " + e.url + " ( user : " + (e.user!=null?e.user.toString():"none") + ", IP : " + e.ip + ")</pre></div><hr/>");
 				}
@@ -364,7 +364,7 @@ class Cron extends Controller
 				var m = new Mail();
 				m.setSender(App.config.get("default_email"),"::appName::");
 				m.addRecipient(App.config.get("webmaster_email"));
-				m.setSubject(App.current.name+" Errors");
+				m.setSubject(App.current.theme.name+" Errors");
 				m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:report.toString() } ) );
 				App.sendMail(m);
 			}

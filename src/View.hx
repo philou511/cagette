@@ -4,6 +4,7 @@ import haxe.EnumTools.EnumValueTools;
 import haxe.Utf8;
 import sugoi.Web;
 import tools.ArrayTool;
+import App.Theme;
 
 using Std;
 
@@ -15,8 +16,7 @@ class View extends sugoi.BaseView {
 
 	var tuto:{name:String, step:Int};
 
-	var appName : String;
-	var whiteLabel : WhiteLabel;
+	var theme : Theme;
 
 	public function new() {
 		super();
@@ -48,8 +48,7 @@ class View extends sugoi.BaseView {
 	override function init() {
 		super.init();
 
-		this.whiteLabel = App.current.whiteLabel;
-		this.appName = App.current.name;
+		this.theme = App.current.theme;
 		
 		// tuto widget display
 		/*var u = App.current.user;

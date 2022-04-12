@@ -166,7 +166,7 @@ class User extends Controller
 			var m = new sugoi.mail.Mail();
 			m.setSender(App.config.get("default_email"),"::appName::");					
 			m.setRecipient(email, user.getName());					
-			m.setSubject( "["+App.current.name+"] : "+t._("Password change"));
+			m.setSubject( "["+App.current.theme.name+"] : "+t._("Password change"));
 			m.setHtmlBody( app.processTemplate('mail/forgottenPassword.mtt', { user:user, link:'http://' + App.config.HOST + '/user/forgottenPassword/'+token+"/"+user.id }) );
 			App.sendMail(m);	
 		}
@@ -198,7 +198,7 @@ class User extends Controller
 				m.setSender(App.config.get("default_email"),"::appName::");					
 				m.setRecipient(user.email, user.getName());					
 				if(user.email2!=null) m.setRecipient(user.email2, user.getName());					
-				m.setSubject( "["+App.current.name+"] : "+t._("New password confirmed"));
+				m.setSubject( "["+App.current.theme.name+"] : "+t._("New password confirmed"));
 				var emails = [user.email];
 				if(user.email2!=null) emails.push(user.email2);
 				var params = {

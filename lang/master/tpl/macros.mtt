@@ -465,13 +465,9 @@
 				<div id="footer" >
 				
 						<div class="col-md-3" >
-							<a href="::if(whiteLabel!=null)::::whiteLabel.link::::else::http://www.cagette.net::end::" target="_blank">
-								::if(whiteLabel!=null)::
-									<img src="::whiteLabel.logo::" alt="::appName::" style="width:166px;"/>
-								::else::
-									<img src="/img/logo.png" alt="::appName::"/>
-								::end::
-							</a>  
+							<a href="::theme.url::" target="_blank">
+								<img src="/theme/::theme.id::/logo.png" alt="logo ::theme.name::" style="width:166px;"/>
+							</a>
 						</div>
 						<div class="col-md-3" >
 							<ul>

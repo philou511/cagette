@@ -3,6 +3,12 @@ import GitMacros;
 import db.User;
 import thx.semver.Version;
  
+typedef Theme = {
+	var id:String; // theme's id
+	var name:String; // readable name
+	var url:String; // company's website
+}
+
 class App extends sugoi.BaseApp {
 
 	public static var current : App = null;
@@ -13,8 +19,7 @@ class App extends sugoi.BaseApp {
 	public var eventDispatcher :hxevents.Dispatcher<Event>;	
 	public var plugins : Array<sugoi.plugin.IPlugIn>;
 	public var breadcrumb : Array<Link>;
-	public var whiteLabel	: WhiteLabel;
-	public var name 		: String;
+	public var theme	: Theme;
 
 	/**
 	 * Version management
@@ -57,11 +62,19 @@ class App extends sugoi.BaseApp {
 		plugins.push( new who.WhoPlugIn() );
 		#end
 
-		var whiteLabelStringified = sugoi.db.Variable.get("whiteLabel");
-		whiteLabel = whiteLabelStringified != null ? haxe.Json.parse(whiteLabelStringified) : null;
-		name = whiteLabel == null ? App.config.NAME : whiteLabel.name;
+		setTheme();
 
 		super.mainLoop();
+	}
+
+	private function setTheme(){
+		var cagetteTheme: Theme = {
+			id: "cagette",
+			name: "Cagette.net",
+			url: "https://www.cagette.net"
+		}
+		var whiteLabelStringified = sugoi.db.Variable.get("whiteLabel");
+		this.theme = whiteLabelStringified != null ? haxe.Json.parse(whiteLabelStringified) : cagetteTheme;
 	}
 	
 	public function getCurrentGroup(){		
@@ -312,8 +325,7 @@ class App extends sugoi.BaseApp {
 		
 		//inject usefull vars in view
 		Reflect.setField(ctx, 'HOST', App.config.HOST);
-		Reflect.setField(ctx, 'appName', App.current.name);
-		Reflect.setField(ctx, 'whiteLabel', App.current.whiteLabel);
+		Reflect.setField(ctx, 'theme', this.theme);
 		Reflect.setField(ctx, 'hDate', date -> return Formatting.hDate(date) );
 
 		ctx._ = App.current.view._;

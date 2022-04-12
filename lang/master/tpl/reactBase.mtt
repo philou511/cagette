@@ -17,10 +17,10 @@
 		crossorigin=""/>
 		
 		<!-- Cagette CSS -->
-		::if(whiteLabel!=null)::
-			<link rel="stylesheet" href="/::whiteLabel.name::/css/style.css" />
+		::if(DEBUG)::
+			<link rel="stylesheet" type="text/css" href="/theme/::theme.id::/css/::getVariable('css')::/style.css" />
 		::else::
-			<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css" />
+			<link rel="stylesheet" type="text/css" href="/theme/::theme.id::/css/::getVariable('css')::/style.min.css" />
 		::end::
 
 

@@ -146,7 +146,7 @@
 		</div>
 
 		<div id="email-footer">
-			<img src="::if(whiteLabel!=null)::::whiteLabel.logo::::else::http://::HOST::/img/logo3.png::end::" alt="logo ::appName::" style="margin-bottom: 16px; max-width: 200px; max-height: 87px;"/>
+			<img src="http://::HOST::/theme/::theme.id::/logo3.png" alt="logo ::appName::" style="margin-bottom: 16px; max-width: 200px; max-height: 87px;"/>
 			<p>Ce courriel a été envoyé depuis <a href="http://::HOST::" target="_blank" rel="noreferrer noopener">::appName::</a>.</p>
 			<p>Vous recevez ce message car vous faites partie de <b>::group.name::</b>::if list!=null:: (::list::) ::end::</p>
 			::if (user!=null)::
