@@ -7,7 +7,7 @@
 			::if pageTitle!=null::
 				::pageTitle::
 			::else::
-				::appName::
+				::theme.name::
 			::end::
 		</title>
 

@@ -662,7 +662,7 @@
             var content = document.createElement("p");
             content.classList.add("browser-detection-content");
             content.textContent =
-            "Votre navigateur Internet est trop ancien pour afficher ::appName::. \n Cela peut entraîner des problèmes d'affichage. \n Nous vous conseillons fortement de télécharger un navigateur plus récent, comme Firefox ou Brave.";
+            "Votre navigateur Internet est trop ancien pour afficher ::theme.name::. \n Cela peut entraîner des problèmes d'affichage. \n Nous vous conseillons fortement de télécharger un navigateur plus récent, comme Firefox ou Brave.";
             contentContainer.append(content);
             box.append(contentContainer);
 

@@ -344,7 +344,7 @@ class Course extends sugoi.BaseController
 		if(companyCourse.moodleUser==null) throw Error("/p/hosted/course/view/"+course.id,"Erreur : impossible d'envoyer le mail car le mot de passe Moodle n'a pas été sauvegardé");
 
 		var m = new sugoi.mail.Mail();
-		m.setSender(App.config.get("default_email"),"::appName::");
+		m.setSender(App.config.get("default_email"),"::theme.name::");
 		m.setRecipient(companyCourse.user.email);
 		m.setReplyTo("deborah@alilo.fr", "Deborag REYT");							
 		m.setSubject("Formation Cagette - La formation commence maintenant" );		
