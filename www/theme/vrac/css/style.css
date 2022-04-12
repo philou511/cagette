@@ -976,12 +976,12 @@ div.basketNumber {
 }
 
 tr.success td div.basketNumber {
-  background-color: #070;
+  background-color: #85BD56;
   color: white;
 }
 
 tr.danger td div.basketNumber {
-  background-color: #d9534f;
+  background-color: #DF3826;
   color: white;
 }
 
@@ -1021,6 +1021,7 @@ a.btn-warning {
   background-color: #fcf8e3;
   border-color: #ae894a;
 }
+
 i.icon {
   position: relative;
   display: inline-block;
@@ -1030,5 +1031,10 @@ i.icon {
   min-width: 1em;
   text-align: center;
 }
+
+/*
+	Cagette.net SASS stylesheet
+	Use it with with bootstrap 3
+*/
 
 /*# sourceMappingURL=style.css.map */

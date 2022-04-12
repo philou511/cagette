@@ -5,8 +5,8 @@
 @import url("https://fonts.googleapis.com/css?family=Cabin:400,500,700");
 
 $mediumGreen 	: #3c763d;
-$secondaryColor	: #85BD56; //primary buttons color @brand-success
-$backgroundColor: #f8f4e5; //background @body-bg
+$secondaryColor	: #85BD56 !default; //primary buttons color @brand-success
+$backgroundColor: #f8f4e5 !default; //background @body-bg
 $darkGrey 		: #333;
 $mediumGrey		: #666;
 $lightGrey		: #AAA;
