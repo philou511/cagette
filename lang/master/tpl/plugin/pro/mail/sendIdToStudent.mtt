@@ -59,7 +59,7 @@ L'idée de cet exercice préparatoire c'est que tu arrives en salle en connaissa
             ::end::
         </ul>
         <li>
-            7 - Si jamais tu as des difficultés, écris nous à support@cagette.net en nous précisant 
+            7 - Si jamais tu as des difficultés, écris nous à ::theme.supportEmail:: en nous précisant 
             que tu écris dans le cadre de ta préparation à la journée collective en salle.
         </li>
     </ul>

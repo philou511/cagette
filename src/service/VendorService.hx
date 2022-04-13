@@ -234,7 +234,7 @@ class VendorService{
 			var raw = c.call("GET","https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/"+siret);
 			var res = haxe.Json.parse(raw);
 			if(res.message!=null){
-				throw new Error("Erreur avec le numéro SIRET ("+res.message+"). Si votre numéro SIRET est correct mais non reconnu, contactez nous sur support@cagette.net");
+				throw new Error("Erreur avec le numéro SIRET ("+res.message+"). Si votre numéro SIRET est correct mais non reconnu, contactez nous sur ::theme.supportEmail::");
 			}else{
 				vendor.companyNumber = siret;
 				var siretInfos = res.etablissement;
