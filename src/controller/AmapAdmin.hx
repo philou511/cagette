@@ -199,6 +199,7 @@ class AmapAdmin extends Controller
 			}			
 			
 			ua.update();
+			
 			if (ua.getRights().length == 0) {
 				throw Ok("/amapadmin/rights", t._("Rights removed"));
 			}else {

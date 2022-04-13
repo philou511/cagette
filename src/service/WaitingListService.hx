@@ -32,7 +32,7 @@ class WaitingListService{
 			for( u in service.GroupService.getGroupMembersWithRights(group,[Right.GroupAdmin,Right.Membership]) ){
 				App.quickMail(
 					u.email,
-					t._("[::group::] ::name:: suscribed to the waiting list.",{group:group.name,name:user.getName()}),
+					user.getName() + " s'est inscrit·e à la liste d'attente.",
 					html,
 					group
 				);

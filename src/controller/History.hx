@@ -1,12 +1,13 @@
 package controller;
+import Common;
+import db.MultiDistrib;
+import db.Operation;
 import db.Subscription;
 import service.OrderService;
-import db.MultiDistrib;
 import service.SubscriptionService;
 import sugoi.form.Form;
 import sugoi.form.elements.StringSelect;
-import db.Operation;
-import Common;
+
 using Std;
 // import plugin.Tutorial;
 
@@ -155,8 +156,11 @@ class History extends Controller
 		view.distribs = SubscriptionService.getSubscriptionDistributions(sub);
 		view.prepare = OrderService.prepare;
 		view.catalog = sub.catalog;
+		// view.history = true;
 		view.now = Date.now();
 		view.member = app.user;
+		
+		// checkToken();
 	}
 	
 	@logged

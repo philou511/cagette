@@ -184,14 +184,6 @@
 		</ul>
 	</div>
 	
-	<div class="alert alert-danger">
-		<p>
-			Attention, vous n'avez défini aucun mot de passe pour votre compte !
-		</p>
-		<a href="/user/definePassword" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> Définir un mot de passe</a>
-		
-	</div>
-	
 	$$today(Mercredi,15,Décembre,19,90,::user.getGroup()._mainPlace::)
 	
 	$$date(Mercredi,15,Décembre,19,::user.getGroup()._mainPlace::)

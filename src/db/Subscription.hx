@@ -1,9 +1,9 @@
 package db;
-import service.SubscriptionService;
+import Common;
 import db.Operation.OperationType;
+import service.SubscriptionService;
 import sys.db.Object;
 import sys.db.Types;
-import Common;
 import tink.core.Error;
 
 class Subscription extends Object {

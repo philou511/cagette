@@ -428,15 +428,6 @@ $$browserDetection()
 		</div>
 	</div>
 
-	<div class="alert alert-danger" ::cond user!=null && !user.isFullyRegistred()::>
-		<p>
-			::_("Warning, you don't have defined a password yet !")::
-		</p>
-		<a href="/user/definePassword" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::_("Set my
-			password")::</a>
-
-	</div>
-
 	<!-- additionnal blocks from plugins -->
 	::if blocks!=null::
 	::foreach b blocks::

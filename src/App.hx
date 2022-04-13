@@ -1,7 +1,7 @@
-import db.User;
-import thx.semver.Version;
 import Common;
 import GitMacros;
+import db.User;
+import thx.semver.Version;
  
 class App extends sugoi.BaseApp {
 
@@ -280,6 +280,7 @@ class App extends sugoi.BaseApp {
 	public static function sendMail(m:sugoi.mail.Mail, ?group:db.Group, ?listId:String, ?sender:db.User){
 		
 		if (group == null) group = App.current.user == null ? null:App.current.user.getGroup();
+		if (group != null) m.setSender(group.contact == null ? App.config.get("default_email") : group.contact.email, group.name);
 		current.event(SendEmail(m));
 		var params = group==null ? null : {remoteId:group.id};
 		getMailer().send(m,params,function(o){});		
@@ -292,7 +293,7 @@ class App extends sugoi.BaseApp {
 		e.setSender(App.config.get("default_email"),"Cagette.net");				
 		var html = App.current.processTemplate("mail/message.mtt", {text:html,group:group});		
 		e.setHtmlBody(html);
-		App.sendMail(e);
+		App.sendMail(e, group);
 	}
 	
 	/**

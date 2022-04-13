@@ -142,21 +142,18 @@ class Main extends Controller {
 	 */
 	function doApi(d:Dispatch) {
 		sugoi.Web.setHeader("Content-Type", "application/json");
-		sugoi.Web.setHeader("Access-Control-Allow-Credentials","true");
 		try {
 			d.dispatch(new controller.Api());
 		} catch (e:tink.core.Error) {
 			// manage tink Errors (service errors)
 			sugoi.Web.setReturnCode(e.code);
 			Sys.print(Json.stringify({error: {code: e.code, message: e.message, stack: e.exceptionStack}}));
-			app.rollback();
 		} catch (e:Dynamic) {
 			// manage other errors
 			sugoi.Web.setReturnCode(500);
 			var stack = haxe.CallStack.toString(haxe.CallStack.exceptionStack());
 			App.current.logError(e, stack);
 			Sys.print(Json.stringify({error: {code: 500, message: Std.string(e), stack: stack}}));
-			app.rollback();
 		}
 	}
 

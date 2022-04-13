@@ -25,9 +25,9 @@ import Common;
 import service.VolunteerService;
 import service.DistributionService;
 
-using tools.DateTool;
 using Formatting;
 using Std;
+using tools.DateTool;
 
 class Distribution extends Controller {
 	public function new() {
@@ -93,6 +93,7 @@ class Distribution extends Controller {
 
 	@tpl('distribution/CSAList.mtt')
 	function doCsaList(d:db.Distribution){
+		if ( !app.user.canManageContract( d.catalog ) ) throw Error( "/", t._("You do not have the authorization to manage this contract") );
 		view.distribution = d;
 		view.c = d.catalog;
 		view.nav = [];

@@ -1263,37 +1263,7 @@ class Admin extends controller.Controller {
 		view.form = f;
 	}
 
-	/**
-		envoi du mail aux producteur pour qu'il remplissent leurs infos légales.
-	**/
-	function doSendLegalInfosMail() {
-		for (v in db.Vendor.manager.unsafeObjects("SELECT v.* FROM Vendor v, VendorStats vs where v.id=vs.vendorId and vs.active=1 and v.companyNumber is null and disabled is null",
-			false)) {
-			var vs = VendorStats.getOrCreate(v);
-
-			if (vs.type == VTStudent)
-				continue;
-			if (v.disabled != null)
-				continue;
-			if (v.email == null)
-				continue;
-
-			Sys.println('send to <a href="/admin/vendor/view/${v.id}">${v.name}</a><br/>');
-
-			var m = new sugoi.mail.Mail();
-			m.setSender(App.config.get("default_email"), "Cagette.net");
-			m.setRecipient(v.email);
-			m.setReplyTo("support@cagette.net", "Cagette.net");
-			m.setSubject("Important : mise en conformité des comptes producteurs sur Cagette.net");
-			var link = "http://app.cagette.net/vendorNoAuthEdit/"
-				+ v.id
-				+ "/"
-				+ haxe.crypto.Md5.encode(App.config.KEY + "_updateWithoutAuth_" + v.id);
-
-			m.setHtmlBody(app.processTemplate("plugin/pro/mail/vendorLegalInfos.mtt", {vendor: v, link: link, type: vs.type.getIndex()}));
-			App.sendMail(m);
-		}
-	}
+	
 
 	/**
 		block "covid" cpro tests on 2020-10-01
@@ -1580,70 +1550,4 @@ class Admin extends controller.Controller {
 			}
 		}
 	}*/
-
-	/**
-		réattribuer les commandes de DELETED USER à qq'un dans un groupe
-	**/
-	function doSavePatrice(){
-
-		/*
-		AMAP St YO  10480
-		AMAP du Sillon 13048
-		AMAP d'Héric 4795
-		AMAP Qui ramène sa fraise 5385
-		AMAP de la Bugallière 3869
-		AMAP du petit chantilly 3865
-
-		var patrice = 320692
-		var deleted = 41362
-		*/
-
-		var patrice = db.User.manager.get(320692,false);
-		var deleted = db.User.manager.get(41362, false);
-		var groups = [3865];
-		var print = controller.Cron.print;
-
-		for( gid in groups){
-
-			var group = db.Group.manager.get(gid,false);
-			print(group.name);
-
-			var distributions = [];
-			for( cat in group.getContracts()){
-
-				var distribs = cat.getDistribs(false);
-				var dids = distribs.map(d -> d.id);
-
-				print("<h2>"+cat.name+"</h2>");
-
-				var orders = db.UserOrder.manager.search( ($distributionId in dids) && $user==deleted,true);
-
-				for( o in orders) print(" - "+o.toString());
-
-				//FIX
-
-				var sub = new db.Subscription();
-				sub.catalog = cat;
-				sub.user = patrice;
-				sub.startDate = cat.startDate;
-				sub.endDate = cat.endDate;
-				sub.insert();
-
-				for( o in orders ){
-					o.user = patrice;
-					o.subscription = sub;
-					o.update();
-
-					var b = o.basket;
-					if(b.user.id != patrice.id){
-						b.lock();
-						b.user = patrice;
-						b.update();
-					}
-				}
-			}
-		}
-		
-
-	}
 }
