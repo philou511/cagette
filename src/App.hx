@@ -9,6 +9,12 @@ typedef Theme = {
 	var url:String; // company's website
 	var supportEmail:String; // email address of the support
 	var cguLink:String; // link to CGU
+	var ?footer:{
+		?bloc1:String, // first footer bloc in html
+		?bloc2:String, // second footer bloc in html
+		?bloc3:String, // third footer bloc in html
+		?bloc4:String, // last footer bloc in html
+	};
 }
 
 class App extends sugoi.BaseApp {
@@ -75,8 +81,70 @@ class App extends sugoi.BaseApp {
 			name: "Cagette.net",
 			url: "https://www.cagette.net",
 			supportEmail: "support@cagette.net",
-			cguLink: "https://www.cagette.net/wp-content/uploads/2020/11/cgu-.pdf"
-		}
+			cguLink: "https://www.cagette.net/wp-content/uploads/2020/11/cgu-.pdf",
+			footer: {
+				bloc1: '<a href="https://www.cagette.net" target="_blank">
+							<img src="/theme/cagette/logo.png" alt="logo Cagette.net" style="width:166px;"/>
+						</a>',
+				bloc2: '<ul>
+							<li>								
+								<a href="https://www.cagette.net/comment-ca-marche/" target="_blank">Comment ça marche ?</a> 
+							</li>
+							<li> 
+								<a href="/charte/" target="_blank">Charte producteurs</a> 
+							</li>
+							<li> 
+								<a href="https://wiki.cagette.net" target="_blank">Documentation</a> 
+							</li>
+							<li>
+								<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank">Groupe Facebook</a> 
+							</li>
+							<li>
+								<a href="http://www.cagette.net/producteurs" target="_blank">Information producteurs</a> 
+							</li>												
+							<li>
+								<a href="/cgu" target="_blank">Conditions générales d\'utilisation</a> 
+							</li>
+							<li>
+								<a href="/cgv" target="_blank">Conditions générales de vente</a> 
+							</li>	
+							<li>
+								<a href="/mgp" target="_blank">C.G.U Mangopay</a> 
+							</li>
+						</ul>',
+				bloc3: 'SOUTENEZ-NOUS
+						<ul>
+							<li>
+								<a href="http://www.lilo.org/fr/cagette-net/?utm_source=cagette-net" target="_blank">Notre page sur Lilo.org</a>
+							</li>
+						</ul>
+						<!-- PAYPAL !-->
+						<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" style="margin-top:12px;">
+							<input type="hidden" name="cmd" value="_s-xclick"/>
+							<input type="hidden" name="hosted_button_id" value="S9KT7FQS7P622"/>
+							<input type="image" src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal, le réflexe sécurité pour payer en ligne"/>
+							<img alt="" border="0" src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="1"/>
+						</form>',
+				bloc4: 'SUIVEZ-NOUS
+						<ul class="cagsocialmedia">
+							<li class="cagfb">
+								<a title="Facebook" href="https://www.facebook.com/cagette" target="_blank"> <i class="icon icon-facebook"></i></a>	
+							</li>
+							<li class="cagtwitter">
+								<a title="Twitter" href="https://twitter.com/Cagettenet" target="_blank"> <i class="icon icon-twitter"></i></a> 
+							</li>
+							<li class="cagyoutube">
+								<a title="Youtube" href="https://www.youtube.com/channel/UC3cvGxAUrbN9oSZmr1oZEaw" target="_blank"> <i class="icon icon-youtube"></i></a> 						
+							</li>
+							<li style="background-color:#333;">
+								<a title="Github" href="https://github.com/bablukid/cagette" target="_blank"> <i class="icon icon-github"></i></a> 						
+							</li>
+						</ul>
+
+						<br/>
+						Cagette.net est réalisé <br/>
+						par la <a href="https://www.alilo.fr" "target="_blank">SCOP Alilo</a>'
+			}
 		var whiteLabelStringified = sugoi.db.Variable.get("whiteLabel");
 		this.theme = whiteLabelStringified != null ? haxe.Json.parse(whiteLabelStringified) : cagetteTheme;
 	}
