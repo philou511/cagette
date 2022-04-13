@@ -13,7 +13,7 @@
             <li>L'email avec lequel vous êtes inscrit sur Cagette.net</li>
         </ul>
         <p>
-            <a class="btn btn-primary" href="mailto:::theme.supportEmail::?subject=Créer un groupe AMAP : ::groupName::">Ecrire au support Cagette.net</a>
+            <a class="btn btn-primary" href="mailto: ::theme.supportEmail::?subject=Créer un groupe AMAP : ::groupName::">Ecrire au support Cagette.net</a>
         </p>
     </div>
 </div>
