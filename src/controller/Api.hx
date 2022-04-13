@@ -1,4 +1,5 @@
 package controller;
+import db.Catalog;
 import db.UserGroup;
 import haxe.Json;
 import neko.Web;
@@ -71,7 +72,15 @@ class Api extends Controller
 
 	public function doPlaces(d:haxe.web.Dispatch, place: db.Place) {
 		d.dispatch(new controller.api.Places(place));
-	}	
+	}
+
+	public function doCatalog(d:haxe.web.Dispatch) {
+		d.dispatch(new controller.api.Catalog());
+	}
+	
+	public function doSubscription(d:haxe.web.Dispatch) {
+		d.dispatch(new controller.api.Subscription());
+	}
 
 	/**
 	 * Get distribution planning for this group

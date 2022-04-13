@@ -1,8 +1,8 @@
 package controller.api;
-import tink.core.Error;
-import service.SubscriptionService;
 import haxe.Json;
 import neko.Web;
+import service.SubscriptionService;
+import tink.core.Error;
 
 class Catalog extends Controller
 {
