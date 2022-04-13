@@ -1,6 +1,6 @@
 package controller.admin;
-import service.BridgeService;
 import pro.db.VendorStats;
+import service.BridgeService;
 
 /**
  * Vendor admin
@@ -233,11 +233,6 @@ class Vendor extends controller.Controller
 			return false;
 		};
 
-		view.editLink = "https://app.cagette.net/vendorNoAuthEdit/"
-			+ v.id
-			+ "/"
-			+ haxe.crypto.Md5.encode(App.config.KEY + "_updateWithoutAuth_" + v.id);
-		
 		var res = sys.db.Manager.cnx.request('select * from TmpVendor where vendorId = ${v.id}').results();
 		var tmpVendor = res.first();
 		view.tmpVendor = tmpVendor;

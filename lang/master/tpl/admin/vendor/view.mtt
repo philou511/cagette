@@ -101,8 +101,6 @@
 
 		Sur Cagette depuis le ::sDate(vendor.cdate)::<br/>
 		::if(cpro!=null)::Cagette Pro depuis le ::sDate(cpro.cdate)::::end::<br/>
-
-		<!--Lien pour mettre à jour le compte : <a href="::editLink::">::editLink::</a>-->
 	</div>
 
 	<div class="col-md-6">

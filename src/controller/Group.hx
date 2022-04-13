@@ -109,7 +109,7 @@ class Group extends controller.Controller
 	@tpl("form.mtt")
 	function doCreate() {
 		
-		view.title = t._("Create a new Cagette Group");
+		view.title = "Créer un nouveau groupe " + App.current.theme.name;
 
 		var f = new sugoi.form.Form("c");
 		f.addElement(new StringInput("name", t._("Name of your group"), "", true));

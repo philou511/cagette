@@ -191,7 +191,7 @@ class VolunteerService
 
 				//Send notification email to either the coordinators or all the members depending on the current date
 				var mail = new Mail();
-				mail.setSender(App.config.get("default_email"),"::theme.name::");
+				mail.setSender(App.config.get("default_email"), App.current.theme.name);
 				var now = Date.now();
 				var alertDate = DateTools.delta( multidistrib.distribStartDate, - 1000.0 * 60 * 60 * 24 * multidistrib.group.vacantVolunteerRolesMailDaysBeforeDutyPeriod );
 

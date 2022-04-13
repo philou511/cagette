@@ -54,7 +54,7 @@ class Vendor extends Controller
 		} 
 
 		#if plugins
-		if(pro.db.CagettePro.getFromVendor(vendor)!=null && vendor.companyNumber!=null) throw Error("/contractAdmin","Vous ne pouvez pas modifier la fiche de ce producteur, car il gère lui même sa fiche depuis Cagette Pro");
+		if(pro.db.CagettePro.getFromVendor(vendor)!=null && vendor.companyNumber!=null) throw Redirect("/contractAdmin");
 		#end
 
 		var form = VendorService.getForm(vendor);
@@ -80,7 +80,7 @@ class Vendor extends Controller
 		if(!app.user.canManageVendor(vendor))  throw Error("/contractAdmin","Vous n'avez pas les droits de modification de ce producteur");
 
 		#if plugins
-		if(pro.db.CagettePro.getFromVendor(vendor)!=null) throw Error("/contractAdmin","Vous ne pouvez pas modifier la fiche de ce producteur, car il gère lui même sa fiche depuis Cagette Pro");
+		if(pro.db.CagettePro.getFromVendor(vendor)!=null) throw Redirect("/contractAdmin");
 		#end
 
 		view.vendor = vendor;

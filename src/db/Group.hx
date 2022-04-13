@@ -390,7 +390,7 @@ class Group extends Object
 		
 		if (txtHome == null){
 			var t = sugoi.i18n.Locale.texts;
-			txtHome = t._("Welcome in the group of ::name::!\n You can look at the delivery planning or make a new order.",{name:this.name});
+			txtHome = "Bienvenue sur le groupe " + this.name + " !\n Vous pouvez consulter votre planning de distribution ou faire une nouvelle commande.";
 		}
 		
 		App.current.event(NewGroup(this,App.current.user));

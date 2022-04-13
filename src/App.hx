@@ -315,7 +315,7 @@ class App extends sugoi.BaseApp {
 		var e = new sugoi.mail.Mail();		
 		e.setSubject(subject);
 		e.setRecipient(to);			
-		e.setSender(App.config.get("default_email"),"::theme.name::");				
+		e.setSender(App.config.get("default_email"), App.current.theme.name);				
 		var html = App.current.processTemplate("mail/message.mtt", {text:html,group:group});		
 		e.setHtmlBody(html);
 		App.sendMail(e, group);

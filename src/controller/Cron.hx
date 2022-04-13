@@ -81,7 +81,7 @@ class Cron extends Controller
 				if ( volunteers.length != 0 ) {
 					task.log(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 					var mail = new Mail();
-					mail.setSender(App.config.get("default_email"),"::theme.name::");
+					mail.setSender(App.config.get("default_email"), App.current.theme.name);
 					var volunteersList = "<ul>";
 					for ( volunteer in  volunteers ) {
 						
@@ -126,7 +126,7 @@ class Cron extends Controller
 			for (multidistrib  in vacantVolunteerRolesMultidistribs) {
 				task.log(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 				var mail = new Mail();
-				mail.setSender(App.config.get("default_email"),"::theme.name::");
+				mail.setSender(App.config.get("default_email"), App.current.theme.name);
 				for ( member in multidistrib.group.getMembers() ) {
 					mail.addRecipient( member.email, member.getName() );
 					if ( member.email2 != null ) {
@@ -271,7 +271,7 @@ class Cron extends Controller
 										Votre commande par défaut : <br /><br />${subscription.getDefaultOrdersToString()}
 										<br /><br />
 										La commande à chaque distribution est obligatoire dans le contrat "${subscription.catalog.name}". 
-										Vous pouvez modifier votre commande par défaut en accédant à votre souscription à ce contrat depuis la page "commandes" sur Cagette.net';
+										Vous pouvez modifier votre commande par défaut en accédant à votre souscription à ce contrat depuis la page "commandes".';
 
 										//fail silently
 										try{} catch(e:Dynamic){
@@ -362,7 +362,7 @@ class Cron extends Controller
 				}
 				
 				var m = new Mail();
-				m.setSender(App.config.get("default_email"),"::theme.name::");
+				m.setSender(App.config.get("default_email"), App.current.theme.name);
 				m.addRecipient(App.config.get("webmaster_email"));
 				m.setSubject(App.current.theme.name+" Errors");
 				m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:report.toString() } ) );
@@ -544,7 +544,7 @@ class Cron extends Controller
 				
 					try{
 						var m = new Mail();
-						m.setSender(App.config.get("default_email"), "::theme.name::");
+						m.setSender(App.config.get("default_email"), App.current.theme.name);
 						if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
 						m.addRecipient(u.user.email, u.user.getName());
 						if (u.user.email2 != null) m.addRecipient(u.user.email2);
@@ -630,7 +630,7 @@ class Cron extends Controller
 											
 						try{
 							var m = new Mail();
-							m.setSender(App.config.get("default_email"), "::theme.name::");
+							m.setSender(App.config.get("default_email"), App.current.theme.name);
 							if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
 							m.addRecipient(user.email, user.getName());
 							if (user.email2 != null) m.addRecipient(user.email2);
@@ -695,7 +695,7 @@ class Cron extends Controller
 			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.id;
 			var html = t._("<p>Your distribution just finished, don't forget to <b>validate</b> it</p>");
 			html += explain;
-			html += t._("<p><a href='::distriburl::'>Click here to validate the distribution</a> (You must be connected to your group Cagette)", {distriburl:url});
+			html += "<p><a href='" + url + "'>Cliquez ici pour valider la distribution</a> (vous devez être connecté·e à votre groupe " + App.current.theme.name + ")</p>";
 			App.quickMail(d.getGroup().contact.email, subj, html, d.getGroup());
 		}
 		
@@ -721,7 +721,7 @@ class Cron extends Controller
 			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.id;		
 			var html = t._("<p>Reminder: you have a delivery to validate.</p>");
 			html += explain;
-			html += t._("<p><a href='::distriburl::'>Click here to validate the delivery</a> (You must be connected to your Cagette group)", {distriburl:url});
+			html += "<p><a href='" + url + "'>Cliquez ici pour valider la distribution</a> (vous devez être connecté·e à votre groupe " + App.current.theme.name + ")</p>";
 			
 			if(d.getGroup().contact!=null){
 				App.quickMail(d.getGroup().contact.email, subj, html, d.getGroup());
