@@ -349,7 +349,7 @@ class Main extends Controller {
 
 	// CGU
 	public function doCgu() {
-		throw Redirect("https://www.cagette.net/wp-content/uploads/2020/11/cgu-.pdf");
+		throw Redirect(App.current.theme.cguLink);
 	}
 
 	// CGV

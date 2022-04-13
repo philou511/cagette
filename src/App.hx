@@ -8,6 +8,7 @@ typedef Theme = {
 	var name:String; // readable name
 	var url:String; // company's website
 	var supportEmail:String; // email address of the support
+	var cguLink:String; // link to CGU
 }
 
 class App extends sugoi.BaseApp {
@@ -73,7 +74,8 @@ class App extends sugoi.BaseApp {
 			id: "cagette",
 			name: "Cagette.net",
 			url: "https://www.cagette.net",
-			supportEmail: "support@cagette.net"
+			supportEmail: "support@cagette.net",
+			cguLink: "https://www.cagette.net/wp-content/uploads/2020/11/cgu-.pdf"
 		}
 		var whiteLabelStringified = sugoi.db.Variable.get("whiteLabel");
 		this.theme = whiteLabelStringified != null ? haxe.Json.parse(whiteLabelStringified) : cagetteTheme;
