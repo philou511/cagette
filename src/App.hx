@@ -15,6 +15,7 @@ typedef Theme = {
 		?bloc3:String, // third footer bloc in html
 		?bloc4:String, // last footer bloc in html
 	};
+	var brandedEmailLayoutFooter:String; // footer of the branded email layout in html
 }
 
 class App extends sugoi.BaseApp {
@@ -144,7 +145,20 @@ class App extends sugoi.BaseApp {
 						<br/>
 						Cagette.net est réalisé <br/>
 						par la <a href="https://www.alilo.fr" "target="_blank">SCOP Alilo</a>'
-			}
+			},
+			brandedEmailLayoutFooter:  '<p>Cagette.net - ALILO SCOP, 4 impasse Durban, 33000 Bordeaux</p>
+										<div style="display: flex; justify-content: center; align-items: center;">
+											<a href="https://www.cagette.net" target="_blank" rel="noreferrer noopener" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
+												<img src="http://'+ App.config.HOST+'/img/emails/website.png" alt="Site web" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>Site web
+											</a>
+											<a href="https://www.facebook.com/cagette" target="_blank" rel="noreferrer noopener" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
+												<img src="http://'+ App.config.HOST+'/img/emails/facebook.png" alt="Facebook" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>Facebook
+											</a>
+											<a href="https://www.youtube.com/channel/UC3cvGxAUrbN9oSZmr1oZEaw" target="_blank" rel="noreferrer noopener" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
+												<img src="http://'+ App.config.HOST+'/img/emails/youtube.png" alt="YouTube" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>YouTube
+											</a>
+										</div>'
+		}
 		var whiteLabelStringified = sugoi.db.Variable.get("whiteLabel");
 		this.theme = whiteLabelStringified != null ? haxe.Json.parse(whiteLabelStringified) : cagetteTheme;
 	}
