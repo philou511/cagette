@@ -1266,64 +1266,6 @@ class Admin extends controller.Controller {
 	
 
 	/**
-		block "covid" cpro tests on 2020-10-01
-	**/
-	/*function doBlockCproTest(){
-		var data = sys.io.File.getContent(sugoi.Web.getCwd() + "../data/cpro_test_a_bloquer.csv");
-		var csv = new sugoi.tools.Csv();
-		csv.setHeaders(["email","id","firstname","lastname","company","city"]);
-
-		var print = function(str:String){
-			Sys.println(str + "<br />");
-		};
-
-		print("<html><body>");
-
-		for(l in csv.importDatasAsMap(data)){
-			var user = db.User.manager.get(Std.parseInt(l["id"]),false);
-
-			if(user==null){
-				print("!!! user is null "+Std.string(l));
-				continue;
-			} 
-			if(user.email!=l["email"]){
-				print("!!! mail is not the same :  "+user.email+" != "+l["email"]);
-				continue;
-			}
-			var companies = PUserCompany.getCompanies(user).array();
-			if(companies.length>1){
-				print("!!! user has many cpros  :  "+companies);
-				continue;
-			}
-			if(companies.length==0){
-				print("!!! user has no cpros");
-				continue;
-			}
-
-			var cpro = companies[0];
-			for( uc in cpro.getUserCompany()){
-				uc.lock();
-				uc.disabled = true;
-				uc.update();
-				print("OK "+uc.user.email+" has no more acces to "+cpro.vendor.name+ " #"+cpro.vendor.id);
-			}
-
-		}
-
-		print("</body></html>");
-	}*/
-
-	function doTest() {
-		var offset = app.params.get("offset");
-
-		Sys.print(Json.stringify({
-			status: "succes",
-			offset: offset,
-		}));
-	}
-
-
-	/**
 		2021-07-05
 		trouver combien de producteurs sont dans les amaps ET dans les groupes en mode boutique
 	**/
@@ -1335,10 +1277,16 @@ class Admin extends controller.Controller {
 			both:0
 		};
 
-		for ( vs in VendorStats.manager.search($active==true,false)){
+		//prods formule Pro / Découverte ou Membre
+		for ( vs in VendorStats.manager.search($active==true && ($type==VTCpro || $type==VTDiscovery || $type==VTCproSubscriberMontlhy || $type==VTCproSubscriberYearly),false)){
 			var v = vs.vendor;
 
-			var groups = v.getActiveContracts().map( c -> c.group ).array();
+			var catalogs = v.getActiveContracts();
+			//keep only linked catalogs 
+			catalogs = catalogs.filter(c -> {
+				return RemoteCatalog.getFromContract(c)!=null;
+			});
+			var groups = catalogs.map( c -> c.group ).array();
 			groups = ObjectListTool.deduplicate(groups);
 
 			var groupTypes = {

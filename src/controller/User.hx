@@ -194,6 +194,8 @@ class User extends Controller
 				user.setPass(pass);
 				user.update();
 
+				sugoi.db.Cache.destroy(key);
+
 				var m = new sugoi.mail.Mail();
 				m.setSender(App.config.get("default_email"), App.current.theme.name);					
 				m.setRecipient(user.email, user.getName());					
