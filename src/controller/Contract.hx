@@ -213,7 +213,7 @@ class Contract extends Controller
 		view.category = 'contractadmin';
 		if (!app.user.isContractManager( catalog )) throw Error('/', t._("Forbidden action"));
 
-		view.title = t._("Edit catalog \"::contractName::\"", { contractName : catalog.name } );
+		view.title = 'Modifier le catalogue "${catalog.name}"';
 
 		var group = catalog.group;
 		var currentContact = catalog.contact;
@@ -480,7 +480,7 @@ class Contract extends Controller
 					}
 				}
 				
-				if ( orderProduct == null ) throw t._( "Could not find the product ::product:: and delivery ::delivery::", { product : productId, delivery : distribId } );
+				if ( orderProduct == null ) throw 'Could not find the product $productId and delivery $distribId';
 				
 				var quantity = Std.parseInt( qty );				
 				

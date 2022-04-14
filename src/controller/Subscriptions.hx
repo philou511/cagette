@@ -87,13 +87,13 @@ class Subscriptions extends controller.Controller
 			}
 			throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La souscription pour ' + subscriptionUser.getName() + ' a bien été supprimée.' );
 		}
-		throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, t._("Token error") );
+		throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, t._('Token error') );
 	}
 
 	@tpl("contractadmin/editsubscription.mtt")
 	public function doInsert( catalog : db.Catalog ) {
 
-		if ( !app.user.canManageContract( catalog ) ) throw Error( '/', t._('Access forbidden') );
+		if ( !app.user.canManageContract( catalog ) ) throw Error( '/', "Forbidden access" );
 
 		var subscriptionService = new SubscriptionService();
 		subscriptionService.adminMode = true;
@@ -115,7 +115,7 @@ class Subscriptions extends controller.Controller
 				}
 				var user = db.User.manager.get( userId, false );
 				if ( user == null ) {
-					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, t._( "Unable to find user #::num::", { num : userId } ) );
+					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, 'Impossible de trouver l\'utilisateur $userId' );
 				}
 				if ( !user.isMemberOf( catalog.group ) ) {
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, user + " ne fait pas partie de ce groupe" );
@@ -147,7 +147,7 @@ class Subscriptions extends controller.Controller
 
 						user2 = db.User.manager.get( userId2, false );
 						if ( user2 == null ) {
-							throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, t._( "Unable to find user #::num::", { num : userId2 } ) );
+							throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, 'Impossible de trouver l\'utilisateur $userId2' );
 						}
 						if ( !user2.isMemberOf( catalog.group ) ) {
 							throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, user + " ne fait pas partie de ce groupe." );
@@ -196,7 +196,7 @@ class Subscriptions extends controller.Controller
 	@tpl("contractadmin/editsubscription.mtt")
 	public function doEdit( subscription:db.Subscription ) {
 
-		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
+		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', 'Access forbidden' );
 
 		var catalogProducts = subscription.catalog.getProducts();
 
@@ -240,7 +240,7 @@ class Subscriptions extends controller.Controller
 
 						user2 = db.User.manager.get( userId2, false );
 						if ( user2 == null ) {
-							throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, t._( "Unable to find user #::num::", { num : userId2 } ) );
+							throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, 'Unable to find user #$userId2' );
 						}
 
 						if ( !user2.isMemberOf( subscription.catalog.group ) ) {

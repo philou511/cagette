@@ -968,9 +968,9 @@ class SubscriptionService
 					if ( order.userId2 != null && order.userId2 != 0 ) {
 
 						user2 = db.User.manager.get( order.userId2, false );
-						if ( user2 == null ) throw new Error( t._( "Unable to find user #::num::", { num : order.userId2 } ) );
-						if ( subscription.user.id == user2.id ) throw new Error( t._( "Both selected accounts must be different ones" ) );
-						if ( !user2.isMemberOf( product.catalog.group ) ) throw new Error( t._( "::user:: is not part of this group", { user : user2 } ) );
+						if ( user2 == null ) throw new Error( 'Impossible de trouver l\'utilisateur #${order.userId2}' );
+						if ( subscription.user.id == user2.id ) throw new Error( "Les deux comptes sélectionnés doivent être différents" );
+						if ( !user2.isMemberOf( product.catalog.group ) ) throw new Error( 'L\'utilisateur #${user2} ne fait pas partie de ce groupe' );
 						
 						invert = order.invertSharedOrder;
 					}
