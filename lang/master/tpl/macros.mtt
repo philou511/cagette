@@ -11,24 +11,19 @@
 			::set cpro = vendor.getCpro()::
 
 			::if(cpro!=null)::
-				::if(vendor.isTest==true)::
-				<!--cpro test-->
-				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Cagette Pro Test">
+				
+				::if cpro.offer==0::
+				<!-- offre découverte -->
+				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur limité à 1000€ de ventes par an">
 					<i class="icon icon-farmer"></i>
 				</div>
 				::else::
-					::if cpro.offer==0::
-					<!-- offre découverte -->
-					<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur limité à 1000€ de ventes par an">
-						<i class="icon icon-farmer"></i>
-					</div>
-					::else::
-					<!-- offre pro formé ou abonné -->
-					<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur avec ventes illimitées">
-						<i class="icon icon-farmer-pro"></i>
-					</div>
-					::end::
+				<!-- offre pro formé ou abonné -->
+				<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur avec ventes illimitées">
+					<i class="icon icon-farmer-pro"></i>
+				</div>
 				::end::
+				
 			::else::
 				<!--invité-->
 				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur limité à 1000€ de ventes par an">
@@ -514,9 +509,7 @@
 		::elseif(s==2)::
 			Invité
 		::elseif(s==3)::
-			Invité sur un Cagette Pro
-		::elseif(s==4)::
-			Cagette Pro test 
+			Invité sur un compte producteur
 		::elseif(s==5)::
 			Compte pédagogique
 		::elseif(s==6)::

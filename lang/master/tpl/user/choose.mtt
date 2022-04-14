@@ -117,7 +117,7 @@
 	
 	<div class="col-md-12" ::cond cagettePros!=null || tmpVendors.length>0:: >
 		<div class="row">
-		<!-- cagette pro -->
+		<!-- cpro -->
 		::foreach cp cagettePros::
 			::set v = cp._vendor::
 			<div class="col-md-4">

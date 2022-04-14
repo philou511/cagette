@@ -282,11 +282,11 @@ table.product a.productName {
 }
 
 /* GLOBAL TABLE SKINNING */
-table.table {
-  /*tr.disabled td,tr.inactive td{
+/*table.table {
+  tr.disabled td,tr.inactive td{
   	opacity:0.4;
-  }*/
-}
+  }
+}*/
 table.table tr.head > td, table.table thead tr td, table.table tr.head > th {
   border-top: 3px solid #DDD;
   height: 30px;
@@ -886,8 +886,8 @@ div.product div.productImg {
   vertical-align: middle;
 }
 
-div.productSelect {
-  /*div.selector{
+/*div.productSelect {
+  div.selector{
   	width:64px;
   	height: 64px;
   	display: inline-block;
@@ -900,8 +900,8 @@ div.productSelect {
   	&:hover{
   		background-color: #00AA00;
   	}
-  }*/
-}
+  }
+}*/
 div.productSelect div.product {
   display: inline-block;
 }

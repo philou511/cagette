@@ -66,7 +66,7 @@ class PNotif extends Object
 		
 		var html = notif.group.name + " demande une livraison le " + App.current.view.hDate(distrib.getDate());
 		html += "<br/>Adresse : " + distrib.getPlace().getFullAddress();
-		html += "<br/>Connectez-vous à Cagette Pro pour valider ou refuser cette demande.";
+		html += "<br/>Connectez-vous à votre compte producteur pour valider ou refuser cette demande.";
 		App.quickMail(notif.company.vendor.email, notif.title, html);	
 	}
 

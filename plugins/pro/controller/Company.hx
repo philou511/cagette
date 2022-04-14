@@ -88,7 +88,7 @@ class Company extends controller.Controller
 			
 			throw Ok("/p/pro/company/users", "Nouvel utilisateur ajouté");
 		}
-		view.title = "Ajouter un nouvel utilisateur à mon compte Cagette Pro";
+		view.title = "Ajouter un nouvel utilisateur à mon compte producteur";
 		view.form = f;
 	}
 
@@ -122,7 +122,7 @@ class Company extends controller.Controller
 			
 			throw Ok("/p/pro/company/users", "Utilisateur mis à jour");
 		}
-		view.title = "Gérer un utilisateur de mon compte Cagette Pro";
+		view.title = "Gérer un utilisateur de mon compte producteur";
 		view.form = f;
 	}
 	

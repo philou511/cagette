@@ -3,10 +3,6 @@ import service.VendorService;
 import Common;
 using tools.ObjectListTool;
 
-/**
- * CAGETTE PRO MAIN CONTROLLER
- * @author fbarbut
- */
 class Main extends controller.Controller
 {
 	var company : pro.db.CagettePro;
@@ -21,7 +17,7 @@ class Main extends controller.Controller
 		//hack into breadcrumb
 		if(vendor!=null){
 			vendor.checkIsolate();
-			App.current.breadcrumb[0] = {id:"v"+vendor.id,name:"Cagette Pro : "+vendor.name,link:"/p/pro"};
+			App.current.breadcrumb[0] = {id:"v"+vendor.id,name:"Compte producteur : "+vendor.name,link:"/p/pro"};
 		}
 	}
 	
@@ -37,13 +33,9 @@ class Main extends controller.Controller
 		}
 	}
 	
-	@tpl("plugin/pro/disabled.mtt")
-	function doDisabled(){
-		//information page for disabled covid cagette pro test accounts
-	}
-
+	
 	/**
-		Cagette Pro homepage + login
+		CPro homepage + login
 	**/
 	@logged @tpl("plugin/pro/default.mtt")
 	public function doDefault(?args:{vendor:Int}){
@@ -60,17 +52,6 @@ class Main extends controller.Controller
 			if(app.session.data==null) app.session.data = {};
 
 			app.session.data.vendorId = args.vendor;			
-
-			//disabled "covid" cagette pro test (2020-10-01)			
-			/*for (uc in pro.db.PUserCompany.manager.search($user == app.user, false)){
-				if(uc.company.vendor.id==vendor.id){
-					if(uc.disabled) {
-						app.session.data.vendorId = null;
-						throw Redirect("/p/pro/disabled");
-					}
-					break;
-				}
-			}*/
 
 			throw Redirect('/p/pro/');
 		}else{

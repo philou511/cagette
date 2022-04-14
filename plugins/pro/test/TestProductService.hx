@@ -48,7 +48,7 @@ class TestProductService extends utest.Test
 	}
 	
 	/**
-	 * test a product import in Cagette pro
+	 * test a product import in Cpro
 	 */
 	public function testImport(){
 		var company = pro.test.ProTestSuite.COMPANY;

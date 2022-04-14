@@ -530,8 +530,8 @@ class Distribution extends Controller {
 			}
 		}
 		if (cproVendors.length > 0 || invitationsSent.length > 0) {
-			var html = "<div class='alert alert-warning'><i class='icon icon-info'></i> Invitez les producteurs Cagette Pro à participer à cette distribution : Si vous cochez une case, le producteur correspondant recevra une demande qu'il pourra accepter ou refuser.</div>";
-			form.addElement(new sugoi.form.elements.Html("html1", html, "Producteurs Cagette Pro"));
+			var html = "<div class='alert alert-warning'><i class='icon icon-info'></i> Invitez les producteurs avec compte producteur à participer à cette distribution : Si vous cochez une case, le producteur correspondant recevra une demande qu'il pourra accepter ou refuser.</div>";
+			form.addElement(new sugoi.form.elements.Html("html1", html, "Producteurs avec compte producteur"));
 			form.addElement(new sugoi.form.elements.CheckboxGroup("cproVendors", "", cproVendors, checked, true));
 			var html = "";
 			for (i in invitationsSent)

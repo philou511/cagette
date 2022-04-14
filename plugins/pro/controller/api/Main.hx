@@ -1,7 +1,7 @@
 package pro.controller.api;
 
 /**
- * Cagette pro API
+ * cpro API
  * 
  * @author fbarbut
  * @doc https://app.swaggerhub.com/apis/Cagette.net/Cagette-Pro/0.9.2

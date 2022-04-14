@@ -5,7 +5,7 @@ import pro.db.PCatalogOffer;
 import tink.core.Error;
 
 /**
- * Service for Cagette Pro products
+ * Service for CPro products
  * @author fbarbut
  */
 class PProductService

@@ -304,25 +304,6 @@ class Admin extends Controller {
 
 	}
 
-	function doLastCproTest() {
-		// cagette pro test par date de creation du cpro
-		/*var vendors = db.Vendor.manager.unsafeObjects("SELECT v.*,cpro.cdate as cprocdate FROM CagettePro cpro, Vendor v WHERE v.id=cpro.vendorId and isTest=1 order by cpro.cdate DESC",
-			false);
-		Sys.print("<h2>Derniers Cagette Pro test</h2>");
-		Sys.print('<p>${vendors.length} producteurs</p>');
-		Sys.print('<table class="table"><tr><th>Producteur</th><th>Bloqué</th><th>Inscription</th></tr>');
-		for (v in vendors) {
-			var cpro = pro.db.CagettePro.getFromVendor(v);
-			var blocked = cpro.getUserCompany().exists(uc -> uc.disabled);
-
-			Sys.print('<tr><td><a href="/admin/vendor/view/${v.id}" target="_blank">${v.id} - ${v.name}</a></td>');
-			Sys.print('<td>${blocked?"OUI":"NON"}</a></td>');
-			Sys.print('<td>${untyped v.cprocdate}</a></td>');
-			Sys.print("</tr>");
-		}
-		Sys.print('</table>');*/
-	}
-
 	function doGroupStats() {
 		/*Caractérisation des groupes ( condition : les groupes actifs) :, 
 			mode du groupe, 

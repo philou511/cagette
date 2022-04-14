@@ -4,7 +4,7 @@
 
 	<p>
 		Ce module permet de gérer une commande de produits au détail qui doit être convertie en commande en gros.<br/>
-		<b>Ne fonctionne pour l'instant qu'avec les contrats Cagette Pro</b>
+		<b>Ne fonctionne pour l'instant qu'avec les contrats reliés à un compte producteur</b>
 	</p>	
 
 	<hr/>

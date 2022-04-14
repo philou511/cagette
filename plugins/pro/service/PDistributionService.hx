@@ -1,7 +1,7 @@
 package pro.service;
 
 /**
- * Service for Cagette Pro distributions/deliveries
+ * Service for CPro distributions/deliveries
  * @author fbarbut
  */
 class PDistributionService

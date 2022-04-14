@@ -35,7 +35,6 @@ class Vendor extends controller.Controller
 			{label: "Invité", value: VTInvited.string()},
 			{label: "Invité dans un compte producteur", value: VTInvitedPro.string()},
 			{label: "Formule Membre (formé)", value: VTCpro.string()},
-			{label: "Cagette Pro test", value: VTCproTest.string()},
 			{label: "Compte pédagogique", value: VTStudent.string()},
 			{label: "Formule Découverte", value: VTDiscovery.string()},
 			{label: "Formule Pro (abo annuel)", value: VTCproSubscriberYearly.string()},
