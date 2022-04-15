@@ -79,6 +79,19 @@ div.footer-info{
 
 }
 
+.greenBg{
+	background-color: $secondaryColor;
+}
+.greenColor{
+	color: $secondaryColor;
+}
+.redBg{
+	background-color: $farmerDanger;
+}
+.redColor{
+	color: $farmerDanger;
+}
+
 //description in checkboxes ( sugoi form element )
 form{
 	p.desc{
@@ -86,8 +99,6 @@ form{
 		font-size: 0.9em;		
 	}
 }
-
-
 
 .sticky {
 	position: -webkit-sticky;
@@ -326,7 +337,7 @@ table.product{
 //separator between rows
 table.table{
 	
-	tr.head>td, thead tr td, tr.head>th,{
+	tr.head>td, thead tr td, tr.head>th{
 		border-top: 3px solid #DDD;
 		height: 30px;
 		font-size:120%;
@@ -913,14 +924,13 @@ div.reportHeader{
 	position:relative;
 	
 	.header{
-		
 		display: block;
 		overflow:hidden;
 		border-top-left-radius:8px;
 		border-top-right-radius:8px;		
 		color:#FFF;
 		background-color:#B2823F;
-		vertical-align:middle;			
+		// vertical-align:middle;			
 		margin:0;
 		padding: 6px 6px 6px 90px;
 		
@@ -1175,7 +1185,7 @@ div.basketNumber{
 }
 
 tr.success td div.basketNumber{
-	background-color:#85BD56;
+	background-color: $secondaryColor;
 	color:white;
 }
 

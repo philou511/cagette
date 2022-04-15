@@ -140,7 +140,7 @@
 	
 	<macro name="bool(v)">
 		::if v==true::
-		<i class="icon icon-circle" style="color:#84bd55"></i>
+		<i class="icon icon-circle greenColor" ></i>
 		::else::
 		<i class="icon icon-circle-empty" style="color:#888"></i>
 		::end::
@@ -148,7 +148,7 @@
 
 	<macro name="bigBool(v)">
 		::if v==true::
-		<div class="iconBadge" style="background-color:#84bd55;margin: 6px;">
+		<div class="iconBadge greenBg" style="margin: 6px;">
 			<i class="icon icon-check"></i>
 		</div>
 		::else::
@@ -160,19 +160,19 @@
 	
 	<macro name="check(v)">
 		::if(v==true || v==1)::
-		<i class="icon icon-check" style="color:#84bd55"></i>
+		<i class="icon icon-check greenColor" ></i>
 		::else::
-		<i class="icon icon-alert" style="color:#a94442"></i>
+		<i class="icon icon-alert redColor"></i>
 		::end::
 	</macro>
 	
 	<macro name="balance(balance)">
 		::if balance<0:: 
-			::set color = "C00"::
+			::set color = "redColor"::
 		::else::
-			::set color = "0C0"::
+			::set color = "greenColor"::
 		::end::
-		<span style="color:#::color::;">
+		<span class="::color::">
 			::formatNum(balance)::&nbsp;::currency()::
 		</span>
 	</macro>

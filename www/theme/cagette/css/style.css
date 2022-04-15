@@ -50,6 +50,22 @@ div.footer-info {
   margin: 24px 0;
 }
 
+.greenBg {
+  background-color: #85BD56;
+}
+
+.greenColor {
+  color: #85BD56;
+}
+
+.redBg {
+  background-color: #a94442;
+}
+
+.redColor {
+  color: #a94442;
+}
+
 form p.desc {
   color: #666;
   font-size: 0.9em;
@@ -767,7 +783,6 @@ div.reportHeader {
   border-top-right-radius: 8px;
   color: #FFF;
   background-color: #B2823F;
-  vertical-align: middle;
   margin: 0;
   padding: 6px 6px 6px 90px;
 }

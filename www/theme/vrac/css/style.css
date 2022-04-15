@@ -50,6 +50,22 @@ div.footer-info {
   margin: 24px 0;
 }
 
+.greenBg {
+  background-color: #e4c94b;
+}
+
+.greenColor {
+  color: #e4c94b;
+}
+
+.redBg {
+  background-color: #a94442;
+}
+
+.redColor {
+  color: #a94442;
+}
+
 form p.desc {
   color: #666;
   font-size: 0.9em;
@@ -282,11 +298,11 @@ table.product a.productName {
 }
 
 /* GLOBAL TABLE SKINNING */
-/*table.table {
-  tr.disabled td,tr.inactive td{
+table.table {
+  /*tr.disabled td,tr.inactive td{
   	opacity:0.4;
-  }
-}*/
+  }*/
+}
 table.table tr.head > td, table.table thead tr td, table.table tr.head > th {
   border-top: 3px solid #DDD;
   height: 30px;
@@ -767,7 +783,6 @@ div.reportHeader {
   border-top-right-radius: 8px;
   color: #FFF;
   background-color: #B2823F;
-  vertical-align: middle;
   margin: 0;
   padding: 6px 6px 6px 90px;
 }
@@ -886,8 +901,8 @@ div.product div.productImg {
   vertical-align: middle;
 }
 
-/*div.productSelect {
-  div.selector{
+div.productSelect {
+  /*div.selector{
   	width:64px;
   	height: 64px;
   	display: inline-block;
@@ -900,8 +915,8 @@ div.product div.productImg {
   	&:hover{
   		background-color: #00AA00;
   	}
-  }
-}*/
+  }*/
+}
 div.productSelect div.product {
   display: inline-block;
 }
@@ -976,7 +991,7 @@ div.basketNumber {
 }
 
 tr.success td div.basketNumber {
-  background-color: #85BD56;
+  background-color: #e4c94b;
   color: white;
 }
 

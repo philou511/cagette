@@ -155,11 +155,11 @@
                                     ::set balance = subscription.getPaymentsTotal() - subscription.getTotalPrice()::
                                     ::set background = ""::
                                     ::if balance < 0::
-                                        ::set background = "background-color: #d9534f;"::
+                                        ::set background = "redBg"::
                                     ::else::
-                                    ::set background = "background-color: #84bd55;"::
+                                        ::set background = "greenBg"::
                                     ::end::
-                                    <td style="vertical-align: middle;color: white;font-weight:bold; ::background::">
+                                    <td style="vertical-align: middle;color: white;font-weight:bold;" class="::background::">
                                         ::formatNum(balance)::&nbsp;::currency()::
                                     </td>
                                 ::else::
