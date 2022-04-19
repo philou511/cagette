@@ -1,8 +1,8 @@
 package db;
+import Common;
+import db.UserGroup;
 import sys.db.Object;
 import sys.db.Types;
-import db.UserGroup;
-import Common;
 
 enum UserFlags {
 	HasEmailNotif4h;	//send notifications by mail 4h before
@@ -143,12 +143,8 @@ class User extends Object {
 		return db.UserGroup.get(this, amap);
 	}
 
-	public function getUserGroups(){
-		return Lambda.array(db.UserGroup.manager.search($user == this, false));
-	}
-	
-	public function isFullyRegistred(){
-		return (pass != null && pass != "") || (pass2 != null && pass2 != "");
+	public function getUserGroups():Array<db.UserGroup>{
+		return db.UserGroup.manager.search($user == this, false).array();
 	}
 	
 	public function makeMemberOf(group:db.Group){
@@ -478,37 +474,7 @@ class User extends Object {
 		
 	}
 	
-	/*public function sendInvitation(group:db.Group,?force=false) {
-		
-		var t = sugoi.i18n.Locale.texts;
-		
-		if (isFullyRegistred() && !force) throw t._("This user cannot receive an invitation");
-		
-		//store token
-		var k = sugoi.db.Session.generateId();
-		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 30 * 3); //expire in 3 month
-		
-		var e = new sugoi.mail.Mail();
-		if (group != null){
-			e.setSubject(t._("Invitation")+" "+group.name);	
-		}else{
-			e.setSubject(t._("Invitation Cagette.net"));
-		}
-		
-		e.addRecipient(this.email,this.getName());
-		e.setSender(App.config.get("default_email"),t._("Cagette.net"));			
-		
-		var html = App.current.processTemplate("mail/invitation.mtt", { 
-			email:email,
-			email2:email2,
-			groupName:(group == null?null:group.name),			
-			name:firstName,
-			k:k 			
-		} );		
-		e.setHtmlBody(html);
-		
-		App.sendMail(e);	
-	}*/
+	
 	
 	/**
 	 * cleaning before saving

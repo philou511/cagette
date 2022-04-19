@@ -303,15 +303,18 @@ class Catalog extends Object
 
 		var isSubscribedToCatalog = false;
 		if ( user != null && !this.group.hasShopMode() ) { //CSA Mode
-			var userCatalogs = user.getContracts(this.group);
+
+			var userCatalogs : Array<db.Catalog> = user.getContracts(this.group);
 			isSubscribedToCatalog = Lambda.exists( userCatalogs, function( usercatalog ) return usercatalog.id == this.id ); 
 		}
 
 		if ( isSubscribedToCatalog ) {
+
 			return sugoi.db.EntityFile.manager.search( $entityType == 'catalog' && $entityId == this.id && $documentType == 'document', false);
 		}
 
 		if ( user != null && user.isMemberOf(group) ) {
+
 			return sugoi.db.EntityFile.manager.search( $entityType == 'catalog' && $entityId == this.id && $documentType == 'document' && $data != 'subscribers', false);
 		}
 		

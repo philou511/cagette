@@ -1,6 +1,4 @@
-<html>
-
-<body>
+:: use '/mail/layout-cagette.mtt'::
 
     Bonjour ::companyCourse._user.firstName::,<br/>
 
@@ -77,6 +75,4 @@ L'idée de cet exercice préparatoire c'est que tu arrives en salle en connaissa
     <b>L'équipe ALILO</b><br/>
 </p>
 
-
-</body>
-</html>
+::end::

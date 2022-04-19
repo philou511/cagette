@@ -1,4 +1,5 @@
 package service;
+import sugoi.form.elements.IntInput;
 import tools.DateTool;
 import db.Catalog;
 import tink.core.Error;
@@ -102,9 +103,18 @@ class CatalogService{
 		contact.required = true;
 
 		//payments management
-		if( !catalog.group.hasShopMode() && catalog.id < db.Catalog.CATALOG_ID_HASPAYMENTS ){
-			form.addElement( new sugoi.form.elements.Html( "payementsHtml", '<h4>Gestion des paiements</h4>' ) );
-			form.addElement( new sugoi.form.elements.Checkbox('hasPayments',"Gérer les paiements liés aux souscriptions à ce contrat", catalog.hasPayments ));
+		if( !catalog.group.hasShopMode() ){
+			
+			if(catalog.id < db.Catalog.CATALOG_ID_HASPAYMENTS ){
+				form.addElement( new sugoi.form.elements.Html( "payementsHtml", '<h4>Gestion des paiements</h4>' ) );
+				form.addElement( new sugoi.form.elements.Checkbox('hasPayments',"Gérer les paiements liés aux souscriptions à ce contrat", catalog.hasPayments ));
+			}else{
+				form.addElement( new sugoi.form.elements.Html( "payementsHtml", '<h4>Gestion des paiements</h4>' ) );
+				form.addElement( new sugoi.form.elements.Html( "payementsHtml2",'La gestion des paiements est obligatoirement activée pour tous les nouveaux contrats' ) );
+				var input = new sugoi.form.elements.IntInput('hasPayments',"",1 );
+				input.inputType = ITHidden;
+				form.addElement( input );
+			}
 		}
 			
 		return form;

@@ -25,9 +25,9 @@ import Common;
 import service.VolunteerService;
 import service.DistributionService;
 
-using tools.DateTool;
 using Formatting;
 using Std;
+using tools.DateTool;
 
 class Distribution extends Controller {
 	public function new() {
@@ -93,6 +93,7 @@ class Distribution extends Controller {
 
 	@tpl('distribution/CSAList.mtt')
 	function doCsaList(d:db.Distribution){
+		if ( !app.user.canManageContract( d.catalog ) ) throw Error( "/", t._("You do not have the authorization to manage this contract") );
 		view.distribution = d;
 		view.c = d.catalog;
 		view.nav = [];
@@ -351,8 +352,8 @@ class Distribution extends Controller {
 			app.event(PreEditDistrib(d));
 		}
 
-		view.form = form;
-		view.title = t._("Attendance of ::farmer:: to the ::date:: distribution", {farmer: d.catalog.vendor.name, date: view.dDate(d.date)});
+		view.form = form;		
+		view.title = 'Participation de ${d.catalog.vendor.name} à la distribution du ${view.dDate(d.date)}';
 	}
 
 	/**
@@ -483,10 +484,7 @@ class Distribution extends Controller {
 			}
 
 			if (createdDistrib.date == null) {
-				var html = t._("Your request for a delivery has been sent to <b>::supplierName::</b>.<br/>Be patient, you will receive an e-mail indicating if the request has been validated or refused.",
-					{
-						supplierName: contract.vendor.name
-					});
+				var html = 'Votre demande de distribution a été envoyée à ${contract.vendor.name}. Vous recevrez un courriel vous indiquant si la demande a été acceptée ou refusée';
 				var btn = "<a href='/contractAdmin/distributions/" + contract.id + "' class='btn btn-primary'>OK</a>";
 				App.current.view.extraNotifBlock = App.current.processTemplate("block/modal.mtt",
 					{html: html, title: t._("Distribution request sent"), btn: btn});

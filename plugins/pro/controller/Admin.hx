@@ -1263,95 +1263,7 @@ class Admin extends controller.Controller {
 		view.form = f;
 	}
 
-	/**
-		envoi du mail aux producteur pour qu'il remplissent leurs infos légales.
-	**/
-	function doSendLegalInfosMail() {
-		for (v in db.Vendor.manager.unsafeObjects("SELECT v.* FROM Vendor v, VendorStats vs where v.id=vs.vendorId and vs.active=1 and v.companyNumber is null and disabled is null",
-			false)) {
-			var vs = VendorStats.getOrCreate(v);
-
-			if (vs.type == VTStudent)
-				continue;
-			if (v.disabled != null)
-				continue;
-			if (v.email == null)
-				continue;
-
-			Sys.println('send to <a href="/admin/vendor/view/${v.id}">${v.name}</a><br/>');
-
-			var m = new sugoi.mail.Mail();
-			m.setSender(App.config.get("default_email"), "Cagette.net");
-			m.setRecipient(v.email);
-			m.setReplyTo("support@cagette.net", "Cagette.net");
-			m.setSubject("Important : mise en conformité des comptes producteurs sur Cagette.net");
-			var link = "http://app.cagette.net/vendorNoAuthEdit/"
-				+ v.id
-				+ "/"
-				+ haxe.crypto.Md5.encode(App.config.KEY + "_updateWithoutAuth_" + v.id);
-
-			m.setHtmlBody(app.processTemplate("plugin/pro/mail/vendorLegalInfos.mtt", {vendor: v, link: link, type: vs.type.getIndex()}));
-			App.sendMail(m);
-		}
-	}
-
-	/**
-		block "covid" cpro tests on 2020-10-01
-	**/
-	/*function doBlockCproTest(){
-		var data = sys.io.File.getContent(sugoi.Web.getCwd() + "../data/cpro_test_a_bloquer.csv");
-		var csv = new sugoi.tools.Csv();
-		csv.setHeaders(["email","id","firstname","lastname","company","city"]);
-
-		var print = function(str:String){
-			Sys.println(str + "<br />");
-		};
-
-		print("<html><body>");
-
-		for(l in csv.importDatasAsMap(data)){
-			var user = db.User.manager.get(Std.parseInt(l["id"]),false);
-
-			if(user==null){
-				print("!!! user is null "+Std.string(l));
-				continue;
-			} 
-			if(user.email!=l["email"]){
-				print("!!! mail is not the same :  "+user.email+" != "+l["email"]);
-				continue;
-			}
-			var companies = PUserCompany.getCompanies(user).array();
-			if(companies.length>1){
-				print("!!! user has many cpros  :  "+companies);
-				continue;
-			}
-			if(companies.length==0){
-				print("!!! user has no cpros");
-				continue;
-			}
-
-			var cpro = companies[0];
-			for( uc in cpro.getUserCompany()){
-				uc.lock();
-				uc.disabled = true;
-				uc.update();
-				print("OK "+uc.user.email+" has no more acces to "+cpro.vendor.name+ " #"+cpro.vendor.id);
-			}
-
-		}
-
-		print("</body></html>");
-	}*/
-
-	function doTest() {
-		var offset = app.params.get("offset");
-
-		Sys.print(Json.stringify({
-			status: "succes",
-			offset: offset,
-		}));
-	}
-
+	
 
 	/**
 		2021-07-05
@@ -1365,10 +1277,16 @@ class Admin extends controller.Controller {
 			both:0
 		};
 
-		for ( vs in VendorStats.manager.search($active==true,false)){
+		//prods formule Pro / Découverte ou Membre
+		for ( vs in VendorStats.manager.search($active==true && ($type==VTCpro || $type==VTDiscovery || $type==VTCproSubscriberMontlhy || $type==VTCproSubscriberYearly),false)){
 			var v = vs.vendor;
 
-			var groups = v.getActiveContracts().map( c -> c.group ).array();
+			var catalogs = v.getActiveContracts();
+			//keep only linked catalogs 
+			catalogs = catalogs.filter(c -> {
+				return RemoteCatalog.getFromContract(c)!=null;
+			});
+			var groups = catalogs.map( c -> c.group ).array();
 			groups = ObjectListTool.deduplicate(groups);
 
 			var groupTypes = {
@@ -1580,70 +1498,4 @@ class Admin extends controller.Controller {
 			}
 		}
 	}*/
-
-	/**
-		réattribuer les commandes de DELETED USER à qq'un dans un groupe
-	**/
-	function doSavePatrice(){
-
-		/*
-		AMAP St YO  10480
-		AMAP du Sillon 13048
-		AMAP d'Héric 4795
-		AMAP Qui ramène sa fraise 5385
-		AMAP de la Bugallière 3869
-		AMAP du petit chantilly 3865
-
-		var patrice = 320692
-		var deleted = 41362
-		*/
-
-		var patrice = db.User.manager.get(320692,false);
-		var deleted = db.User.manager.get(41362, false);
-		var groups = [3865];
-		var print = controller.Cron.print;
-
-		for( gid in groups){
-
-			var group = db.Group.manager.get(gid,false);
-			print(group.name);
-
-			var distributions = [];
-			for( cat in group.getContracts()){
-
-				var distribs = cat.getDistribs(false);
-				var dids = distribs.map(d -> d.id);
-
-				print("<h2>"+cat.name+"</h2>");
-
-				var orders = db.UserOrder.manager.search( ($distributionId in dids) && $user==deleted,true);
-
-				for( o in orders) print(" - "+o.toString());
-
-				//FIX
-
-				var sub = new db.Subscription();
-				sub.catalog = cat;
-				sub.user = patrice;
-				sub.startDate = cat.startDate;
-				sub.endDate = cat.endDate;
-				sub.insert();
-
-				for( o in orders ){
-					o.user = patrice;
-					o.subscription = sub;
-					o.update();
-
-					var b = o.basket;
-					if(b.user.id != patrice.id){
-						b.lock();
-						b.user = patrice;
-						b.update();
-					}
-				}
-			}
-		}
-		
-
-	}
 }

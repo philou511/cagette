@@ -9,7 +9,8 @@
 			document.addEventListener("DOMContentLoaded", function(event) {
 				neo.createNeoModule("neo-container", "inviteVendor", {
 					groupId: ::groupId::,
-					::if(vendor!=null):: existingVendorEmail: "::vendor.email::" ::end::
+					::if(vendor!=null):: existingVendorEmail: "::vendor.email::" ::end::,
+					userId: ::user.id::
 				});
 			});
 		</script>

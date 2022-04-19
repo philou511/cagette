@@ -131,7 +131,7 @@ class ProductService{
 		var txId = product.txpProduct == null ? null : product.txpProduct.id;
 		var html = service.ProductService.getCategorizerHtml(product.name,txId,f.name);
 		f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
-		f.addElement(new sugoi.form.elements.Html("html","<span class='disabled'>Une catégorie manquante selon vous ? Écrivez au support : support@cagette.net</span><br/>",""),2);
+		// f.addElement(new sugoi.form.elements.Html("html","<span class='disabled'>Une catégorie manquante selon vous ? Écrivez au support : support@cagette.net</span><br/>",""),2);
 
 		return f;
 	}
@@ -142,7 +142,11 @@ class ProductService{
 	**/
 	public static function check(product:db.Product){
 
-		if(product.bulk){
+		if(product.txpProduct==null){
+			throw new Error("Vous devez catégoriser ce produit");
+		}
+
+		if(product.bulk){			
 			if(product.smallQt==null) throw new Error("Vous devez définir une petite quantité si l'option 'vrac' est activée");
 			if(product.smallQt>=1 || product.smallQt<=0) throw new Error("La petite quantité doit être supérieure à zéro et inférieure à 1");
 			if(product.unitType==null) throw new Error("Vous devez définir l'unité de votre produit si l'option 'vrac' est activée");

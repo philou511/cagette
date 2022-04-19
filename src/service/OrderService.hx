@@ -185,7 +185,7 @@ class OrderService
 		
 		if ( !canHaveFloatQt(order.product) ){
 			if( !tools.FloatTool.isInt(newquantity)  ) {
-				throw new Error( t._( "Error : product \"::product::\" quantity should be integer",{ product:order.product.name } ) );
+				throw new Error( 'Erreur : la quantité du produit "${order.product.name}" doit être un nombre entier' );
 			}
 		}
 
