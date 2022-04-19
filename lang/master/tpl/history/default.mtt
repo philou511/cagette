@@ -173,7 +173,7 @@
 										</td>
 										<td style="vertical-align: middle;">
 											::absencesNb::<br/>
-											::if(subscriptionService.canAbsencesBeEdited( catalog ))::
+											::if(subscriptionService.canAbsencesBeEdited( catalog , subscription))::
 												$$edit(Modifier,/subscriptions/absences/::subscription.id::?returnUrl=/history)
 											::end::
 										</td>

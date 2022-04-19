@@ -29,9 +29,9 @@ class Subscriptions extends controller.Controller
 		try {
 			SubscriptionService.deleteSubscription( subscription );
 		} catch( error : tink.core.Error ) {
-			throw Error( '/contract/order/' + subscription.catalog.id, error.message );
+			throw Error( '/subscriptions/contract/' + subscription.catalog.id, error.message );
 		}
-		throw Ok( '/contract/order/' + subscription.catalog.id, 'La souscription a bien été supprimée.' );		
+		throw Ok( '/' + subscription.catalog.id, 'La souscription a bien été supprimée.' );		
 	}
 
 }
