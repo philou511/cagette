@@ -493,15 +493,11 @@ class Course extends sugoi.BaseController
 
 		var vendor = cpro.vendor;
 		cpro.lock();
-
-		//cancel abo
-		if (cpro.offer==Pro) {
-			// Cancel running subscription
-			service.BridgeService.call('/subscriptions/cancel/${vendor.id}');
-		}
-
 		cpro.offer = Member;
 		cpro.update();
+
+		// Cancel running subscription
+		service.BridgeService.call('/subscriptions/cancel/${vendor.id}');
 
 		//refresh stats
         VendorStats.updateStats(vendor);
