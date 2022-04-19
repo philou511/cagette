@@ -297,7 +297,7 @@ class SubscriptionAdmin extends controller.Controller
 		view.nav.push( 'subscriptions' );
 		view.subscriptionService = SubscriptionService;
 		// view.absencesDistribs = Lambda.map( SubscriptionService.getAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
-		view.canAbsencesBeEdited = subscription.catalog.hasAbsencesManagement();
+		// view.canAbsencesBeEdited = subscription.catalog.hasAbsencesManagement();
 		view.absentDistribs = subscription.getAbsentDistribs();
 		// if ( subscription.catalog.type == Catalog.TYPE_VARORDER || !subscription.paid() ) {
 		// 	view.absencesDistribDates = Lambda.map( SubscriptionService.getAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
