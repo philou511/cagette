@@ -171,9 +171,12 @@
 										<td style="vertical-align: middle;">
 											::subscriptionService.getSubscriptionDistribsNb(subscription, null, false)::
 										</td>
-										<td style="vertical-align: middle;">
-											::absencesNb::<br/>
+										<td style="vertical-align: middle;">											
+											::absencesNb::
+											<!--
+											<br/>
 											$$edit(Modifier,/subscriptions/absences/::subscription.id::?returnUrl=/history)											
+											-->
 										</td>
 									::end::
 									<td style="vertical-align: middle;">
