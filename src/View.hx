@@ -4,7 +4,6 @@ import haxe.EnumTools.EnumValueTools;
 import haxe.Utf8;
 import sugoi.Web;
 import tools.ArrayTool;
-import App.Theme;
 
 using Std;
 

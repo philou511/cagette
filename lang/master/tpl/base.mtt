@@ -104,6 +104,20 @@
 				:: end::
 
             _Cagette.antiDoubleClick();
+            _Cagette.theme = {
+                id: "::theme.id::",
+                name: "::theme.name::",
+                url: "::theme.url::",
+                supportEmail: "::theme.supportEmail::",
+                cguLink: "::theme.cguLink::",
+                footer: {
+                    bloc1: "::theme.bloc1::",
+                    bloc2: "::theme.bloc2::",
+                    bloc3: "::theme.bloc3::",
+                    bloc4: "::theme.bloc4::"
+                },
+                brandedEmailLayoutFooter: "::theme.brandedEmailLayoutFooter::"
+            };
         })
 
 			//tracking 24x7
