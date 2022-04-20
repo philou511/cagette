@@ -322,7 +322,7 @@ class User extends Controller
 			throw Redirect('/');
 		}
 		
-		view.title = "Mise à jour des conditions générales d'utilisation de Cagette.net"+' ( v. $tosVersion )';
+		view.title = "Mise à jour des conditions générales d'utilisation de "+ App.current.theme.name +' ( v. $tosVersion )';
 		view.form = form;
 	}
 	

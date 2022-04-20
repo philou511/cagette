@@ -20,7 +20,7 @@
 					</p>				
 					<p><b>Pour prendre en main l’outil c’est par ici !</b><br/>
 						C’est l’espace où vous trouverez tous les tutoriels 
-						pour vous lancer sur Cagette.net. 
+						pour vous lancer sur ::theme.name::. 
 					</p>	
 				</div>
 				
@@ -63,7 +63,7 @@
 					<p>
 						<b>Pour prendre en main l’outil c’est par ici !</b><br/>
 						C’est l’espace où vous trouverez tous les tutoriels<br/> 
-						pour vous lancer sur Cagette.net.
+						pour vous lancer sur ::theme.name::.
 					</p>
 					
 				</div>
@@ -144,7 +144,7 @@
 				<h4>::tmp.farmName::</h4>
 				<p class="disabled">
 					<i class="icon icon-clock"></i>
-					Demande d'ouverture de compte producteur en attente de validation par l'équipe Cagette.net
+					Demande d'ouverture de compte producteur en attente de validation par l'équipe ::theme.name::
 				</p>
 			</a>
 		</div>
