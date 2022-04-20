@@ -394,11 +394,6 @@ msgstr "Bestätigen des Passwortes"
 msgid "This E-mail is not linked to a known account"
 msgstr "Diese E-Mail-Adresse kann zu keinem Konto zugeordnet werden"
 
-#: ../src/controller/User.hx:4842 ../src/controller/User.hx:5865
-#: ../src/controller/Member.hx:4788 ../lang/master/tpl/macros.mtt:15434
-msgid "Cagette.net"
-msgstr "Lemilo.de"
-
 #: ../src/controller/User.hx:4959
 #, fuzzy
 #| msgid ": password change"
@@ -499,22 +494,6 @@ msgid "These accounts can't be merged because the second account has orders"
 msgstr ""
 "Diese Konten können nicht zusammengeführt werden, da das zweite Konto "
 "Aufträge hat"
-
-#: ../src/controller/Member.hx:4862
-msgid "Change your e-mail in your account Cagette.net"
-msgstr "Ändern Sie ihre E-Mail in ihrem Konto Lemilo.de"
-
-#: ../src/controller/Member.hx:5006 ../src/controller/Member.hx:5534
-msgid ""
-" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is "
-"now:"
-msgstr ""
-" wurde ihre E-Mail von ihrem Konto Lemilo.de geändert<br/>Ihre E-Mail ist "
-"jetzt:"
-
-#: ../src/controller/Member.hx:5392
-msgid "Change the e-mail of your account Cagette.net"
-msgstr "Die E-Mail in ihrem Konto Lemilo.de ändern"
 
 #: ../src/controller/Member.hx:5732
 msgid "This member has beed updated"
@@ -2482,10 +2461,6 @@ msgstr "Eine andere Sprache wählen"
 #: ../lang/master/tpl/account/default.mtt:681
 msgid "Current language is"
 msgstr "Die gegenwärtige Sprache ist"
-
-#: ../lang/master/tpl/home.mtt:264
-msgid "Welcome to Cagette.net !"
-msgstr "Willkommen auf Lemilo.de !"
 
 #: ../lang/master/tpl/home.mtt:693
 msgid "Delete example orders and catalogs"

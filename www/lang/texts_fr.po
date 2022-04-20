@@ -369,11 +369,6 @@ msgstr "Retapez votre mot de passe pour vérification"
 msgid "This E-mail is not linked to a known account"
 msgstr "Ce courriel n'est lié à aucun compte connu"
 
-#: ../src/controller/User.hx:4842 ../src/controller/User.hx:5865
-#: ../src/controller/Member.hx:4788 ../lang/master/tpl/macros.mtt:15434
-msgid "Cagette.net"
-msgstr "Cagette.net"
-
 #: ../src/controller/User.hx:4959
 msgid "Password change"
 msgstr "Changement de mot de passe"
@@ -463,22 +458,6 @@ msgid "These accounts can't be merged because the second account has orders"
 msgstr ""
 "Ces comptes ne peuvent pas être fusionnés car le second compte a des "
 "commandes"
-
-#: ../src/controller/Member.hx:4862
-msgid "Change your e-mail in your account Cagette.net"
-msgstr "Changement de courriel sur votre compte Cagette.net"
-
-#: ../src/controller/Member.hx:5006 ../src/controller/Member.hx:5534
-msgid ""
-" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is "
-"now:"
-msgstr ""
-" vient de modifier votre courriel dans votre compte Cagette.net.<br/>Votre "
-"courriel est maintenant :"
-
-#: ../src/controller/Member.hx:5392
-msgid "Change the e-mail of your account Cagette.net"
-msgstr "Changement de courriel sur votre compte Cagette.net"
 
 #: ../src/controller/Member.hx:5732
 msgid "This member has beed updated"
@@ -938,25 +917,9 @@ msgstr ""
 "<p>Votre distribution vient de se terminer, n'oubliez pas de la <b>valider</"
 "b></p>"
 
-#: ../src/controller/Cron.hx:25770
-msgid ""
-"<p><a href='::distriburl::'>Click here to validate the distribution</a> (You "
-"must be connected to your group Cagette)"
-msgstr ""
-"<p><a href='::distriburl::'>Cliquez ici pour valider la distribution</a> "
-"(vous devez être connecté(e) à votre groupe Cagette.net)</p>"
-
 #: ../src/controller/Cron.hx:26707
 msgid "<p>Reminder: you have a delivery to validate.</p>"
 msgstr "<p>Rappel : Vous avez une distribution à valider.</p>"
-
-#: ../src/controller/Cron.hx:26796
-msgid ""
-"<p><a href='::distriburl::'>Click here to validate the delivery</a> (You "
-"must be connected to your Cagette group)"
-msgstr ""
-"<p><a href='::distriburl::'>Cliquez ici pour valider la distribution</a> "
-"(vous devez être connecté(e) à votre groupe Cagette.net )</p>"
 
 #: ../src/controller/Cron.hx:28012
 msgid "[::group::] Validation of the ::date:: distribution"
@@ -2321,10 +2284,6 @@ msgstr "Afficher l'interface dans une autre langue"
 #: ../lang/master/tpl/account/default.mtt:681
 msgid "Current language is"
 msgstr "La langue actuelle est"
-
-#: ../lang/master/tpl/home.mtt:264
-msgid "Welcome to Cagette.net !"
-msgstr "Bienvenue sur Cagette.net !"
 
 #: ../lang/master/tpl/home.mtt:693
 msgid "Delete example orders and catalogs"

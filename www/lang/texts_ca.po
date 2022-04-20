@@ -361,11 +361,6 @@ msgstr ""
 msgid "This E-mail is not linked to a known account"
 msgstr ""
 
-#: ../src/controller/User.hx:4842 ../src/controller/User.hx:5865
-#: ../src/controller/Member.hx:4788 ../lang/master/tpl/macros.mtt:15434
-msgid "Cagette.net"
-msgstr ""
-
 #: ../src/controller/User.hx:4959
 msgid "Password change"
 msgstr "Modifica la contrasenya"
@@ -448,20 +443,6 @@ msgstr ""
 
 #: ../src/controller/Member.hx:4378
 msgid "These accounts can't be merged because the second account has orders"
-msgstr ""
-
-#: ../src/controller/Member.hx:4862
-msgid "Change your e-mail in your account Cagette.net"
-msgstr ""
-
-#: ../src/controller/Member.hx:5006 ../src/controller/Member.hx:5534
-msgid ""
-" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is "
-"now:"
-msgstr ""
-
-#: ../src/controller/Member.hx:5392
-msgid "Change the e-mail of your account Cagette.net"
 msgstr ""
 
 #: ../src/controller/Member.hx:5732
@@ -905,25 +886,9 @@ msgid ""
 msgstr ""
 "<p>La vostra distribució està acabada, no us oblideu de <b>validar-la</b></p>"
 
-#: ../src/controller/Cron.hx:25770
-msgid ""
-"<p><a href='::distriburl::'>Click here to validate the distribution</a> (You "
-"must be connected to your group Cagette)"
-msgstr ""
-"<p><a href='::distriburl::'>Clicka aquí per validar la distribució</a> (Has "
-"d'estar connecta't al teu grup Cagette.net)</p>"
-
 #: ../src/controller/Cron.hx:26707
 msgid "<p>Reminder: you have a delivery to validate.</p>"
 msgstr ""
-
-#: ../src/controller/Cron.hx:26796
-msgid ""
-"<p><a href='::distriburl::'>Click here to validate the delivery</a> (You "
-"must be connected to your Cagette group)"
-msgstr ""
-"<p><a href='::distriburl::'>Clica aquí per validar la distribució</a> (heu "
-"d'estar connectats/des al vostre grup Cagette.net )</p>"
 
 #: ../src/controller/Cron.hx:28012
 msgid "[::group::] Validation of the ::date:: distribution"
@@ -2281,10 +2246,6 @@ msgstr ""
 
 #: ../lang/master/tpl/account/default.mtt:681
 msgid "Current language is"
-msgstr ""
-
-#: ../lang/master/tpl/home.mtt:264
-msgid "Welcome to Cagette.net !"
 msgstr ""
 
 #: ../lang/master/tpl/home.mtt:693

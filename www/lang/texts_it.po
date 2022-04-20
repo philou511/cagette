@@ -372,11 +372,6 @@ msgstr ""
 msgid "This E-mail is not linked to a known account"
 msgstr "Questa e-mail non è collegata ad un account conosciuto"
 
-#: ../src/controller/User.hx:4842 ../src/controller/User.hx:5865
-#: ../src/controller/Member.hx:4788 ../lang/master/tpl/macros.mtt:15434
-msgid "Cagette.net"
-msgstr ""
-
 #: ../src/controller/User.hx:4959
 #, fuzzy
 #| msgid "Password"
@@ -464,22 +459,6 @@ msgstr ""
 #: ../src/controller/Member.hx:4378
 msgid "These accounts can't be merged because the second account has orders"
 msgstr ""
-
-#: ../src/controller/Member.hx:4862
-msgid "Change your e-mail in your account Cagette.net"
-msgstr "Cambia la tua e-mail nel tuo account Cagette.net"
-
-#: ../src/controller/Member.hx:5006 ../src/controller/Member.hx:5534
-msgid ""
-" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is "
-"now:"
-msgstr ""
-" appena modificato la tua e-mail nel tuo account Cagette.net.<br/>La tua e-"
-"mail è ora:"
-
-#: ../src/controller/Member.hx:5392
-msgid "Change the e-mail of your account Cagette.net"
-msgstr "Cambia l'e-mail del tuo account Cagette.net"
 
 #: ../src/controller/Member.hx:5732
 msgid "This member has beed updated"
@@ -1019,14 +998,6 @@ msgstr ""
 #: ../src/controller/Install.hx:2934
 msgid "Vegetables Contract Example"
 msgstr ""
-
-#: ../src/controller/Install.hx:4062
-msgid ""
-"Group and user 'admin' created. Your email is 'admin@cagette.net' and your "
-"password is 'admin'"
-msgstr ""
-"Gruppo e utente «admin» creato. La tua e-mail è «admin@cagette.net» e la tua "
-"password è «admin»"
 
 #: ../src/controller/Install.hx:4659
 msgid "You must update your database to version "

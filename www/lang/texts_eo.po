@@ -354,11 +354,6 @@ msgstr "Denove via nova pasvorto"
 msgid "This E-mail is not linked to a known account"
 msgstr ""
 
-#: ../src/controller/User.hx:4842 ../src/controller/User.hx:5865
-#: ../src/controller/Member.hx:4788 ../lang/master/tpl/macros.mtt:15434
-msgid "Cagette.net"
-msgstr "Cagette.net"
-
 #: ../src/controller/User.hx:4959
 msgid "Password change"
 msgstr "Ŝanĝo de pasvorto"
@@ -437,20 +432,6 @@ msgstr ""
 
 #: ../src/controller/Member.hx:4378
 msgid "These accounts can't be merged because the second account has orders"
-msgstr ""
-
-#: ../src/controller/Member.hx:4862
-msgid "Change your e-mail in your account Cagette.net"
-msgstr ""
-
-#: ../src/controller/Member.hx:5006 ../src/controller/Member.hx:5534
-msgid ""
-" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is "
-"now:"
-msgstr ""
-
-#: ../src/controller/Member.hx:5392
-msgid "Change the e-mail of your account Cagette.net"
 msgstr ""
 
 #: ../src/controller/Member.hx:5732
@@ -2183,10 +2164,6 @@ msgstr ""
 
 #: ../lang/master/tpl/account/default.mtt:681
 msgid "Current language is"
-msgstr ""
-
-#: ../lang/master/tpl/home.mtt:264
-msgid "Welcome to Cagette.net !"
 msgstr ""
 
 #: ../lang/master/tpl/home.mtt:693

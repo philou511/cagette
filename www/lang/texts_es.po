@@ -370,11 +370,6 @@ msgstr ""
 msgid "This E-mail is not linked to a known account"
 msgstr "Este correo electrónico no está vinculado a una cuenta conocida"
 
-#: ../src/controller/User.hx:4842 ../src/controller/User.hx:5865
-#: ../src/controller/Member.hx:4788 ../lang/master/tpl/macros.mtt:15434
-msgid "Cagette.net"
-msgstr ""
-
 #: ../src/controller/User.hx:4959
 #, fuzzy
 #| msgid "Password"
@@ -456,22 +451,6 @@ msgstr ""
 #: ../src/controller/Member.hx:4378
 msgid "These accounts can't be merged because the second account has orders"
 msgstr ""
-
-#: ../src/controller/Member.hx:4862
-msgid "Change your e-mail in your account Cagette.net"
-msgstr "Cambie su correo electrónico en su cuenta Cagette.net"
-
-#: ../src/controller/Member.hx:5006 ../src/controller/Member.hx:5534
-msgid ""
-" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is "
-"now:"
-msgstr ""
-" acaba de modificar su correo electrónico en su cuenta Cagette.net. <br/> Su "
-"correo electrónico es ahora:"
-
-#: ../src/controller/Member.hx:5392
-msgid "Change the e-mail of your account Cagette.net"
-msgstr "Cambie el correo electrónico de su cuenta Cagette.net"
 
 #: ../src/controller/Member.hx:5732
 msgid "This member has beed updated"
@@ -2235,10 +2214,6 @@ msgstr ""
 
 #: ../lang/master/tpl/account/default.mtt:681
 msgid "Current language is"
-msgstr ""
-
-#: ../lang/master/tpl/home.mtt:264
-msgid "Welcome to Cagette.net !"
 msgstr ""
 
 #: ../lang/master/tpl/home.mtt:693
