@@ -1240,3 +1240,14 @@ a.btn-warning{
 	}
 }
 
+//sub panel like in subscription macro
+.subPanel{
+	border-color: #f5f5f5 !important;
+    border-width: 3px !important;
+	text-align: center;
+	.panel-heading{
+		border:none !important;
+		font-weight: bold;
+	}
+}
+

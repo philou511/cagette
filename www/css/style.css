@@ -869,3 +869,11 @@ a.btn-warning {
   color: #8a6d3b;
   background-color: #fcf8e3;
   border-color: #ae894a; }
+
+.subPanel {
+  border-color: #f5f5f5 !important;
+  border-width: 3px !important;
+  text-align: center; }
+  .subPanel .panel-heading {
+    border: none !important;
+    font-weight: bold; }
