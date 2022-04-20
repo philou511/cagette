@@ -751,7 +751,7 @@ class Admin extends controller.Controller {
 		cpro.vendor = vendor;
 		cpro.insert();
 
-		vendor.isTest = false;
+		// vendor.isTest = false;
 		vendor.update();
 
 		// user
