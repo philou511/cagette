@@ -265,8 +265,8 @@
 					<div class="panel panel-default subPanel">
 						<div class="panel-heading">Période d'engagement</div>
 						<div class="panel-body">
-							du ::sDate(subscription.startDate)::<br/>
-							au ::sDate(subscription.endDate)::
+							du ::dDate(subscription.startDate)::<br/>
+							au ::dDate(subscription.endDate)::
 						</div>
 					</div>
 				</div>
@@ -275,8 +275,17 @@
 					<div class="panel panel-default subPanel">
 						<div class="panel-heading">Jours d'absence</div>
 						<div class="panel-body">
-							::set absencesNb = subscription.getAbsencesNb()::
-							::absencesNb::
+							::set absences = subscription.getAbsentDistribs()::
+							::if absences.length>0::
+							
+								::foreach d absences::
+									::dDate(d.date)::<br/>
+								::end::
+							
+							::else::
+							<span class="disabled">Pas d'absences</span>
+							::end::
+
 						</div>
 					</div>
 				</div>

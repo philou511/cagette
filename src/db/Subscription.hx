@@ -163,7 +163,6 @@ class Subscription extends Object {
 		get subscription absence distribs
 	**/
 	public function getAbsentDistribs() : Array<db.Distribution> {
-
 		var absentDistribIds = getAbsentDistribIds();
 		if ( absentDistribIds == null ) return [];
 		return db.Distribution.manager.search($id in absentDistribIds,false).array();

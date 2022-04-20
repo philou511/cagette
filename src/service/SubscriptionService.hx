@@ -296,17 +296,18 @@ class SubscriptionService
 	/**
 		Get constraints of a subscription
 	**/
-	public static function getSubscriptionConstraints( subscription:db.Subscription ) {
-
-		var label = '';
+	public static function getSubscriptionConstraints( subscription:db.Subscription ):String{
+		var out = [];
 		var catalog = subscription.catalog;
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 			//requires ordering + distribMinOrdersTotal
 			if ( catalog.requiresOrdering ) {				
-				label += 'Commande obligatoire à chaque distribution';
+				var label = 'Commande obligatoire à chaque distribution';
 				if ( catalog.distribMinOrdersTotal != null && catalog.distribMinOrdersTotal != 0 ) {				
 					label += ' d\'au moins ${catalog.distribMinOrdersTotal} €';
 				}
+				label += ".";
+				out.push(label);
 			}
 
 			// catalogMinOrdersTotal + allowedOverspend
@@ -316,10 +317,11 @@ class SubscriptionService
 				var ratio = subscriptionDistribsNb / catalogAllDistribsNb;
 				// safer to do a "floor" than a "round"
 				var catalogMinOrdersTotal = Math.floor(ratio * catalog.catalogMinOrdersTotal);
-				label += '<br />Minimum de commandes sur la durée du contrat : $catalogMinOrdersTotal€';
+				var label = 'Minimum de commandes sur la durée du contrat : $catalogMinOrdersTotal€.';
 				if(subscriptionDistribsNb < catalogAllDistribsNb){
 					label += '<br /><span class="disabled">Calculé au prorata de vos distributions : ${catalog.catalogMinOrdersTotal}€ x ($subscriptionDistribsNb/$catalogAllDistribsNb) = $catalogMinOrdersTotal€</span>';
 				}
+				out.push(label);
 
 				/*if( catalog.allowedOverspend != null ){
 					if(catalog.hasPayments){
@@ -334,15 +336,17 @@ class SubscriptionService
 
 			var subscriptionOrders = getCSARecurrentOrders( subscription, null );
 			if( subscriptionOrders.length == 0 ) return null;
+			var label = "";
 			for ( order in subscriptionOrders ) {
 				label += tools.FloatTool.clean( order.quantity ) + ' x ' + order.product.name + '<br />';
 			}
 			label += "à chaque distribution.";
+			out.push(label);
 
 		}
 
-		if( label == '' ) return null;
-		return label;
+		if( out.length==0 ) return null;
+		return out.join("<br/>");
 	}
 
 	public static function getAbsencesDescription( catalog : db.Catalog ) {

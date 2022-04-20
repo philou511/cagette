@@ -186,20 +186,15 @@
 				</h4>-->
 
 				::foreach catalog subscriptionsByCatalog.keys()::
-
 					::if ( i == 0 && catalog.isVariableOrdersCatalog() ) || ( i == 1 && catalog.isConstantOrdersCatalog() )::
-
 						::set subscriptionsFound = true::
 
 						::set subscriptions = subscriptionsByCatalog.get(catalog)::
 						::foreach subscription subscriptions::
-
-							$$subscription(::subscription::)
-							
+							$$subscription(::subscription::)					
 						::end::
 					::end::
 				::end::
-				
 				
 			::end::
 
