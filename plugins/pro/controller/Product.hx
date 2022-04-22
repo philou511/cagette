@@ -130,7 +130,7 @@ class Product extends controller.Controller
 			p.insert();
 
 			if(pro.db.PProduct.manager.count($company==this.company)==1){
-				Matomo.trackEvent("Producteurs","Premier produit créé");
+				service.BridgeService.matomoEvent(app.user.id,"Producteurs","Premier produit créé");
 			}
 
 			throw Ok(baseUrl,'Le produit a été enregistrée');

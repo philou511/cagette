@@ -1,4 +1,5 @@
 package pro.service;
+import service.BridgeService;
 import connector.db.RemoteCatalog;
 import Common;
 
@@ -307,14 +308,6 @@ class PCatalogService{
 	 */
 	public static function linkCatalogToGroup(pcatalog:pro.db.PCatalog,clientGroup:db.Group,remoteUserId:Int,?contractType=1):connector.db.RemoteCatalog{
 		
-		/*if(catalog.company.offer==0){
-			//check if there is already one group
-			var groups = catalog.company.getGroups();
-			if(groups.length > 0 && groups[0].id!=clientGroup.id){
-				throw new tink.core.Error("<b>"+catalog.company.vendor.name+"</b> ne peut pas travailler avec plus d'un point de livraison, car il est en <b>Cagette Découverte</b>. <br/>Passez à <b>Cagette Pro</b> pour vous relier à un nombre illimité de points de livraison.");
-			}
-		}*/
-
 		//checks
 		var contracts = connector.db.RemoteCatalog.getContracts(pcatalog, clientGroup);
 		if ( contracts.length>0 ){
@@ -336,11 +329,12 @@ class PCatalogService{
 		//create remoteCatalog record
 		var rc = link(pcatalog,contract);
 		
-		
 		//create products
 		for ( co in pcatalog.getOffers()){
 			pro.service.PCatalogService.syncProduct(co, null, contract,true, false);
 		}
+
+		BridgeService.matomoEvent(pcatalog.company.getMainContact().id,"Producteurs","Catalogue relié",'Catalogue #${pcatalog.id}');
 		
 		return rc;
 	}

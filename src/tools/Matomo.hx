@@ -6,7 +6,7 @@ typedef MatomoData = {
 
 /**
     track events in Matomo.
-    Events are stored in session and tracked on the frontend
+    Events are stored in session and tracked on the *frontend*
 **/
 class Matomo{
 

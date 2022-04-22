@@ -213,7 +213,7 @@ class Catalog extends controller.Controller
 			catalog.insert();
 
 			if(PCatalog.manager.count($company==this.company)==1){
-				tools.Matomo.trackEvent("Producteurs","Premier catalogue créé");
+				service.BridgeService.matomoEvent(app.user.id,"Producteurs","Premier catalogue créé");
 			}
 
 			throw Ok('/p/pro/catalog/products/'+catalog.id,'Le catalogue a été créé');
