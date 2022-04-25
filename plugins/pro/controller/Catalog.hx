@@ -376,7 +376,7 @@ class Catalog extends controller.Controller
 		//email notif to sender
 		if( notif.sender!=null){
 			var title = "Votre invitation à la distribution du " + app.view.hDate(distrib.getDate()) + " a été acceptée par " + company.vendor.name;
-			App.quickMail(notif.sender.email, title, title);
+			App.quickMail(notif.sender.email, title, title, distrib.getGroup());
 		}
 		
 		
