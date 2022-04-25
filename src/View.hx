@@ -1,3 +1,5 @@
+import tools.Matomo;
+import haxe.Json;
 import haxe.EnumTools.EnumValueTools;
 import db.Basket;
 import sugoi.Web;
@@ -331,5 +333,9 @@ class View extends sugoi.BaseView {
 
 	public function getSid():String {
 		return App.current.session.sid;
+	}
+
+	public function getMatomoEvents() {
+		return Json.stringify(Matomo.getEvents());
 	}
 }

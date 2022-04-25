@@ -1,4 +1,5 @@
 package pro.controller;
+import pro.db.PCatalog;
 import Common;
 import db.UserGroup;
 import form.CagetteForm;
@@ -210,12 +211,17 @@ class Catalog extends controller.Controller
 			catalog.company = company;
 			catalog.visible = f.getValueOf("visible") == "public";
 			catalog.insert();
-			throw Ok('/p/pro/catalog/products/'+catalog.id,'Le catalogue a été enregistré');
+
+			if(PCatalog.manager.count($company==this.company)==1){
+				tools.Matomo.trackEvent("Producteurs","Premier catalogue créé");
+			}
+
+			throw Ok('/p/pro/catalog/products/'+catalog.id,'Le catalogue a été créé');
 		}
 		
 		view.form = f;
 		view.title = "Créer un nouveau catalogue";
-		view.text = "Nommez votre catalogue de produits, par exemple \"Catalogue AMAP\" ou \"Tarifs Vente à la ferme\".";
+		view.text = "Nommez votre catalogue de produits, par exemple \"Catalogue Vente à la ferme\".";
 	}
 	
 	/**
