@@ -486,22 +486,24 @@
 	</macro>
 
 	<macro name="matomo()">
-		
-		<script type="text/javascript">
-		var _paq = window._paq = window._paq || [];
-		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-		::if(user!=null):: _paq.push(['setUserId', '::user.id::']); ::end::
-		_paq.push(['trackPageView']);
-		_paq.push(['enableLinkTracking']);
-		(function() {
-			var u="https://cagette.matomo.cloud/";
-			_paq.push(['setTrackerUrl', u+'matomo.php']);
-	  		_paq.push(['setSiteId', '1']);
-			var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-			g.async=true; g.src='//cdn.matomo.cloud/cagette.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
-		})();
-		</script>
+		::set matomoUrl = getMatomoUrl()::
+		::set matomoSiteId = getMatomoSiteId()::
 
+		::if(matomoUrl!="" && matomoSiteId!="")::
+			<script type="text/javascript">
+			var _paq = window._paq = window._paq || [];
+			/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+			::if(user!=null):: _paq.push(['setUserId', '::user.id::']); ::end::
+			_paq.push(['trackPageView']);
+			_paq.push(['enableLinkTracking']);
+			(function() {
+				_paq.push(['setTrackerUrl', '::matomoUrl::matomo.php']);
+				_paq.push(['setSiteId', ::matomoSiteId::]);
+				var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+				g.async=true; g.src='//cdn.matomo.cloud/cagette.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+			})();
+			</script>
+		::end::
 	</macro>
 
 	<macro name="vendorType(s)">		

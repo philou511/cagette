@@ -310,6 +310,14 @@ class View extends sugoi.BaseView {
 		return service.BridgeService.getNeoModuleScripts();
 	}
 
+	public function getMatomoUrl() {
+		return App.config.get("matomo_url", "");
+	}
+
+	public function getMatomoSiteId() {
+		return App.config.get("matomo_site_id", "");
+	}
+
 	/** 
 	 * Smart quantity (tm) : displays human readable quantity
 	 * 0.33 x Lemon 12kg => 2kg Lemon
