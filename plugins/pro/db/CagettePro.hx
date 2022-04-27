@@ -109,12 +109,22 @@ class CagettePro extends sys.db.Object
 	/**
 	 *  Get users who have access to this company (cpro account)
 	 */
-	public function getUsers(){
-		return Lambda.map(pro.db.PUserCompany.getUsers(this),function(x) return x.user);
+	public function getUsers():Array<db.User>{
+		return pro.db.PUserCompany.getUsers(this).array().map(x -> x.user);
 	}
 
-	public function getUserCompany(){
-		return pro.db.PUserCompany.getUsers(this);
+	public function getUserCompany():Array<pro.db.PUserCompany>{
+		return pro.db.PUserCompany.getUsers(this).array();
+	}
+
+	public function getMainContact():db.User{
+		var ucs = getUserCompany();
+		var uc = ucs.filter(x -> x.legalRepresentative)[0];
+		if(uc==null){
+			return ucs[0].user;
+		}else{
+			return uc.user;
+		}
 	}
 
 	/**

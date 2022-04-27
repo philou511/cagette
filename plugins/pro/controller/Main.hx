@@ -1,4 +1,5 @@
 package pro.controller;
+import service.BridgeService;
 import tools.Matomo;
 import service.VendorService;
 import Common;
@@ -136,6 +137,7 @@ class Main extends controller.Controller
 		
 		view.vendorId = vendor.id;
 
+		/*
 		//track first sale in matomo
 		//count if sales in one week back, and count if sales older than one week
 		var oneWeekAgo = DateTools.delta(Date.now(),1000.0*60*60*24*-7);
@@ -143,7 +145,7 @@ class Main extends controller.Controller
 		var olderSale = sys.db.Manager.cnx.request('SELECT * FROM vendorDailySummary where vendorId=${vendor.id} and turnoverMarket>0 and date < "${oneWeekAgo.toString()}" LIMIT 1').results().array();
 		if(olderSale.length==0 && recentSale.length>0){
 			Matomo.trackEvent("Producteurs","Première vente");
-		}
+		}*/		
 		
 	}
 
