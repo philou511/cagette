@@ -76,7 +76,7 @@ class Main extends controller.Controller
 		view.nav = ["home"];
 		
 		//notifs
-		view.notifs = pro.db.PNotif.manager.search($company == this.company, {orderBy: -date}, false);
+		view.notifs = pro.db.PNotif.getNotifications(this.company);
 		
 		//get client list
 		var remoteCatalogs = connector.db.RemoteCatalog.manager.search($remoteCatalogId in company.getCatalogs().map(x -> x.id), false); 
