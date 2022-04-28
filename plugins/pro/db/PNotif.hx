@@ -112,8 +112,8 @@ class PNotif extends Object
 				case NotifType.NTDeliveryRequest :
 					var content : DeliveryRequestContent = n.getContent();
 					var distrib = db.MultiDistrib.manager.get(content.distribId);
-					if( distrib.distribEndDate.getTime() < Date.now().getTime() ){
-						//if distrib is in the past
+					if( distrib==null || distrib.distribEndDate.getTime() < Date.now().getTime() ){
+						//if distrib is null or in the past
 						notifs.remove(n);
 						n.delete();
 					}
