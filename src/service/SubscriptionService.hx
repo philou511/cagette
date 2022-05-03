@@ -314,14 +314,6 @@ class SubscriptionService
 					label += '<br /><span class="disabled">Calculé au prorata de vos distributions : ${catalog.catalogMinOrdersTotal}€ x ($subscriptionDistribsNb/$catalogAllDistribsNb) = $catalogMinOrdersTotal€</span>';
 				}
 				out.push(label);
-
-				/*if( catalog.allowedOverspend != null ){
-					if(catalog.hasPayments){
-						label += '<br />Dépassement autorisé au delà du solde : ${catalog.allowedOverspend}€';
-					}else{
-						label += '<br />Maximum de commandes sur la durée du contrat : ${catalogMinOrdersTotal + catalog.allowedOverspend}€';
-					}				
-				}*/
 			}
 
 		} else {
