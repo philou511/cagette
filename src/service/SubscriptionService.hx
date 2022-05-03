@@ -265,24 +265,16 @@ class SubscriptionService
 			if ( catalog.requiresOrdering ) {				
 				label += 'Commande obligatoire à chaque distribution';
 				if ( catalog.distribMinOrdersTotal != null && catalog.distribMinOrdersTotal != 0 ) {				
-					label += ' d\'au moins ${catalog.distribMinOrdersTotal} €';
+					label += ' d\'au moins ${catalog.distribMinOrdersTotal} €.';
 				}
 			}
 
 			if(catalog.catalogMinOrdersTotal != null){
 				var catalogMinOrdersTotal = getCatalogMinOrdersTotal(catalog);
-				label += '<br />Minimum de commandes sur la durée du contrat : ${catalogMinOrdersTotal} €';
+				label += '<br />Total des commandes sur la durée du contrat d\'au moins ${catalogMinOrdersTotal} €.';
 				if(catalogMinOrdersTotal != catalog.catalogMinOrdersTotal){
 					label += '<br /><span class="disabled">A l\'origine ce minimum était de ${catalog.catalogMinOrdersTotal} € mais un prorata a été appliqué<br/>car des distributions ont déjà eu lieu.</span>';
 				}
-
-				/*if( catalog.allowedOverspend != null ){
-					if(catalog.hasPayments){
-						label += '<br />Dépassement autorisé au delà du solde : ${catalog.allowedOverspend} €';
-					}else{
-						label += '<br />Maximum de commandes sur la durée du contrat : ${catalogMinOrdersTotal + catalog.allowedOverspend} €';
-					}				
-				}*/			
 			}
 
 		} else {
@@ -304,20 +296,20 @@ class SubscriptionService
 			if ( catalog.requiresOrdering ) {				
 				var label = 'Commande obligatoire à chaque distribution';
 				if ( catalog.distribMinOrdersTotal != null && catalog.distribMinOrdersTotal != 0 ) {				
-					label += ' d\'au moins ${catalog.distribMinOrdersTotal} €';
+					label += ' d\'au moins ${catalog.distribMinOrdersTotal} €.';
 				}
 				label += ".";
 				out.push(label);
 			}
 
-			// catalogMinOrdersTotal + allowedOverspend
+			// catalogMinOrdersTotal
 			if(catalog.catalogMinOrdersTotal != null){
 				var subscriptionDistribsNb = getSubscriptionDistribsNb( subscription, null, true );
 				var catalogAllDistribsNb = db.Distribution.manager.count( $catalog == catalog );
 				var ratio = subscriptionDistribsNb / catalogAllDistribsNb;
 				// safer to do a "floor" than a "round"
 				var catalogMinOrdersTotal = Math.floor(ratio * catalog.catalogMinOrdersTotal);
-				var label = 'Minimum de commandes sur la durée du contrat : $catalogMinOrdersTotal€.';
+				var label = 'Total des commandes sur la durée du contrat d\'au moins $catalogMinOrdersTotal€.';
 				if(subscriptionDistribsNb < catalogAllDistribsNb){
 					label += '<br /><span class="disabled">Calculé au prorata de vos distributions : ${catalog.catalogMinOrdersTotal}€ x ($subscriptionDistribsNb/$catalogAllDistribsNb) = $catalogMinOrdersTotal€</span>';
 				}
@@ -350,6 +342,7 @@ class SubscriptionService
 	}
 
 	public static function getAbsencesDescription( catalog : db.Catalog ) {
+		if( catalog.isVariableOrdersCatalog() && !catalog.requiresOrdering ) return "Pas de gestion des absences car la commande n'est pas obligatoire à chaque distribution";
 		if ( catalog.absentDistribsMaxNb==0 || catalog.absentDistribsMaxNb==null ) return "Pas d'absences autorisées";
 		if(catalog.absentDistribsMaxNb>0 && catalog.absencesStartDate==null ) throw "Une période d'absence doit être définie pour ce contrat";
 		return '${catalog.absentDistribsMaxNb} absences maximum autorisées  du ${DateTools.format( catalog.absencesStartDate, "%d/%m/%Y" )} au ${DateTools.format( catalog.absencesEndDate, "%d/%m/%Y")} ';
@@ -625,7 +618,7 @@ class SubscriptionService
 
 				if ( doCheckMin ) {
 					if ( subscriptionNewTotal < catalogMinOrdersTotal ) {
-						var message = 'Le nouveau total de toutes vos commandes sur la durée du contrat serait de $subscriptionNewTotal € '; 
+						var message = 'Le total de vos commandes sur la durée du contrat est de $subscriptionNewTotal € '; 
 						message += 'alors qu\'il doit être supérieur à $catalogMinOrdersTotal €. Vous devez commander plus.';
 						throw TypedError.typed( message, CatalogRequirementsNotMet );
 					}

@@ -143,7 +143,7 @@ $$browserDetection()
 								::end::
 							</div>
 
-							<div class="footer">
+							<div class="orderFooter">
 								<!-- attendence list-->
 								::if user.isContractManager(dist._catalog) || md.getVolunteerForUser(user).length>0::
 								<a href="/distribution/list/::dist.id::"><i class="icon icon-print"></i> ::_("Distribution list")::</a>
@@ -209,7 +209,7 @@ $$browserDetection()
 							::end::
 						</div>
 		
-						<div class="footer">
+						<div class="orderFooter">
 							<!-- attendence list-->
 							::if user.isContractManager(dist._catalog) || md.getVolunteerForUser(user).length>0::
 							<a href="/distribution/list/::dist.id::"><i class="icon icon-print"></i> ::_("Distribution list")::</a>
