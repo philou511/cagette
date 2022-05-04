@@ -303,15 +303,14 @@ class DistributionService
 		var shopMode = catalog.group.hasShopMode();
 
 		if( !shopMode ){
-		
-			if( catalog.type == db.Catalog.TYPE_CONSTORDERS && db.Subscription.manager.count( $catalogId == catalog.id && $isPaid ) > 0) {
-
-				throw new Error("Vous ne pouvez pas participer à cette distribution car il y a déjà des souscriptions validées. Vous devez maintenir le même nombre de distributions dans les souscriptions des adhérents.");
-			}
-			else if( db.Subscription.manager.count( $catalogId == catalog.id  ) > 0 ) {
-
-				App.current.session.addMessage( "Attention, vous avez déjà des souscriptions enregistrées pour ce contrat. Si vous créez des distributions supplémentaires, le montant à payer va varier." , true);
-			}
+			//limitations with CSA mode
+			if(db.Subscription.manager.count( $catalogId == catalog.id ) > 0){
+				if( catalog.isConstantOrdersCatalog() ) {
+					throw new Error("Vous ne pouvez pas participer à cette distribution car il y a déjà des souscriptions. Vous devez maintenir le même nombre de distributions dans les souscriptions des adhérents.");
+				} else {
+					App.current.session.addMessage( "Attention, vous avez déjà des souscriptions enregistrées pour ce contrat. Si vous créez des distributions supplémentaires, le montant à payer va varier." , true);
+				}
+			}			
 		}
 
 		md.deleteProductsExcerpt();

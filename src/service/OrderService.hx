@@ -879,9 +879,7 @@ class OrderService
 			service.PaymentService.onOrderConfirm( orders );
 		} else {
 			for( subscription in subscriptions ) {
-				if(subscription.catalog.hasPayments){
-					service.SubscriptionService.createOrUpdateTotalOperation( subscription );
-				}				
+				service.SubscriptionService.createOrUpdateTotalOperation( subscription );				
 			}
 		}
 		return orders;

@@ -14,7 +14,7 @@ class Subscription extends Object {
 	@:relation(catalogId) public var catalog : db.Catalog;
 	public var startDate : SDateTime;
 	public var endDate : SDateTime;
-	@hideInForms public var isPaid : SBool;
+	// @hideInForms public var isPaid : SBool;
 	public var defaultOrders : SNull<SText>;
 	public var absentDistribIds : SNull<SText>;
 
@@ -23,18 +23,8 @@ class Subscription extends Object {
 	}
 
 	public function paid() : Bool {
-
 		if( this.id == null ) return false;
-
-		if ( this.catalog.group.hasPayments() ) {
-
-			var totalPrice = getTotalPrice();
-			return 0 < totalPrice && totalPrice <= getPaymentsTotal();
-		}
-		else {
-
-			return this.isPaid;
-		}
+		return getBalance()>=0;
 	}
 
 	/**

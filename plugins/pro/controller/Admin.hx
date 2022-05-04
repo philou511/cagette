@@ -1455,9 +1455,9 @@ class Admin extends controller.Controller {
 			}
 			
 			//remove ops of catalogs where payments are not activated
-			if(op.subscription!=null && !op.subscription.catalog.hasPayments){
-				op.delete();
-			}
+			// if(op.subscription!=null && !op.subscription.catalog.hasPayments){
+			// 	op.delete();
+			// }
 		}
 
 		//update balances

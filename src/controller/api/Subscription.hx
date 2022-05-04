@@ -75,8 +75,7 @@ class Subscription extends Controller
                 }
             }            
                  
-			if ( sub.catalog.hasPayments ) SubscriptionService.createOrUpdateTotalOperation( sub );
-
+			SubscriptionService.createOrUpdateTotalOperation( sub );
             SubscriptionService.areVarOrdersValid( sub );
         }    
 

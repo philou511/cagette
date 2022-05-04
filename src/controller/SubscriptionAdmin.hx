@@ -32,41 +32,11 @@ class SubscriptionAdmin extends controller.Controller
 			orderBy = "userName";
 		}
 		view.orderBy = orderBy;
-	
 		view.catalog = catalog;
 		view.c = catalog;
 		view.subscriptions = catalogSubscriptions;
-		if ( catalog.hasPayments ) {
-			view.negativeBalanceCount = catalogSubscriptions.count( function( subscription ) { return  subscription.getBalance() < 0; } );
-		} else {
-			view.negativeBalanceCount = catalogSubscriptions.count( function( subscription ) { return  !subscription.paid(); } );
-			/*view.negativeBalanceCount = catalogSubscriptions.count( s -> s.getBalance() < 0 );
-
-			catalogSubscriptions.sort(function(a,b){
-				if( a.user.lastName > b.user.lastName ){
-					return 1;
-				}else{
-					return -1;
-				}
-			});
-
-		} else {
-			view.negativeBalanceCount = catalogSubscriptions.count( s ->  !s.paid() );
-
-			//sort by validation, then username
-			catalogSubscriptions.sort(function(a,b){
-				if( (a.paid()?"1":"0")+a.user.lastName > (b.paid()?"1":"0")+b.user.lastName ){
-					return 1;
-				}else{
-					return -1;
-				}
-			});
-			*/
-		}
-		
-		view.dateToString = function( date : Date ) {
-			return DateTools.format( date, "%d/%m/%Y");
-		}
+		view.negativeBalanceCount = catalogSubscriptions.count( function( subscription ) { return  subscription.getBalance() < 0; } );
+		view.dateToString = ( date : Date ) -> DateTools.format( date, "%d/%m/%Y");
 		view.subscriptionService = SubscriptionService;
 		view.nav.push( 'subscriptions' );
 
@@ -305,33 +275,10 @@ class SubscriptionAdmin extends controller.Controller
 
 	}
 
-
-	public function doMarkAsPaid( subscription : db.Subscription ) {
-		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
-		try {
-			SubscriptionService.markAsPaid( subscription );
-		} catch( error : Error ) {
-			throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, error.message );
-		}
-		throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La souscription de ' + subscription.user.getName() + ' a bien été validée.' );
-	}
-
-	@admin
-	public function doUnmarkAsPaid( subscription : db.Subscription ) {
-
-		if( checkToken() ) {
-
-			SubscriptionService.markAsPaid( subscription, false );
-			throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'Souscription dévalidée' );
-		}
-
-	}
-
 	@tpl("contractadmin/subscriptionpayments.mtt")
 	public function doPayments( subscription : db.Subscription ) {
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
-		if ( !subscription.catalog.hasPayments ) throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La gestion des paiements n\'est pas activée.' );
 
 		//Let's do an update just in case the total operation is not coherent
 		view.subscriptionTotal = SubscriptionService.createOrUpdateTotalOperation( subscription );
@@ -353,8 +300,6 @@ class SubscriptionAdmin extends controller.Controller
 	public function doBalanceTransfer( subscription : db.Subscription ) {
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
-		if ( !subscription.catalog.hasPayments ) throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La gestion des paiements n\'est pas activée.' );
-
 		if ( subscription.getBalance() <= 0 ) throw Error( '/contractAdmin/subscriptions/payments/' + subscription.id, 'Le solde doit être positif pour pouvoir le transférer sur une autre souscription.' );
 		var subscriptionsChoices = SubscriptionService.getUserVendorNotClosedSubscriptions( subscription );
 		if ( subscriptionsChoices.length == 0  ) throw Error( '/contractAdmin/subscriptions/payments/' + subscription.id, 'Ce membre n\'a pas d\'autre souscription. Veuillez en créer une nouvelle avec le même producteur.' );
@@ -432,15 +377,6 @@ class SubscriptionAdmin extends controller.Controller
 		
 	}
 	
-	@admin
-	public function doUnmarkAll(catalog : db.Catalog){
-
-		for ( subscription in SubscriptionService.getCatalogSubscriptions(catalog) ) {
-			SubscriptionService.markAsPaid( subscription, false );
-		}
-		throw Ok("/contractAdmin/subscriptions/"+catalog.id,'Souscriptions dévalidées');
-	}
-
 	/**
 	 * inserts a payment for a CSA contract
 	 */

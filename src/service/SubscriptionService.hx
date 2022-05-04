@@ -450,7 +450,7 @@ class SubscriptionService
 		}
 
 		//si paiements, le minimum à commander correspond à la provision déja payée
-		if ( catalog.hasPayments && subscription != null ) {
+		if ( subscription != null ) {
 			var subscriptionPayments = subscription.getPaymentsTotal();
 			if ( subscriptionPayments != 0 ) {
 				return subscriptionPayments;
@@ -685,7 +685,6 @@ class SubscriptionService
 		subscription.catalog = catalog;
 		subscription.startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate 	= new Date( endDate.getFullYear()  , endDate.getMonth()  , endDate.getDate()  , 23, 59, 59 );
-		subscription.isPaid = false;
 
 		//is there a secondary user in this subscription
 		if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
@@ -910,12 +909,6 @@ class SubscriptionService
 	}*/
 
 
-	public static function markAsPaid( subscription : Subscription, ?paid : Bool = true ){
-		subscription.lock();
-		subscription.isPaid = paid;
-		subscription.update();
-	}
-
 	public static function getOperations( subscription : db.Subscription, ?lock=false):Array<db.Operation>{
 		return db.Operation.manager.search( $subscription == subscription, { orderBy : -date }, lock ).array();
 	}
@@ -932,8 +925,7 @@ class SubscriptionService
 		}
 
 		//cant delete if some payment has been recorded
-		var subscriptionOperations = db.Operation.manager.count( $subscription == subscription && $type==Payment );
-		if ( subscription.catalog.hasPayments && subscriptionOperations > 0 ) {
+		if ( db.Operation.manager.count( $subscription == subscription && $type==Payment ) > 0 ) {
 			throw new Error( 'Impossible de supprimer cette souscription car il y a des paiements enregistrés.' );
 		}
 
@@ -946,10 +938,7 @@ class SubscriptionService
 		//Delete all the operations for this subscription
 		for ( operation in getOperations(subscription,true) ) operation.delete();
 		
-		if( subscription.catalog.hasPayments ) {
-			service.PaymentService.updateUserBalance( subscription.user, subscription.catalog.group );
-		}
-
+		service.PaymentService.updateUserBalance( subscription.user, subscription.catalog.group );
 		subscription.delete();
 	}
 
@@ -1083,9 +1072,7 @@ class SubscriptionService
 		
 		App.current.event( MakeOrder( orders ) );
 		
-		if ( subscription.catalog.hasPayments ) {			
-			createOrUpdateTotalOperation( subscription );
-		}
+		createOrUpdateTotalOperation( subscription );
 
 		return orders;	
 	}	
@@ -1230,39 +1217,35 @@ class SubscriptionService
 
 		if( subscription == null )  throw new Error( 'Pas de souscription fournie.' );
 
-		var totalOperation : db.Operation = null;
+		var totalOperation = db.Operation.manager.select ( $user == subscription.user && $subscription == subscription && $type == SubscriptionTotal, true );
 
-		if ( subscription.catalog.hasPayments ) {
+		if( totalOperation == null ) {
 
-			totalOperation = db.Operation.manager.select ( $user == subscription.user && $subscription == subscription && $type == SubscriptionTotal, true );
+			totalOperation = new db.Operation();
+			totalOperation.name = "Total Commandes";
+			totalOperation.type = SubscriptionTotal;
+			totalOperation.user = subscription.user;
+			totalOperation.subscription = subscription;
+			totalOperation.group = subscription.catalog.group;
+			totalOperation.pending = false;
+		}
+
+		//create or update it if needed
+		var currentTotalPrice = subscription.getTotalPrice();
+		if( totalOperation.id == null || totalOperation.amount != (0 - currentTotalPrice) ) {
+
+			totalOperation.date = Date.now();
+			totalOperation.amount = 0 - currentTotalPrice;
 	
-			if( totalOperation == null ) {
-	
-				totalOperation = new db.Operation();
-				totalOperation.name = "Total Commandes";
-				totalOperation.type = SubscriptionTotal;
-				totalOperation.user = subscription.user;
-				totalOperation.subscription = subscription;
-				totalOperation.group = subscription.catalog.group;
-				totalOperation.pending = false;
+			if ( totalOperation.id != null ) {
+				totalOperation.update();
+			} else {		
+				totalOperation.insert();
 			}
 	
-			//create or update it if needed
-			var currentTotalPrice = subscription.getTotalPrice();
-			if( totalOperation.id == null || totalOperation.amount != (0 - currentTotalPrice) ) {
-
-				totalOperation.date = Date.now();
-				totalOperation.amount = 0 - currentTotalPrice;
+			service.PaymentService.updateUserBalance( totalOperation.user, totalOperation.group );
+		}			
 		
-				if ( totalOperation.id != null ) {
-					totalOperation.update();
-				} else {		
-					totalOperation.insert();
-				}
-		
-				service.PaymentService.updateUserBalance( totalOperation.user, totalOperation.group );
-			}			
-		}
 		return totalOperation;
 	}
 
@@ -1288,9 +1271,6 @@ class SubscriptionService
 		if( fromSubscription.user.id != toSubscription.user.id )  throw new Error( 'Le transfert est possible uniquement pour un même membre.' );
 		if( balance <= 0 ) throw new Error( 'Impossible de transférer un solde négatif ou à zéro.' );
 		
-		if( !toSubscription.catalog.hasPayments ) throw new Error('Les paiements ne sont pas activés sur ce contrat');
-		if( !fromSubscription.catalog.hasPayments ) throw new Error("Les paiements ne sont pas activés sur ce contrat");
-
 		var operationFrom = new db.Operation();
 		operationFrom.name = "Transfert du solde sur la souscription #" + toSubscription.id + " de " + toSubscription.catalog.name;
 		operationFrom.type = Payment;
