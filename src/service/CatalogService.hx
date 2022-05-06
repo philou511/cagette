@@ -36,7 +36,7 @@ class CatalogService{
 			//SHOP MODE
 			form.removeElement(form.getElement("orderStartDaysBeforeDistrib"));
 			form.removeElement(form.getElement("orderEndHoursBeforeDistrib"));
-			form.removeElement(form.getElement("requiresOrdering"));
+			// form.removeElement(form.getElement("requiresOrdering"));
 			form.removeElement(form.getElement("distribMinOrdersTotal"));
 			form.removeElement(form.getElement("catalogMinOrdersTotal"));			
 			
@@ -49,12 +49,12 @@ class CatalogService{
 			var absencesIndex = 16;
 			if ( catalog.type == Catalog.TYPE_VARORDER ) {
 				//VAR
-				form.addElement( new sugoi.form.elements.Html( 'distribconstraints', '<h4>Engagement par distribution</h4>', '' ), 10 );
-				form.addElement( new sugoi.form.elements.Html( 'catalogconstraints', '<h4>Engagement sur la durée du contrat</h4>', '' ), 13 );
+				form.addElement( new sugoi.form.elements.Html( 'constraints', '<h4>Engagements par distribution</h4>', '' ), 10 );
+				form.addElement( new sugoi.form.elements.Html( 'constraintsHtml', 'Définissez ici l\'engagement minimum pour ce contrat. <br/><a href="https://wiki.cagette.net/admin:contratsamapvariables#engagements" target="_blank"><i class="icon icon-info"></i> Pour plus d\'informations, consultez la documentation</a>.', '' ), 11 );
 
 				form.getElement("orderStartDaysBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#ouverture_et_fermeture_de_commande";
 				form.getElement("orderEndHoursBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#ouverture_et_fermeture_de_commande";				
-				form.getElement("catalogMinOrdersTotal").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#minimum_de_commandes_sur_la_duree_du_contrat";
+				// form.getElement("catalogMinOrdersTotal").docLink = "";
 				
 			} else { 
 				//CONST
@@ -136,17 +136,16 @@ class CatalogService{
 					Si vous voulez utiliser l\'ouverture par défaut des distributions laissez le champ vide.');
 				}
 				
-				if( form.getValueOf("distribMinOrdersTotal") > 0 ) {
-					catalog.requiresOrdering = true;
+				if( form.getValueOf("distribMinOrdersTotal")==0 && form.getValueOf("catalogMinOrdersTotal")==0 ){
+					throw new Error("Vous devez définir un minimum de commande ( par distribution et/ou sur la durée du contrat )");
 				}
 
-				if( form.getValueOf("requiresOrdering")==true && form.getValueOf("distribMinOrdersTotal")==null  ){
-					throw new Error("Si vous activez la commande obligatoire, vous devez définir le montant minimum de commande par distribution.");
+				//clean absence datas if not needed
+				if(form.getValueOf("catalogMinOrdersTotal")==0){
+					catalog.absencesEndDate = null;
+					catalog.absencesStartDate = null;
+					catalog.absentDistribsMaxNb = 0;
 				}
-
-				// if( form.getValueOf("requiresOrdering")==false && form.getValueOf('absentDistribsMaxNb')!=null){
-				// 	throw new Error("Si vous n'activez pas la commande obligatoire, la gestion des absences n'est pas nécéssaire, laissez le champs 'Nombre maximum d'absences' vide.");
-				// }
 
 				var catalogMinOrdersTotal = form.getValueOf("catalogMinOrdersTotal");
 				/*var allowedOverspend = form.getValueOf("allowedOverspend");
@@ -165,8 +164,6 @@ class CatalogService{
 
 			if ( catalog.id != null ) {
 
-				
-			
 				if ( catalog.hasPercentageOnOrders() && catalog.percentageValue == null ) {
 					throw new Error( t._("If you would like to add fees to the order, define a rate (%) and a label.") );
 				}

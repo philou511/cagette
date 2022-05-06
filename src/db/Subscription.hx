@@ -14,7 +14,7 @@ class Subscription extends Object {
 	@:relation(catalogId) public var catalog : db.Catalog;
 	public var startDate : SDateTime;
 	public var endDate : SDateTime;
-	// @hideInForms public var isPaid : SBool;
+	@hideInForms public var isPaid : SBool;
 	public var defaultOrders : SNull<SText>;
 	public var absentDistribIds : SNull<SText>;
 
@@ -31,15 +31,12 @@ class Subscription extends Object {
 		get total cost of subscription orders
 	**/
 	public function getTotalPrice() : Float {
-
 		if( this.id == null ) return 0;
-
 		var totalPrice : Float = 0;
 		var orders = db.UserOrder.manager.search( $subscription == this, false );
 		for ( order in orders ) {
 			totalPrice += Formatting.roundTo( order.quantity * order.productPrice, 2 );
 		}
-
 		return Formatting.roundTo( totalPrice, 2 );
 	}
 

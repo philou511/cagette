@@ -172,7 +172,6 @@ class Contract extends Controller
 			form.toSpod( catalog );
 			
 			try {
-
 				CatalogService.checkFormData(catalog,form);			
 				catalog.insert();
 
@@ -190,7 +189,6 @@ class Contract extends Controller
 			} catch ( e : Error ) {
 				throw Error( '/contract/insert/' + vendor.id, e.message );
 			}
-			
 			
 			throw Ok( "/contractAdmin/view/" + catalog.id, t._("New catalog created") );
 		}

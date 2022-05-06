@@ -28,7 +28,7 @@
 				</a>
 			</li>
 			
-			::if (!c._group.hasShopMode() && (c.requiresOrdering || c.type==0) )::
+			::if (!c._group.hasShopMode() && (c.distribMinOrdersTotal>0 || c.type==0) )::
 			<li id="absences" ::attr class if(nav[1]=="absences") 'active'::>
 				<a href="/contractAdmin/absences/::c.id::">
 					<i class="icon icon-vacation"></i>  Période d'absences

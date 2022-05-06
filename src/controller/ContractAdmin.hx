@@ -121,12 +121,12 @@ class ContractAdmin extends Controller
 					var newOrderStartDays = catalog.orderStartDaysBeforeDistrib != previousOrderStartDays ? catalog.orderStartDaysBeforeDistrib : null;
 					var newOrderEndHours = catalog.orderEndHoursBeforeDistrib != previousOrderEndHours ? catalog.orderEndHoursBeforeDistrib : null;
 					var msg = CatalogService.updateFutureDistribsStartEndOrdersDates( catalog, newOrderStartDays, newOrderEndHours );
-					if(msg!=null) messages.push ( msg );  
+					if(msg!=null) messages.push(msg);  
 
 					//payements : update or create operations
-					for ( sub in SubscriptionService.getCatalogSubscriptions(catalog)){
-						SubscriptionService.createOrUpdateTotalOperation( sub );
-					}
+					// for ( sub in SubscriptionService.getCatalogSubscriptions(catalog)){
+					// 	SubscriptionService.createOrUpdateTotalOperation( sub );
+					// }
 
 				}
 				
@@ -613,7 +613,7 @@ class ContractAdmin extends Controller
 				if ( nc.type == Catalog.TYPE_VARORDER ) {
 
 					nc.orderStartDaysBeforeDistrib = catalog.type == Catalog.TYPE_VARORDER ? catalog.orderStartDaysBeforeDistrib : 365;
-					nc.requiresOrdering = catalog.requiresOrdering;
+					// nc.requiresOrdering = catalog.requiresOrdering;
 					nc.distribMinOrdersTotal = catalog.distribMinOrdersTotal;
 					nc.catalogMinOrdersTotal = catalog.catalogMinOrdersTotal;
 					// var defaultAllowedOverspend = app.user.getGroup().hasPayments() ? 10 : 500;

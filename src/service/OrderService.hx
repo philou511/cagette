@@ -339,11 +339,8 @@ class OrderService
 				// e = StockMove({product:product, move:0-order.quantity });
 			}
 
-			var hasPayments = contract.group.hasPayments();
-
 			if ( contract.group.hasShopMode() ) {
-
-				if( hasPayments ) {
+				if( contract.group.hasPayments() ) {
 
 					//Get the basket for this user
 					var basket = db.Basket.get(user, order.distribution.multiDistrib);
@@ -359,10 +356,7 @@ class OrderService
 			} else {
 
 				order.delete();
-
-				if( hasPayments ) {
-					service.SubscriptionService.createOrUpdateTotalOperation( order.subscription );
-				}
+				service.SubscriptionService.createOrUpdateTotalOperation( order.subscription );
 			}
 	
 		} else {

@@ -36,7 +36,6 @@ class SubscriptionAdmin extends controller.Controller
 		view.c = catalog;
 		view.subscriptions = catalogSubscriptions;
 		view.negativeBalanceCount = catalogSubscriptions.count( function( subscription ) { return  subscription.getBalance() < 0; } );
-		view.dateToString = ( date : Date ) -> DateTools.format( date, "%d/%m/%Y");
 		view.subscriptionService = SubscriptionService;
 		view.nav.push( 'subscriptions' );
 
@@ -280,13 +279,17 @@ class SubscriptionAdmin extends controller.Controller
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
 
-		//Let's do an update just in case the total operation is not coherent
-		view.subscriptionTotal = SubscriptionService.createOrUpdateTotalOperation( subscription );
+		var totalOperation;
+		if(subscription.catalog.isActive()){
+			totalOperation = SubscriptionService.createOrUpdateTotalOperation( subscription );
+		}else{
+			totalOperation = subscription.getTotalOperation();
+		}
+		
+		view.subscriptionTotal = totalOperation;
 
 		var user = subscription.user;
-		var payments = db.Operation.manager.search( $user == user && $subscription == subscription && $type == Payment, { orderBy : -date }, false );
-		
-		view.payments = payments;
+		view.payments = db.Operation.manager.search( $user == user && $subscription == subscription && $type == Payment, { orderBy : -date }, false );
 		view.member = user;
 		view.subscription = subscription;
 		

@@ -5,14 +5,12 @@
         <h3>Souscriptions</h3>
         
         <div class="row" ::cond negativeBalanceCount != 0:: >
-
 			<div id="content" class="col-md-12">
 				<div class="alert  alert-danger ">
                     <i class="icon icon-alert"></i>
                     Il y a ::negativeBalanceCount:: souscription(s) avec un solde négatif.
                     </div>
 			</div>
-
         </div>
         
         <div class="row" ::cond catalog.isVariableOrdersCatalog():: >
@@ -111,8 +109,8 @@
                                     ::end::
                                 </td>
                                 <td style="vertical-align: middle;">
-                                    du ::dateToString(subscription.startDate)::<br/>
-                                    au ::dateToString(subscription.endDate)::
+                                    du ::sDate(subscription.startDate)::<br/>
+                                    au ::sDate(subscription.endDate)::
                                 </td>
                                 <td style="vertical-align: middle;">
                                     <a title="Voir les commandes" target="_blank" href="/history/subscriptionOrders/::subscription.id::">
