@@ -144,17 +144,15 @@ class DistributionService
 		if ( d.date == null ) {
 
 			return d;
-		}
-		else {
+		} else {
 
 			d.insert();
 
 			//In case this is a distrib for an amap contract with payments enabled, it will update all the operations
 			//names and amounts with the new number of distribs
-			if( !contract.group.hasShopMode() && contract.group.hasPayments() )  {
-
-				service.SubscriptionService.updateCatalogSubscriptionsOperation( d.catalog );
-			}
+			// if( !contract.group.hasShopMode() )  {
+			// 	service.SubscriptionService.updateCatalogSubscriptionsOperation( d.catalog );
+			// }
 
 			return d;
 		}
@@ -305,15 +303,14 @@ class DistributionService
 		var shopMode = catalog.group.hasShopMode();
 
 		if( !shopMode ){
-		
-			if( catalog.type == db.Catalog.TYPE_CONSTORDERS && db.Subscription.manager.count( $catalogId == catalog.id && $isPaid ) > 0) {
-
-				throw new Error("Vous ne pouvez pas participer à cette distribution car il y a déjà des souscriptions validées. Vous devez maintenir le même nombre de distributions dans les souscriptions des adhérents.");
-			}
-			else if( db.Subscription.manager.count( $catalogId == catalog.id  ) > 0 ) {
-
-				App.current.session.addMessage( "Attention, vous avez déjà des souscriptions enregistrées pour ce contrat. Si vous créez des distributions supplémentaires, le montant à payer va varier." , true);
-			}
+			//limitations with CSA mode
+			if(db.Subscription.manager.count( $catalogId == catalog.id ) > 0){
+				if( catalog.isConstantOrdersCatalog() ) {
+					throw new Error("Vous ne pouvez pas participer à cette distribution car il y a déjà des souscriptions. Vous devez maintenir le même nombre de distributions dans les souscriptions des adhérents.");
+				} else {
+					App.current.session.addMessage( "Attention, vous avez déjà des souscriptions enregistrées pour ce contrat. Si vous créez des distributions supplémentaires, le montant à payer va varier." , true);
+				}
+			}			
 		}
 
 		md.deleteProductsExcerpt();
@@ -554,7 +551,7 @@ class DistributionService
 		var t = sugoi.i18n.Locale.texts;
 		
 		var shopMode = d.catalog.group.hasShopMode();
-		if( !shopMode && (d.catalog.type==db.Catalog.TYPE_CONSTORDERS || d.catalog.requiresOrdering) ) {
+		if( !shopMode && (d.catalog.type==db.Catalog.TYPE_CONSTORDERS || d.catalog.distribMinOrdersTotal>0) ) {
 			//if there is at least one validated subscription, cancelation is not possible
 			var subscriptions = db.Subscription.manager.search( $catalog == d.catalog );
 			if( subscriptions.count( s -> s.paid() ) > 0) {
@@ -602,10 +599,9 @@ class DistributionService
 		d.delete();
 
 		//In case this is a distrib for an amap contract with payments enabled, it will update all the operations
-		if ( !shopMode ) {
-
-			service.SubscriptionService.updateCatalogSubscriptionsOperation( contract );
-		}
+		// if ( !shopMode ) {
+		// 	service.SubscriptionService.updateCatalogSubscriptionsOperation( contract );
+		// }
 
 		//delete multidistrib if needed
 		/*if(d.multiDistrib!=null){

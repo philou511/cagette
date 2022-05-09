@@ -23,33 +23,20 @@ class Subscription extends Object {
 	}
 
 	public function paid() : Bool {
-
 		if( this.id == null ) return false;
-
-		if ( this.catalog.group.hasPayments() ) {
-
-			var totalPrice = getTotalPrice();
-			return 0 < totalPrice && totalPrice <= getPaymentsTotal();
-		}
-		else {
-
-			return this.isPaid;
-		}
+		return getBalance()>=0;
 	}
 
 	/**
 		get total cost of subscription orders
 	**/
 	public function getTotalPrice() : Float {
-
 		if( this.id == null ) return 0;
-
 		var totalPrice : Float = 0;
 		var orders = db.UserOrder.manager.search( $subscription == this, false );
 		for ( order in orders ) {
 			totalPrice += Formatting.roundTo( order.quantity * order.productPrice, 2 );
 		}
-
 		return Formatting.roundTo( totalPrice, 2 );
 	}
 

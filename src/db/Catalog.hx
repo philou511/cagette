@@ -35,13 +35,13 @@ class Catalog extends Object
 	public var orderStartDaysBeforeDistrib : SNull<SInt>;
 	public var orderEndHoursBeforeDistrib : SNull<SInt>;
 
-	public var requiresOrdering : SNull<Bool>;			// ordering at each distrib is a compulsory
-	public var distribMinOrdersTotal : SNull<SFloat>;
-	public var catalogMinOrdersTotal : SNull<SFloat>;
+	// public var requiresOrdering : SNull<Bool>;			// ordering at each distrib is a compulsory
+	public var distribMinOrdersTotal : SInt;
+	public var catalogMinOrdersTotal : SInt;
 	// public var allowedOverspend : SNull<SFloat>;  //removed 
 
 	//absences in CSA groups
-	public var absentDistribsMaxNb : SNull<SInt>;
+	public var absentDistribsMaxNb : SInt;
 	public var absencesStartDate : SNull<SDateTime>;
 	public var absencesEndDate : SNull<SDateTime>;
 
@@ -49,7 +49,7 @@ class Catalog extends Object
 
 	@:skip inline public static var TYPE_CONSTORDERS = 0; 	//constant orders catalog (contrat AMAP classique)
 	@:skip inline public static var TYPE_VARORDER = 1;		//variable orders catalog (contrat AMAP variable)
-	@:skip inline public static var CATALOG_ID_HASPAYMENTS = 53442;		//payments is mandatory when id > CATALOG_ID_HASPAYMENTS
+	// @:skip inline public static var CATALOG_ID_HASPAYMENTS = 53442;		//payments is mandatory when id > CATALOG_ID_HASPAYMENTS
 	@:skip var cache_hasActiveDistribs : Bool;
 
 	public function new() 
@@ -132,7 +132,7 @@ class Catalog extends Object
 	}
 
 	public function hasConstraints() : Bool {
-		return this.isVariableOrdersCatalog() && ( this.requiresOrdering || ( this.distribMinOrdersTotal != null &&  this.distribMinOrdersTotal != 0 ) || ( this.catalogMinOrdersTotal != null &&  this.catalogMinOrdersTotal != 0 ) );
+		return this.isVariableOrdersCatalog() && ( this.distribMinOrdersTotal>0  || this.catalogMinOrdersTotal>0 );
 	}
 
 	public function hasAbsencesManagement() : Bool {
@@ -180,14 +180,14 @@ class Catalog extends Object
 	 * @param	large = false	Si true, montre les contrats terminés depuis moins d'un mois
 	 * @param	lock = false
 	 */
-	public static function getActiveContracts(amap:db.Group,?large = false, ?lock = false) {
+	public static function getActiveContracts(group:db.Group,?large = false, ?lock = false) {
 		var now = Date.now();
 		var end = Date.now();	
 		if (large) {
 			end = DateTools.delta(end , -1000.0 * 60 * 60 * 24 * 30);
-			return db.Catalog.manager.search($group == amap && $endDate > end,{orderBy:-vendorId}, lock);	
+			return db.Catalog.manager.search($group == group && $endDate > end,{orderBy:-vendorId}, lock);	
 		}else {
-			return db.Catalog.manager.search($group == amap && $endDate > now && $startDate < now,{orderBy:-vendorId}, lock);	
+			return db.Catalog.manager.search($group == group && $endDate > now && $startDate < now,{orderBy:-vendorId}, lock);	
 		}
 	}
 	
@@ -337,22 +337,12 @@ class Catalog extends Object
 	override public function update(){
 		startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate()	, 0, 0, 0 );
 		endDate 	= new Date( endDate.getFullYear(),   endDate.getMonth(),   endDate.getDate()	, 23, 59, 59 );
-
-		if(this.id > CATALOG_ID_HASPAYMENTS){
-			this.hasPayments = true;
-		} 
-
 		super.update();
 	}
 
 	override public function insert(){
 		startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate()	, 0, 0, 0 );
 		endDate 	= new Date( endDate.getFullYear(),   endDate.getMonth(),   endDate.getDate()	, 23, 59, 59 );
-
-		if(this.id > CATALOG_ID_HASPAYMENTS){
-			this.hasPayments = true;
-		} 
-
 		super.insert();
 	}
 	
@@ -389,7 +379,7 @@ class Catalog extends Object
 			"orderEndHoursBeforeDistrib" 	=> "Fermeture des commandes (nbre d'heures avant distribution)",
 			"requiresOrdering" 				=> "Commande obligatoire à chaque distribution",
 			"distribMinOrdersTotal" 		=> "Minimum de commande par distribution (en €)",
-			"catalogMinOrdersTotal" 		=> "Provision minimum initiale (en €)",
+			"catalogMinOrdersTotal" 		=> /*"Provision minimum initiale (en €)"*/"Minimum de commandes sur la durée du contrat (en €)",
 			// "allowedOverspend" 				=> "Dépassement autorisé (en €)",
 			"absentDistribsMaxNb" 			=> "Nombre maximum d'absences",
 			"absencesStartDate" 			=> "Date de début de la période d'absences",

@@ -168,7 +168,7 @@ ul.nav{
 }
 
 
-/* Footer */
+/* Page Footer */
 
 #footer {
 	background: #84BD55;
@@ -831,7 +831,7 @@ div.reportHeader{
 /**
 	Popovers for help and tutorials
 **/
-.popover{
+/*.popover{
 
 	color:white;
 	font-size:14px;
@@ -875,7 +875,7 @@ div.reportHeader{
 			border:1px solid #583816;
 		}
 	}
-}
+}*/
 
 /* skin a modal like a tuto popover */ 
 .modal.help{
@@ -993,8 +993,9 @@ div.reportHeader{
 		}
 
 		//footer of orders : attendance list, subscription balance
-		.footer{
+		.orderFooter{
 			color:#999;
+			// height: 22px;
 			margin: 10px 0;
 			a{
 				color:#999;
@@ -1242,7 +1243,7 @@ a.btn-warning{
 
 //sub panel like in subscription macro
 .subPanel{
-	border-color: #f5f5f5 !important;
+	border-color: #EEE !important;
     border-width: 3px !important;
 	text-align: center;
 	.panel-heading{

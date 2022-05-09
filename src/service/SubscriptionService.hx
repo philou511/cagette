@@ -260,29 +260,21 @@ class SubscriptionService
 	**/
 	public static function getContractConstraints( catalog:db.Catalog ):String{
 		var label = '';
-		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
+		if ( catalog.isVariableOrdersCatalog() ) {
 
-			if ( catalog.requiresOrdering ) {				
+			if ( catalog.distribMinOrdersTotal>0 ) {				
 				label += 'Commande obligatoire à chaque distribution';
 				if ( catalog.distribMinOrdersTotal != null && catalog.distribMinOrdersTotal != 0 ) {				
-					label += ' d\'au moins ${catalog.distribMinOrdersTotal} €';
+					label += ' d\'au moins ${catalog.distribMinOrdersTotal} €.';
 				}
 			}
 
-			if(catalog.catalogMinOrdersTotal != null){
+			if(catalog.catalogMinOrdersTotal>0){
 				var catalogMinOrdersTotal = getCatalogMinOrdersTotal(catalog);
-				label += '<br />Minimum de commandes sur la durée du contrat : ${catalogMinOrdersTotal} €';
+				label += '<br />Total des commandes sur la durée du contrat d\'au moins ${catalogMinOrdersTotal} €.';
 				if(catalogMinOrdersTotal != catalog.catalogMinOrdersTotal){
 					label += '<br /><span class="disabled">A l\'origine ce minimum était de ${catalog.catalogMinOrdersTotal} € mais un prorata a été appliqué<br/>car des distributions ont déjà eu lieu.</span>';
 				}
-
-				/*if( catalog.allowedOverspend != null ){
-					if(catalog.hasPayments){
-						label += '<br />Dépassement autorisé au delà du solde : ${catalog.allowedOverspend} €';
-					}else{
-						label += '<br />Maximum de commandes sur la durée du contrat : ${catalogMinOrdersTotal + catalog.allowedOverspend} €';
-					}				
-				}*/			
 			}
 
 		} else {
@@ -301,35 +293,27 @@ class SubscriptionService
 		var catalog = subscription.catalog;
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 			//requires ordering + distribMinOrdersTotal
-			if ( catalog.requiresOrdering ) {				
+			if ( catalog.distribMinOrdersTotal>0 ) {				
 				var label = 'Commande obligatoire à chaque distribution';
 				if ( catalog.distribMinOrdersTotal != null && catalog.distribMinOrdersTotal != 0 ) {				
-					label += ' d\'au moins ${catalog.distribMinOrdersTotal} €';
+					label += ' d\'au moins ${catalog.distribMinOrdersTotal} €.';
 				}
 				label += ".";
 				out.push(label);
 			}
 
-			// catalogMinOrdersTotal + allowedOverspend
-			if(catalog.catalogMinOrdersTotal != null){
+			// catalogMinOrdersTotal
+			if(catalog.catalogMinOrdersTotal>0){
 				var subscriptionDistribsNb = getSubscriptionDistribsNb( subscription, null, true );
 				var catalogAllDistribsNb = db.Distribution.manager.count( $catalog == catalog );
 				var ratio = subscriptionDistribsNb / catalogAllDistribsNb;
 				// safer to do a "floor" than a "round"
 				var catalogMinOrdersTotal = Math.floor(ratio * catalog.catalogMinOrdersTotal);
-				var label = 'Minimum de commandes sur la durée du contrat : $catalogMinOrdersTotal€.';
+				var label = 'Total des commandes sur la durée du contrat d\'au moins $catalogMinOrdersTotal€.';
 				if(subscriptionDistribsNb < catalogAllDistribsNb){
 					label += '<br /><span class="disabled">Calculé au prorata de vos distributions : ${catalog.catalogMinOrdersTotal}€ x ($subscriptionDistribsNb/$catalogAllDistribsNb) = $catalogMinOrdersTotal€</span>';
 				}
 				out.push(label);
-
-				/*if( catalog.allowedOverspend != null ){
-					if(catalog.hasPayments){
-						label += '<br />Dépassement autorisé au delà du solde : ${catalog.allowedOverspend}€';
-					}else{
-						label += '<br />Maximum de commandes sur la durée du contrat : ${catalogMinOrdersTotal + catalog.allowedOverspend}€';
-					}				
-				}*/
 			}
 
 		} else {
@@ -350,6 +334,7 @@ class SubscriptionService
 	}
 
 	public static function getAbsencesDescription( catalog : db.Catalog ) {
+		if( catalog.isVariableOrdersCatalog() && catalog.distribMinOrdersTotal==0 ) return "Pas de gestion des absences car la commande n'est pas obligatoire à chaque distribution";
 		if ( catalog.absentDistribsMaxNb==0 || catalog.absentDistribsMaxNb==null ) return "Pas d'absences autorisées";
 		if(catalog.absentDistribsMaxNb>0 && catalog.absencesStartDate==null ) throw "Une période d'absence doit être définie pour ce contrat";
 		return '${catalog.absentDistribsMaxNb} absences maximum autorisées  du ${DateTools.format( catalog.absencesStartDate, "%d/%m/%Y" )} au ${DateTools.format( catalog.absencesEndDate, "%d/%m/%Y")} ';
@@ -465,7 +450,7 @@ class SubscriptionService
 		}
 
 		//si paiements, le minimum à commander correspond à la provision déja payée
-		if ( catalog.hasPayments && subscription != null ) {
+		if ( subscription != null ) {
 			var subscriptionPayments = subscription.getPaymentsTotal();
 			if ( subscriptionPayments != 0 ) {
 				return subscriptionPayments;
@@ -615,7 +600,7 @@ class SubscriptionService
 
 				var now = Date.now();
 				var doCheckMin = false;
-				if ( catalog.requiresOrdering ) {
+				if ( catalog.distribMinOrdersTotal>0 ) {
 					if ( ordersDistribIds.find( id -> id == lastDistrib.id ) != null ) {	
 						doCheckMin = true;
 					}
@@ -625,39 +610,13 @@ class SubscriptionService
 
 				if ( doCheckMin ) {
 					if ( subscriptionNewTotal < catalogMinOrdersTotal ) {
-						var message = 'Le nouveau total de toutes vos commandes sur la durée du contrat serait de $subscriptionNewTotal € '; 
+						var message = 'Le total de vos commandes sur la durée du contrat est de $subscriptionNewTotal € '; 
 						message += 'alors qu\'il doit être supérieur à $catalogMinOrdersTotal €. Vous devez commander plus.';
 						throw TypedError.typed( message, CatalogRequirementsNotMet );
 					}
 				}
 			}
 
-			//Checks that the orders total is lower than the allowed overspend
-			/*if(catalog.allowedOverspend!=null){
-				if(catalog.hasPayments && subscription!=null){
-
-					var paid = subscription.getPaymentsTotal();
-					if( subscriptionNewTotal > paid+catalog.allowedOverspend){
-						var msg = "";
-						if(catalog.allowedOverspend==0){
-							msg = 'Sachant que ce contrat n\'autorise pas de dépassement de votre solde (vous ne pouvez pas commander pour plus que votre solde), vous ne pouvez pas enregistrer cette commande. Vous devez faire un paiement complémentaire au producteur.';
-						}else{
-							msg = 'Sachant que ce contrat autorise des dépassements de ${catalog.allowedOverspend}€ au maximum, vous ne pouvez pas enregistrer cette commande. Vous devez faire un paiement complémentaire au producteur.';
-						}
-						throw TypedError.typed( msg, CatalogRequirementsNotMet );
-					}
-	
-				}
-				if(!catalog.hasPayments){
-	
-					var maxAllowedTotal = catalogMinOrdersTotal + catalog.allowedOverspend;
-					if ( maxAllowedTotal < subscriptionNewTotal ) {
-						var message = 'Le nouveau total de toutes vos commandes serait de $subscriptionNewTotal€ 
-						alors qu\'il doit être inférieur à $maxAllowedTotal€. Veuillez enlever des produits.';
-						throw TypedError.typed( message, CatalogRequirementsNotMet );
-					}
-				}
-			}*/
 		}
 
 		return true;
@@ -700,7 +659,6 @@ class SubscriptionService
 		subscription.catalog = catalog;
 		subscription.startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate 	= new Date( endDate.getFullYear()  , endDate.getMonth()  , endDate.getDate()  , 23, 59, 59 );
-		subscription.isPaid = false;
 
 		//is there a secondary user in this subscription
 		if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
@@ -925,12 +883,6 @@ class SubscriptionService
 	}*/
 
 
-	public static function markAsPaid( subscription : Subscription, ?paid : Bool = true ){
-		subscription.lock();
-		subscription.isPaid = paid;
-		subscription.update();
-	}
-
 	public static function getOperations( subscription : db.Subscription, ?lock=false):Array<db.Operation>{
 		return db.Operation.manager.search( $subscription == subscription, { orderBy : -date }, lock ).array();
 	}
@@ -947,8 +899,7 @@ class SubscriptionService
 		}
 
 		//cant delete if some payment has been recorded
-		var subscriptionOperations = db.Operation.manager.count( $subscription == subscription && $type==Payment );
-		if ( subscription.catalog.hasPayments && subscriptionOperations > 0 ) {
+		if ( db.Operation.manager.count( $subscription == subscription && $type==Payment ) > 0 ) {
 			throw new Error( 'Impossible de supprimer cette souscription car il y a des paiements enregistrés.' );
 		}
 
@@ -961,10 +912,7 @@ class SubscriptionService
 		//Delete all the operations for this subscription
 		for ( operation in getOperations(subscription,true) ) operation.delete();
 		
-		if( subscription.catalog.hasPayments ) {
-			service.PaymentService.updateUserBalance( subscription.user, subscription.catalog.group );
-		}
-
+		service.PaymentService.updateUserBalance( subscription.user, subscription.catalog.group );
 		subscription.delete();
 	}
 
@@ -1098,9 +1046,7 @@ class SubscriptionService
 		
 		App.current.event( MakeOrder( orders ) );
 		
-		if ( subscription.catalog.hasPayments ) {			
-			createOrUpdateTotalOperation( subscription );
-		}
+		createOrUpdateTotalOperation( subscription );
 
 		return orders;	
 	}	
@@ -1188,8 +1134,8 @@ class SubscriptionService
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );	
 		subscription.lock();	
 		if( subscription.catalog.type==Catalog.TYPE_VARORDER){
-			if( !subscription.catalog.requiresOrdering ) return;
-			if ( subscription.catalog.requiresOrdering && (defaultOrders==null || defaultOrders.length==0 ) ) {
+			if( subscription.catalog.distribMinOrdersTotal==0 ) return;
+			if ( subscription.catalog.distribMinOrdersTotal>0 && (defaultOrders==null || defaultOrders.length==0 ) ) {
 				throw new Error('La commande par défaut ne peut pas être vide. (Souscription de ${subscription.user.getName()})');
 			}
 		}else{
@@ -1205,37 +1151,6 @@ class SubscriptionService
 			areVarOrdersValid(subscription);
 		}
 		
-		/*var totalPrice : Float = 0;
-		var totalQuantity : Float = 0;
-		for ( order in defaultOrders ) {
-
-			var product = db.Product.manager.get( order.productId, false );
-			if ( product != null && order.quantity != null && order.quantity != 0 ) {
-
-				if(product.catalog.id!=subscription.catalog.id) throw 'Product #${product.id} does not belon to catalog #${subscription.catalog.id}';
-
-				totalPrice += Formatting.roundTo( order.quantity * product.price, 2 );
-				totalQuantity += order.quantity;
-			}
-		}
-		totalPrice = Formatting.roundTo( totalPrice, 2 );
-		
-		//Let's check that it meets the constraint when there is one
-		if ( subscription.catalog.distribMinOrdersTotal != null && subscription.catalog.distribMinOrdersTotal != 0 ) {
-
-			if ( totalPrice < subscription.catalog.distribMinOrdersTotal ) {
-				var message = 'Engagement du catalogue : ${subscription.catalog.name}. ';
-				message += 'Le total de votre commande par défaut doit être d\'au moins ${subscription.catalog.distribMinOrdersTotal} €. Veuillez rajouter des produits.';
-				throw TypedError.typed( message, CatalogRequirementsNotMet );
-			}
-		} else {
-			if ( totalQuantity < 0.1 ) {
-				var message = 'Engagement du catalogue : ${subscription.catalog.name}. ';
-				message += 'La commande par défaut ne peut pas être vide.';
-				throw TypedError.typed( message, CatalogRequirementsNotMet );
-			}
-		}*/
-		
 		subscription.defaultOrders = haxe.Json.stringify( defaultOrders );
 		subscription.update();
 
@@ -1245,55 +1160,42 @@ class SubscriptionService
 
 		if( subscription == null )  throw new Error( 'Pas de souscription fournie.' );
 
-		var totalOperation : db.Operation = null;
+		var totalOperation = db.Operation.manager.select ( $user == subscription.user && $subscription == subscription && $type == SubscriptionTotal, true );
 
-		if ( subscription.catalog.hasPayments ) {
+		if( totalOperation == null ) {
+			totalOperation = new db.Operation();
+			totalOperation.name = "Total Commandes";
+			totalOperation.type = SubscriptionTotal;
+			totalOperation.user = subscription.user;
+			totalOperation.subscription = subscription;
+			totalOperation.group = subscription.catalog.group;
+			totalOperation.pending = false;
+		}
 
-			totalOperation = db.Operation.manager.select ( $user == subscription.user && $subscription == subscription && $type == SubscriptionTotal, true );
+		//create or update it if needed
+		var currentTotalPrice = subscription.getTotalPrice();
+		if( totalOperation.id == null || totalOperation.amount != (0 - currentTotalPrice) ) {
+
+			totalOperation.date = Date.now();
+			totalOperation.amount = 0 - currentTotalPrice;
 	
-			if( totalOperation == null ) {
-	
-				totalOperation = new db.Operation();
-				totalOperation.name = "Total Commandes";
-				totalOperation.type = SubscriptionTotal;
-				totalOperation.user = subscription.user;
-				totalOperation.subscription = subscription;
-				totalOperation.group = subscription.catalog.group;
-				totalOperation.pending = false;
+			if ( totalOperation.id != null ) {
+				totalOperation.update();
+			} else {		
+				totalOperation.insert();
 			}
 	
-			//create or update it if needed
-			var currentTotalPrice = subscription.getTotalPrice();
-			if( totalOperation.id == null || totalOperation.amount != (0 - currentTotalPrice) ) {
-
-				totalOperation.date = Date.now();
-				totalOperation.amount = 0 - currentTotalPrice;
+			service.PaymentService.updateUserBalance( totalOperation.user, totalOperation.group );
+		}			
 		
-				if ( totalOperation.id != null ) {
-					totalOperation.update();
-				} else {		
-					totalOperation.insert();
-				}
-		
-				service.PaymentService.updateUserBalance( totalOperation.user, totalOperation.group );
-			}			
-		}
 		return totalOperation;
 	}
 
-	public static function updateCatalogSubscriptionsOperation( catalog : db.Catalog ) {
-
-		var group = catalog.group;
-		if ( group.hasPayments()) {
-
-			var catalogSubsciptions = SubscriptionService.getCatalogSubscriptions(catalog);
-			for ( subscription in catalogSubsciptions ) {
-
-				createOrUpdateTotalOperation( subscription );
-			}
-			
-		}
-	}
+	// public static function updateCatalogSubscriptionsOperation( catalog : db.Catalog ) {
+	// 	for ( subscription in SubscriptionService.getCatalogSubscriptions(catalog) ) {
+	// 		createOrUpdateTotalOperation( subscription );
+	// 	}
+	// }
 
 	public static function transferBalance( fromSubscription : db.Subscription, toSubscription : db.Subscription ) {
 
@@ -1303,9 +1205,6 @@ class SubscriptionService
 		if( fromSubscription.user.id != toSubscription.user.id )  throw new Error( 'Le transfert est possible uniquement pour un même membre.' );
 		if( balance <= 0 ) throw new Error( 'Impossible de transférer un solde négatif ou à zéro.' );
 		
-		if( !toSubscription.catalog.hasPayments ) throw new Error('Les paiements ne sont pas activés sur ce contrat');
-		if( !fromSubscription.catalog.hasPayments ) throw new Error("Les paiements ne sont pas activés sur ce contrat");
-
 		var operationFrom = new db.Operation();
 		operationFrom.name = "Transfert du solde sur la souscription #" + toSubscription.id + " de " + toSubscription.catalog.name;
 		operationFrom.type = Payment;
