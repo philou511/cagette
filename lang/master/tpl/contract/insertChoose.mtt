@@ -49,9 +49,8 @@
                 <p>
                     Options disponibles : 
                     <ul>
-                        <li>Obligation de commander à chaque distribution</li>
                         <li>Montant minimum de commande par distribution</li>
-                        <li>Montant minimum de commande sur la durée du contrat, et accepter ou pas des dépassements</li>
+                        <li>Montant minimum de commande sur la durée du contrat</li>
                         <li>Possibilité de définir une période pendant laquelle les membres peuvent déclarer des absences.</li>
                     </ul>
                 </p>

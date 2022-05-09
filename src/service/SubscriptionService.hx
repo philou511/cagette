@@ -263,10 +263,7 @@ class SubscriptionService
 		if ( catalog.isVariableOrdersCatalog() ) {
 
 			if ( catalog.distribMinOrdersTotal>0 ) {				
-				label += 'Commande obligatoire à chaque distribution';
-				if ( catalog.distribMinOrdersTotal != null && catalog.distribMinOrdersTotal != 0 ) {				
-					label += ' d\'au moins ${catalog.distribMinOrdersTotal} €.';
-				}
+				label += 'Commande obligatoire à chaque distribution d\'au moins ${catalog.distribMinOrdersTotal} €.';				
 			}
 
 			if(catalog.catalogMinOrdersTotal>0){
@@ -294,12 +291,7 @@ class SubscriptionService
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 			//requires ordering + distribMinOrdersTotal
 			if ( catalog.distribMinOrdersTotal>0 ) {				
-				var label = 'Commande obligatoire à chaque distribution';
-				if ( catalog.distribMinOrdersTotal != null && catalog.distribMinOrdersTotal != 0 ) {				
-					label += ' d\'au moins ${catalog.distribMinOrdersTotal} €.';
-				}
-				label += ".";
-				out.push(label);
+				out.push('Commande obligatoire à chaque distribution d\'au moins ${catalog.distribMinOrdersTotal} €.');
 			}
 
 			// catalogMinOrdersTotal
@@ -472,50 +464,13 @@ class SubscriptionService
 		return Math.floor(ratio * catalog.catalogMinOrdersTotal);
 	}
 
-	 /*
-	  *	Checks if automated orders are valid.
-	  */
-	  /*public static function areAutomatedOrdersValid( subscription:db.Subscription, distribution:db.Distribution ):Bool {
+	/**
+		Convert orders to a map where the key is the related distribution
+	**/
+	public static function ordersToOrdersByDistrib(orders:Array<db.UserOrder>):Map<db.Distribution,Array<CSAOrder>>{
+		var ordersByDistrib = new Map();
 
-		var catalog = subscription.catalog;
-		
-		var catalogMinOrdersTotal = getCatalogMinOrdersTotal( catalog, subscription );
-		if ( catalogMinOrdersTotal == null || catalogMinOrdersTotal == 0 || catalog.allowedOverspend == null || catalog.allowedOverspend == 0 ) {
-			return true;
-		}
-
-		if ( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 && catalog.allowedOverspend != null && catalog.allowedOverspend != 0 ) {
-
-			//Computes the new orders total
-			var subscriptionNewTotal = subscription.getTotalPrice() + subscription.getDefaultOrdersTotal();
-
-			//Checks that the orders total is lower than the allowed overspend
-			var maxAllowedTotal = catalogMinOrdersTotal + catalog.allowedOverspend;
-			if ( maxAllowedTotal < subscriptionNewTotal ) {
-				return false;
-			}
-
-		}
-
-		return true;
-	}*/
-
-
-	 /*
-	  *	Checks if recorded variable orders meet all the catalog requirements.
-	  */
-	 public static function areVarOrdersValid( subscription:db.Subscription ) : Bool {
-
-		var catalog = subscription.catalog;
-		
-		var catalogMinOrdersTotal = getCatalogMinOrdersTotal( catalog, subscription );
-		if ( ( catalog.distribMinOrdersTotal == null || catalog.distribMinOrdersTotal == 0 ) && ( catalogMinOrdersTotal == null || catalogMinOrdersTotal == 0) ) {
-			return true;
-		}
-
-		//format data
-		var ordersByDistrib = new Map<db.Distribution,Array<CSAOrder>>();
-		for( order in getSubscriptionAllOrders(subscription)){
+		for( order in orders ){
 
 			var o:CSAOrder = {
 				quantity : order.quantity,
@@ -534,33 +489,31 @@ class SubscriptionService
 				ordersByDistrib.set(d, existing );
 			}
 		}
+		return ordersByDistrib;
+	}
+
+
+	/*
+	 *	Checks if recorded variable orders meet all the catalog requirements.
+	 */
+	public static function areVarOrdersValid( subscription:db.Subscription ) : Bool {
+
+		var catalog = subscription.catalog;		
+		
+		if ( catalog.distribMinOrdersTotal == 0  && catalog.catalogMinOrdersTotal == 0 ) {
+			return true;
+		}
+
+		//get orders in correct format
+		var ordersByDistrib = ordersToOrdersByDistrib(getSubscriptionAllOrders(subscription));
 
 		//remove absences distribs
 		
-
-		//Distribution minimum orders total
-		if ( catalog.distribMinOrdersTotal != null && catalog.distribMinOrdersTotal != 0 ) {
-
-			var distribTotal : Float = 0;
-			for ( distrib in ordersByDistrib.keys() ) {
-
-				distribTotal = 0;
-				for ( o in ordersByDistrib[distrib] ) {
-					distribTotal += Formatting.roundTo( o.quantity * o.productPrice, 2 );
-				}
-
-				distribTotal = Formatting.roundTo( distribTotal, 2 );
-
-				if ( distribTotal < catalog.distribMinOrdersTotal ) {
-					var message = 'Distribution du ${Formatting.hDate( distrib.date )} : ';
-					message += 'Le montant votre commande doit être d\'au moins ${catalog.distribMinOrdersTotal} € par distribution.';
-					throw TypedError.typed( message, CatalogRequirementsNotMet );
-				}
-			}
-		}
+		checkVarOrders(ordersByDistrib);
 
 		//Catalog minimum orders total
-		if ( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 ) {
+		var catalogMinOrdersTotal = getCatalogMinOrdersTotal( catalog, subscription );
+		if ( catalogMinOrdersTotal > 0 ) {
 
 			//Computes orders total
 			var ordersTotal : Float = 0;
@@ -623,9 +576,43 @@ class SubscriptionService
 	}
 
 	/**
+		Check if orders fit the catalog constraints : 
+		- distribMinOrdersTotal
+		- catalogMinOrdersTotal
+		Can be used at every order submission, but also when defining default order before subsribing or update the default order
+	**/
+	public static function checkVarOrders(ordersByDistrib:Map<db.Distribution,Array<CSAOrder>>):Bool{
+		var keys = [];
+		for( k in ordersByDistrib.keys()) keys.push(k);
+		var catalog = keys[0].catalog;
+		
+
+		//Minimum by distribution
+		if ( catalog.distribMinOrdersTotal > 0 ) {
+
+			var distribTotal;
+			for ( distrib in keys ) {
+
+				distribTotal = .0;
+				for ( o in ordersByDistrib[distrib] ) {
+					distribTotal += Formatting.roundTo( o.quantity * o.productPrice, 2 );
+				}
+
+				if ( distribTotal < catalog.distribMinOrdersTotal ) {
+					var message = 'Distribution du ${Formatting.hDate( distrib.date )} : ';
+					message += 'Le montant votre commande doit être d\'au moins ${catalog.distribMinOrdersTotal} € par distribution.';
+					throw TypedError.typed( message, CatalogRequirementsNotMet );
+				}
+			}
+		}
+		
+		return true;
+	}
+
+	/**
 		Find date of next unclosed distribution
 	**/
-	public static function getNewSubscriptionStartDate( catalog : db.Catalog ) : Date {
+	public static function getNewSubscriptionStartDate( catalog:db.Catalog ):Date {
 
 		var notClosedComingDistrib = getComingUnclosedDistrib(catalog);
 		

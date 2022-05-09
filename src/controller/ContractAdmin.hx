@@ -863,7 +863,7 @@ class ContractAdmin extends Controller
 	
 		var html = "<div class='alert alert-warning'><p><i class='icon icon-info'></i> 
 		Vous pouvez définir une période pendant laquelle les membres pourront choisir d'être absent.<br/>
-		Saisissez la période d'absence uniquement après avoir défini votre planning de distribution définitif sur toute la durée du contrat.<br/>
+		<b>Saisissez la période d'absence uniquement après avoir défini votre planning de distribution définitif sur toute la durée du contrat.</b><br/>
 		<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
 		</p></div>";
 		

@@ -25,13 +25,13 @@ class Subscriptions extends controller.Controller
 	**/
 	function doDelete(subscription:db.Subscription){
 		if( subscription.user.id!=app.user.id ) throw Error( '/', t._('Access forbidden') );
-		
+		var url = '/subscriptions/contract/${subscription.catalog.id}';
 		try {
 			SubscriptionService.deleteSubscription( subscription );
 		} catch( error : tink.core.Error ) {
-			throw Error( '/subscriptions/contract/' + subscription.catalog.id, error.message );
+			throw Error( url , error.message );
 		}
-		throw Ok( '/' + subscription.catalog.id, 'La souscription a bien été supprimée.' );		
+		throw Ok( url , 'La souscription a bien été supprimée.' );		
 	}
 
 }
