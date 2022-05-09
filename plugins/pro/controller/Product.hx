@@ -129,7 +129,7 @@ class Product extends controller.Controller
 			
 			p.insert();
 
-			if(pro.db.PProduct.manager.count($company==this.company)==1){
+			if(company.offer==Discovery && pro.db.PProduct.manager.count($company==this.company)==1){
 				service.BridgeService.matomoEvent(app.user.id,"Producteurs","Premier produit créé");
 			}
 

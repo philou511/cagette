@@ -142,17 +142,13 @@ class DistributionService
 		}
 		
 		if ( d.date == null ) {
-
 			return d;
-		}
-		else {
-
+		} else {
 			d.insert();
 
 			//In case this is a distrib for an amap contract with payments enabled, it will update all the operations
 			//names and amounts with the new number of distribs
 			if( !contract.group.hasShopMode() && contract.group.hasPayments() )  {
-
 				service.SubscriptionService.updateCatalogSubscriptionsOperation( d.catalog );
 			}
 
@@ -331,17 +327,19 @@ class DistributionService
 			}
 		}
 
+		var d = create( catalog, md.distribStartDate, md.distribEndDate, md.place.id, orderStartDate, orderEndDate, null, true, md );
+
 		//first distrib attendance tracking for Matomo
 		var cpro = CagettePro.getFromVendor(catalog.vendor);
 		if(cpro!=null && cpro.offer==CagetteProOffer.Discovery){
 			var cids = catalog.vendor.getContracts().map(c -> c.id);
 			var distribNum = Distribution.manager.count($catalogId in cids);
-			if(distribNum==0){
+			if(distribNum==1){
 				BridgeService.matomoEvent(cpro.getMainContact().id,"Producteurs","Première distribution");
 			}
 		}
 
-		return create( catalog, md.distribStartDate, md.distribEndDate, md.place.id, orderStartDate, orderEndDate, null, true, md );
+		return d;
 	}
 
 	 /**
