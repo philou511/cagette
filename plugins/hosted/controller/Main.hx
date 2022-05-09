@@ -174,7 +174,7 @@ class Main extends controller.Controller
 	@admin @tpl("plugin/pro/hosted/default.mtt")
 	public function doDefault() {
 		
-		var groups = db.Group.manager.unsafeObjects("select g.name, g.groupType, gs.* from `Group` g,GroupStats gs where g.id=gs.groupId ", false);		
+		var groups = db.Group.manager.unsafeObjects("select g.name,g.flags, g.groupType, gs.* from `Group` g,GroupStats gs where g.id=gs.groupId ", false);		
 		view.groups = groups;
 		var hosted = hosted.db.GroupStats.manager.search($active == true);
 		var acp = 0;

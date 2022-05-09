@@ -13,7 +13,7 @@ enum NotifType {
 
 typedef CatalogImportContent = {
 	//placeId : Int,
- 	catalogId:Int,
+ 	catalogId:Int, //pcatalog id
 	userId:Int, //client remote id
 	message : String,
 	catalogType : Int,
@@ -66,7 +66,7 @@ class PNotif extends Object
 		
 		var html = notif.group.name + " demande une livraison le " + App.current.view.hDate(distrib.getDate());
 		html += "<br/>Adresse : " + distrib.getPlace().getFullAddress();
-		html += "<br/>Connectez-vous à Cagette Pro pour valider ou refuser cette demande.";
+		html += "<br/>Connectez-vous à votre compte producteur pour valider ou refuser cette demande.";
 		App.quickMail(notif.company.vendor.email, notif.title, html);	
 	}
 
@@ -82,7 +82,45 @@ class PNotif extends Object
 		return out;
 	}
 
-	public function getContent(){
+	public function getContent():Dynamic{
 		return haxe.Json.parse(this.content);
 	}
+
+	/**
+		get company notifications
+	**/
+	public static function getNotifications(company:CagettePro){
+
+		var notifs = pro.db.PNotif.manager.search($company == company, {orderBy: -date}, true).array();
+
+		for( n in notifs.copy()){
+			//check validity
+			switch(n.type){
+				case NotifType.NTCatalogImportRequest:
+					var content : CatalogImportContent = n.getContent();
+					var catalog = pro.db.PCatalog.manager.get(content.catalogId);
+					if(catalog==null){
+						//pcatalog does not exists anymore
+						notifs.remove(n);
+						n.delete();
+					}
+
+				case NotifType.NTDeliveryUpdate :
+
+				case NotifType.NTOrdersClosed :
+
+				case NotifType.NTDeliveryRequest :
+					var content : DeliveryRequestContent = n.getContent();
+					var distrib = db.MultiDistrib.manager.get(content.distribId);
+					if( distrib.distribEndDate.getTime() < Date.now().getTime() ){
+						//if distrib is in the past
+						notifs.remove(n);
+						n.delete();
+					}
+			}
+		}
+		
+		return notifs;
+
+	} 
 }
