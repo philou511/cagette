@@ -88,7 +88,6 @@ class SubscriptionService
 		get next open ditrib
 	**/
 	public static function getComingOpenDistrib( catalog : db.Catalog ) : db.Distribution {
-
 		var now = Date.now();		
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 			return db.Distribution.manager.select( $catalog == catalog && $date > now && $orderStartDate <= now && $orderEndDate > now, { orderBy : date }, false );
@@ -97,11 +96,6 @@ class SubscriptionService
 		}
 	}
 
-	public static function getComingUnclosedDistrib(catalog:db.Catalog) {
-		
-		var now = Date.now();
-		return db.Distribution.manager.select( $catalog == catalog && $date > now && $orderEndDate > now, { orderBy : date }, false );
-	}
 
 	public static function getOpenDistribsForSubscription( user:db.User, catalog:db.Catalog, currentOrComingSubscription:db.Subscription ) : Array<db.Distribution> {
 
@@ -432,21 +426,13 @@ class SubscriptionService
 	}
 
 	/**
-		Minimum de commande sur la durée du contrat.
-		Si souscription != null, calcul le pro-rata 
+		Compute catalog minimum orders total.
+		Can be used with catalog arg if subscription is not created yet.
 	**/
 	public static function getCatalogMinOrdersTotal( catalog:db.Catalog, ?subscription:db.Subscription ) : Float {
 
-		if ( catalog.catalogMinOrdersTotal == null || catalog.catalogMinOrdersTotal == 0 /*|| catalog.allowedOverspend == null*/ ) {
+		if ( catalog.catalogMinOrdersTotal == 0 ) {
 			return null;
-		}
-
-		//si paiements, le minimum à commander correspond à la provision déja payée
-		if ( subscription != null ) {
-			var subscriptionPayments = subscription.getPaymentsTotal();
-			if ( subscriptionPayments != 0 ) {
-				return subscriptionPayments;
-			}
 		}
 
 		var subscriptionDistribsNb = 0;
@@ -461,7 +447,17 @@ class SubscriptionService
 		var ratio = subscriptionDistribsNb / catalogAllDistribsNb;
 
 		// safer to do a "floor" than a "round"
-		return Math.floor(ratio * catalog.catalogMinOrdersTotal);
+		var catalogMinOrdersTotal = Math.floor(ratio * catalog.catalogMinOrdersTotal);
+
+		//si paiements, le minimum à commander correspond à la provision déja payée
+		if ( subscription != null ) {
+			var subscriptionPayments = subscription.getPaymentsTotal();
+			if ( subscriptionPayments != 0 && subscriptionPayments > catalogMinOrdersTotal) {
+				return subscriptionPayments;
+			}
+		}
+
+		return catalogMinOrdersTotal;
 	}
 
 	/**
@@ -494,11 +490,11 @@ class SubscriptionService
 
 
 	/*
-	 *	Checks if recorded variable orders meet all the catalog requirements.
+	 *	Checks if subscription orders meet all the catalog requirements.
 	 */
 	public static function areVarOrdersValid( subscription:db.Subscription ) : Bool {
 
-		var catalog = subscription.catalog;		
+		/*var catalog = subscription.catalog;		
 		
 		if ( catalog.distribMinOrdersTotal == 0  && catalog.catalogMinOrdersTotal == 0 ) {
 			return true;
@@ -507,86 +503,21 @@ class SubscriptionService
 		//get orders in correct format
 		var ordersByDistrib = ordersToOrdersByDistrib(getSubscriptionAllOrders(subscription));
 
-		//remove absences distribs
-		
-		checkVarOrders(ordersByDistrib);
-
-		//Catalog minimum orders total
-		var catalogMinOrdersTotal = getCatalogMinOrdersTotal( catalog, subscription );
-		if ( catalogMinOrdersTotal > 0 ) {
-
-			//Computes orders total
-			var ordersTotal : Float = 0;
-			var ordersDistribIds = new Array<Int>();
-			for ( distrib in ordersByDistrib.keys() ) {
-				ordersDistribIds.push( distrib.id );
-				for ( o in ordersByDistrib[distrib] ) {
-					ordersTotal += Formatting.roundTo( o.quantity * o.productPrice, 2 );
-				}
-			}
-			ordersTotal = Formatting.roundTo( ordersTotal, 2 );
-
-			var otherDistribsTotal : Float = 0;
-			if( subscription != null && subscription.id != null ) {
-				var orders = db.UserOrder.manager.search( $subscription == subscription, false );
-				for ( order in orders ) {
-					//We are are adding up all the orders prices for the distribs that are not among the new submitted orders
-					if ( ordersDistribIds.find( id -> id == order.distribution.id ) == null ) {
-						otherDistribsTotal += Formatting.roundTo( order.quantity * order.productPrice, 2 );
-					}
-				}
-				otherDistribsTotal = Formatting.roundTo( otherDistribsTotal, 2 );
-			}
-
-			var subscriptionNewTotal = otherDistribsTotal + ordersTotal;
-
-			//Checks that the orders total is higher than the required minimum
-			var lastDistrib : db.Distribution = null;
-			if( subscription != null ) {
-				var allSubsriptionDistribs = getSubscriptionDistributions( subscription, 'all' );
-				lastDistrib = allSubsriptionDistribs[ allSubsriptionDistribs.length - 1 ];
-			} else {
-				lastDistrib = catalog.getDistribs().last();
-			}
-
-			if( lastDistrib != null ) {
-
-				var now = Date.now();
-				var doCheckMin = false;
-				if ( catalog.distribMinOrdersTotal>0 ) {
-					if ( ordersDistribIds.find( id -> id == lastDistrib.id ) != null ) {	
-						doCheckMin = true;
-					}
-				} else if ( lastDistrib.orderStartDate.getTime() <= now.getTime() &&  now.getTime() < lastDistrib.orderEndDate.getTime() ) {
-					doCheckMin = true;
-				}
-
-				if ( doCheckMin ) {
-					if ( subscriptionNewTotal < catalogMinOrdersTotal ) {
-						var message = 'Le total de vos commandes sur la durée du contrat est de $subscriptionNewTotal € '; 
-						message += 'alors qu\'il doit être supérieur à $catalogMinOrdersTotal €. Vous devez commander plus.';
-						throw TypedError.typed( message, CatalogRequirementsNotMet );
-					}
-				}
-			}
-
-		}
-
+		checkVarOrders(ordersByDistrib,subscription);
+*/
 		return true;
 	}
 
 	/**
 		Check if orders fit the catalog constraints : 
-		- distribMinOrdersTotal
-		- catalogMinOrdersTotal
-		Can be used at every order submission, but also when defining default order before subsribing or update the default order
+		distribMinOrdersTotal and catalogMinOrdersTotal
+		Can be used at every order submission, but also when defining default order before subscribing or update the default order
 	**/
-	public static function checkVarOrders(ordersByDistrib:Map<db.Distribution,Array<CSAOrder>>):Bool{
+	/*public static function checkVarOrders(ordersByDistrib:Map<db.Distribution,Array<CSAOrder>>,?subscription:db.Subscription):Bool{
 		var keys = [];
 		for( k in ordersByDistrib.keys()) keys.push(k);
 		var catalog = keys[0].catalog;
 		
-
 		//Minimum by distribution
 		if ( catalog.distribMinOrdersTotal > 0 ) {
 
@@ -601,20 +532,65 @@ class SubscriptionService
 				if ( distribTotal < catalog.distribMinOrdersTotal ) {
 					var message = 'Distribution du ${Formatting.hDate( distrib.date )} : ';
 					message += 'Le montant votre commande doit être d\'au moins ${catalog.distribMinOrdersTotal} € par distribution.';
-					throw TypedError.typed( message, CatalogRequirementsNotMet );
+					// throw TypedError.typed( message, CatalogRequirementsNotMet );
+					// throw new Error(message);
+					throw message;
 				}
 			}
 		}
+
+		//Catalog minimum orders total
+		var catalogMinOrdersTotal = getCatalogMinOrdersTotal( catalog, subscription );
+		if ( catalogMinOrdersTotal > 0 ) {
+
+			//Computes orders total
+			var ordersTotal = .0;
+			var ordersDistribIds = [];
+			for ( distrib in ordersByDistrib.keys() ) {
+				ordersDistribIds.push( distrib.id );
+				for ( o in ordersByDistrib[distrib] ) {
+					ordersTotal += Formatting.roundTo( o.quantity * o.productPrice, 2 );
+				}
+			}
+
+			//Checks that the orders total is higher than the required minimum
+			var allDistribs = [];
+			if(subscription!=null){
+				allDistribs = getSubscriptionDistributions( subscription, 'all' );
+			}else{
+				allDistribs = catalog.getDistribs().array();
+			}
+			
+			var lastDistrib = allDistribs[ allDistribs.length - 1 ];
+			if( lastDistrib != null ) {
+
+				var now = Date.now();
+				var doCheckMin = false;
+				var includeLastDistrib = ordersDistribIds.find( id -> id == lastDistrib.id ) != null;
+				var lastDistribIsOpen = lastDistrib.orderStartDate.getTime() <= now.getTime() &&  now.getTime() < lastDistrib.orderEndDate.getTime();
+				
+				if ( includeLastDistrib && lastDistribIsOpen ) {
+					if ( ordersTotal < catalogMinOrdersTotal ) {
+						var message = 'Le total de vos commandes sur la durée du contrat est de $ordersTotal € '; 
+						message += 'alors qu\'il doit être supérieur à $catalogMinOrdersTotal €. Vous devez commander plus pour respecter le contrat.';
+						// throw TypedError.typed( message, CatalogRequirementsNotMet );
+						// throw new Error(message);
+						throw message;
+					}
+				}
+			}
+
+		}
 		
 		return true;
-	}
+	}*/
 
 	/**
 		Find date of next unclosed distribution
 	**/
 	public static function getNewSubscriptionStartDate( catalog:db.Catalog ):Date {
 
-		var notClosedComingDistrib = getComingUnclosedDistrib(catalog);
+		var notClosedComingDistrib = getComingOpenDistrib(catalog);
 		
 		if ( notClosedComingDistrib != null ) {
 			return new Date( notClosedComingDistrib.date.getFullYear(), notClosedComingDistrib.date.getMonth(), notClosedComingDistrib.date.getDate(), 0, 0, 0 );
@@ -1224,14 +1200,12 @@ class SubscriptionService
 
 	}
 
-	public static function getDistribOrdersAverageTotal( subscription : db.Subscription ) : Float {
+	/*public static function getDistribOrdersAverageTotal( subscription : db.Subscription ) : Float {
 
 		if( subscription == null || subscription.id == null )  throw new Error( 'Pas de souscription fournie.' );
-
 		var distribsOrderedNb = sys.db.Manager.cnx.request('SELECT COUNT(DISTINCT distributionId) FROM UserOrder WHERE subscriptionId=${subscription.id}').getIntResult(0);
 		if( distribsOrderedNb == 0 ) return 0;
-
 		return subscription.getTotalPrice() / distribsOrderedNb;
-	}
+	}*/
 	
 }
