@@ -60,7 +60,7 @@ class SubscriptionAdmin extends controller.Controller
 		throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, t._("Token error") );
 	}
 
-	@tpl("contractadmin/editsubscription.mtt")
+	@tpl("contractadmin/subscriptionadmin/editsubscription.mtt")
 	public function doInsert( catalog : db.Catalog ) {
 
 		if ( !app.user.canManageContract( catalog ) ) throw Error( '/', t._('Access forbidden') );
@@ -141,8 +141,16 @@ class SubscriptionAdmin extends controller.Controller
 					}					
 				}
 
-				var absencesNb = Std.parseInt( app.params.get( 'absencesNb' ) );				
-				subscriptionService.createSubscription( user, catalog, ordersData, null, absencesNb, startDate, endDate );
+				//absences
+				var absenceDistribIds = [];
+				for( i in 1...catalog.absentDistribsMaxNb+1){
+					var p = app.params.get('absence'+i).parseInt();
+					if(p!=null && p>0){
+						absenceDistribIds.push(p);
+					}
+				}
+		
+				subscriptionService.createSubscription( user, catalog, ordersData, absenceDistribIds, null, startDate, endDate );
 				throw Ok( '/contractAdmin/subscriptions/' + catalog.id, 'La souscription pour ' + user.getName() + ' a bien été ajoutée.' );
 
 			} catch( error : Error ) {
@@ -158,14 +166,25 @@ class SubscriptionAdmin extends controller.Controller
 		view.members = app.user.getGroup().getMembersFormElementData();
 		view.products = catalogProducts;
 		view.subscriptionService = SubscriptionService;
-
 		view.nav.push( 'subscriptions' );
+
+		if(catalog.hasAbsencesManagement()){
+			
+			//possible absences of this catalog
+			var absences = AbsencesService.getContractAbsencesDistribs(catalog);
+			var now = Date.now().getTime();
+			view.possibleAbsences = absences.filter(d -> d.orderEndDate.getTime() > now);
+			view.lockedDistribs = absences.filter( d -> d.orderEndDate.getTime() < now);	//absences that are not editable anymore
+
+			//no select absentDistribs because we're creating a subscription
+			view.absentDistribs = [];		
+		}
 	}
 
 	/**
 		An admin user edits a subscription
 	**/
-	@tpl("contractadmin/editsubscription.mtt")
+	@tpl("contractadmin/subscriptionadmin/editsubscription.mtt")
 	public function doEdit( subscription:db.Subscription ) {
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
@@ -227,7 +246,7 @@ class SubscriptionAdmin extends controller.Controller
 					}
 
 					if ( quantity!=null && quantity > 0 ) {
-						if( subscription.catalog.type == Catalog.TYPE_CONSTORDERS ) {
+						if( subscription.catalog.isConstantOrdersCatalog() ) {
 							ordersData.push( { 
 								productId : product.id,
 								productPrice : product.price,
@@ -241,8 +260,21 @@ class SubscriptionAdmin extends controller.Controller
 					}						
 				}
 
-				subscriptionService.updateSubscription( subscription, startDate, endDate, ordersData);				
-				// subscriptionService.setAbsencesNb( subscription, app.params.get('absencesNb').parseInt() );
+				//absences
+				var absenceDistribIds = [];
+				for( i in 1...subscription.catalog.absentDistribsMaxNb+1){
+					var p = app.params.get('absence'+i).parseInt();
+					if(p!=null && p>0){
+						absenceDistribIds.push(p);
+					}
+				}
+
+				subscriptionService.updateSubscription( subscription, startDate, endDate, ordersData);
+				
+				if(absenceDistribIds.join("-") != subscription.getAbsentDistribIds().join("-")){
+					AbsencesService.updateAbsencesDates(subscription,absenceDistribIds, true);
+				}
+
 				subscription.update();
 
 			} catch( error : Error ) {				
@@ -266,12 +298,26 @@ class SubscriptionAdmin extends controller.Controller
 		view.subscription = subscription;
 		view.nav.push( 'subscriptions' );
 		view.subscriptionService = SubscriptionService;
-		// view.absencesDistribs = Lambda.map( SubscriptionService.getAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
-		// view.canAbsencesBeEdited = subscription.catalog.hasAbsencesManagement();
-		view.absentDistribs = subscription.getAbsentDistribs();
-		// if ( subscription.catalog.type == Catalog.TYPE_VARORDER || !subscription.paid() ) {
+		
+		// if ( subscription.catalog.hasAbsencesManagement() ) {
 		// 	view.absencesDistribDates = Lambda.map( SubscriptionService.getAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
+		// 	view.absentDistribs = subscription.getAbsentDistribs();		
 		// }
+		if(subscription.catalog.hasAbsencesManagement()){
+			
+			//possible absences of this catalog
+			var absences = subscription.getPossibleAbsentDistribs();
+			var now = Date.now().getTime();
+			view.possibleAbsences = absences.filter(d -> d.orderEndDate.getTime() > now);
+			view.lockedDistribs = absences.filter( d -> d.orderEndDate.getTime() < now);	//absences that are not editable anymore
+
+			//subscription absences
+			var absentDistribs = subscription.getAbsentDistribIds();
+			view.absentDistribs = absentDistribs;
+			view.isSelected = function(i:Int,d:db.Distribution){
+				return absentDistribs[i-1]==d.id;
+			};	
+		}
 
 	}
 
@@ -334,7 +380,7 @@ class SubscriptionAdmin extends controller.Controller
 		user can edit his absences.
 		The user can't change his absence number.
 	**/
-	@logged @tpl("form.mtt")
+	/*@logged @tpl("form.mtt")
 	function doAbsences( subscription:db.Subscription ) {
 
 		var returnUrl = "/contractAdmin/subscriptions/"+subscription.catalog.id;
@@ -366,7 +412,7 @@ class SubscriptionAdmin extends controller.Controller
 						absentDistribIds.push( form.getValueOf( 'absentDistrib' + i ) );	
 					}					
 				}
-				AbsencesService.updateAbsencesDates( subscription, absentDistribIds );				
+				AbsencesService.updateAbsencesDates( subscription, absentDistribIds,true );				
 			} catch( error:Error ) {
 				throw Error( Web.getURI(), error.message );
 			}
@@ -378,7 +424,7 @@ class SubscriptionAdmin extends controller.Controller
 		view.text = '<b>${subscription.getAbsencesNb()}</b> absences autorisées dans la période du <b>${DateTools.format( subscription.catalog.absencesStartDate, "%d/%m/%Y" )}</b> au <b>${DateTools.format( subscription.catalog.absencesEndDate, "%d/%m/%Y")}</b>';
 		view.title = "Absences de "+subscription.user.getName()+" pour le contrat \""+subscription.catalog.name+"\"";
 		
-	}
+	}*/
 	
 	/**
 	 * inserts a payment for a CSA contract

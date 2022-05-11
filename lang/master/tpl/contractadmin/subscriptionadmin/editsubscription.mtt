@@ -33,13 +33,13 @@
 			::end::
 
 			<!-- constant order , or default order if variable -->
-			::if (catalog.isConstantOrdersCatalog()) || catalog.requiresOrdering ::
+			::if (catalog.isConstantOrdersCatalog()) || catalog.distribMinOrdersTotal>0::
 
 				<div class="form-group" >
 					<label class="col-sm-3 control-label"></label>
 					<div class="col-sm-5">
 						<h4>
-							::if catalog.requiresOrdering ::
+							::if catalog.distribMinOrdersTotal>0 ::
 								Commande par défaut
 							::else::
 								Commande récurrente
@@ -132,34 +132,42 @@
 				</div>
 			</div>
 
-			<!-- absence nb -->
-			::if(catalog.absentDistribsMaxNb!=null)::
+			<!-- Absences -->
+			::if(catalog.hasAbsencesManagement())::
 			<hr/>
 			<div class="form-group">
 				<label class="col-sm-3 control-label" for="absences" id="absencesLabel">					
-					Nombre d'absences autorisées entre le ::sDate(catalog.absencesStartDate):: et le ::sDate(catalog.absencesEndDate)::
+					Absences autorisées entre le ::dDate(catalog.absencesStartDate):: et le ::dDate(catalog.absencesEndDate)::
 				</label>
-				<div class="col-sm-2">
-					<select name="absencesNb" id="absencesNb" class="form-control" style="width: 200px;">
-						::set label = ""::
-						::foreach i loopList(0, catalog.absentDistribsMaxNb + 1 )::
-							::if i > 1::
-								::set label = "distributions"::
-							::else::
-								::set label = "distribution"::
-							::end::
-							<option value="::i::" ::attr selected if( subscription != null && i == subscription.getAbsencesNb() ) '1':: >::i:: ::label::</option>
-						::end::
-					</select>
+				
+				<div class="col-sm-9">
+					<table class="table">
+					::foreach i loopList(1, catalog.absentDistribsMaxNb+1 )::
+						<tr>
+							<td>Absence ::i::</td>
+							<td>
+								<select name="absence::i::" id="absence::i::" class="form-control">
+								<option value="" >-</option>
+								::foreach d lockedDistribs::
+									<option value="::d.id::" ::attr selected if(isSelected(i,d)) '1':: disabled="disabled" >::dDate(d.date):: </option>
+								::end::
+								::foreach d possibleAbsences::							
+									<option value="::d.id::" ::attr selected if(isSelected(i,d)) '1'::>::dDate(d.date)::</option>
+								::end::
+							</select>
+							</td>
+						</tr>
+					::end::
+					</table>
 				</div>
 			</div>
 			::end::
 
 			<!-- submit -->
 			<div class="form-group">
-				<div class="col-sm-5"></div>
-				<div class="col-sm-7">
-					<input type="submit" class="btn btn-primary" value="OK" null="" name="submit" id="submit"/>
+				<div class="col-sm-3"></div>
+				<div class="col-sm-9">
+					<input type="submit" class="btn btn-primary btn-large" value="OK" name="submit" id="submit"/>
 				</div>
 			</div>
 

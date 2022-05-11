@@ -202,11 +202,15 @@ class SubscriptionService
 		return db.UserOrder.manager.search( $subscription == subscription, false ).array();
 	}
 
+	/**
+		@deprecated
+		now the recurrent order is stored in subscription.defaultOrder
+	**/
 	public static function getCSARecurrentOrders( subscription:db.Subscription, oldAbsentDistribIds:Array<Int> ) : Array<db.UserOrder> {
 		
 		if( subscription == null || subscription.id == null ) return [];
 
-		var oneDistrib = db.Distribution.manager.select( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate, false );
+		/*var oneDistrib = db.Distribution.manager.select( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate, false );
 		if( oneDistrib == null ) return [];
 
 		var oneDistriborders = db.UserOrder.manager.search( $subscription == subscription && $distribution == oneDistrib, false ).array();
@@ -238,7 +242,17 @@ class SubscriptionService
 			oneDistriborders = db.UserOrder.manager.search( $subscription == subscription && $distribution == oneDistrib, false ).array();
 		}
 	
-		return oneDistriborders;
+		return oneDistriborders;*/
+
+		var distribs = getSubscriptionDistributions(subscription);
+		var catalog = subscription.catalog;
+		for(d in distribs){
+			var orders = catalog.getUserOrders( subscription.user, d, false );
+			if(orders.length>0) return orders;
+		}
+
+		return [];
+
 	}
 
 	/**
@@ -274,7 +288,7 @@ class SubscriptionService
 	public static function getSubscriptionConstraints( subscription:db.Subscription ):String{
 		var out = [];
 		var catalog = subscription.catalog;
-		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
+		if ( catalog.isVariableOrdersCatalog() ) {
 			//requires ordering + distribMinOrdersTotal
 			if ( catalog.distribMinOrdersTotal>0 ) {				
 				out.push('Commande obligatoire à chaque distribution d\'au moins ${catalog.distribMinOrdersTotal} €.');
@@ -612,11 +626,11 @@ class SubscriptionService
 		
 		if(absenceDistribIds!=null){
 			//absences are defined
-			AbsencesService.setAbsences(subscription,absenceDistribIds);
+			AbsencesService.setAbsences(subscription,absenceDistribIds,false);
 		}else{
 			//only absence number is defined, thus we get absence dates automatically
 			var nb = absenceNb!=null ? absenceNb : 0; 
-			AbsencesService.setAbsences(subscription,AbsencesService.getAutomaticAbsentDistribs(catalog, nb).map(d->d.id));
+			AbsencesService.setAbsences(subscription,AbsencesService.getAutomaticAbsentDistribs(catalog, nb).map(d->d.id),false);
 		}
 		
 		check(subscription);
@@ -694,7 +708,7 @@ class SubscriptionService
 		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
 		
 		//check secondary user for CONSTORDERS
-		if(subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS && ordersData!=null){
+		if(subscription.catalog.isConstantOrdersCatalog() && ordersData!=null){
 			var userId2 = checkUser2(ordersData);
 			if(userId2!=null){
 				subscription.user2 = db.User.manager.get(userId2,false);
@@ -809,16 +823,12 @@ class SubscriptionService
 		If contract is CONST : recreate all orders, not possible if there is orders in the past
 		if contract is VAR : recreate all orders of future open distribs. 
 	**/
-	public function createRecurrentOrders(subscription:db.Subscription, ordersData:Array<CSAOrder>/*, ?oldAbsentDistribIds:Array<Int>*/ ) : Array<db.UserOrder> {
+	public function createRecurrentOrders(subscription:db.Subscription, ordersData:Array<CSAOrder>) : Array<db.UserOrder> {
 
-		/*if ( ordersData == null || ordersData.length == 0 ) {
-			ordersData = [];
-			var subscriptionOrders = getCSARecurrentOrders( subscription, oldAbsentDistribIds );
-			for ( order in subscriptionOrders ) {
-				ordersData.push( { productId : order.product.id, quantity : order.quantity, userId2 : order.user2 != null ? order.user2.id : null, invertSharedOrder : order.hasInvertSharedOrder() } );
-			}
-		} else*/
 		var catalog = subscription.catalog;
+		if(ordersData==null) {
+			ordersData = subscription.getDefaultOrders();
+		}
 
 		if(catalog.isConstantOrdersCatalog()){
 			if ( hasPastDistribOrders(subscription) && !adminMode ) {
@@ -905,7 +915,7 @@ class SubscriptionService
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );	
 		subscription.lock();	
-		if( subscription.catalog.type==Catalog.TYPE_VARORDER){
+		if( subscription.catalog.isVariableOrdersCatalog()){
 			if( subscription.catalog.distribMinOrdersTotal==0 ) return;
 			if ( subscription.catalog.distribMinOrdersTotal>0 && (defaultOrders==null || defaultOrders.length==0 ) ) {
 				throw new Error('La commande par défaut ne peut pas être vide. (Souscription de ${subscription.user.getName()})');
@@ -919,7 +929,7 @@ class SubscriptionService
 		createRecurrentOrders( subscription, defaultOrders );
 
 		//check if default Orders meet the catalog requirements
-		if( subscription.catalog.type==Catalog.TYPE_VARORDER){			
+		if( subscription.catalog.isVariableOrdersCatalog()){			
 			areVarOrdersValid(subscription);
 		}
 		

@@ -80,7 +80,7 @@ class Catalog extends Controller
                 throw new Error(500,"bad parameter");
             }
             
-            AbsencesService.updateAbsencesDates( sub, newAbsentDistribIds );
+            AbsencesService.updateAbsencesDates( sub, newAbsentDistribIds, false );
         }
 
         /**

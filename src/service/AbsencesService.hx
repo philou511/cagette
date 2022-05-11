@@ -24,7 +24,7 @@ class AbsencesService {
     /**
 		set subscriptions absence distributions
 	**/
-	public static function setAbsences( subscription:db.Subscription, distribIds:Array<Int> ) {
+	public static function setAbsences( subscription:db.Subscription, distribIds:Array<Int>, adminMode:Bool ) {
 
 		//check there is no duplicates
 		if(tools.ArrayTool.deduplicate(distribIds).length != distribIds.length){
@@ -32,8 +32,8 @@ class AbsencesService {
 		}
 
 		//check if absence number is correct
-		if(subscription.id!=null && distribIds.length != subscription.getAbsencesNb()){
-			throw new Error('There should be ${subscription.getAbsencesNb()} absent distribs');
+		if(subscription.id!=null && distribIds.length != subscription.getAbsencesNb() && !adminMode){
+			throw new Error('Cette souscription ne prend que ${subscription.getAbsencesNb()} absences');
 		}
 
 		//check if absent distribs are correct
@@ -106,9 +106,9 @@ class AbsencesService {
 	}
 
 	/**
-		Set Absences Number on a newly created subscription
+		Update Absences Number on an existing subscription
 	**/
-	/*public function setAbsencesNb( subscription:Subscription, absencesNb:Int ) {
+	/*public static function setAbsencesNb( subscription:db.Subscription, absencesNb:Int, adminMode:Bool ) {
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );
 		if( !subscription.catalog.hasAbsencesManagement() ) return;
@@ -118,6 +118,10 @@ class AbsencesService {
 		//an admin can change it at anytime
 		if ( subscription.id == null || adminMode) {
 			
+			if(absencesNb == subscription.getAbsencesNb()){
+				return;
+			}
+			
 			if ( absencesNb > subscription.catalog.absentDistribsMaxNb ) {
 				throw new Error( 'Nombre de jours d\'absence invalide, vous avez droit à ${subscription.catalog.absentDistribsMaxNb} jours d\'absence maximum.' );
 			}
@@ -126,6 +130,7 @@ class AbsencesService {
 			if ( absencesNb > distribs.length ) {
 				throw new Error( 'Nombre de jours d\'absence invalide, il n\'y a que ${distribs.length} distributions pendant le période d\'absence de cette souscription.' );
 			}
+
 
 			//sort from later to sooner distrib
 			distribs.sort( (a,b)-> Math.round(b.date.getTime()/1000) - Math.round(a.date.getTime()/1000) );
@@ -170,17 +175,17 @@ class AbsencesService {
 	/**
 		Updates a subscription's absences
 	**/
-	public static function updateAbsencesDates( subscription:db.Subscription, newAbsentDistribIds:Array<Int> ) {
+	public static function updateAbsencesDates( subscription:db.Subscription, newAbsentDistribIds:Array<Int>,adminMode:Bool ) {
 		var oldAbsentDistribIds = subscription.getAbsentDistribIds();
 
 		subscription.lock();
-		setAbsences( subscription, newAbsentDistribIds );
+		setAbsences( subscription, newAbsentDistribIds, adminMode );
 		subscription.update();
 
-		if ( subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+		if ( subscription.catalog.isConstantOrdersCatalog() ) {
 			//regen recurrent orders
 			var ss = new SubscriptionService();
-			ss.createRecurrentOrders( subscription, null/*, oldAbsentDistribIds*/ );
+			ss.createRecurrentOrders( subscription, subscription.getDefaultOrders());
 		} else {
 			//remove orders in new absence dates
 			var absentDistribsOrders = db.UserOrder.manager.search( $subscription == subscription && $distributionId in newAbsentDistribIds, false );

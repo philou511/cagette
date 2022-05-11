@@ -136,7 +136,12 @@ class Catalog extends Object
 	}
 
 	public function hasAbsencesManagement() : Bool {
-		return this.absentDistribsMaxNb != null && this.absentDistribsMaxNb != 0 && this.absencesStartDate != null && this.absencesEndDate != null;
+		//absence mgmt is available if CSA mode + constant orders or var orders with distribMinOrdersTotal>0
+		if(!this.group.hasShopMode() && (isConstantOrdersCatalog() || distribMinOrdersTotal>0)){
+			return this.absentDistribsMaxNb > 0 && this.absencesStartDate != null && this.absencesEndDate != null;
+		}else{
+			return false;
+		}		
 	}
 
 	/**
@@ -253,41 +258,14 @@ class Catalog extends Object
 	}
 
 	/**
-	 * Get orders for a user.
-	 *
-	 * @param	d
-	 * @return
+	 * Get orders for a user in a distrib.
 	 */
-	public function getUserOrders(u:db.User,?d:db.Distribution,?includeUser2=true):Array<db.UserOrder> {
-		if (type == TYPE_VARORDER && d == null) throw "This type of contract must have a delivery";
-
-		var pids = getProducts(false).map(function(x) return x.id);
-		var ucs = new List<db.UserOrder>();
-		if (d != null && d.catalog.type==TYPE_VARORDER) {
-			if(includeUser2){
-				ucs = db.UserOrder.manager.search( ($productId in pids) && $distribution==d && ($user==u || $user2==u ), false);
-			}else{
-				ucs = db.UserOrder.manager.search( ($productId in pids) && $distribution==d && ($user==u), false);
-			}
+	public function getUserOrders(u:db.User,d:db.Distribution,?includeUser2=true):Array<db.UserOrder> {
+		if(includeUser2){
+			return db.UserOrder.manager.search( $distribution==d && ($user==u || $user2==u ), false).array();
 		}else{
-
-			if ( includeUser2 ) {
-
-				var orders = db.UserOrder.manager.search( ($productId in pids) && ($user==u || $user2==u ), false );
-				if( orders.length != 0 ) {
-					ucs.push( orders.first() );
-				}
-				
-			} else {
-
-				var orders = db.UserOrder.manager.search( ( $productId in pids ) && ( $user == u ), false );
-				if( orders.length != 0 ) {
-					ucs.push( orders.first() );
-				}
-			}
-			
-		}
-		return Lambda.array(ucs);
+			return db.UserOrder.manager.search( $distribution==d && ($user==u), false).array();
+		}		
 	}
 
 	public function getDistribs(excludeOld = true,?limit=999):List<Distribution> {

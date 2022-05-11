@@ -73,12 +73,7 @@
                             <th>Solde</th>
                         </tr>
                         ::foreach subscription subscriptions::
-                            ::set orderName = subscriptionService.getSubscriptionConstraints(subscription)::
-                            ::if orderName == null::
-                                ::set class="danger text-danger"::
-                            ::else::
-                                ::set class=""::
-                            ::end::
+                            
                             <tr style="text-align: center;">
                                 <td style="vertical-align: middle;">
                                     <div style="overflow-wrap: break-word;">
@@ -88,12 +83,8 @@
                                         ::end::
                                     </div>
                                 </td>
-                                <td  ::cond catalog.isConstantOrdersCatalog():: class="::class::" style="vertical-align: middle;">
-                                    ::if orderName == null::
-                                        Aucune commande
-                                    ::else::
-                                        ::raw(orderName)::
-                                    ::end::
+                                <td style="vertical-align: middle;">
+                                    $$nullSafe(::subscriptionService.getSubscriptionConstraints(subscription)::)
                                 </td>
                                 <td style="vertical-align: middle;">
                                     du ::sDate(subscription.startDate)::<br/>
