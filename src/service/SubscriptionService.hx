@@ -494,7 +494,7 @@ class SubscriptionService
 	 */
 	public static function areVarOrdersValid( subscription:db.Subscription ) : Bool {
 
-		/*var catalog = subscription.catalog;		
+		var catalog = subscription.catalog;		
 		
 		if ( catalog.distribMinOrdersTotal == 0  && catalog.catalogMinOrdersTotal == 0 ) {
 			return true;
@@ -504,7 +504,7 @@ class SubscriptionService
 		var ordersByDistrib = ordersToOrdersByDistrib(getSubscriptionAllOrders(subscription));
 
 		checkVarOrders(ordersByDistrib,subscription);
-*/
+
 		return true;
 	}
 
@@ -513,7 +513,7 @@ class SubscriptionService
 		distribMinOrdersTotal and catalogMinOrdersTotal
 		Can be used at every order submission, but also when defining default order before subscribing or update the default order
 	**/
-	/*public static function checkVarOrders(ordersByDistrib:Map<db.Distribution,Array<CSAOrder>>,?subscription:db.Subscription):Bool{
+	public static function checkVarOrders(ordersByDistrib:Map<db.Distribution,Array<CSAOrder>>,?subscription:db.Subscription):Bool{
 		var keys = [];
 		for( k in ordersByDistrib.keys()) keys.push(k);
 		var catalog = keys[0].catalog;
@@ -532,9 +532,7 @@ class SubscriptionService
 				if ( distribTotal < catalog.distribMinOrdersTotal ) {
 					var message = 'Distribution du ${Formatting.hDate( distrib.date )} : ';
 					message += 'Le montant votre commande doit être d\'au moins ${catalog.distribMinOrdersTotal} € par distribution.';
-					// throw TypedError.typed( message, CatalogRequirementsNotMet );
-					// throw new Error(message);
-					throw message;
+					throw TypedError.typed( message, CatalogRequirementsNotMet );					
 				}
 			}
 		}
@@ -573,9 +571,7 @@ class SubscriptionService
 					if ( ordersTotal < catalogMinOrdersTotal ) {
 						var message = 'Le total de vos commandes sur la durée du contrat est de $ordersTotal € '; 
 						message += 'alors qu\'il doit être supérieur à $catalogMinOrdersTotal €. Vous devez commander plus pour respecter le contrat.';
-						// throw TypedError.typed( message, CatalogRequirementsNotMet );
-						// throw new Error(message);
-						throw message;
+						throw TypedError.typed( message, CatalogRequirementsNotMet );						
 					}
 				}
 			}
@@ -583,7 +579,7 @@ class SubscriptionService
 		}
 		
 		return true;
-	}*/
+	}
 
 	/**
 		Find date of next unclosed distribution

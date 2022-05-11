@@ -1,5 +1,4 @@
 package controller.api;
-import tink.macro.ClassBuilder;
 import haxe.Json;
 import neko.Web;
 import service.OrderService;
@@ -106,10 +105,10 @@ class Subscription extends Controller
     /**
         Check default order for constraints, before creating the subscription
     **/
-    /*public function doCheckDefaultOrder(catalog:db.Catalog){
+    public function doCheckDefaultOrder(catalog:db.Catalog){
         var post = sugoi.Web.getPostData();
         if(post!=null){
-            var defaultOrder:Array<CSAOrder> = Json.parse(StringTools.urlDecode(post));
+            var defaultOrder:Array<CSAOrder> = Json.parse(StringTools.urlDecode(post)).defaultOrder;
 
             //build ordersByDistrib
             var distribs = db.Distribution.manager.search( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
@@ -120,7 +119,7 @@ class Subscription extends Controller
                 json({defaultOrderCheck:true});
             }
         }
-    }*/
+    }
 
     private function getSubscription(sub:db.Subscription){
 
