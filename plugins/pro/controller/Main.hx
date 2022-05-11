@@ -1,4 +1,6 @@
 package pro.controller;
+import service.BridgeService;
+import tools.Matomo;
 import service.VendorService;
 import Common;
 using tools.ObjectListTool;
@@ -61,17 +63,6 @@ class Main extends controller.Controller
 
 			app.session.data.vendorId = args.vendor;			
 
-			//disabled "covid" cagette pro test (2020-10-01)			
-			/*for (uc in pro.db.PUserCompany.manager.search($user == app.user, false)){
-				if(uc.company.vendor.id==vendor.id){
-					if(uc.disabled) {
-						app.session.data.vendorId = null;
-						throw Redirect("/p/pro/disabled");
-					}
-					break;
-				}
-			}*/
-
 			throw Redirect('/p/pro/');
 		}else{
 			checkCompanySelected();
@@ -85,7 +76,7 @@ class Main extends controller.Controller
 		view.nav = ["home"];
 		
 		//notifs
-		view.notifs = pro.db.PNotif.manager.search($company == this.company, {orderBy: -date}, false);
+		view.notifs = pro.db.PNotif.getNotifications(this.company);
 		
 		//get client list
 		var remoteCatalogs = connector.db.RemoteCatalog.manager.search($remoteCatalogId in company.getCatalogs().map(x -> x.id), false); 
@@ -145,6 +136,17 @@ class Main extends controller.Controller
 		view.unlinkedCatalogs = VendorService.getUnlinkedCatalogs(company);
 		
 		view.vendorId = vendor.id;
+
+		/*
+		//track first sale in matomo
+		//count if sales in one week back, and count if sales older than one week
+		var oneWeekAgo = DateTools.delta(Date.now(),1000.0*60*60*24*-7);
+		var recentSale = sys.db.Manager.cnx.request('SELECT * FROM vendorDailySummary where vendorId=${vendor.id} and turnoverMarket>0 and date > "${oneWeekAgo.toString()}" LIMIT 1').results().array();
+		var olderSale = sys.db.Manager.cnx.request('SELECT * FROM vendorDailySummary where vendorId=${vendor.id} and turnoverMarket>0 and date < "${oneWeekAgo.toString()}" LIMIT 1').results().array();
+		if(olderSale.length==0 && recentSale.length>0){
+			Matomo.trackEvent("Producteurs","Première vente");
+		}*/		
+		
 	}
 
 	public function doCatalogLinker(d:haxe.web.Dispatch){

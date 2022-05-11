@@ -282,7 +282,7 @@ class Admin extends controller.Controller {
 	/**
 	 * Massive import of groups from CSV
 	 */
-	@admin @tpl('plugin/pro/admin/import.mtt')
+	/*@admin @tpl('plugin/pro/admin/import.mtt')
 	function doImportGroup(?args:{confirm:Bool}) {
 		var csv = new sugoi.tools.Csv();
 		var step = 1;
@@ -309,10 +309,6 @@ class Admin extends controller.Controller {
 		if (args != null && args.confirm) {
 			var i:Iterable<Dynamic> = cast app.session.data.csvImportedData;
 			for (p in i) {
-				/*mettre seb et françois en adhérent
-					mettre le producteur en membre dans le groupe et lui donner accès à son contrat
-				 */
-
 				// group
 				var group = new db.Group();
 				group.name = p[0];
@@ -399,7 +395,7 @@ class Admin extends controller.Controller {
 		}
 
 		view.csv = csv;
-	}
+	}*/
 
 	@admin
 	function doBasketFixes() {
@@ -878,7 +874,7 @@ class Admin extends controller.Controller {
 	/**
 	 * Massive import of groups from CSV FOR CORTO/Givrés/VRAC
 	 */
-	@admin @tpl('plugin/pro/admin/import.mtt')
+	/*@admin @tpl('plugin/pro/admin/import.mtt')
 	function doImportGroupCustom(?args:{confirm:Bool}) {
 		var csv = new sugoi.tools.Csv();
 		csv.step = 1;
@@ -964,15 +960,15 @@ class Admin extends controller.Controller {
 						pro.service.PCatalogService.linkCatalogToGroup(catTQ, group, group.contact.id);
 					}
 
-					/*var catalogId = Std.parseInt(p["catalog"]);
-						if ( catalogId == 0 || catalogId == null ) throw "catalog is null : " + p;
-						var catalog = pro.db.PCatalog.manager.get(catalogId);
-						contract = pro.service.PCatalogService.linkCatalogToGroup(catalog, group, contact.id).getContract();
+					// var catalogId = Std.parseInt(p["catalog"]);
+					// 	if ( catalogId == 0 || catalogId == null ) throw "catalog is null : " + p;
+					// 	var catalog = pro.db.PCatalog.manager.get(catalogId);
+					// 	contract = pro.service.PCatalogService.linkCatalogToGroup(catalog, group, contact.id).getContract();
 
-						if(catalog.company.image!=null){
-							group.image = catalog.company.image;
-							group.update();
-					}*/
+					// 	if(catalog.company.image!=null){
+					// 		group.image = catalog.company.image;
+					// 		group.update();
+					// }
 
 					// access to admins and vendor
 					// for ( a in admins){
@@ -980,13 +976,13 @@ class Admin extends controller.Controller {
 					// 	u.makeMemberOf(group);
 					// }
 
-					/*for ( x in catalog.company.getUsers()){
-						var um = x.makeMemberOf(group);
-						um.giveRight(Right.Membership);
-						um.giveRight(Right.Messages);
-						um.giveRight(Right.GroupAdmin);
-						um.giveRight(Right.ContractAdmin());
-					}*/
+					// for ( x in catalog.company.getUsers()){
+					// 	var um = x.makeMemberOf(group);
+					// 	um.giveRight(Right.Membership);
+					// 	um.giveRight(Right.Messages);
+					// 	um.giveRight(Right.GroupAdmin);
+					// 	um.giveRight(Right.ContractAdmin());
+					// }
 
 					// place
 					place = new db.Place();
@@ -1008,12 +1004,12 @@ class Admin extends controller.Controller {
 					// d.place = place;
 					// d.insert();
 
-					/*try{
-							group.contact.sendInvitation(group);
-						}catch(e:Dynamic){
-							trace(group.contact.name);
-							trace(e);
-					}*/
+					try{
+						// 	group.contact.sendInvitation(group);
+						// }catch(e:Dynamic){
+						// 	trace(group.contact.name);
+						// 	trace(e);
+					}
 				}
 			} // end for
 
@@ -1028,7 +1024,7 @@ class Admin extends controller.Controller {
 		}
 
 		view.csv = csv;
-	}
+	}*/
 
 	/**
 		Duplicate a group

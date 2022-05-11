@@ -1,4 +1,6 @@
 package service;
+import db.Distribution;
+import pro.db.CagettePro;
 import db.Subscription;
 import pro.payment.MangopayECPayment;
 import service.PaymentService.PaymentContext;
@@ -318,13 +320,21 @@ class DistributionService
 		if ( !shopMode ) {
 
 			if ( catalog.orderStartDaysBeforeDistrib != null && catalog.orderStartDaysBeforeDistrib != 0 ) {
-
 				orderStartDate = DateTools.delta( md.distribStartDate, -1000.0 * 60 * 60 * 24 * catalog.orderStartDaysBeforeDistrib );
 			}
 
 			if ( catalog.orderEndHoursBeforeDistrib != null && catalog.orderEndHoursBeforeDistrib != 0 ) {
-
 				orderEndDate = DateTools.delta( md.distribStartDate, -1000.0 * 60 * 60 * catalog.orderEndHoursBeforeDistrib );
+			}
+		}
+
+		//first distrib attendance tracking for Matomo
+		var cpro = CagettePro.getFromVendor(catalog.vendor);
+		if(cpro!=null && cpro.offer==CagetteProOffer.Discovery){
+			var cids = catalog.vendor.getContracts().map(c -> c.id);
+			var distribNum = Distribution.manager.count($catalogId in cids);
+			if(distribNum==0){
+				BridgeService.matomoEvent(cpro.getMainContact().id,"Producteurs","Première distribution");
 			}
 		}
 
