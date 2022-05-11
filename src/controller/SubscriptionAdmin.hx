@@ -1,4 +1,5 @@
 package controller;
+import service.AbsencesService;
 import sugoi.form.elements.Html;
 import service.PaymentService;
 import sugoi.Web;
@@ -336,7 +337,6 @@ class SubscriptionAdmin extends controller.Controller
 	@logged @tpl("form.mtt")
 	function doAbsences( subscription:db.Subscription ) {
 
-		var subService = new SubscriptionService();
 		var returnUrl = "/contractAdmin/subscriptions/"+subscription.catalog.id;
 		if( !subscription.catalog.hasAbsencesManagement() ) throw Error(returnUrl,"Pas de gestion des absences sur ce contrat");
 		
@@ -366,7 +366,7 @@ class SubscriptionAdmin extends controller.Controller
 						absentDistribIds.push( form.getValueOf( 'absentDistrib' + i ) );	
 					}					
 				}
-				subService.updateAbsencesDates( subscription, absentDistribIds );				
+				AbsencesService.updateAbsencesDates( subscription, absentDistribIds );				
 			} catch( error:Error ) {
 				throw Error( Web.getURI(), error.message );
 			}

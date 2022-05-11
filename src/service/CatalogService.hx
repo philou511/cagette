@@ -202,7 +202,7 @@ class CatalogService{
 				throw new Error( 'La date de début des absences doit être avant la date de fin des absences.' );
 			}
 
-			var absencesDistribsNb = service.SubscriptionService.getContractAbsencesDistribs( catalog ).length;
+			var absencesDistribsNb = AbsencesService.getContractAbsencesDistribs( catalog ).length;
 			if ( absentDistribsMaxNb > 0 && absentDistribsMaxNb > absencesDistribsNb ) {
 				throw new Error( 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
 				Il doit être inférieur ou égal au nombre de distributions dans la période d\'absences : ' + absencesDistribsNb );				

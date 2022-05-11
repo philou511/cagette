@@ -1,4 +1,5 @@
 package controller.api;
+import service.AbsencesService;
 import haxe.Json;
 import neko.Web;
 import service.SubscriptionService;
@@ -26,7 +27,7 @@ class Catalog extends Controller
             documents : catalog.getVisibleDocuments(app.user).array().map(ef -> {name:ef.file.name,url:"/file/"+sugoi.db.File.makeSign(ef.file.id)}),
             distributions : catalog.getDistribs(false).array().map( d -> d.getInfos() ),
             constraints : SubscriptionService.getContractConstraints(catalog),
-            absences : SubscriptionService.getAbsencesDescription(catalog),
+            absences : AbsencesService.getAbsencesDescription(catalog),
             absentDistribsMaxNb : catalog.absentDistribsMaxNb,
         }
 
@@ -42,7 +43,7 @@ class Catalog extends Controller
             startDate : catalog.absencesStartDate,
             endDate : catalog.absencesEndDate,
             absentDistribsMaxNb : catalog.absentDistribsMaxNb,
-            possibleAbsentDistribs : SubscriptionService.getContractAbsencesDistribs(catalog).map(d -> d.getInfos())
+            possibleAbsentDistribs : AbsencesService.getContractAbsencesDistribs(catalog).map(d -> d.getInfos())
         });
     }
 
@@ -78,9 +79,8 @@ class Catalog extends Controller
             if (newAbsentDistribIds==null || newAbsentDistribIds.length==0) {
                 throw new Error(500,"bad parameter");
             }
-
-            var subService = new SubscriptionService();
-            subService.updateAbsencesDates( sub, newAbsentDistribIds );
+            
+            AbsencesService.updateAbsencesDates( sub, newAbsentDistribIds );
         }
 
         /**
