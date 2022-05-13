@@ -1,4 +1,5 @@
 package controller;
+import db.User.UserFlags;
 import Common;
 import db.Catalog;
 import db.MultiDistrib;
@@ -62,6 +63,20 @@ class Member extends Controller
 		//const orders subscriptions
 		view.subscriptionService = service.SubscriptionService;
 		view.subscriptionsByCatalog = SubscriptionService.getActiveSubscriptionsByCatalog( member, app.user.getGroup() );
+
+		//notifications
+		var notifications = [];
+		var trans = App.getTranslationArray();
+		for ( v in UserFlags.createAll()){
+			var vs = Std.string(v);
+			notifications.push({
+				id: v,
+				name:trans.get(vs) == null ? vs : trans.get(vs),
+				active:member.flags.has(v)
+			});
+
+		}
+		view.notifications = notifications;
 
 		checkToken(); //to insert a token in tpl
 	

@@ -12,45 +12,73 @@
 			& ::member.firstName2:: ::member.lastName2::
 		::end::
 		</div>
-		
-		$$nullSafe(::member.address1::)<br/>
-		$$nullSafe(::member.address2::)<br/>
-		$$nullSafe(::member.zipCode::) 
-		$$nullSafe(::member.city::)<br/>
-		<br/>
-		
-		::if member.phone!=null::
-			::_("Téléphone"):: : ::member.phone::<br/>
-		::end::
-
-		::if member.email!=null::
-			::_("E-mail"):: : <a href="mailto: ::member.email::">::member.email::</a><br/>
-		::end::
-		
-		::if member.email2!=null::
-			::_("E-mail"):: : <a href="mailto: ::member.email2::">::member.email2::</a><br/>
-		::end::
-		
-		<hr/>
-		<p style="font-size:11px;">
-			::_("Last login"):: : 
-			::if member.ldate!=null::
-				::member.ldate.toString():: 
-			::else:: 
-				<b>::_("This member never logged in")::</b>
+		<p>
+			$$nullSafe(::member.address1::)<br/>
+			$$nullSafe(::member.address2::)<br/>
+			$$nullSafe(::member.zipCode::) 
+			$$nullSafe(::member.city::)
+			<br/>
+			<br/>
+			
+			::if member.phone!=null::
+				::_("Téléphone"):: : ::member.phone::<br/>
 			::end::
-			<br/>
-			::_("Registred since"):: : 
-			::if member.cdate!=null:: 
-				::member.cdate.toString()::
-			::else:: 
-				??? 
-			::end::			
-			<br/>
-			::if member.pass==""::
-			<div class="alert alert-danger">::_("This member has not set a password"):: </div>
+
+			::if member.email!=null::
+				::_("E-mail"):: : <a href="mailto: ::member.email::">::member.email::</a><br/>
+			::end::
+			
+			::if member.email2!=null::
+				::_("E-mail"):: : <a href="mailto: ::member.email2::">::member.email2::</a><br/>
 			::end::
 		</p>
+		
+		
+		<div class="panel panel-default ">
+			<div class="panel-heading">Notifications</div>
+			
+			<table class="table" style="font-size:0.8em;">
+				::foreach n notifications::
+				<tr>
+					<td>
+						::if(n.active)::
+						<i class="icon icon-check" style="color:grey"></i>
+						::else::
+						<i class="icon icon-delete" style="color:grey"></i>
+						::end::
+
+					</td>
+					<td>::n.name::</td>
+				</tr>
+				::end::
+			</table>
+		</div>
+
+		<div class="panel panel-default ">
+			<div class="panel-heading">Activité</div>
+			
+			<div class="panel-body" style="font-size:0.8em;">
+				::_("Last login"):: : 
+				::if member.ldate!=null::
+					::dDate(member.ldate):: 
+				::else:: 
+					<b>::_("This member never logged in")::</b>
+				::end::
+				<br/>
+				::_("Registred since"):: : 
+				::if member.cdate!=null:: 
+					::dDate(member.cdate)::
+				::else:: 
+					??? 
+				::end::			
+				<br/>
+				::if member.pass==""::
+					<div class="alert alert-danger">::_("This member has not set a password"):: </div>
+				::end::
+			</div>
+		</div>
+
+	
 		<p>
 			$$edit(::_("Edit")::,/member/edit/::member.id::) 
 			$$delete(::_("Remove from group")::,/member/delete/::member.id::?token=::token::)

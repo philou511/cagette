@@ -143,13 +143,12 @@ class App extends sugoi.BaseApp {
 		out.set("contact", "Reponsable");
 		out.set("vendor", "Producteur");
 		out.set("text", "Texte");
+	
 		out.set("flags", "Options");
-		out.set("4h", "Recevoir des notifications par email 4h avant les distributions");
 		out.set("HasEmailNotif4h", "Recevoir des notifications par email 4h avant les distributions");
-		out.set("24h", "Recevoir des notifications par email 24h avant les distributions");
 		out.set("HasEmailNotif24h", "Recevoir des notifications par email 24h avant les distributions");
-		out.set("Ouverture", "Recevoir des notifications par email pour l'ouverture des commandes");
-		out.set("Tuto", "Activer tutoriels");
+		out.set("HasEmailNotifOuverture", "Recevoir des notifications par email pour l'ouverture des commandes");
+
 		out.set("HasMembership", "Gestion des adhésions");
 		out.set("DayOfWeek", "Jour de la semaine");
 		out.set("Monday", "Lundi");

@@ -323,6 +323,9 @@ class Admin extends Controller {
 		Sys.print('</table>');*/
 	}
 
+	/**
+		Stats sur les groupes actifs
+	**/
 	function doGroupStats() {
 		/*Caractérisation des groupes ( condition : les groupes actifs) :, 
 			mode du groupe, 
