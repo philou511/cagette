@@ -108,7 +108,7 @@ class Subscription extends Controller
     public function doCheckDefaultOrder(catalog:db.Catalog){
         var post = sugoi.Web.getPostData();
         if(post!=null){
-            var defaultOrder:Array<CSAOrder> = Json.parse(StringTools.urlDecode(post)).defaultOrder;
+            var defaultOrder:Array<CSAOrder> = Json.parse(StringTools.urlDecode(post));
 
             //build ordersByDistrib
             var distribs = db.Distribution.manager.search( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
