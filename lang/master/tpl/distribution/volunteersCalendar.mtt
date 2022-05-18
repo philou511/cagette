@@ -17,7 +17,8 @@
 				],
 				fromDate: "::timeframe.from::",
 				toDate: "::timeframe.to::",
-				daysBeforeDutyPeriodsOpen: ::daysBeforeDutyPeriodsOpen::
+				daysBeforeDutyPeriodsOpen: ::daysBeforeDutyPeriodsOpen::,
+				multiDistribId: ::multiDistribId::
 			});
 		});
 	</script>

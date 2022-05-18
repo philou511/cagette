@@ -1213,31 +1213,6 @@ class Distribution extends Controller {
 	}
 
 	/**
-		View volunteers list for a given distribution.
-		Members can sign up for a role.
-	**/
-	@tpl('distribution/volunteersSummary.mtt')
-	function doVolunteersSummary(distrib:db.MultiDistrib, ?args:{role:db.VolunteerRole}) {
-		var volunteerRoles:Array<db.VolunteerRole> = distrib.getVolunteerRoles();
-		if (volunteerRoles == null) {
-			throw Error('/distribution/', t._("There are no volunteer roles defined for this distribution"));
-		}
-
-		if (args != null && args.role != null) {
-			try {
-				service.VolunteerService.addUserToRole(app.user, distrib, args.role);
-			} catch (e:tink.core.Error) {
-				throw Error("/distribution/volunteersSummary/" + distrib.id, e.message);
-			}
-
-			throw Ok("/home/", t._("You have been successfully added to the selected role."));
-		}
-
-		view.multidistrib = distrib;
-		view.roles = volunteerRoles;
-	}
-
-	/**
 		Remove current user from a volunteer role
 	**/ 
 	@tpl("form.mtt")
@@ -1283,20 +1258,22 @@ class Distribution extends Controller {
 		They can register or unregister to a volunteer role 
 	**/
 	@tpl('distribution/volunteersCalendar.mtt')
-	function doVolunteersCalendar(?args:{?distrib:db.MultiDistrib,?role:db.VolunteerRole}) {
+	function doVolunteersCalendar(?distrib:db.MultiDistrib, ?args:{?distrib:db.MultiDistrib,?role:db.VolunteerRole,?returnUrl:String}) {
 		
 		var user = app.user;
 		var group = user.getGroup();
+
+		var returnUrl = args.returnUrl != null ? args.returnUrl : '/distribution/volunteersCalendar';
 		
 		if (args != null && args.distrib != null && args.role != null) {
 			// register to a role	
 			try {
 				service.VolunteerService.addUserToRole(user, args.distrib, args.role);
 			} catch (e:tink.core.Error) {
-				throw Error("/distribution/volunteersCalendar", e.message);
+				throw Error(returnUrl, e.message);
 			}
 
-			throw Ok("/distribution/volunteersCalendar", t._("You have been successfully assigned to the selected role."));
+			throw Ok(returnUrl, t._("You have been successfully assigned to the selected role."));
 		}
 
 		// duty periods user's participation		
@@ -1316,6 +1293,9 @@ class Distribution extends Controller {
 		view.toBeDone = participation.genericRolesToBeDone + participation.contractRolesToBeDone;
 		view.done = participation.genericRolesDone + participation.contractRolesDone;
 		view.timeframe = timeframe;
+		if (distrib != null) {
+			view.multiDistribId = distrib.id;
+		}
 	}
 
 	/**
