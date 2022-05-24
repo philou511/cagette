@@ -18,6 +18,11 @@ class Validate extends controller.Controller
 	**/
 	@tpl('validate/user.mtt')
 	public function doDefault(){
+		if (multiDistrib.getGroup().hasCagette2()) {
+			var basket = db.Basket.get(user, multiDistrib);
+			throw Redirect('/distribution/ordersRecap/'+multiDistrib.id+'#/'+basket.id);
+		}
+
 		view.member = user;
 		var place = multiDistrib.getPlace();
 		var date = multiDistrib.getDate();
