@@ -177,7 +177,11 @@ class SubscriptionAdmin extends controller.Controller
 			view.lockedDistribs = absences.filter( d -> d.orderEndDate.getTime() < now);	//absences that are not editable anymore
 
 			//no select absentDistribs because we're creating a subscription
-			view.absentDistribs = [];		
+			view.absentDistribs = [];	
+			
+			view.isSelected = function(i:Int,d:db.Distribution){
+				return false;
+			};	
 		}
 	}
 

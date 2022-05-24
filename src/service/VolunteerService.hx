@@ -286,19 +286,42 @@ class VolunteerService
 		for (cid in contractRolesToBeDoneByContractId.keys()){
 			membersListByContractId[cid] = [];
 		}
-		for (md in multiDistribs) {			
-			for (d in md.getDistributions()) {
+		for (md in multiDistribs) {
+			var distributions = md.getDistributions();
+			if(distributions.length==0) continue;
+			var dids = distributions.map(d->d.id);
+			//build orders list made in all these distribs
+			var orders = new Map<Int,Array<db.UserOrder>>();	//key is distribution Id
+			for( o in db.UserOrder.manager.search($distributionId in dids,false)){
+				var did:Int = untyped o.distributionId;
+				if(orders.get(did)==null){
+					orders.set(did,[]);
+				} 
+
+				var distribOrders = orders.get(did);
+				distribOrders.push(o);
+				orders.set(did,distribOrders);
+			}
+
+			for (d in distributions) {
 				if (membersListByContractId[d.catalog.id] == null) {
 					// this contract has no roles
 					continue;
 				}
+
 				for (u in members) {
 					var catId = d.catalog.id;
 					//do not search if user has orders if is already in the list
 					if( membersListByContractId[catId].find(user -> user.id==u.id) == null){
-						if (d.hasUserOrders(u)) {
+						//do not user d.hasUserOrder(u) because its very DB intensive !!
+						/*if (d.hasUserOrders(u)) {
+							membersListByContractId[catId].push(u);
+						}*/
+						if( orders.get(d.id)!=null && orders.get(d.id).find(order -> untyped order.userId==u.id || untyped order.user2Id==u.id) != null ){
 							membersListByContractId[catId].push(u);
 						}
+
+
 					}
 				}
 			}

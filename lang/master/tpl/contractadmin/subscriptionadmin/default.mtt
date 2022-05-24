@@ -122,13 +122,13 @@
                                                 </a>
                                             </li>
                                             
-                                            ::if(catalog.hasAbsencesManagement())::
+                                           <!-- ::if(catalog.hasAbsencesManagement())::
                                             <li>
                                                 <a href="/contractAdmin/subscriptions/absences/::subscription.id::">
                                                     <i class="icon icon-vacation"></i> Absences
                                                 </a>
                                             </li>
-                                            ::end::
+                                            ::end::-->
                                             
                                             <li>
                                                 <a href="/contractAdmin/subscriptions/payments/::subscription.id::">
