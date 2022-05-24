@@ -1766,4 +1766,18 @@ class Distribution extends Controller {
 
 		view.distribution = tmpBasket.multiDistrib;
 	}
+
+	/**
+		Cagette 2 distribution recap page
+	**/
+	@tpl('distribution/ordersRecap.mtt')
+	function doOrdersRecap(multiDistrib: db.MultiDistrib) {
+		checkHasDistributionSectionAccess();
+
+		if (!multiDistrib.getGroup().hasCagette2()){
+			throw Error('/', t._('Forbidden action'));
+		}
+
+		view.multiDistribId = multiDistrib.id;
+	}
 }
