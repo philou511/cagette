@@ -324,7 +324,7 @@ $$browserDetection()
 				<b>::r._volunteerRole.name::</b>,
 				::end::
 				<p style="margin-top:12px;">
-					<a href="/distribution/volunteersSummary/::md.id::" class="btn btn-default btn-sm">
+					<a href="/distribution/volunteersCalendar/::md.id::" class="btn btn-default btn-sm">
 						<i class="icon icon-user"></i> ::_("Duty period details")::
 					</a>
 				</p>
@@ -341,7 +341,7 @@ $$browserDetection()
 					::end::
 				</div>
 				<p style="margin-top:12px;">
-					<a href="/distribution/volunteersSummary/::md.id::" class="btn btn-danger btn-sm">
+					<a href="/distribution/volunteersCalendar/::md.id::" class="btn btn-danger btn-sm">
 						<i class="icon icon-chevron-right"></i> Inscription à une permanence</a>
 				</p>
 			</div>

@@ -406,10 +406,15 @@ class Course extends sugoi.BaseController
 
 		//remove access to groups linked to this cagette pro + remove future distribs
 		for( cat in company.getCatalogs()){
-			for( rc in connector.db.RemoteCatalog.getFromCatalog(cat)){
+			for( rc in connector.db.RemoteCatalog.getFromCatalog(cat,true)){
+
 				//remove membership
-				var group = rc.getContract().group;
-				if(group==null) continue;
+				var contract = rc.getContract();
+				if(contract==null){
+					rc.delete();
+					continue;
+				}
+				var group = contract.group;				
 				for( u in users){
 					var ua = db.UserGroup.get(u,group,true);
 					if(ua!=null) ua.delete();
@@ -419,9 +424,8 @@ class Course extends sugoi.BaseController
 				group.regOption = db.Group.RegOption.Closed;
 				group.update();
 
-				//delete distribs wich happen 24h after end of course
-				var c = rc.getContract();
-				for (d in c.getDistribs(true)){
+				//delete distribs wich happen 24h after end of course				
+				for (d in contract.getDistribs(true)){
 					if(d.date.getTime() > cc.course.end.getTime() + (1000*60*60*24) ){
 						try{
 							service.DistributionService.cancelParticipation(d);
