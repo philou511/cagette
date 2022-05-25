@@ -119,11 +119,8 @@ class History extends Controller
 		view.distribs = SubscriptionService.getSubscriptionDistributions(sub,"allIncludingAbsences");
 		view.prepare = OrderService.prepare;
 		view.catalog = sub.catalog;
-		// view.history = true;
 		view.now = Date.now();
-		view.member = app.user;
-		
-		// checkToken();
+		view.member = sub.user;
 	}
 	
 	@logged
