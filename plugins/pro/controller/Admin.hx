@@ -396,6 +396,22 @@ class Admin extends controller.Controller {
 	}*/
 
 	@admin
+	function doUserOrderFix(){
+		/**
+			2022-05-25
+			need to assign basketId to UserOrders... there is still userOrder without basketId
+		**/
+		for( order in db.UserOrder.manager.search($basket==null,{limit:1000},true)){
+
+			order.basket = db.Basket.getOrCreate(order.user, order.distribution.multiDistrib);	
+			order.update();
+			Sys.println('order ${order.id} fixed<br>');
+		}
+		var count = db.UserOrder.manager.count($basket==null);
+		Sys.println('Still ${count} userOrder without basket<br>');
+	}
+
+	@admin
 	function doBasketFixes() {
 		/*
 			vérifie la cohérence des datas des paniers
