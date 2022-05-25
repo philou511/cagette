@@ -1505,6 +1505,16 @@ class Admin extends controller.Controller {
 		var print = controller.Cron.print;
 		for ( g in db.Group.manager.search(!$flags.has(ShopMode))){
 			print("<h2>"+g.name+"</h2>");
+
+			//remove shopMode operations
+			for( op in Operation.manager.search($group==g,true)){
+				if(op.type==VOrder){
+					print('delete shopMode op #${op.id}');
+					op.delete();
+				}
+			}
+
+
 			for ( cat in g.getActiveContracts()){
 				if(cat.hasPayments) continue;
 				print(cat.name);
@@ -1518,6 +1528,7 @@ class Admin extends controller.Controller {
 
 						var op = PaymentService.makePaymentOperation(sub.user,g,Check.TYPE,Math.abs(orderOp.amount),"Paiement",orderOp);
 						op.subscription = sub;
+						op.date = orderOp.date;
 						op.update();
 						
 						print("create order op "+orderOp.amount);
