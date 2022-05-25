@@ -432,9 +432,6 @@ class Admin extends Controller {
 		}
 	}*/
 
-	@tpl('admin/process.mtt')
-	function doProcess() {}
-
 	@tpl('admin/news.mtt')
 	function doNews() {}
 
