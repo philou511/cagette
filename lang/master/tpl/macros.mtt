@@ -228,7 +228,6 @@
 		<a href="/history/subscriptionPayments/::sub.id::" style="color: ::color::;"><i class="icon icon-euro"></i> Solde : ::balance::€</a>
 	</macro>
 
-
 	<macro name="subscription(subscription)">
 		::set catalog = subscription._catalog::
 
@@ -284,12 +283,10 @@
 						<div class="panel-heading">Jours d'absence</div>
 						<div class="panel-body">
 							::set absences = subscription.getAbsentDistribs()::
-							::if absences.length>0::
-							
+							::if absences.length>0::							
 								::foreach d absences::
 									::dDate(d.date)::<br/>
-								::end::
-							
+								::end::							
 							::else::
 							<span class="disabled">Pas d'absences</span>
 							::end::
@@ -303,8 +300,8 @@
 						<div class="panel-heading">Distributions</div>
 						<div class="panel-body">
 							::subscriptionService.getSubscriptionDistribsNb(subscription, null, false):: sur la période d'engagement
-							::if absencesNb > 0::
-								<br/>avec ::absencesNb:: jour(s) d'absence
+							::if absences.length > 0::
+								<br/>avec ::absences.length:: jour(s) d'absence
 								<br/>soit ::subscriptionService.getSubscriptionDistribsNb(subscription, null, true):: distributions effectives.
 							::end::
 						</div>
@@ -339,21 +336,9 @@
 							</a>							
 						</div>
 					</div>
-				</div>
-
-				<!-- btns -->
-				<div class="col-md-12" ::cond isAdmin::>					
-					<a href="/history/orders/::catalog.id::" class="btn btn-default btn-xs" >
-						Admin : Toutes les commandes du contrat
-					</a>
-				</div>
-				
+				</div>		
 			</div>
 		</div>
-
-			
-			
-
 	</macro>
 	
 	<macro name="today(dow,d,m,y,h,place)">

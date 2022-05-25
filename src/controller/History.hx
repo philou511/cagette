@@ -86,11 +86,11 @@ class History extends Controller
 	}
 
 	/**
-		view orders in a CSA contract
+		view orders of current user for a catalog
 	**/
 	@logged
 	@tpl("history/csaorders.mtt")
-	function doOrders( catalog : db.Catalog ) {
+	function doOrders( catalog:db.Catalog ) {
 		
 		var ug = db.UserGroup.get(app.user, app.user.getGroup());
 		if (ug == null) throw Error("/", t._("You are not a member of this group"));
@@ -99,11 +99,8 @@ class History extends Controller
 		view.distribs = catalogDistribs;
 		view.prepare = OrderService.prepare;
 		view.catalog = catalog;
-		// view.history = true;
 		view.now = Date.now();
 		view.member = app.user;
-		
-		// checkToken();
 	}
 
 	/**

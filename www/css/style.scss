@@ -1246,6 +1246,11 @@ a.btn-warning{
 	border-color: #EEE !important;
     border-width: 3px !important;
 	text-align: center;
+	.panel-body{
+		height: 80px;
+		overflow-x: auto;
+	}
+	
 	.panel-heading{
 		border:none !important;
 		font-weight: bold;

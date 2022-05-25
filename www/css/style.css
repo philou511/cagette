@@ -891,6 +891,9 @@ a.btn-warning {
   border-color: #EEE !important;
   border-width: 3px !important;
   text-align: center; }
+  .subPanel .panel-body {
+    height: 80px;
+    overflow-x: auto; }
   .subPanel .panel-heading {
     border: none !important;
     font-weight: bold; }
