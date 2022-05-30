@@ -110,6 +110,10 @@ class Subscription extends Controller
         if(post!=null){
             var defaultOrder:Array<CSAOrder> = Json.parse(StringTools.urlDecode(post));
 
+            if(catalog.isConstantOrdersCatalog()){
+                return json({defaultOrderCheck:true});
+            }
+
             //build ordersByDistrib
             var distribs = db.Distribution.manager.search( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
             var ordersByDistrib = new Map<db.Distribution,Array<CSAOrder>>();

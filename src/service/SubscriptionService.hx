@@ -854,7 +854,7 @@ class SubscriptionService
 		var orders : Array<db.UserOrder> = [];
 		for ( distribution in getSubscriptionDistributions(subscription) ) {
 
-			if( !catalog.isVariableOrdersCatalog() && distribution.orderEndDate.getTime() < now ){
+			if( catalog.isVariableOrdersCatalog() && distribution.orderEndDate.getTime() < now ){
 				//if catalog is variable and distrib is closed, do not recreate order
 				continue;
 			}
