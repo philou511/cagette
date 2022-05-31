@@ -916,7 +916,6 @@ class SubscriptionService
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );	
 		subscription.lock();	
 		if( subscription.catalog.isVariableOrdersCatalog()){
-			if( subscription.catalog.distribMinOrdersTotal==0 ) return;
 			if ( subscription.catalog.distribMinOrdersTotal>0 && (defaultOrders==null || defaultOrders.length==0 ) ) {
 				throw new Error('La commande par défaut ne peut pas être vide. (Souscription de ${subscription.user.getName()})');
 			}
