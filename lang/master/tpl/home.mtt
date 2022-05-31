@@ -55,9 +55,16 @@ $$browserDetection()
 	</div>
 	::else::
 
+	<!--display only on sm and xs screens-->
+	<div class="block hidden-md hidden-lg" style="margin-bottom:24px;">
+		<a href="/distribution/volunteersCalendar" class="btn btn-default btn-sm">
+			<i class="icon icon-calendar"></i> ::_("Duty periods calendar")::
+		</a>
+	</div>
+
 
 	::foreach md distribs::
-	::md.useCache=true::
+	::set nada = md.useCache=true::
 	<div class="distrib">
 		::set place = md.getPlace()::
 		::set active = md.isActive()::
@@ -414,7 +421,7 @@ $$browserDetection()
 
 	</div>
 
-	<div class="block">
+	<div class="block hidden-sm hidden-xs">
 		<a href="/distribution/volunteersCalendar" class="btn btn-default btn-sm">
 			<i class="icon icon-calendar"></i> ::_("Duty periods calendar")::
 		</a>
