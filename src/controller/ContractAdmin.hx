@@ -1,4 +1,5 @@
 package controller;
+import db.Basket.BasketStatus;
 import connector.db.RemoteCatalog;
 import service.ProductService;
 import db.Catalog;
@@ -776,7 +777,7 @@ class ContractAdmin extends Controller
 	@tpl("contractadmin/tmpBaskets.mtt")
 	function doTmpBaskets(md:db.MultiDistrib){
 		view.md = md;
-		view.tmpBaskets = db.TmpBasket.manager.search($multiDistrib == md,false);
+		view.tmpBaskets = db.Basket.manager.search($multiDistrib == md && $status==Std.string(BasketStatus.OPEN),false);
 	}
 
 

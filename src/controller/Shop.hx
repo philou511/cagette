@@ -3,13 +3,14 @@ import service.OrderFlowService;
 import Common;
 import tools.ArrayTool;
 import service.OrderService;
+import db.Basket.BasketStatus;
 
 class Shop extends Controller
 {
 	
 	var distribs : List<db.Distribution>;
 	var contracts : List<db.Catalog>;
-	var tmpBasket : db.TmpBasket;
+	var tmpBasket : db.Basket;
 
 	@tpl('shop/default.mtt')
 	public function doDefault(md:db.MultiDistrib,?args:{continueShopping:Bool}) {
@@ -183,7 +184,9 @@ class Shop extends Controller
 		- got to next step in the flow
 	**/
 	@tpl('shop/needLogin.mtt')
-	public function doValidate(tmpBasket:db.TmpBasket){
+	public function doValidate(tmpBasket:db.Basket){
+
+		if(tmpBasket.status!=Std.string(BasketStatus.OPEN)) throw "Basket should be status=OPEN";
 		
 		tmpBasket.lock();
 		var md = tmpBasket.multiDistrib;
@@ -272,7 +275,7 @@ class Shop extends Controller
 	/**
 		final confirmation of the basket
 	**/
-	function doConfirm(tmpBasket:db.TmpBasket){
+	function doConfirm(tmpBasket:db.Basket){
 		if(tmpBasket!=null){
 			
 			if(tmpBasket.user==null){				
@@ -293,7 +296,7 @@ class Shop extends Controller
 		this page handles the login process
 	**/
 	@tpl('shop/needLogin.mtt')
-	function doLogin(tmpBasket:db.TmpBasket){
+	function doLogin(tmpBasket:db.Basket){
 
 		//Login is needed : display a loginbox
 		if (app.user == null) {

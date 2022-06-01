@@ -215,5 +215,19 @@ class Basket extends Object
 	public function setData(tmpBasketData: TmpBasketData){
 		data = haxe.Json.stringify(tmpBasketData);
 	}
+
+	/**
+		Get total amount to pay for this TMP basket
+	**/
+	public function getTmpTotal():Float{
+		var total = 0.0;
+		var data = this.getData();
+		for( o in data.products){
+			var p = db.Product.manager.get(o.productId,false);
+			if(p==null) continue;
+			total += o.quantity * p.getPrice();
+		}
+		return total;
+	}
 	
 }

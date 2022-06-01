@@ -8,6 +8,7 @@ import mangopay.Mangopay;
 import mangopay.Types;
 #end
 import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
+import db.Basket;
 
 /**
  * Transction controller
@@ -217,7 +218,7 @@ class Transaction extends controller.Controller
 	 * Payment entry point
 	 */
 	@tpl("transaction/pay.mtt")
-	public function doPay(tmpBasket:db.TmpBasket) {
+	public function doPay(tmpBasket:db.Basket) {
 
 		if(app.user==null){
 			throw Redirect("/");
@@ -228,6 +229,7 @@ class Transaction extends controller.Controller
 		if (tmpBasket == null) throw Error("Basket is null");
 		tmpBasket.lock();
 		if (tmpBasket.getData().products.length == 0) throw Error("/", t._("Your cart is empty"));
+		if(tmpBasket.status!=Std.string(BasketStatus.OPEN)) throw "basket should be OPEN";
 
 		//case where the user just logged in
 		if(tmpBasket.user==null){
@@ -235,7 +237,7 @@ class Transaction extends controller.Controller
 			tmpBasket.update();
 		}
 		
-		var total = tmpBasket.getTotal();
+		var total = tmpBasket.getTmpTotal();
 		var group = tmpBasket.multiDistrib.group;
 		view.amount = total;		
 		view.tmpBasket = tmpBasket;
@@ -245,7 +247,9 @@ class Transaction extends controller.Controller
 	}
 
 	@tpl("transaction/tmpBasket.mtt")
-	public function doTmpBasket(tmpBasket:db.TmpBasket,?args:{cancel:Bool,confirm:Bool,continueShopping:Bool}){
+	public function doTmpBasket(tmpBasket:db.Basket,?args:{cancel:Bool,confirm:Bool,continueShopping:Bool}){
+
+		if(tmpBasket.status!=Std.string(BasketStatus.OPEN)) throw "basket should be OPEN";
 
 		if(app.getCurrentGroup()==null){
 			throw Redirect("/");
@@ -279,13 +283,13 @@ class Transaction extends controller.Controller
 	 * Use the money pot
 	 */
 	@tpl("transaction/moneypot.mtt")
-	public function doMoneypot(tmpBasket:db.TmpBasket){
+	public function doMoneypot(tmpBasket:db.Basket){
 		if(app.user==null){
 			throw Redirect("/");
 		}
 		if (tmpBasket == null) throw Redirect("/contract");
 		if (tmpBasket.getData().products.length == 0) throw Error("/", t._("Your cart is empty"));
-		var total = tmpBasket.getTotal();
+		var total = tmpBasket.getTmpTotal();
 		var futureBalance = db.UserGroup.get(app.user, app.user.getGroup()).balance - total;
 		if (!app.user.getGroup().allowMoneyPotWithNegativeBalance && futureBalance < 0) {
 			throw Error("/transaction/pay", t._("You do not have sufficient funds to pay this order with your money pot."));
@@ -310,7 +314,7 @@ class Transaction extends controller.Controller
 	 * Use on the spot payment
 	 */
 	@tpl("transaction/onthespot.mtt")
-	public function doOnthespot(tmpBasket:db.TmpBasket)
+	public function doOnthespot(tmpBasket:db.Basket)
 	{
 		if(app.user==null){
 			throw Redirect("/");
@@ -323,7 +327,7 @@ class Transaction extends controller.Controller
 			var orders = OrderService.confirmTmpBasket(tmpBasket);
 			if(orders.length==0) throw Error('/home',"Votre panier est vide.");
 			var orderOps = service.PaymentService.onOrderConfirm(orders);
-			var total = tmpBasket.getTotal();
+			var total = tmpBasket.getTmpTotal();
 
 			view.amount = total;
 			//var futureBalance = db.UserGroup.get(app.user, app.user.getGroup()).balance - total;
@@ -346,7 +350,7 @@ class Transaction extends controller.Controller
 	 * Pay by transfer
 	 */
 	@tpl("transaction/transfer.mtt")
-	public function doTransfer(tmpBasket:db.TmpBasket){
+	public function doTransfer(tmpBasket:db.Basket){
 		if(app.user==null){
 			throw Redirect("/");
 		}
@@ -355,7 +359,7 @@ class Transaction extends controller.Controller
 		
 		var md = tmpBasket.multiDistrib;
 		var date = md.getDate();	
-		var total = tmpBasket.getTotal();
+		var total = tmpBasket.getTmpTotal();
 		var code = payment.Check.getCode(date, md.getPlace(), app.user);
 		
 		view.code = code;

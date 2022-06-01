@@ -8,7 +8,6 @@ import mangopay.Types.Error;
 import sugoi.BaseApp;
 import pro.payment.MangopayECPayment;
 import db.Catalog;
-import db.TmpBasket;
 import service.OrderFlowService;
 import tools.ObjectListTool;
 import db.DistributionCycle;
@@ -1760,7 +1759,7 @@ class Distribution extends Controller {
 	}
 
 	@tpl("distribution/selectTimeSlots.mtt")
-	function doSelectTimeSlots(tmpBasket:TmpBasket) {
+	function doSelectTimeSlots(tmpBasket:db.Basket) {
 		var flow = new OrderFlowService().setPlace(Place.TimeSlotSelection(tmpBasket));
 		view.url = flow.getPlaceUrl(flow.getNextPlace());
 

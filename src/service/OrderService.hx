@@ -489,7 +489,7 @@ class OrderService
 	 */
 	public static function confirmTmpBasket(tmpBasket:db.Basket):Array<db.UserOrder>{
 
-		if(tmpBasket.status != Std.string(BasketStatus.OPEN)) throw "basket should be OPEN";
+		if(tmpBasket.status != Std.string(BasketStatus.OPEN)) throw "basket should be status=OPEN";
 
 		var t = sugoi.i18n.Locale.texts;
 		var orders = [];
@@ -628,7 +628,7 @@ class OrderService
 	public static function getTmpBasket(user:db.User,group:db.Group):db.Basket{
 		if(user==null) return null;
 		if(group==null) throw "should have a group here";
-		for( b in db.TmpBasket.manager.search($user==user && $status==Std.string(BasketStatuts.OPEN))){
+		for( b in db.Basket.manager.search($user==user && $status==Std.string(BasketStatus.OPEN))){
 			if(b.multiDistrib.group.id==group.id) return b;
 		}
 		return null;
@@ -699,8 +699,8 @@ class OrderService
 		if(group==null) return null;
 		var tmpBasketId:Int = App.current.session.data.tmpBasketId; 		
 		if ( tmpBasketId != null) {
-			var tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
-			if(tmpBasket!=null && tmpBasket.multiDistrib.getGroup().id==group.id){
+			var tmpBasket = db.Basket.manager.get(tmpBasketId,true);
+			if(tmpBasket!=null && tmpBasket.multiDistrib.getGroup().id==group.id && tmpBasket.status==Std.string(BasketStatus.OPEN)){
 				return tmpBasket;
 			}else{
 				return null;
