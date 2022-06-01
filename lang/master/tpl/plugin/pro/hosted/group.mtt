@@ -154,7 +154,7 @@
 		<a href="/p/hosted/deleteDemoContracts/::group.id::" class="btn btn-default">Effacer contrats de démo</a>
 		<a href="/p/pro/admin/fixGroupOps/::group.id::" class="btn btn-default">Fix remoteIds + faux paiements mangopay</a>
 		<a href="/p/pro/admin/checkOperations/::group.id::/2021-01-01 00:00:00/2021-02-01 00:00:00" class="btn btn-default">Consistence commandes et operations</a>
-		<a href="/p/pro/admin/fixCsaOps/::group.id::" class="btn btn-default">AMAP : fix opérations</a>
+		<a href="/p/pro/admin/fixCsaOrders/::group.id::" class="btn btn-default">AMAP : détection incohérences</a>
 		<hr/>
 
 

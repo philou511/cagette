@@ -164,6 +164,12 @@
 			</div>
 
 		</form>
+
+
+
+		::if(isAdmin)::
+		<a href="/contractAdmin/subscriptions/reattribute/::subscription.id::" class="btn btn-danger">Admin : Réattribuer souscription</a>
+		::end::
 		
 	</div>
 
