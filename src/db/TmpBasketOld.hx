@@ -7,7 +7,7 @@ import Common;
  * Temporary Basket
  */
 @:index(ref)
-class TmpBasket extends Object
+class TmpBasketOld extends Object
 {
     public var id : SId;
 	public var ref : SNull<SString<256>>;

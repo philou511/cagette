@@ -1,7 +1,8 @@
 package service;
 import Common;
 import db.MultiDistrib;
-import db.TmpBasket;
+import db.Basket;
+import db.Basket.BasketStatus;
 import tink.core.Error;
 
 /**
@@ -465,18 +466,19 @@ class OrderService
 	/**
 		Record a temporary basket
 	**/
-	public static function makeTmpBasket(user:db.User,multiDistrib:db.MultiDistrib, ?tmpBasketData:TmpBasketData):db.TmpBasket {
+	public static function makeTmpBasket(user:db.User,multiDistrib:db.MultiDistrib, ?tmpBasketData:TmpBasketData):db.Basket {
 		//basket with no products is allowed ( init an empty basket )
 		if( tmpBasketData==null) tmpBasketData = {products:[]};
 
 		//generate basketRef
-		var ref = (user==null?0:user.id)+"-"+multiDistrib.id+"-"+Date.now().toString().substr(0,10)+"-"+Std.random(1000);
+		// var ref = (user==null?0:user.id)+"-"+multiDistrib.id+"-"+Date.now().toString().substr(0,10)+"-"+Std.random(1000);
 
-		var tmp = new db.TmpBasket();
+		var tmp = new db.Basket();
 		tmp.user = user;
 		tmp.multiDistrib = multiDistrib;
 		tmp.setData(tmpBasketData);
-		tmp.ref = ref;
+		// tmp.ref = ref;
+		tmp.status = Std.string(BasketStatus.OPEN);
 		tmp.insert();
 		return tmp;
 	}
@@ -485,7 +487,10 @@ class OrderService
 	 * 	Create real orders from a temporary basket.
 		Should not return a basket, because this basket can include older orders.
 	 */
-	public static function confirmTmpBasket(tmpBasket:db.TmpBasket):Array<db.UserOrder>{
+	public static function confirmTmpBasket(tmpBasket:db.Basket):Array<db.UserOrder>{
+
+		if(tmpBasket.status != Std.string(BasketStatus.OPEN)) throw "basket should be OPEN";
+
 		var t = sugoi.i18n.Locale.texts;
 		var orders = [];
 		var user = tmpBasket.user;
@@ -620,16 +625,16 @@ class OrderService
 	/**
 		Returns tmp basket
 	**/
-	public static function getTmpBasket(user:db.User,group:db.Group):db.TmpBasket{
+	public static function getTmpBasket(user:db.User,group:db.Group):db.Basket{
 		if(user==null) return null;
 		if(group==null) throw "should have a group here";
-		for( b in db.TmpBasket.manager.search($user==user)){
+		for( b in db.TmpBasket.manager.search($user==user && $status==Std.string(BasketStatuts.OPEN))){
 			if(b.multiDistrib.group.id==group.id) return b;
 		}
 		return null;
 	}
 
-	public static function getOrCreateTmpBasket(user:db.User,distrib:MultiDistrib):db.TmpBasket{
+	public static function getOrCreateTmpBasket(user:db.User,distrib:MultiDistrib):db.Basket{
 		var tb = getTmpBasket(user,distrib.getGroup());
 		if(tb==null) getTmpBasketFromSession(distrib.getGroup());
 

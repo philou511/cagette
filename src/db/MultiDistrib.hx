@@ -5,6 +5,7 @@ import Common;
 using tools.ObjectListTool;
 using Lambda;
 import haxe.Json;
+import db.Basket.BasketStatus;
 
 typedef Slot = {
 	id:Int,
@@ -475,12 +476,18 @@ class MultiDistrib extends Object
 		return place.group;
 	}
 
+	/**
+		get non open baskets
+	**/
 	public function getBaskets():Array<db.Basket>{
-		return db.Basket.manager.search($multiDistrib==this,false).array();
+		return db.Basket.manager.search($multiDistrib==this && $status!=Std.string(BasketStatus.OPEN),false).array();
 	}
 
-	public function getTmpBaskets():Array<db.TmpBasket>{
-		return db.TmpBasket.manager.search($multiDistrib==this,false).array();
+	/**
+		get open baskets
+	**/
+	public function getTmpBaskets():Array<db.Basket>{
+		return db.Basket.manager.search($multiDistrib==this && $status==Std.string(BasketStatus.OPEN),false).array();
 	}
 
 	public function getUserBasket(user:db.User){
@@ -491,8 +498,11 @@ class MultiDistrib extends Object
 		return null;
 	}
 
-	public function getUserTmpBasket(user:db.User):db.TmpBasket{
-		return db.TmpBasket.manager.select($multiDistrib==this && $user==user,false);
+	/**
+		get user open basket
+	**/
+	public function getUserTmpBasket(user:db.User):db.Basket{
+		return db.Basket.manager.select($multiDistrib==this && $user==user && $status==Std.string(BasketStatus.OPEN),false);
 	}
 
 	/**
