@@ -32,7 +32,7 @@ class UserOrder extends Object
 	public var distribution:db.Distribution;
 	
 	@:relation(basketId)
-	public var basket:SNull<db.Basket>;
+	public var basket:db.Basket;
 
 	@:relation(subscriptionId)
 	public var subscription : SNull<db.Subscription>;

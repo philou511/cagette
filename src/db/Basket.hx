@@ -25,7 +25,7 @@ class Basket extends Object
 	public var status : SString<16>; 		//Mysql enum  OPEN , CONFIRMED , VALIDATED
 	public var data : SText; //TmpBasketData; 
 
-	@:relation(userId) public var user : db.User;
+	@:relation(userId) public var user : SNull<db.User>;
 	@:relation(multiDistribId) public var multiDistrib : db.MultiDistrib;
 
 	public static var CACHE = new Map<String,db.Basket>();
@@ -209,7 +209,12 @@ class Basket extends Object
 	}
 
 	public function getData():TmpBasketData{
-		return haxe.Json.parse(data);
+		try{
+			return haxe.Json.parse(data);
+		}catch(e:Dynamic){
+			return {products:[]};
+		}
+		
 	}
 
 	public function setData(tmpBasketData: TmpBasketData){
