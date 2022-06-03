@@ -134,14 +134,14 @@ class Group extends Object
 	**/
 	public function checkIsolate(){
 	
-		if(this.betaFlags.has(BetaFlags.Cagette2)){
+		/*if(this.betaFlags.has(BetaFlags.Cagette2)){
 			var noCagette2Vendors = getVendors().filter(v->!v.betaFlags.has(db.Vendor.VendorBetaFlags.Cagette2));
 			if ( noCagette2Vendors.length>0 ){
 				var name = noCagette2Vendors.map(v -> v.name).join(", ");
 				throw sugoi.ControllerAction.ControllerAction.ErrorAction("/user/choose",'Le groupe "${this.name}" a l\'option Cagette2 activée et ne peut pas fonctionner avec des producteurs qui n\'ont pas activé cette option ($name). Contactez nous sur <b>support@cagette.net</b> pour régler le problème.');
 			}
 			
-		} 
+		}*/
 	}
 
 	public function hasCagette2(){

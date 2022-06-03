@@ -5,7 +5,7 @@
 	<script>
         document.addEventListener("DOMContentLoaded", function(event) {
             neo.createNeoModule("neo-container", "transaction", {
-                    tmpBasketId: ::tmpBasket.id::,
+                    basketId: ::tmpBasket.id::,
                     groupId: ::group.id::,
                     sid: "::getSid()::"
                 });

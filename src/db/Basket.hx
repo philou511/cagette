@@ -22,7 +22,7 @@ class Basket extends Object
 	public var cdate : SDateTime; 			//date when the order has been placed
 	public var num : SInt;		 			//Basket number for distribution
 	public var total : SFloat;				//orders total price for stats, !!! this is not reliable, dont use this for payments !!!
-	public var status : SString<16>; 		//Mysql enum  OPEN , CONFIRMED , VALIDATED
+	public var status : SString<32>; 		//Mysql enum  OPEN , CONFIRMED , VALIDATED
 	public var data : SText; //TmpBasketData; 
 
 	@:relation(userId) public var user : SNull<db.User>;
