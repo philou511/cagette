@@ -62,42 +62,10 @@ class Admin extends Controller {
 		view.browser = new sugoi.tools.ResultsBrowser(count, 10, browse);
 		view.num = count;
 	}
-
-	/*@tpl("form.mtt")
-	function doSmtp() {
-		var f = new sugoi.form.Form("emails");
-		var data = [{label: "SMTP", value: "smtp"}, {label: "Mandrill API", value: "mandrill"},];
-
-		var mailer = sugoi.db.Variable.get("mailer") == null ? "smtp" : sugoi.db.Variable.get("mailer");
-		var host = sugoi.db.Variable.get("smtp_host") == null ? App.config.get("smtp_host") : sugoi.db.Variable.get("smtp_host");
-		var port = sugoi.db.Variable.get("smtp_port") == null ? App.config.get("smtp_port") : sugoi.db.Variable.get("smtp_port");
-		var user = sugoi.db.Variable.get("smtp_user") == null ? App.config.get("smtp_user") : sugoi.db.Variable.get("smtp_user");
-		var pass = sugoi.db.Variable.get("smtp_pass") == null ? App.config.get("smtp_pass") : sugoi.db.Variable.get("smtp_pass");
-
-		f.addElement(new sugoi.form.elements.StringSelect("mailer", "Mailer", data, mailer));
-		f.addElement(new sugoi.form.elements.StringInput("smtp_host", "host", host));
-		f.addElement(new sugoi.form.elements.StringInput("smtp_port", "port", port));
-		f.addElement(new sugoi.form.elements.StringInput("smtp_user", "user", user));
-		f.addElement(new sugoi.form.elements.StringInput("smtp_pass", "pass", pass));
-
-		if (f.isValid()) {
-			for (k in ["mailer", "smtp_host", "smtp_port", "smtp_user", "smtp_pass"]) {
-				sugoi.db.Variable.set(k, f.getValueOf(k));
-			}
-			throw Ok("/admin/emails", t._("Configuration updated"));
-		}
-
-		view.title = t._("Email service configuration");
-		view.form = f;
-	}*/
 	
 	function doVendor(d:haxe.web.Dispatch) {
 		d.dispatch(new controller.admin.Vendor());
 	}
-
-	// function doPlugins(d:Dispatch) {
-	// 	d.dispatch(new controller.admin.Plugins());
-	// }
 
 	/**
 		export taxo as CSV
@@ -408,12 +376,155 @@ class Admin extends Controller {
 		view.form = f;
 	}
 
+	@tpl("admin/group/default.mtt")
 	function doGroups() {
-		for (g in db.Group.manager.all(true)) {
-			g.update();
-			Sys.println(g.name + "<br/>");
+
+// db.Group.manager.search($flags.has(ShopMode));
+
+		var groups = [];
+		var total = 0;
+		var totalActive = 0;
+		var defaultType = "all";
+
+		// form
+		var f = new sugoi.form.Form("groups");
+		f.method = GET;
+		f.addElement(new sugoi.form.elements.StringInput("groupName", "Nom du groupe"));
+		var data = [
+			{label: "Tous", value: "all"},
+			{label: "Mode marché", value: "shopMode"},
+			{label: "Mode AMAP", value: "CSAMode"},
+			
+		];
+		f.addElement(new sugoi.form.elements.StringSelect("type", "Type de groupe", data, defaultType, true, ""));
+		f.addElement(new sugoi.form.elements.StringInput("zipCodes", "Saisir des numéros de département séparés par des virgules ou laisser vide."));
+		f.addElement(new sugoi.form.elements.StringSelect("country", "Pays", db.Place.getCountries(), "FR", true, ""));
+		var data = [
+			{label: "Actifs", value: "active"},
+			{label: "Inactifs", value: "inactive"},
+			{label: "Tous", value: "all"}
+		];
+		f.addElement(new sugoi.form.elements.StringSelect("active", "Actifs ou pas", data, "active", true, ""));
+		var data = [
+			{label: "Tableau", value: "table"},
+			{label: "CSV", value: "csv"}
+		];
+		f.addElement(new sugoi.form.elements.StringSelect("output", "Sortie", data, "table", true, ""));
+
+		var sql_select = "SELECT g.*,gs.active,p.zipCode,p.country,p.city";
+		var sql_where_or = [];
+		var sql_where_and = [];
+		var sql_end = "ORDER BY g.id ASC";
+		var sql_from = ["`Group` g LEFT JOIN  GroupStats gs ON g.id=gs.groupId LEFT JOIN Place p ON g.placeId=p.id"];
+
+		if (f.isValid()) {
+			// filter by zip codes
+			var zipCodes:Array<Int> = f.getValueOf("zipCodes") != null ? f.getValueOf("zipCodes").split(",").map(Std.parseInt) : [];
+			if (zipCodes.length > 0) {
+				for (zipCode in zipCodes) {
+					var min = zipCode * 1000;
+					var max = zipCode * 1000 + 999;
+					sql_where_or.push('(p.zipCode>=$min and p.zipCode<=$max)');
+				}
+			}
+
+			// active
+			switch (f.getValueOf("active")) {
+				case "active":
+					sql_where_and.push("active=1");
+				case "inactive":
+					sql_where_and.push("active=0");
+				default:
+			}
+
+			// type
+			if (f.getValueOf("type") != "all") {				
+				var type = f.getValueOf("type");
+				switch(type){
+					case "marketMode","shopMode" : sql_where_and.push("g.flags&2 != 0");
+					case "CSAMode" : sql_where_and.push("g.flags&2 = 0");
+					default : throw "unknown type";
+				}
+			}
+
+			// country
+			sql_where_and.push('p.country="${f.getValueOf("country")}"');
+
+			//group name
+			if(f.getValueOf("groupName")!=null){
+				sql_where_and.push('g.name like "%${f.getValueOf("groupName")}%"');
+			}
+
+		} else {
+			// default settings
+			sql_where_and.push('active=1');
+			// sql_where_and.push('type=${Type.enumIndex(defaultType)}');
+			sql_where_and.push('p.country="FR"');
+		}
+
+		// QUERY
+		if (sql_where_and.length == 0)
+			sql_where_and.push("true");
+		if (sql_where_or.length == 0)
+			sql_where_or.push("true");
+		var sql = '$sql_select FROM ${sql_from.join(", ")} WHERE (${sql_where_or.join(" OR ")}) AND ${sql_where_and.join(" AND ")} $sql_end';
+		for (g in db.Group.manager.unsafeObjects(sql, false)) {
+			groups.push(g);
+		}
+
+		view.form = f;
+
+		// remove trainee accounts
+		/*for( v in vendors.copy()){
+			if(v.name.indexOf("(formation)")>-1) vendors.remove(v);
+		}*/
+
+		/*for (v in vendors) {
+			// refresh active
+			if (app.params.exists("force")) {
+				pro.db.VendorStats.updateStats(v);
+			} else {
+				// force creation of vendorStats
+				VendorStats.getOrCreate(v);
+			}
+
+			if (untyped v.active)
+				totalActive++;
+			if (untyped v.type == 0)
+				totalCpros++;
+		}*/
+
+		// TOTALS
+		total = groups.length;
+		view.total = total;
+		view.groups = groups;
+		// view.totalCpros = totalCpros;
+		// view.totalActive = totalActive;
+
+		switch (f.getValueOf("output")) {
+			case "table":
+
+			case "csv":
+				var headers = [
+					"id", "name", "email", "phone", "address1", "address2", "zipCode", "city", "active", "type"
+				];
+				var data = [];
+				for (g in groups) {
+					var active:Bool = untyped g.active;
+					data.push({
+						id: g.id,
+						name: g.name,
+						active: switch (active) {
+							case true: "OUI";
+							case false: "NON";
+						},						
+					});
+				}
+
+				sugoi.tools.Csv.printCsvDataFromObjects(data, headers, "groupes");
 		}
 	}
+	
 
 	/*function doTerraLibra(){
 		var v = db.Vendor.manager.get(12535,false);

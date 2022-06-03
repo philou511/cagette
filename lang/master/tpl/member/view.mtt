@@ -2,7 +2,7 @@
 ::use 'design.mtt'::
 
 <div class="col-md-4">
-	<h2>::_("Contact informations")::</h2>
+	<h3>::_("Contact informations")::</h3>
 	<div class="article">
 		
 		<div style="font-weight:bold;font-size:120%;">
@@ -80,7 +80,7 @@
 
 	
 		<p>
-			$$edit(::_("Edit")::,/member/edit/::member.id::) 
+			<!--$$edit(::_("Edit")::,/member/edit/::member.id::) -->
 			$$delete(::_("Remove from group")::,/member/delete/::member.id::?token=::token::)
 			<a href="/member/movetowl/::member.id::" class="btn btn-default btn-sm">::_("Put on waiting list")::</a>
 		</p>
@@ -91,46 +91,19 @@
 			</a>
 		</p>
 	</div>
-	
-	
-	::if user.getGroup().hasMembership::
-	<h2>Adhésion</h2>
-		::set hasValidMembership = userGroup.hasValidMembership()::
-		::if(hasValidMembership)::
-			::set css = "alert alert-success"::
-		::else::
-			::set css = "alert alert-danger"::
-		::end::
-
-		<div class="::css::">
-		$$check(::hasValidMembership::)
-		::if hasValidMembership::
-			::_("Membership up to date")::
-		::else::
-			 ::_("Membership to renew")::
-		::end::
-		::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user.getGroup().getPeriodName(null)::</b>
-		<br/>
-		
-		<a onclick="_Cagette.membershipBox(::member.id::,`::member.getName()::`,::userGroup._group.id::,'/member/view/::member.id::')" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
-
-	</div>
-	::end::
-
-	
 </div>
 
 ::set hasPayments = user.getGroup().hasPayments()::
 ::set hasShopMode = user.getGroup().hasShopMode()::
 
 <div class="col-md-8">
-	<h2>
+	<h3>
 		::if hasShopMode::
 			::_("Orders")::
 		::else::
 			Contrats
 		::end::
-	</h2>
+	</h3>
 
 	
 
@@ -238,11 +211,12 @@
 </div>
 
 
-<div  class="col-md-8">
-	<div ::cond (hasPayments && hasShopMode) || !hasShopMode:: class="article">
+<div class="col-md-4" ::cond (hasPayments && hasShopMode) || !hasShopMode::>
+	<h3>::_("Balance")::</h3>
+	<div  class="article">
 		
 		<span style="font-size:1.3em;">
-			::_("Balance"):: :
+			
 			::if userGroup.balance<0:: 
 			::set color = "C00"::
 			::else::
@@ -274,6 +248,29 @@
 		::end::
 		</ul>
 	</div>	
+</div>
+
+<div class="col-md-4" ::cond user.getGroup().hasMembership::>
+	<h3>Adhésion</h3>
+		::set hasValidMembership = userGroup.hasValidMembership()::
+		::if(hasValidMembership)::
+			::set css = "alert alert-success"::
+		::else::
+			::set css = "alert alert-danger"::
+		::end::
+
+		<div class="::css::">
+			$$check(::hasValidMembership::)
+			::if hasValidMembership::
+				::_("Membership up to date")::
+			::else::
+				::_("Membership to renew")::
+			::end::
+			::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user.getGroup().getPeriodName(null)::</b>
+			<br/>
+			
+			<a onclick="_Cagette.membershipBox(::member.id::,`::member.getName()::`,::userGroup._group.id::,'/member/view/::member.id::')" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
+		</div>
 </div>
 
 ::end::
