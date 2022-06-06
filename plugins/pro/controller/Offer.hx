@@ -45,9 +45,15 @@ class Offer extends controller.Controller
 		}
 		
 		//for the VATBox component
-		view.rates = Lambda.map(company.getVatRates(),function(v) return v.value).join("|");
+		var companyVatRates = company.getVatRates();
+		view.rates = Lambda.map(companyVatRates,function(v) return v.value).join("|");
 		view.price = o.price;
 		view.vat = o.vat;
+
+		if (companyVatRates.find(function ( vatRate ) return vatRate.value == o.vat ) == null) {
+			//this offer's vat rate is not in company's vatRates list
+			view.rates += "|" + o.vat;
+		}
 		
 		//add catalogs to update
 		f.addElement(new sugoi.form.elements.Html("html","<hr/>"));
