@@ -188,7 +188,7 @@ $$browserDetection()
 				<!-- var orders for shopmode-->
 				<div class="text-center">
 					::set basket = md.getUserBasket(user)::
-					::set title = "Commande du "+hDate(d.getDate())::
+					::set title = "Commande du "+hDate(md.getDate())::
 					<a onclick="_Cagette.overlay('/history/basket/::basket.id::/1','::title::')" class="btn btn-default btn-sm">
 						<i class="icon icon-basket"></i> ::_("My order"):: : ::formatNum(basket.getOrdersTotal(1)):: ::currency()::
 					</a>				

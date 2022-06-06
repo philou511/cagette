@@ -530,7 +530,7 @@ class SubscriptionService
 
 				if ( distribTotal < catalog.distribMinOrdersTotal ) {
 					var message = 'Distribution du ${Formatting.hDate( distrib.date )} : ';
-					message += 'Le montant votre commande doit être d\'au moins ${catalog.distribMinOrdersTotal} € par distribution.';
+					message += 'Le montant de votre commande doit être d\'au moins ${catalog.distribMinOrdersTotal} € par distribution.';
 					throw TypedError.typed( message, CatalogRequirementsNotMet );					
 				}
 			}
