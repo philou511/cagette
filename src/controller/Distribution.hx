@@ -961,6 +961,9 @@ class Distribution extends Controller {
 	@tpl('distribution/validate.mtt')
 	public function doValidate(multiDistrib:db.MultiDistrib) {
 		checkHasDistributionSectionAccess();
+		if (multiDistrib.getGroup().hasCagette2()){
+			throw Redirect('/distribution/ordersRecap/'+multiDistrib.id);
+		}
 		checkToken();
 		// view.users = multiDistrib.getUsers(db.Catalog.TYPE_VARORDER);
 
