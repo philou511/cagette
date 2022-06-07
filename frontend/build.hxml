@@ -11,12 +11,12 @@
 -lib redux-connect
 -lib redux-thunk
 -lib material-ui
--lib hxleaflet
+#-lib hxleaflet
 -lib modular
 -lib tink_json
--lib haxe-lodash
--lib jQueryExtern
--lib thx.semver
+#-lib haxe-lodash
+#-lib jQueryExtern
+#-lib thx.semver
 
 
 -main App

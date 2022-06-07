@@ -115,7 +115,7 @@ ul.nav li {
   user-select: none;
   /* Non-prefixed version, currently supported by Chrome and Opera */ }
 
-/* Footer */
+/* Page Footer */
 #footer {
   background: #84BD55;
   border-radius: 8px;
@@ -379,7 +379,7 @@ div.reportHeader {
 .blockIconBadge {
   position: absolute;
   top: -18px;
-  right: 0px;
+  right: 10px;
   z-index: 50;
   width: 40px;
   height: 40px;
@@ -594,34 +594,51 @@ div.reportHeader {
 /**
 	Popovers for help and tutorials
 **/
-.popover {
-  color: white;
-  font-size: 14px; }
-  .popover h3.popover-title {
-    color: #BB9931 !important;
-    font-weight: normal;
-    font-size: 20px; }
-  .popover .popover-content {
-    font-size: 16px; }
-    .popover .popover-content b {
-      color: #FC0;
-      font-weight: normal; }
-    .popover .popover-content a {
-      color: #FC0;
-      font-weight: normal;
-      text-decoration: underline; }
-  .popover .footer {
-    height: 45px;
-    padding: 12px 0; }
-    .popover .footer .pull-left .btn {
-      background-color: #583816;
-      color: #BB9931;
-      border: 1px solid #BB9931; }
-    .popover .footer .pull-right .btn {
-      background-color: #FC0;
-      color: #583816;
-      border: 1px solid #583816; }
+/*.popover{
 
+	color:white;
+	font-size:14px;
+	
+	h3.popover-title{
+		//padding: 4px;
+		color:#BB9931 !important;
+		//border-bottom:1px solid #BB9931 !important;
+		//background-color:none;
+		font-weight:normal;
+		font-size: 20px;
+	}
+	
+	.popover-content{
+		font-size: 16px;
+		b{ 
+			color:#FC0;
+			font-weight:normal;
+		}
+		a{ 
+			color:#FC0;
+			font-weight:normal;
+			text-decoration:underline; 
+		}
+	}
+	
+	.footer{
+		//border-top: 1px solid #BB9931;
+		height: 45px;
+		padding: 12px 0;
+		
+		.pull-left .btn{
+			background-color:#583816;
+			color:#BB9931;
+			border:1px solid #BB9931;
+		}
+		
+		.pull-right .btn{
+			background-color:#FC0;
+			color:#583816;
+			border:1px solid #583816;
+		}
+	}
+}*/
 /* skin a modal like a tuto popover */
 .modal.help .modal-header {
   font-size: 1.3em;
@@ -653,9 +670,9 @@ div.reportHeader {
     border-top-right-radius: 8px;
     color: #FFF;
     background-color: #B2823F;
-    vertical-align: middle;
     margin: 0;
-    padding: 6px 6px 6px 90px; }
+    padding: 6px 6px 6px 90px;
+    min-height: 70px; }
     .distrib .header.disabled {
       background-color: #999;
       opacity: 1; }
@@ -665,7 +682,7 @@ div.reportHeader {
       background-color: #85B14D; }
     .distrib .header .info {
       font-size: 16px;
-      line-height: 22px;
+      line-height: 27px;
       /* place link */ }
       .distrib .header .info a {
         color: #FFFFFF !important; }
@@ -688,11 +705,10 @@ div.reportHeader {
     padding: 12px;
     background-color: white; }
     .distrib .content.myorder {
-      background: #FFF;
-      font-weight: bold;
+      background: #EEE;
       color: #999;
-      background: white;
-      padding: 11px 0 4px 16px; }
+      padding: 8px 8px 8px 20px;
+      font-weight: bold; }
     .distrib .content.disabled {
       opacity: 1; }
     .distrib .content.orders {
@@ -700,15 +716,17 @@ div.reportHeader {
       padding-left: 50px; }
     .distrib .content .alert {
       margin-bottom: 0; }
+    .distrib .content .orderFooter {
+      color: #999;
+      margin: 10px 0; }
+      .distrib .content .orderFooter a {
+        color: #999;
+        margin-right: 12px; }
   .distrib .footer {
-    min-height: 8px;
-    color: #999;
-    font-size: 0.9em;
+    height: 8px;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
     background: #FFF; }
-    .distrib .footer a {
-      color: #999; }
 
 div.groupImg {
   background: no-repeat center;
@@ -868,3 +886,14 @@ a.btn-warning {
   color: #8a6d3b;
   background-color: #fcf8e3;
   border-color: #ae894a; }
+
+.subPanel {
+  border-color: #EEE !important;
+  border-width: 3px !important;
+  text-align: center; }
+  .subPanel .panel-body {
+    height: 80px;
+    overflow-x: auto; }
+  .subPanel .panel-heading {
+    border: none !important;
+    font-weight: bold; }

@@ -97,11 +97,8 @@
 		
 		</table>
 		
-		$$insert(Saisir un paiement,/subscriptions/insertPayment/::subscription.id::)
+		$$insert(Saisir un paiement,/contractAdmin/subscriptions/insertPayment/::subscription.id::)
 		
 </div>
-
-
-
 
 ::end::

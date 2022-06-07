@@ -1,11 +1,11 @@
 package test;
-import tools.DateTool;
-import db.Subscription;
 import Common;
+import db.Subscription;
 import service.DistributionService;
 import service.OrderService;
-import service.SubscriptionService;
 import service.SubscriptionService.SubscriptionServiceError;
+import service.SubscriptionService;
+import tools.DateTool;
 import utest.Assert;
 
 /**
@@ -249,7 +249,7 @@ class TestSubscriptions extends utest.Test
 		Assert.isTrue( subscription != null );
 		Assert.equals( db.Subscription.manager.count( $user == bob ), 1 );
 
-		var subscriptionDistributions = SubscriptionService.getSubscriptionDistribs( subscription );
+		var subscriptionDistributions = SubscriptionService.getSubscriptionDistributions( subscription );
 		Assert.equals( 2 , subscriptionDistributions.length , "should have 2 distribs in the subscription");
 
 		var subscriptionAllOrders = SubscriptionService.getSubscriptionAllOrders( subscription );
@@ -314,7 +314,7 @@ class TestSubscriptions extends utest.Test
 		//-----------------------------------------------------------------------------------------------------------
 		Assert.equals( 0, db.Subscription.manager.count( $user == bob ) );
 		var subscription = SubscriptionService.createSubscription( bob, catalog, ordersData, null, new Date(2019, 5, 1, 0, 0, 0), catalog.endDate );
-		Assert.equals( 2, SubscriptionService.getSubscriptionDistribs(subscription).length );
+		Assert.equals( 2, SubscriptionService.getSubscriptionDistributions(subscription).length );
 		Assert.isTrue(subscription.isValidated);
 		var error = null;
 		try {
@@ -364,7 +364,7 @@ class TestSubscriptions extends utest.Test
 		}
 		Assert.equals( error, null );
 		Assert.equals( 2 , service.SubscriptionService.getSubscriptionDistribsNb( subscription ));
-		var subscriptionDistributions = SubscriptionService.getSubscriptionDistribs( subscription );
+		var subscriptionDistributions = SubscriptionService.getSubscriptionDistributions( subscription );
 		var subscriptionAllOrders = SubscriptionService.getSubscriptionAllOrders( subscription );
 		Assert.equals( subscriptionAllOrders.length, 2 * subscriptionDistributions.length );
 
@@ -463,8 +463,8 @@ class TestSubscriptions extends utest.Test
 
 		
 		//we should have 5 distribs
-		//SubscriptionService.getSubscriptionDistribs(sebSub).map(d -> trace("dist du "+d.date));
-		Assert.equals(SubscriptionService.getSubscriptionDistribs(sebSub).length , 5);
+		//SubscriptionService.getSubscriptionDistributions(sebSub).map(d -> trace("dist du "+d.date));
+		Assert.equals(SubscriptionService.getSubscriptionDistributions(sebSub).length , 5);
 		Assert.equals(sebSub.getTotalPrice(), (panier.price*5) );
 
 		//create a new MD out of subscriptions
@@ -485,7 +485,7 @@ class TestSubscriptions extends utest.Test
 
 		Assert.equals( distrib.date.toString().substr(0,10) , "2030-03-03" );
 		sebSub = Subscription.manager.get(sebSub.id);//re-get
-		var sebDistribs = SubscriptionService.getSubscriptionDistribs(sebSub);
+		var sebDistribs = SubscriptionService.getSubscriptionDistributions(sebSub);
 		Assert.equals(sebDistribs.length , 5);
 		Assert.equals(sebSub.getTotalPrice() , (panier.price*5) );
 		// trace(sebDistribs);
