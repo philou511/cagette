@@ -193,7 +193,7 @@ $$browserDetection()
 						<i class="icon icon-basket"></i> ::_("My order"):: : ::formatNum(basket.getOrdersTotal(1)):: ::currency()::
 					</a>				
 					::if hasShopMode && active && !amap.hasPayments()::
-						$$edit(Modifier cette commande,/contract/editVarOrders/::d.id::)
+						$$edit(Modifier cette commande,/contract/editVarOrders/::md.id::)
 					::end::
 				</div>
 				::else::
