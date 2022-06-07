@@ -639,7 +639,10 @@ class SubscriptionService
 		this.updateDefaultOrders( subscription, ordersData );
 		
 		//Email notification
-		sendSubscriptionCreatedEmail(subscription);
+		if(ordersData!=null && ordersData.length > 0){
+			//cannot send email if defaultOrder is not defined
+			sendSubscriptionCreatedEmail(subscription);
+		}
 
 		return subscription;
 	}

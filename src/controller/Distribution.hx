@@ -1122,7 +1122,7 @@ class Distribution extends Controller {
 	}
 
 	/**
-		Manage volunteer roles for the specified multidistrib
+		enable/disable volunteer roles for the specified multidistrib
 	**/
 	@tpl("form.mtt")
 	function doVolunteerRoles(distrib:db.MultiDistrib) {
@@ -1132,8 +1132,8 @@ class Distribution extends Controller {
 
 		// Get all the volunteer roles for the group and for the selected contracts
 		var allRoles = VolunteerService.getRolesFromGroup(distrib.getGroup());
-		var generalRoles = Lambda.filter(allRoles, function(role) return role.catalog == null);
-		var checkedRoles = new Array<String>();
+		var generalRoles = allRoles.filter(role -> role.catalog == null);
+		var checkedRoles = [];
 		var roleIds:Array<Int> = distrib.volunteerRolesIds != null ? distrib.volunteerRolesIds.split(",").map(Std.parseInt) : [];
 
 		// general roles
@@ -1147,7 +1147,7 @@ class Distribution extends Controller {
 		// display roles linked to active contracts in this distrib
 		for (distrib in distrib.getDistributions()) {
 			var cid = distrib.catalog.id;
-			var contractRoles = Lambda.filter(allRoles, function(role) return role.catalog != null && role.catalog.id == cid);
+			var contractRoles = allRoles.filter(role -> role.catalog != null && role.catalog.id == cid);
 			for (role in contractRoles) {
 				roles.push({label: role.name + " - " + distrib.catalog.vendor.name, value: Std.string(role.id)});
 				if (roleIds == null || Lambda.has(roleIds, role.id)) {
@@ -1155,6 +1155,13 @@ class Distribution extends Controller {
 				}
 			}
 		}
+
+		//display activated roles which should not be active
+		var unactivatedRoleIds = roleIds.filter( rid -> {
+			return checkedRoles.find(r -> r==Std.string(rid))==null;
+		});
+
+		// trace(unactivatedRoleIds);
 
 		var volunteerRolesCheckboxes = new sugoi.form.elements.CheckboxGroup("roles", "", roles, checkedRoles, true);
 		form.addElement(volunteerRolesCheckboxes);
@@ -1182,16 +1189,18 @@ class Distribution extends Controller {
 		var form = new sugoi.form.Form("volunteers");
 
 		var volunteerRoles = distrib.getVolunteerRoles();
+		var volunteers = distrib.getVolunteers();
+		
+
 		if (volunteerRoles == null) {
-			throw Error('/distribution/volunteerRoles/' + distrib.id, t._("You need to first select the volunteer roles for this distribution"));
+			throw Error('/distribution/volunteerRoles/${distrib.id}', t._("You need to first select the volunteer roles for this distribution"));
 		}
 
-		var members = Lambda.array(Lambda.map(app.user.getGroup().getMembers(), function(user) return {label: user.getName(), value: user.id}));
-		for (role in volunteerRoles) {
-			var selectedVolunteer = distrib.getVolunteerForRole(db.VolunteerRole.manager.get(role.id));
+		var members = app.user.getGroup().getMembers().array().map(user -> {label: user.getName(), value: user.id});
+		for (role in volunteerRoles) {			
+			var selectedVolunteer = distrib.getVolunteerForRole(role);
 			var selectedUserId = selectedVolunteer != null ? selectedVolunteer.user.id : null;
-			form.addElement(new IntSelect(Std.string(role.id), db.VolunteerRole.manager.get(role.id).name, members, selectedUserId, false,
-				t._("No volunteer assigned")));
+			form.addElement(new IntSelect(Std.string(role.id), role.name, members, selectedUserId, false, t._("No volunteer assigned")));
 		}
 
 		if (form.isValid()) {

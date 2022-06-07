@@ -1638,6 +1638,7 @@ class Admin extends controller.Controller {
 						var op = PaymentService.makePaymentOperation(sub.user,g,Check.TYPE,Math.abs(orderOp.amount),"Paiement créé automatiquement car souscription marquée comme payée",orderOp);
 						op.subscription = sub;
 						op.date = orderOp.date;
+						op.pending = false;
 						op.update();
 						
 						print("create order op "+orderOp.amount);

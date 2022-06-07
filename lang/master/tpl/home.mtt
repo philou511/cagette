@@ -358,7 +358,7 @@ $$browserDetection()
 		::if(md.extraHtml!=null)::
 		<div class="content" style="font-weight:normal;">
 			<div class="text-center">
-				::raw d.extraHtml::
+				::raw md.extraHtml::
 			</div>
 		</div>
 		::end::
