@@ -522,6 +522,7 @@ class SubscriptionAdmin extends controller.Controller
 
 					var op = PaymentService.makePaymentOperation(sub.user,catalog.group,paymentType,amount,label);
 					op.subscription = sub;
+					op.pending = false;
 					op.update();
 
 				}else{

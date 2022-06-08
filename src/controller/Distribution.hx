@@ -1160,8 +1160,11 @@ class Distribution extends Controller {
 		var unactivatedRoleIds = roleIds.filter( rid -> {
 			return checkedRoles.find(r -> r==Std.string(rid))==null;
 		});
-
-		// trace(unactivatedRoleIds);
+		for(rid in unactivatedRoleIds){
+			var role = allRoles.find( r -> r.id==rid);
+			roles.push({label: role.name +" (?)", value: Std.string(role.id)});
+			checkedRoles.push(Std.string(role.id));
+		}
 
 		var volunteerRolesCheckboxes = new sugoi.form.elements.CheckboxGroup("roles", "", roles, checkedRoles, true);
 		form.addElement(volunteerRolesCheckboxes);
