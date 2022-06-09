@@ -25,7 +25,7 @@
 					<th>Qté</th>
 					<th>Produit</th>
 				</tr>
-				::foreach o b.getOrders()::
+				::foreach o b.getTmpOrders()::
 				<tr>
 					<td>::o.quantity::</td>
 					<td>::o.product::</td>
@@ -33,7 +33,7 @@
 				::end::
 				<tr>
 					<th>Total</th>
-					<th>::b.getTotal():: ::currency()::</th>
+					<th>::b.getTmpTotal():: ::currency()::</th>
 				</tr>
 			</table>
 		</div>	

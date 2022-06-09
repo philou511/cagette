@@ -234,5 +234,16 @@ class Basket extends Object
 		}
 		return total;
 	}
+
+	public function getTmpOrders(){
+		var out = new Array<{product:db.Product,quantity:Float}>();
+		var data = this.getData();
+		for( o in data.products){
+			var p = db.Product.manager.get(o.productId,false);
+			if(p==null) continue;
+			out.push({product:p , quantity : o.quantity});
+		}
+		return out;
+	}
 	
 }
