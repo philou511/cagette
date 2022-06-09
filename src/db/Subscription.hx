@@ -14,7 +14,7 @@ class Subscription extends Object {
 	@:relation(catalogId) public var catalog : db.Catalog;
 	public var startDate : SDateTime;
 	public var endDate : SDateTime;
-	@hideInForms public var isPaid : SBool;
+	// @hideInForms public var isPaid : SBool;
 	public var defaultOrders : SNull<SText>;
 	public var absentDistribIds : SNull<SText>;
 

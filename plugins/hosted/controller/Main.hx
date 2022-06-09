@@ -182,7 +182,7 @@ class Main extends controller.Controller
 	/**
 	 * Group page
 	 */
-	@admin @tpl("plugin/pro/hosted/default.mtt")
+	/*@admin @tpl("plugin/pro/hosted/default.mtt")
 	public function doDefault() {
 		
 		var groups = db.Group.manager.unsafeObjects("select g.name,g.flags, g.groupType, gs.* from `Group` g,GroupStats gs where g.id=gs.groupId ", false);		
@@ -202,7 +202,7 @@ class Main extends controller.Controller
 		view.members = members;
 		view.activeCpro = acp;
 		
-	}
+	}*/
 	
 	
 	

@@ -1643,14 +1643,14 @@ class Admin extends controller.Controller {
 
 
 			for ( cat in g.getActiveContracts()){
-				if(cat.hasPayments) continue;
+				if(untyped cat.hasPayments) continue;
 				print(cat.name);
 				for (sub in SubscriptionService.getCatalogSubscriptions(cat)){
 					print("----sub "+sub.id);
 					//create payements operation
 					var orderOp = SubscriptionService.createOrUpdateTotalOperation(sub);
 
-					if(sub.isPaid){
+					if(untyped sub.isPaid){
 						if (db.Operation.manager.count( $subscription == sub && $type==Payment )>0 ) continue;
 
 						var op = PaymentService.makePaymentOperation(sub.user,g,Check.TYPE,Math.abs(orderOp.amount),"Paiement créé automatiquement car souscription marquée comme payée",orderOp);

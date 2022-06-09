@@ -1162,6 +1162,7 @@ class Distribution extends Controller {
 		});
 		for(rid in unactivatedRoleIds){
 			var role = allRoles.find( r -> r.id==rid);
+			if(role==null) continue;
 			roles.push({label: role.name +" (?)", value: Std.string(role.id)});
 			checkedRoles.push(Std.string(role.id));
 		}

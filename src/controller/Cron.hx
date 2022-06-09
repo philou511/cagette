@@ -152,7 +152,7 @@ class Cron extends Controller
 
 		//Send warnings about subscriptions that are not validated yet and for which there is a distribution that starts in the right time range.
 		//  /!\ subscription validation is needed only with catalog with payments
-		var task = new TransactionWrappedTask( "Subscriptions to validate alert emails");
+		/*var task = new TransactionWrappedTask( "Subscriptions to validate alert emails");
 		task.setTask(function() {
 			
 			var fromNow = now.setHourMinute( now.getHours(), 0 );
@@ -200,7 +200,7 @@ class Cron extends Controller
 			}
 			
 		});		
-		task.execute(!App.config.DEBUG);
+		task.execute(!App.config.DEBUG);*/
 
 		//Distribution time notifications
 		var task = new TransactionWrappedTask("Distrib notifications");

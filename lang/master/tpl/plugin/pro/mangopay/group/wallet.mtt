@@ -37,7 +37,7 @@
                             ::if(payout.hasSucceeded())::
                                 <i class="icon icon-check"></i> Virement effectué
                             ::elseif(payout._cachedDatas.Status=="CREATED")::
-                            <i class="icon icon-clock"></i> Virement en attente
+                                <i class="icon icon-clock"></i> Virement en attente
                             ::else::
                                 Annulé                                 
                                 <a href="?token=::token::&md=::md.id::" class="btn btn-primary btn-sm">Retenter le virement</a>                                    
