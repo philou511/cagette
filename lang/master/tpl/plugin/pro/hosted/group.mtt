@@ -12,6 +12,8 @@
 			::end::</b>
 		</p>
 
+		<p>Actif : $$bool(::groupStats.active::)</p>
+
 		<p>
 
 		créé le : ::group.cdate::<br/>

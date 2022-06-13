@@ -195,4 +195,66 @@ class Contract extends Controller
 		
 		view.form = form;
 	}
+
+	/**
+	* Edit var orders for shop mode without payments.
+	*/
+	@logged @tpl("contract/editVarOrders.mtt")
+	function doEditVarOrders(distrib:db.MultiDistrib) {
+		
+		if ( app.user.getGroup().hasPayments() || !app.user.getGroup().hasShopMode() ) {
+			//when payments are active, the user cannot modify his/her order
+			throw Redirect("/");
+		}
+		
+		// cannot edit order if date is in the past
+		if (Date.now().getTime() > distrib.getDate().getTime()) {
+			
+			var msg = t._("This delivery has already taken place, you can no longer modify the order.");
+			if (app.user.isContractManager()) msg += t._("<br/>As the manager of the catalog you can modify the order from this page: <a href='/contractAdmin'>Catalog management</a>");
+			
+			throw Error("/account", msg);
+		}
+		
+		// Il faut regarder le contrat de chaque produit et verifier si le contrat est toujours ouvert à la commande.		
+		/*var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+		var cids = Lambda.map(app.user.getGroup().getActiveContracts(true), function(c) return c.id);
+		var distribs = db.Distribution.manager.search(($catalogId in cids) && $date >= d1 && $date <=d2 , false);
+		var orders = db.UserOrder.manager.search($userId==app.user.id && $distributionId in Lambda.map(distribs,function(d)return d.id)  );*/
+		var orders = distrib.getUserBasket(app.user).getOrders(Catalog.TYPE_VARORDER);
+		view.orders = service.OrderService.prepare(orders);
+		view.date = distrib.getDate();
+		
+		//form check
+		if (checkToken()) {
+			
+			var orders_out = [];
+
+			for (k in app.params.keys()) {
+				var param = app.params.get(k);
+				if (k.substr(0, "product".length) == "product") {
+					
+					//trouve le produit dans userOrders
+					var pid = Std.parseInt(k.substr("product".length));
+					var order = Lambda.find(orders, function(uo) return uo.product.id == pid);
+					if (order == null) throw t._("Error, could not find the order");
+					
+					var q = Std.parseInt(param);					
+					
+					var quantity = Math.abs( q==null?0:q );
+
+					if ( order.distribution.canOrderNow() ) {
+						//met a jour la commande
+						var o = OrderService.edit(order, quantity);
+						if(o!=null) orders_out.push( o );
+					}					
+				}
+			}
+			
+			app.event(MakeOrder(orders_out));
+				
+			throw Ok("/history", t._("Your order has been updated"));
+		}
+	}
 }
