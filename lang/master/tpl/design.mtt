@@ -101,7 +101,7 @@
 			
 		::end::
 		
-		<!-- Breadcrumb -->
+		<!-- Breadcrumb 
 		<div class="row">
 			<div class="col-md-12">
 				<ol class="breadcrumb">
@@ -111,7 +111,7 @@
 					::end::
 				</ol>
 			</div>
-		</div>
+		</div>-->
 		
 		<!-- Notifications -->
 		<div class="row">

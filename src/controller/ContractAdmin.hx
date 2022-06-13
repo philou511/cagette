@@ -2,6 +2,8 @@ package controller;
 import db.Basket.BasketStatus;
 import connector.db.RemoteCatalog;
 import service.ProductService;
+import service.CatalogService;
+import service.SubscriptionService;
 import db.Catalog;
 import tink.core.Error;
 import db.UserOrder;
@@ -80,6 +82,84 @@ class ContractAdmin extends Controller
 		}
 
 		checkToken();
+	}
+
+	/**
+	 * Edit a contract/catalog
+	 */
+	 @logged @tpl("form.mtt")
+	 function doEdit( catalog : db.Catalog ) {
+		 
+		view.category = 'contractadmin';
+		if (!app.user.isContractManager( catalog )) throw Error('/', t._("Forbidden action"));
+
+		view.title = t._("Edit catalog \"::contractName::\"", { contractName : catalog.name } );
+
+		var group = catalog.group;
+		var currentContact = catalog.contact;
+		var previousOrderStartDays = catalog.orderStartDaysBeforeDistrib;
+		var previousOrderEndHours = catalog.orderEndHoursBeforeDistrib;
+		var messages = new Array<String>() ;
+
+		var form = CatalogService.getForm(catalog);
+		
+		app.event( EditContract( catalog, form ) );
+		
+		if ( form.checkToken() ) {
+
+			form.toSpod( catalog );
+		
+			try {
+
+				CatalogService.checkFormData(catalog,  form );
+				catalog.update();
+
+				if(!catalog.group.hasShopMode()){
+					
+					//Update future distribs start and end orders dates
+					var newOrderStartDays = catalog.orderStartDaysBeforeDistrib != previousOrderStartDays ? catalog.orderStartDaysBeforeDistrib : null;
+					var newOrderEndHours = catalog.orderEndHoursBeforeDistrib != previousOrderEndHours ? catalog.orderEndHoursBeforeDistrib : null;
+					var msg = CatalogService.updateFutureDistribsStartEndOrdersDates( catalog, newOrderStartDays, newOrderEndHours );
+					if(msg!=null) messages.push(msg);  
+
+					//payements : update or create operations
+					// for ( sub in SubscriptionService.getCatalogSubscriptions(catalog)){
+					// 	SubscriptionService.createOrUpdateTotalOperation( sub );
+					// }
+
+				}
+				
+				//update rights
+				if ( catalog.contact != null && (currentContact==null || catalog.contact.id!=currentContact.id) ) {
+					var ua = db.UserGroup.get( catalog.contact, catalog.group, true );
+					ua.giveRight(ContractAdmin(catalog.id));
+					ua.giveRight(Messages);
+					ua.giveRight(Membership);
+					ua.update();
+					
+					//remove rights to old contact
+					if (currentContact != null) {
+						var x = db.UserGroup.get(currentContact, catalog.group, true);
+						if (x != null) {
+							x.removeRight(ContractAdmin(catalog.id));
+							x.update();
+						}
+					}
+				}
+
+			} catch ( e : Error ) {
+				throw Error( '/contractAdmin/edit/' + catalog.id, e.message );
+			}
+			
+			
+			var text = "Catalogue mis à jour.";
+			if(messages.length > 0){
+				text += "<br/>" + messages.join(". ");
+			} 
+			throw Ok( "/contractAdmin/view/" + catalog.id,  text );
+		}
+		 
+		view.form = form;
 	}
 
 	/**
@@ -532,7 +612,7 @@ class ContractAdmin extends Controller
 				if ( nc.type == Catalog.TYPE_VARORDER ) {
 
 					nc.orderStartDaysBeforeDistrib = catalog.type == Catalog.TYPE_VARORDER ? catalog.orderStartDaysBeforeDistrib : 365;
-					nc.requiresOrdering = catalog.requiresOrdering;
+					// nc.requiresOrdering = catalog.requiresOrdering;
 					nc.distribMinOrdersTotal = catalog.distribMinOrdersTotal;
 					nc.catalogMinOrdersTotal = catalog.catalogMinOrdersTotal;
 					// var defaultAllowedOverspend = app.user.getGroup().hasPayments() ? 10 : 500;
@@ -696,7 +776,7 @@ class ContractAdmin extends Controller
 	}
 
 	function doSubscriptions( dispatch : haxe.web.Dispatch ) {
-		dispatch.dispatch( new controller.Subscriptions() );
+		dispatch.dispatch( new controller.SubscriptionAdmin() );
 	}
 	
 	@tpl("contractadmin/stats.mtt")
@@ -746,20 +826,6 @@ class ContractAdmin extends Controller
 		
 	}
 	
-	
-	
-	/**
-	 * Efface une commande
-	 * @param	uc
-	 */
-	function doDelete(uc:db.UserOrder) {
-		if (!app.user.canManageContract(uc.product.catalog)) throw Error("/", t._("Forbidden access"));
-		uc.lock();
-		uc.delete();
-		throw Ok('/contractAdmin/orders/'+uc.product.catalog.id, t._("The catalog has been canceled"));
-	}
-	
-
 	@tpl("contractadmin/selectDistrib.mtt")
 	function doSelectDistrib(c:db.Catalog, ?args:{old:Bool}) {
 		view.nav.push("orders");
@@ -780,6 +846,95 @@ class ContractAdmin extends Controller
 		view.tmpBaskets = db.Basket.manager.search($multiDistrib == md && $status==Std.string(BasketStatus.OPEN),false);
 	}
 
+
+	/**
+		the catalog admin updates absences options
+	**/
+	@tpl("contractadmin/form.mtt")
+	function doAbsences(catalog:db.Catalog){
+		view.category = 'contractadmin';
+		view.nav.push("absences");
+		if (!app.user.isContractManager( catalog )) throw Error('/', t._("Forbidden action"));
+
+		view.title = 'Période d\'absences du contrat \"${catalog.name}\"';
+
+		var form = new sugoi.form.Form("absences");
+	
+		var html = "<div class='alert alert-warning'><p><i class='icon icon-info'></i> 
+		Vous pouvez définir une période pendant laquelle les membres pourront choisir d'être absent.<br/>
+		<b>Saisissez la période d'absence uniquement après avoir défini votre planning de distribution définitif sur toute la durée du contrat.</b><br/>
+		<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
+		</p></div>";
+		
+		form.addElement( new sugoi.form.elements.Html( 'absences', html, '' ) );
+		form.addElement(new IntInput("absentDistribsMaxNb","Nombre maximum d'absences autorisées",catalog.absentDistribsMaxNb,true));
+		var start = catalog.absencesStartDate==null ? catalog.startDate : catalog.absencesStartDate;
+		var end = catalog.absencesEndDate==null ? catalog.endDate : catalog.absencesEndDate;
+		form.addElement(new CagetteDatePicker("absencesStartDate","Début de la période d'absence",start));
+		form.addElement(new CagetteDatePicker("absencesEndDate","Fin de la période d'absence",end));
+		
+		if ( form.checkToken() ) {
+			catalog.lock();
+			form.toSpod( catalog );
+			var absencesStartDate : Date = form.getValueOf('absencesStartDate');
+			var absencesEndDate : Date = form.getValueOf('absencesEndDate');
+			catalog.absencesStartDate = new Date( absencesStartDate.getFullYear(), absencesStartDate.getMonth(), absencesStartDate.getDate(), 0, 0, 0 );
+			catalog.absencesEndDate = new Date( absencesEndDate.getFullYear(), absencesEndDate.getMonth(), absencesEndDate.getDate(), 23, 59, 59 );
+			catalog.update();
+		
+			try{
+				
+				CatalogService.checkAbsences(catalog);
+
+			} catch ( e : Error ) {
+				throw Error( '/contractAdmin/absences/'+catalog.id, e.message );
+			}
+			
+			throw Ok( "/contractAdmin/view/" + catalog.id,  "Catalogue mis à jour." );
+		}
+		 
+		view.form = form;
+		view.c = catalog;
+		
+	}
+
+	/**
+	 * Delete a catalog (... and its products, orders & distributions)
+	 */
+	@logged
+	function doDelete(c:db.Catalog) {
+		
+		if (!app.user.canManageAllContracts()) throw Error("/contractAdmin", t._("Forbidden access"));
+		
+		if (checkToken()) {
+			c.lock();
+			
+			//check if there is orders in this contract
+			var pids = c.getProducts().map(p -> p.id);
+			var orders = db.UserOrder.manager.search($productId in pids);
+			var qt = 0.0;
+			for ( o in orders) qt += o.quantity; //there could be "zero c qt" orders
+			if (qt > 0 && !c.isDemoCatalog()) {
+				throw Error("/contractAdmin", t._("You cannot delete this catalog because some orders are linked to it."));
+			}
+			
+			//remove admin rights and delete contract	
+			if(c.contact!=null){
+				var ua = db.UserGroup.get(c.contact, c.group, true);
+				if (ua != null) {
+					ua.removeRight(ContractAdmin(c.id));
+					ua.update();	
+				}			
+			}
+			
+			app.event(DeleteContract(c));
+			
+			c.delete();
+			throw Ok("/contractAdmin", t._("Catalog deleted"));
+		}
+		
+		throw Error("/contractAdmin", t._("Token error"));
+	}
 
 	
 	

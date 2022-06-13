@@ -2753,10 +2753,6 @@ msgstr ""
 msgid "Duty period details"
 msgstr ""
 
-#: ../lang/master/tpl/home.mtt:9651 ../lang/master/tpl/distribution/volunteersSummary.mtt:1136 ../lang/master/tpl/distribution/volunteersCalendar.mtt:3621
-msgid "Unsubscribe"
-msgstr ""
-
 #: ../lang/master/tpl/home.mtt:9976
 msgid "We need <b>::rolesNum::</b> volunteer(s) for the following roles:"
 msgstr ""
@@ -3036,10 +3032,6 @@ msgstr ""
 
 #: ../lang/master/tpl/distribution/validate.mtt:1885
 msgid "To be validated"
-msgstr ""
-
-#: ../lang/master/tpl/distribution/volunteersSummary.mtt:1354 ../lang/master/tpl/distribution/volunteersCalendar.mtt:3924
-msgid "Join"
 msgstr ""
 
 #: ../lang/master/tpl/distribution/default.mtt:97 ../lang/master/tpl/contractadmin/distributions.mtt:42 ../lang/master/tpl/contractadmin/design.mtt:853 ../lang/master/tpl/design.mtt:3568

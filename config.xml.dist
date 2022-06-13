@@ -9,7 +9,7 @@
 	webmaster_email = "mon_email@mon_domaine.fr"
 	
 	database="mysql://docker:docker@mysql/db"
-	sqllog="1"
+	sqllog="0"
 	
 	debug="1"
 	cache="0"

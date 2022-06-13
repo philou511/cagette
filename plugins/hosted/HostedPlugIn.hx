@@ -34,8 +34,7 @@ class HostedPlugIn extends PlugIn implements IPlugIn{
 			case Nav(nav,name,id) :
 				switch(name) {
 					case "admin":
-						nav.push({id:"hosted",name:"Utilisateurs", link:"/p/hosted/user",icon:"user"});
-						nav.push({id:"hosted",name:"Groupes", link:"/p/hosted",icon:"users"});
+						nav.push({id:"hosted",name:"Utilisateurs", link:"/p/hosted/user",icon:"user"});						
 						nav.push({id:"courses",name:"Formations", link:"/p/hosted/course",icon:"student"});
 						nav.push({id:"ref",name:"Référencement", link:"/p/hosted/seo",icon:"cog"});
 				}

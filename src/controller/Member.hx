@@ -1,4 +1,5 @@
 package controller;
+import db.User.UserFlags;
 import Common;
 import db.Catalog;
 import db.MultiDistrib;
@@ -63,6 +64,20 @@ class Member extends Controller
 		view.subscriptionService = service.SubscriptionService;
 		view.subscriptionsByCatalog = SubscriptionService.getActiveSubscriptionsByCatalog( member, app.user.getGroup() );
 
+		//notifications
+		var notifications = [];
+		var trans = App.getTranslationArray();
+		for ( v in UserFlags.createAll()){
+			var vs = Std.string(v);
+			notifications.push({
+				id: v,
+				name:trans.get(vs) == null ? vs : trans.get(vs),
+				active:member.flags.has(v)
+			});
+
+		}
+		view.notifications = notifications;
+
 		checkToken(); //to insert a token in tpl
 	
 	}
@@ -92,7 +107,7 @@ class Member extends Controller
 	 */
 	@tpl('form.mtt')
 	function doEdit(member:db.User) {
-		
+		/*
 		if (member.isAdmin() && !app.user.isAdmin()) throw Error("/", t._("You cannot modify the account of an administrator"));
 		
 		var form = db.User.getForm(member);
@@ -165,7 +180,7 @@ class Member extends Controller
 		}
 		
 		view.form = form;
-		
+		*/
 	}
 	
 	/**

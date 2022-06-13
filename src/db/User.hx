@@ -226,13 +226,13 @@ class User extends Object {
 	}
 	
 	public function getName() {
-		return lastName + " " + firstName;
+		return lastName.toUpperCase() + " " + firstName;
 	}
 	
 	public function getCoupleName() {
-		var n = lastName + " " + firstName;
+		var n = lastName.toUpperCase() + " " + firstName;
 		if (lastName2 != null) {
-			n = n + " / " + lastName2 + " " + firstName2;
+			n = n + " / " + lastName2.toUpperCase() + " " + firstName2;
 		}
 		return n;
 	}

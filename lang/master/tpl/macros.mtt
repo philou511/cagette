@@ -116,7 +116,7 @@
 		::if b.next::<a href="::url::/?page=::b.next::">::_("Next")::</a>::else:: ::_("Next"):: ::end:: &gt;
 	</macro>
 	
-	<macro name="nullSafe(text)">::if text==null::::else::::text::::end::</macro>
+	<macro name="nullSafe(text)">::if text==null::	::else::::raw text::::end::</macro>
 	
 	<macro name="edit(text,url)">		
 		<a href="::url::" class="btn btn-default btn-sm">
@@ -206,17 +206,134 @@
     
     <macro name="placeOsm(place,unique)">
         <i class="icon icon-map-marker"></i>		
-		<a onclick="neo.createNeoModule('::unique::', 'place-dialog', {placeId: ::place.id::})">::place::</a>
-		<br/>
-		<span class="address">
-			$$nullSafe(::place.address1::)
-			$$nullSafe(::place.address2::)
-			$$nullSafe(::place.zipCode::)
-			$$nullSafe(::place.city::)
-        </span>
+		<a onclick="neo.createNeoModule('::unique::', 'place-dialog', {placeId: ::place.id::})">::place::</a>		
+		
         <div style="width: 0px; height: 0px; overflow: hidden">
             <span id="::unique::"></span>	
         </div>
+	</macro>
+
+	<macro name="subscriptionBalance(sub)">
+        ::set balance = sub.getBalance()::
+		::if balance < 0::
+			::set color = "#d9534f"::
+		::else::
+			::set color = "#84bd55"::
+		::end::
+		<a href="/history/subscriptionPayments/::sub.id::" style="color: ::color::;"><i class="icon icon-euro"></i> Solde : ::balance::€</a>
+	</macro>
+
+	<macro name="subscription(subscription)">
+		::set catalog = subscription._catalog::
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					::if catalog.isVariableOrdersCatalog()::
+					<i class="icon icon-basket"></i>
+					::else::
+					<i class="icon icon-refresh"></i>
+					::end::
+
+					::catalog.name:: - <a href="::catalog._vendor.getLink()::" target="_blank">
+						::catalog._vendor.name::
+					</a>
+				</h3>
+			</div>
+			<div class="panel-body">
+
+				::if subscription._user2 != null::
+					<p>
+						<a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
+						<br/> ( alterné avec <a href="/member/view/::subscription._user2.id::" target="_blank">::subscription._user2.getName()::</a> )
+					</p>
+				::end::
+				
+				<div class="col-md-6">
+					<div class="panel panel-default subPanel">
+						<div class="panel-heading">Engagement</div>
+						<div class="panel-body">
+							::set orderName = subscriptionService.getSubscriptionConstraints(subscription)::
+							::if orderName == null::
+								Pas de contraintes								
+							::else::
+								::raw orderName::
+							::end::
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="panel panel-default subPanel">
+						<div class="panel-heading">Période d'engagement</div>
+						<div class="panel-body">
+							du ::dDate(subscription.startDate)::<br/>
+							au ::dDate(subscription.endDate)::
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="panel panel-default subPanel">
+						<div class="panel-heading">Jours d'absence</div>
+						<div class="panel-body">
+							::set absences = subscription.getAbsentDistribs()::
+							::if absences.length>0::							
+								::foreach d absences::
+									::dDate(d.date)::<br/>
+								::end::							
+							::else::
+							<span class="disabled">Pas d'absences</span>
+							::end::
+
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="panel panel-default subPanel">
+						<div class="panel-heading">Distributions</div>
+						<div class="panel-body">
+							::subscriptionService.getSubscriptionDistribsNb(subscription, null, false):: sur la période d'engagement
+							::if absences.length > 0::
+								<br/>avec ::absences.length:: jour(s) d'absence
+								<br/>soit ::subscriptionService.getSubscriptionDistribsNb(subscription, null, true):: distributions effectives.
+							::end::
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="panel panel-default subPanel">
+						<div class="panel-heading">Total commandé</div>
+						<div class="panel-body">
+							::subscription.getTotalPrice()::&nbsp;::currency()::
+							<a href="/history/subscriptionOrders/::subscription.id::" class="btn btn-default btn-xs">
+								Commandes
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="panel panel-default subPanel">
+						<div class="panel-heading">Solde</div>
+						::set balance = subscription.getPaymentsTotal() - subscription.getTotalPrice()::
+						::if balance < 0::
+							::set color = "#d9534f"::
+						::else::
+							::set color = "#84bd55"::
+						::end::
+						<div class="panel-body" >
+							<span style="color: ::color::">::formatNum(balance)::&nbsp;::currency()::</span>
+							<a href="/history/subscriptionPayments/::subscription.id::" class="btn btn-default btn-xs">
+								Paiements
+							</a>							
+						</div>
+					</div>
+				</div>		
+			</div>
+		</div>
 	</macro>
 	
 	<macro name="today(dow,d,m,y,h,place)">
@@ -271,69 +388,69 @@
 	
 	
 	<macro name="operation(t)">
-	::set x = t.getTypeIndex()::
-	<!--::if x==2:: ::set class="text-right":: ::end:: -->
-	<td class="::class::">
-		::if x==0::
-		<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::_("Order")::
-		::elseif x==1::
-		<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::raw _("CSA&nbsp;contract")::
-		::elseif x==2::
-		<!--<span style="margin-left:48px;">::_("Payment"):: ::_(t.getPaymentType())::</span>-->
-		<i class="icon icon-euro" aria-hidden="true"></i> ::t.getPaymentTypeName()::
-		::else::						
-		<i class="icon icon-user" aria-hidden="true"></i> Adhésion
-		::end::
-	</td>
-	
-	<td>
-		::if t.pending==true::			
-			<i class="fa fa-circle-thin" style="color:#CCC;" aria-hidden="true"></i>			
-		::else::		
-			<i class="fa fa-check" aria-hidden="true"></i>
-		::end::
-	</td>
-	<td style="font-size:1em;">
-		
-		::t.name::<br/>
-
-		::if x==2 && t.pending==true::		
-			::if(t.getPaymentType()=="check")::
-				<span style="color:red;">::_("Check to be given at the collection of products")::</span>
-			::elseif(t.getPaymentType()=="cash")::
-				<span style="color:red;">::_("Cash to be given at the collection of products")::</span>
-			::elseif(t.getPaymentType()=="transfer")::
-				<span style="color:red;">::_("This transfer must be validated by a coordinator")::</span>		
-			::elseif(t.getPaymentType()=="onthespot")::
-				<span style="color:red;">::_("You need to pay on the spot at the collection of products")::</span>
+		::set x = t.getTypeIndex()::
+		<!--::if x==2:: ::set class="text-right":: ::end:: -->
+		<td class="::class::">
+			::if x==0::
+			<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::_("Order")::
+			::elseif x==1::
+			<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::raw _("CSA&nbsp;contract")::
+			::elseif x==2::
+			<!--<span style="margin-left:48px;">::_("Payment"):: ::_(t.getPaymentType())::</span>-->
+			<i class="icon icon-euro" aria-hidden="true"></i> ::t.getPaymentTypeName()::
+			::else::						
+			<i class="icon icon-user" aria-hidden="true"></i> Adhésion
 			::end::
+		</td>
+		
+		<td>
+			::if t.pending==true::			
+				<i class="fa fa-circle-thin" style="color:#CCC;" aria-hidden="true"></i>			
+			::else::		
+				<i class="fa fa-check" aria-hidden="true"></i>
+			::end::
+		</td>
+		<td style="font-size:1em;">
 			
-		::else::
-			<span style="font-size:0.90em;color:#AAA;">::sDate(t.date)::</span>
-		::end::
+			::t.name::<br/>
 
-		::set sub = t._subscription:: 
-		::if(sub!=null)::
-			<br/><a href="/contractAdmin/subscriptions/payments/::sub.id::">Souscription ::sub._catalog.name::</a>
-		::end::
-	</td>
-	<td class="text-right">
-		::if(t.amount<0)::
-			-
-		::end::
-	</td>
-	<td>
-		::if(t.amount<0)::
-			::formatNum(0-t.amount)::&nbsp;::currency()::
-		::else::
-			::formatNum(t.amount)::&nbsp;::currency()::
-		::end::
-	</td>
-	::set class=""::
-	</macro>
+			::if x==2 && t.pending==true::		
+				::if(t.getPaymentType()=="check")::
+					<span style="color:red;">::_("Check to be given at the collection of products")::</span>
+				::elseif(t.getPaymentType()=="cash")::
+					<span style="color:red;">::_("Cash to be given at the collection of products")::</span>
+				::elseif(t.getPaymentType()=="transfer")::
+					<span style="color:red;">::_("This transfer must be validated by a coordinator")::</span>		
+				::elseif(t.getPaymentType()=="onthespot")::
+					<span style="color:red;">::_("You need to pay on the spot at the collection of products")::</span>
+				::end::
+				
+			::else::
+				<span style="font-size:0.90em;color:#AAA;">::sDate(t.date)::</span>
+			::end::
 
-	<macro name="back()">	
-	<a href="#" onclick="window.history.back();" class="btn btn-default btn-sm"><i class="icon icon-chevron-left"></i> ::_("Back")::</a>
+			::set sub = t._subscription:: 
+			::if(sub!=null)::
+				<br/><a href="/contractAdmin/subscriptions/payments/::sub.id::">Souscription ::sub._catalog.name::</a>
+			::end::
+		</td>
+		<td class="text-right">
+			::if(t.amount<0)::
+				-
+			::end::
+		</td>
+		<td>
+			::if(t.amount<0)::
+				::formatNum(0-t.amount)::&nbsp;::currency()::
+			::else::
+				::formatNum(t.amount)::&nbsp;::currency()::
+			::end::
+		</td>
+		::set class=""::
+		</macro>
+
+		<macro name="back()">	
+		<a href="#" onclick="window.history.back();" class="btn btn-default btn-sm"><i class="icon icon-chevron-left"></i> ::_("Back")::</a>
 	</macro>
 
 	<macro name="empty(txt)">	
@@ -549,10 +666,10 @@
 		
 		<script type="text/javascript">
 		var _paq = window._paq = window._paq || [];
-		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-		::if(user!=null):: _paq.push(['setUserId', '::user.id::']); ::end::
+		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */		
 		_paq.push(['trackPageView']);
 		_paq.push(['enableLinkTracking']);
+		::if(user!=null):: _paq.push(['setUserId', '::user.id::']); ::end::
 		(function() {
 			var u="https://cagette.matomo.cloud/";
 			_paq.push(['setTrackerUrl', u+'matomo.php']);

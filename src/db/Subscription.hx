@@ -1,8 +1,10 @@
 package db;
+import Common;
 import db.Operation.OperationType;
+import service.SubscriptionService;
 import sys.db.Object;
 import sys.db.Types;
-import Common;
+import tink.core.Error;
 
 class Subscription extends Object {
 
@@ -13,47 +15,34 @@ class Subscription extends Object {
 	public var startDate : SDateTime;
 	public var endDate : SDateTime;
 	@hideInForms public var isPaid : SBool;
-	var defaultOrders : SNull<SText>;
-	var absentDistribIds : SNull<SText>;
+	public var defaultOrders : SNull<SText>;
+	public var absentDistribIds : SNull<SText>;
 
 	public function populate() {		
 		return App.current.user.getGroup().getMembersFormElementData();
 	}
 
 	public function paid() : Bool {
-
 		if( this.id == null ) return false;
-
-		if ( this.catalog.group.hasPayments() ) {
-
-			var totalPrice = getTotalPrice();
-			return 0 < totalPrice && totalPrice <= getPaymentsTotal();
-		}
-		else {
-
-			return this.isPaid;
-		}
+		return getBalance()>=0;
 	}
 
+	/**
+		get total cost of subscription orders
+	**/
 	public function getTotalPrice() : Float {
-
 		if( this.id == null ) return 0;
-
 		var totalPrice : Float = 0;
 		var orders = db.UserOrder.manager.search( $subscription == this, false );
 		for ( order in orders ) {
-
 			totalPrice += Formatting.roundTo( order.quantity * order.productPrice, 2 );
 		}
-
 		return Formatting.roundTo( totalPrice, 2 );
 	}
 
 	public function getTotalOperation() : db.Operation {
-
 		if( this.id == null ) return null;
-
-		return db.Operation.manager.select( $user == this.user && $subscription == this && $type == SubscriptionTotal, true );
+		return db.Operation.manager.select( $user == this.user && $subscription == this && $type == SubscriptionTotal, false );
 	}
 
 	/**
@@ -69,28 +58,27 @@ class Subscription extends Object {
 		return Formatting.roundTo( paymentsTotal, 2 );
 	}
 
+	/**
+		get subscription balance
+	**/
 	public function getBalance() : Float {
 
 		if( this.id == null ) return 0;
 
-		var total : Float = 0;
+		var total = 0.0;
 		var totalOperation = getTotalOperation();
 		if ( totalOperation != null ) total = totalOperation.amount;
 
 		return Formatting.roundTo( getPaymentsTotal() + total, 2 );
 	}
 
-	public function setDefaultOrders( defaultOrders : Array<{ productId:Int, quantity:Float }> ) {
-		this.defaultOrders = haxe.Json.stringify( defaultOrders );
-	}	
-	
-	public function getDefaultOrders( ?productId : Int ) : Array<{ productId:Int, quantity:Float }> {
+	public function getDefaultOrders( ?filterByProductId : Int ) : Array<CSAOrder> {
 
 		if ( this.defaultOrders == null ) return [];
 		
-		var defaultOrders : Array<{ productId:Int, quantity:Float }> = haxe.Json.parse( this.defaultOrders );
-		if ( productId != null ) {
-			return [ defaultOrders.find( order -> return order.productId == productId ) ];
+		var defaultOrders : Array<CSAOrder> = haxe.Json.parse( this.defaultOrders );
+		if ( filterByProductId != null ) {
+			return [ defaultOrders.find( order -> return order.productId == filterByProductId ) ];
 		}
 
 		return defaultOrders;
@@ -137,35 +125,15 @@ class Subscription extends Object {
 		return label;
 	}
 
-	/**
-		set subscriptions absence distributions
-	**/
-	public function setAbsences( distribIds:Array<Int> ) {
-
-		//check there is no duplicates
-		if(tools.ArrayTool.deduplicate(distribIds).length != distribIds.length){
-			throw new tink.core.Error(500,"Vous ne pouvez pas choisir deux fois la même distribution");
-		}
-
-		if( distribIds != null && distribIds.length != 0 ) {
-			distribIds.sort( function(b, a) { return  a < b ? 1 : -1; } );
-			this.absentDistribIds = distribIds.join(',');
-		} else {
-			this.absentDistribIds = null;
-		}
-	}
+	
 
 	public function getAbsencesNb():Int {
-
-		/*if ( this.absentDistribIds == null ) return 0;
-		var distribIds = this.absentDistribIds.split(',');
-		if ( this.catalog.absentDistribsMaxNb < distribIds.length ) {
-			return this.catalog.absentDistribsMaxNb;
-		}
-		return distribIds.length;*/
 		return getAbsentDistribIds().length;
 	}
 	
+	/**
+		get chosen absence distribs of this subscription
+	**/
 	public function getAbsentDistribIds() : Array<Int> {
 
 		if ( this.absentDistribIds == null ) return [];
@@ -182,20 +150,23 @@ class Subscription extends Object {
 		get subscription absence distribs
 	**/
 	public function getAbsentDistribs() : Array<db.Distribution> {
-
 		var absentDistribIds = getAbsentDistribIds();
 		if ( absentDistribIds == null ) return [];
 		return db.Distribution.manager.search($id in absentDistribIds,false).array();
 	}
 
 	/**
-		get subscription POSSIBLE absence distribs
+		get subscription POSSIBLE absence distribs, including closed distributions
 	**/
-	public function getPossibleAbsentDistribs() : Array<db.Distribution> {
+	public function getPossibleAbsentDistribs() : Array<db.Distribution>
+	{
+		if (this.catalog.absencesStartDate == null) return [];
+
 		//get all subscription distribs
-		var subDistributions = db.Distribution.manager.search( $catalog == this.catalog && $date >= this.startDate && $end <= this.endDate, { orderBy : date }, false );
-		var out = [];
+		var subDistributions = db.Distribution.manager.search( $catalog == this.catalog && $date >= this.startDate && $end <= this.endDate, { orderBy:date }, false );
+		
 		//keep only those who are in the absence period
+		var out = [];		
 		for( d in subDistributions ){
 			if(d.date.getTime() >= this.catalog.absencesStartDate.getTime()){
 				if(d.date.getTime() <= this.catalog.absencesEndDate.getTime()){
