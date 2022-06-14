@@ -36,7 +36,7 @@ class SubscriptionAdmin extends controller.Controller
 		view.catalog = catalog;
 		view.c = catalog;
 		view.subscriptions = catalogSubscriptions;
-		view.negativeBalanceCount = catalogSubscriptions.count( function( subscription ) { return  subscription.getBalance() < 0; } );
+		view.negativeBalanceCount = catalogSubscriptions.count( sub -> sub.getBalance() < 0 );
 		view.subscriptionService = SubscriptionService;
 		view.nav.push( 'subscriptions' );
 

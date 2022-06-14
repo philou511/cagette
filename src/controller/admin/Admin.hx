@@ -409,7 +409,7 @@ class Admin extends Controller {
 		];
 		f.addElement(new sugoi.form.elements.StringSelect("output", "Sortie", data, "table", true, ""));
 
-		var sql_select = "SELECT g.*,gs.active,p.zipCode,p.country,p.city";
+		var sql_select = "SELECT g.*,gs.active,gs.membersNum,p.name as pname, p.address1,p.address2,p.zipCode,p.country,p.city";
 		var sql_where_or = [];
 		var sql_where_and = [];
 		var sql_end = "ORDER BY g.id ASC";
@@ -488,18 +488,31 @@ class Admin extends Controller {
 
 			case "csv":
 				var headers = [
-					"id", "name", "email", "phone", "address1", "address2", "zipCode", "city", "active", "type"
+					"id", "name","mode","placeName", "address1", "address2", "zipCode", "city", "active", "url",
+					"contactName","contactEmail","contactPhone","membersNum"
 				];
 				var data = [];
 				for (g in groups) {
 					var active:Bool = untyped g.active;
+					var contact = g.contact;
 					data.push({
 						id: g.id,
 						name: g.name,
+						mode : g.hasShopMode() ? "Marché" : "AMAP",
+						placeName : untyped g.pname,
+						address1 : untyped g.address1,
+						address2 : untyped g.address2,
+						zipCode : untyped g.zipCode,
+						city : untyped g.city,
 						active: switch (active) {
 							case true: "OUI";
 							case false: "NON";
-						},						
+						},
+						url:"https://app.cagette.net/group/"+g.id,
+						contactName : contact!=null ? contact.getName() : "",
+						contactEmail: contact!=null ? contact.email : "",
+						contactPhone: contact!=null ? contact.phone : "",
+						membersNum : untyped g.membersNum			
 					});
 				}
 

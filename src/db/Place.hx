@@ -24,7 +24,7 @@ class Place extends Object
 	public function new() 
 	{
 		super();
-		country = "France";
+		country = "FR";
 	}
 	
 	override function toString() {

@@ -1,6 +1,7 @@
 package hosted.db ;
 import sys.db.Types;
 using tools.ObjectListTool;
+
 /**
  * GroupStats
  */
@@ -12,8 +13,8 @@ class GroupStats extends sys.db.Object
 	public var active : SBool; // distrib en cours
 	public var visible : SBool; // visible sur les cartes et annuaires
 	public var membersNum: SInt; //nbre de membres
-	public var contractNum : SInt; //nbre de contrats non-pro actifs
-	public var cproContractNum : SInt; //nbre de contrats pro actifs
+	public var contractNum : SInt; //nbre de catalogue actifs
+	// public var cproContractNum : SInt; //nbre de contrats pro actifs
 	
 	public function new() 
 	{
@@ -22,7 +23,7 @@ class GroupStats extends sys.db.Object
 		visible = false;
 		membersNum = 0;
 		contractNum = 0;
-		cproContractNum  = 0;
+		// cproContractNum  = 0;
 	}
 
 	public static function getOrCreate(groupId:Int,?lock=false) {
@@ -36,9 +37,6 @@ class GroupStats extends sys.db.Object
 		return o;
 	}
 	
-	public function getAmap() {
-		return this.group;
-	}
 	
 	public function getMembersNum():Int {
 		return db.UserGroup.manager.count($groupId == this.group.id);
@@ -47,10 +45,9 @@ class GroupStats extends sys.db.Object
 	/**
 	 * Detect if this group can be visible on the map + directories.
 	 */
-	public function updateVisible(){
+	public function updateStats(){
 		
-		var g = getAmap();
-		if(g==null) return null;
+		var g = this.group;		
 
 		//compute main place
 		var mainPlace = g.getMainPlace();
@@ -69,6 +66,7 @@ class GroupStats extends sys.db.Object
 		this.visible = (del && cn );
 		this.active = del;
 		this.membersNum = g.getMembersNum();
+		this.contractNum = g.getActiveContracts().length;
 		this.update();
 		
 		return {
