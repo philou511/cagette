@@ -1,4 +1,5 @@
 package controller;
+import form.CagetteDatePicker;
 import db.Basket.BasketStatus;
 import connector.db.RemoteCatalog;
 import service.ProductService;
@@ -12,6 +13,8 @@ import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
 import sugoi.form.elements.StringInput;
 import sugoi.form.elements.RadioGroup;
+import sugoi.form.elements.IntInput;
+import form.CagetteDatePicker;
 import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
 import Common;
 import datetime.DateTime;
@@ -29,6 +32,7 @@ class ContractAdmin extends Controller
 		if (!app.user.isContractManager()) throw Error("/", t._("You don't have the authorization to manage contracts"));
 		view.nav = ["contractadmin"];
 		
+
 	}
 	
 	public function sendNav(c){
