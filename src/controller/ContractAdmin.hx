@@ -1,25 +1,27 @@
 package controller;
-import db.Basket.BasketStatus;
-import form.CagetteDatePicker;
-import sugoi.form.elements.IntInput;
-import connector.db.RemoteCatalog;
-import service.ProductService;
-import service.CatalogService;
-import service.SubscriptionService;
-import db.Catalog;
-import tink.core.Error;
-import db.UserOrder;
-import sugoi.form.elements.Checkbox;
-import sugoi.form.elements.Selectbox;
-import sugoi.form.Form;
-import sugoi.form.elements.StringInput;
-import sugoi.form.elements.RadioGroup;
-import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
 import Common;
+import connector.db.RemoteCatalog;
 import datetime.DateTime;
+import db.Basket.BasketStatus;
+import db.Catalog;
+import db.UserOrder;
+import form.CagetteDatePicker;
+import form.CagetteDatePicker;
+import service.CatalogService;
 import service.OrderService;
-using tools.ObjectListTool;
+import service.ProductService;
+import service.SubscriptionService;
+import sugoi.form.Form;
+import sugoi.form.elements.Checkbox;
+import sugoi.form.elements.IntInput;
+import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
+import sugoi.form.elements.RadioGroup;
+import sugoi.form.elements.Selectbox;
+import sugoi.form.elements.StringInput;
+import tink.core.Error;
+
 using tools.DateTool;
+using tools.ObjectListTool;
 
 
 class ContractAdmin extends Controller
@@ -31,6 +33,7 @@ class ContractAdmin extends Controller
 		if (!app.user.isContractManager()) throw Error("/", t._("You don't have the authorization to manage contracts"));
 		view.nav = ["contractadmin"];
 		
+
 	}
 	
 	public function sendNav(c){

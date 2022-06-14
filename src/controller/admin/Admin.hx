@@ -379,8 +379,6 @@ class Admin extends Controller {
 	@tpl("admin/group/default.mtt")
 	function doGroups() {
 
-// db.Group.manager.search($flags.has(ShopMode));
-
 		var groups = [];
 		var total = 0;
 		var totalActive = 0;
@@ -474,32 +472,16 @@ class Admin extends Controller {
 
 		view.form = f;
 
-		// remove trainee accounts
-		/*for( v in vendors.copy()){
-			if(v.name.indexOf("(formation)")>-1) vendors.remove(v);
-		}*/
-
-		/*for (v in vendors) {
-			// refresh active
-			if (app.params.exists("force")) {
-				pro.db.VendorStats.updateStats(v);
-			} else {
-				// force creation of vendorStats
-				VendorStats.getOrCreate(v);
-			}
-
-			if (untyped v.active)
-				totalActive++;
-			if (untyped v.type == 0)
-				totalCpros++;
-		}*/
+		for (g in groups) {
+			if (untyped g.active) totalActive++;
+			total++;
+		}
 
 		// TOTALS
 		total = groups.length;
 		view.total = total;
 		view.groups = groups;
-		// view.totalCpros = totalCpros;
-		// view.totalActive = totalActive;
+		view.totalActive = totalActive;
 
 		switch (f.getValueOf("output")) {
 			case "table":
@@ -525,24 +507,6 @@ class Admin extends Controller {
 		}
 	}
 	
-
-	/*function doTerraLibra(){
-		var v = db.Vendor.manager.get(12535,false);
-		var catalogs = v.getActiveContracts();
-		var groups = catalogs.map(c -> c.group);
-		for( g in groups){
-			Sys.println("<h2>"+g.name+"</h2>");
-			Sys.println("<table border='1'>");
-			for( ve in g.getVendors()) {
-
-				var vs = VendorStats.getOrCreate(ve);
-				Sys.println('<tr> <td>${ve.id}</td> <td>${ve.name}</td> <td>${vs.type}</td> <td>${vs.shopTurnover12months}€</td></tr>');
-
-			}
-			Sys.println("</table>");
-		}
-	}*/
-
 	@tpl('admin/news.mtt')
 	function doNews() {}
 

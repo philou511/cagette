@@ -6,11 +6,10 @@
 	::raw form::
 </p>
 
-<!--<p>
+<p>
 	<table class="table table-bordered">
 		<tr>
-			<th style="text-align:center;">Total</th>		
-			<th style="text-align:center;">Cpro</th>
+			<th style="text-align:center;">Total</th>					
 			<th style="text-align:center;">Actifs</th>				
 		</tr>
 		<tr>
@@ -18,15 +17,12 @@
 				<h2 style="text-align:center;">::total::</h2>
 			</td>
 			<td class="text-center">
-				<h2 style="text-align:center;">::totalCpros::</h2>					
-			</td>
-			<td class="text-center">
 				<h2 style="text-align:center;">::totalActive::</h2>					
 			</td>
 			
 		</tr>
 	</table>
-</p>-->
+</p>
 
 <table class="table table-bordered table-condensed table-striped" >
 	<tr>

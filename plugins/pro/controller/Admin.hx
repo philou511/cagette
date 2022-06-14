@@ -1449,7 +1449,7 @@ class Admin extends controller.Controller {
 	- détecte les orders sans souscription et recréé les subs
 	**/
 	@admin
-	function doFixCsaOrders(group:db.Group,?args:{?fixUserOrder:db.UserOrder,?fixInvalidOps:Bool}){
+	function doFixCsaOrders(group:db.Group,?args:{?fixUserOrder:db.UserOrder,?fixInvalidOps:Bool,?fixPendingPayments:Bool}){
 		
 		if(group.hasShopMode()) throw "Pour les AMAP only !";
 		var print = Cron.print;
@@ -1473,6 +1473,24 @@ class Admin extends controller.Controller {
 			Sys.print('<li><a href="/db/Operation/edit/${o.id}">$o</a></li>');
 		}
 		Sys.print("</ul>");
+
+		//pending payments
+		if(args!=null && args.fixPendingPayments){
+			for( op in Operation.manager.search($group==group && $type==Payment && $pending==true, true) ){
+				op.pending = false;
+				op.update();
+			}
+			for(m in group.getMembers()){
+				service.PaymentService.updateUserBalance(m,group);
+			}
+		}
+		var pendingPayments = Operation.manager.search($group==group && $type==Payment && $pending==true,false);
+		Sys.print('Paiement non confirmés <a href="/p/pro/admin/fixCsaOrders/${group.id}?fixPendingPayments=1">[fix]</a> <ul>');
+		for (o in pendingPayments) {
+			Sys.print('<li><a href="/db/Operation/edit/${o.id}">$o</a></li>');
+		}
+		Sys.print("</ul>");
+
 
 		print('<h1>Commandes non rattachées à des souscriptions</h1>');
 
@@ -1638,6 +1656,7 @@ class Admin extends controller.Controller {
 						var op = PaymentService.makePaymentOperation(sub.user,g,Check.TYPE,Math.abs(orderOp.amount),"Paiement créé automatiquement car souscription marquée comme payée",orderOp);
 						op.subscription = sub;
 						op.date = orderOp.date;
+						op.pending = false;
 						op.update();
 						
 						print("create order op "+orderOp.amount);

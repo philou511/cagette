@@ -1,9 +1,8 @@
 package controller;
-import sugoi.db.Session;
-import db.Catalog;
 import db.UserGroup;
 import haxe.Json;
 import neko.Web;
+import sugoi.db.Session;
 
 /**
  * REST JSON API
