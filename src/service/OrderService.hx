@@ -278,39 +278,37 @@ class OrderService
 		if( !tools.FloatTool.isInt(newquantity) ) {
 			throw new Error( "Erreur : la quantité du produit" + order.product.name + " devrait être un entier." );
 		}
-	
-		var shopMode = order.product.catalog.group.hasShopMode();
 
-		if( !shopMode && order.product.multiWeight ) {
+		if( !order.product.catalog.group.hasShopMode() && order.product.multiWeight ) {
 
 			var currentOrdersNb = db.UserOrder.manager.count( $subscription == order.subscription && $distribution == order.distribution && $product == order.product && $quantity > 0 );
-			if ( newquantity == currentOrdersNb ) { return order; }
+			if ( newquantity == currentOrdersNb ) return order;
 			
 			var orders = db.UserOrder.manager.search( $subscription == order.subscription && $distribution == order.distribution && $product == order.product && $quantity > 0, false).array();
 			if ( newquantity != 0 ) {
 
-				var quantityDiff : Int = Std.int(newquantity) - currentOrdersNb;
+				var quantityDiff = Std.int(newquantity) - currentOrdersNb;
 				if ( quantityDiff < 0 ) {
 
 					for ( i in 0...-quantityDiff ) {
-
 						edit( orders[i], 0 );
-						orders.remove( orders[i] );
+						// orders.remove( orders[i] );
 					}
 				} else if ( quantityDiff > 0 ) {
-
-					for ( i in 0...quantityDiff ) {
-						orders.push( make( order.user, 1, order.product, order.distribution.id, null, order.subscription ) );
-					}
+					make( order.user, 1, order.product, order.distribution.id, null, order.subscription );
+					// for ( i in 0...quantityDiff ) {
+					// 	orders.push( make( order.user, 1, order.product, order.distribution.id, null, order.subscription ) );
+					// }
 				}
 
-				for ( orderToEdit in orders ) {
-					edit( orderToEdit, 1 );
-				}
+				// for ( order in orders ) {
+				// 	edit( order , 1 );
+				// }
 			}else{
 
-				for ( orderToEdit in orders ) {
-					edit( orderToEdit, 0 );
+				//set all orders to zero
+				for ( order in orders ) {
+					edit( order , 0 );
 				}
 			}
 			
@@ -342,11 +340,8 @@ class OrderService
 				// e = StockMove({product:product, move:0-order.quantity });
 			}
 
-			var hasPayments = contract.group.hasPayments();
-
 			if ( contract.group.hasShopMode() ) {
-
-				if( hasPayments ) {
+				if( contract.group.hasPayments() ) {
 
 					//Get the basket for this user
 					var basket = db.Basket.get(user, order.distribution.multiDistrib);
@@ -362,10 +357,7 @@ class OrderService
 			} else {
 
 				order.delete();
-
-				if( hasPayments ) {
-					service.SubscriptionService.createOrUpdateTotalOperation( order.subscription );
-				}
+				service.SubscriptionService.createOrUpdateTotalOperation( order.subscription );
 			}
 	
 		} else {
@@ -539,15 +531,14 @@ class OrderService
 
 
 	/**
-	 *  Send an order-by-products report to the coordinator.
-	 	Used in wholesaleOrder service
+	 *  Send an order-by-products report to the coordinator
 	 */
 	public static function sendOrdersByProductReport(d:db.Distribution){
 		
 		var m = new sugoi.mail.Mail();
 		m.addRecipient(d.catalog.contact.email , d.catalog.contact.getName());
 		m.setSender(App.config.get("default_email"),"Cagette.net");
-		m.setSubject('Distribution du ${Formatting.dDate(d.date)} (${d.catalog.name})');
+		m.setSubject('[${d.catalog.group.name}] Distribution du ${Formatting.dDate(d.date)} (${d.catalog.name})');
 		var orders = service.ReportService.getOrdersByProduct(d);
 
 		var html = App.current.processTemplate("mail/ordersByProduct.mtt", { 
@@ -562,18 +553,18 @@ class OrderService
 		} );
 		
 		m.setHtmlBody(html);
-		App.sendMail(m, d.catalog.group);
+		App.sendMail(m);					
+
 	}
 
 
 	/**
 	 *  Send Order summary for a member
 	 *  WARNING : its for one distrib, not for a whole basket !
-	 	used in WholeSaleService
 	 */
 	public static function sendOrderSummaryToMembers(d:db.Distribution){
 
-		var title = 'Votre commande pour le ${App.current.view.dDate(d.date)} (${d.catalog.name})';
+		var title = '[${d.catalog.group.name}] Votre commande pour le ${App.current.view.dDate(d.date)} (${d.catalog.name})';
 
 		for( user in d.getUsers() ){
 
@@ -596,7 +587,7 @@ class OrderService
 			} );
 			
 			m.setHtmlBody(html);
-			App.sendMail(m, d.catalog.group);
+			App.sendMail(m);
 		}
 		
 	}
@@ -887,9 +878,7 @@ class OrderService
 			service.PaymentService.onOrderConfirm( orders );
 		} else {
 			for( subscription in subscriptions ) {
-				if(subscription.catalog.hasPayments){
-					service.SubscriptionService.createOrUpdateTotalOperation( subscription );
-				}				
+				service.SubscriptionService.createOrUpdateTotalOperation( subscription );				
 			}
 		}
 		return orders;

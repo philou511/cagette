@@ -111,7 +111,7 @@ class Sales extends controller.Controller
 		
 		var contract = d.catalog;
 		
-		if(d.catalog.isConstantOrders()) throw Error('/', "Impossible de changer les dates d'ouverture de commande pour un contrat AMAP" );	
+		if(d.catalog.isConstantOrdersCatalog()) throw Error('/', "Impossible de changer les dates d'ouverture de commande pour un contrat AMAP classique" );	
 		
 		var form = CagetteForm.fromSpod(d);
 		form.removeElementByName("placeId");

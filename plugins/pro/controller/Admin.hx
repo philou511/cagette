@@ -1,5 +1,7 @@
 package pro.controller;
 
+import payment.Check;
+import service.PaymentService;
 import controller.Cron;
 import service.DistributionService;
 import db.User;
@@ -1447,7 +1449,7 @@ class Admin extends controller.Controller {
 	- détecte les orders sans souscription et recréé les subs
 	**/
 	@admin
-	function doFixCsaOrders(group:db.Group,?args:{?fixUserOrder:db.UserOrder,?fixInvalidOps:Bool}){
+	function doFixCsaOrders(group:db.Group,?args:{?fixUserOrder:db.UserOrder,?fixInvalidOps:Bool,?fixPendingPayments:Bool}){
 		
 		if(group.hasShopMode()) throw "Pour les AMAP only !";
 		var print = Cron.print;
@@ -1471,6 +1473,24 @@ class Admin extends controller.Controller {
 			Sys.print('<li><a href="/db/Operation/edit/${o.id}">$o</a></li>');
 		}
 		Sys.print("</ul>");
+
+		//pending payments
+		if(args!=null && args.fixPendingPayments){
+			for( op in Operation.manager.search($group==group && $type==Payment && $pending==true, true) ){
+				op.pending = false;
+				op.update();
+			}
+			for(m in group.getMembers()){
+				service.PaymentService.updateUserBalance(m,group);
+			}
+		}
+		var pendingPayments = Operation.manager.search($group==group && $type==Payment && $pending==true,false);
+		Sys.print('Paiement non confirmés <a href="/p/pro/admin/fixCsaOrders/${group.id}?fixPendingPayments=1">[fix]</a> <ul>');
+		for (o in pendingPayments) {
+			Sys.print('<li><a href="/db/Operation/edit/${o.id}">$o</a></li>');
+		}
+		Sys.print("</ul>");
+
 
 		print('<h1>Commandes non rattachées à des souscriptions</h1>');
 
@@ -1560,9 +1580,9 @@ class Admin extends controller.Controller {
 			}
 			
 			//remove ops of catalogs where payments are not activated
-			if(op.subscription!=null && !op.subscription.catalog.hasPayments){
-				op.delete();
-			}
+			// if(op.subscription!=null && !op.subscription.catalog.hasPayments){
+			// 	op.delete();
+			// }
 		}
 
 		//update balances
@@ -1603,4 +1623,53 @@ class Admin extends controller.Controller {
 			}
 		}
 	}*/
+
+	/**
+		gestion des paiements obligatoire dans les AMAP
+		2022-05
+	**/
+	function doMigrateCsaPayments20220530(){
+		var print = controller.Cron.print;
+		for ( g in db.Group.manager.search(!$flags.has(ShopMode))){
+			print("<h2>"+g.name+"</h2>");
+
+			//remove shopMode operations
+			for( op in Operation.manager.search($group==g,true)){
+				if(op.type==VOrder){
+					print('delete shopMode op #${op.id}');
+					op.delete();
+				}
+			}
+
+
+			for ( cat in g.getActiveContracts()){
+				if(cat.hasPayments) continue;
+				print(cat.name);
+				for (sub in SubscriptionService.getCatalogSubscriptions(cat)){
+					print("----sub "+sub.id);
+					//create payements operation
+					var orderOp = SubscriptionService.createOrUpdateTotalOperation(sub);
+
+					if(sub.isPaid){
+						if (db.Operation.manager.count( $subscription == sub && $type==Payment )>0 ) continue;
+
+						var op = PaymentService.makePaymentOperation(sub.user,g,Check.TYPE,Math.abs(orderOp.amount),"Paiement créé automatiquement car souscription marquée comme payée",orderOp);
+						op.subscription = sub;
+						op.date = orderOp.date;
+						op.pending = false;
+						op.update();
+						
+						print("create order op "+orderOp.amount);
+						print("create payment op "+op.amount);
+					}
+
+					
+				}
+			}
+
+			for( u in g.getMembers()){
+				service.PaymentService.updateUserBalance(u,g);
+			}
+		}
+	}
 }

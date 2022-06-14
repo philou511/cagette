@@ -9,7 +9,6 @@
 				<i class="icon icon-youtube"></i> Tuto vidéo
 			</a>
 		</p>
-		
 
 		<form method="POST" id="stocksForm">
 		<input type="hidden" value="::token::" name="token"	/>
@@ -118,12 +117,14 @@
 								::if(stocks.undeliveredOrders!=null)::
 									+ $$nullSafe(::stocks.undeliveredOrders::) =															
 								::end::
-								
 							</td>
 							<td class="col-md-1">
-								<!-- central stock --> 
-								<input type="number" name="off::off.id::" value="$$nullSafe(::stocks.centralStock::)" class="form-control" maxlength="3" />
-								
+								<!-- central stock -->
+								::if(stocks.centralStock!=null):: 
+								<input type="number" name="off::off.id::" value="::stocks.centralStock::" class="form-control" maxlength="3" />
+								::else::
+								<input type="number" name="off::off.id::" value="" class="form-control" maxlength="3" />
+								::end::
 							</td>
 						<!--::else::
 							<td colspan="4"></td>

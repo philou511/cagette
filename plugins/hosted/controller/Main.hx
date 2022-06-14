@@ -123,6 +123,17 @@ class Main extends controller.Controller
 		}
 		throw Ok("/p/hosted/group/"+g.id, "Notifications désactivées pour tous les membres de ce groupe");
 	}
+
+	function doEnableNotifs(g:db.Group){
+		for ( m in g.getMembers()){
+			m.lock();
+			m.flags.set(db.User.UserFlags.HasEmailNotif24h);
+			// m.flags.unset(db.User.UserFlags.HasEmailNotif4h);
+			m.flags.set(db.User.UserFlags.HasEmailNotifOuverture);
+			m.update();
+		}
+		throw Ok("/p/hosted/group/"+g.id, "Notifications activées pour tous les membres de ce groupe");
+	}
 	
 	public function doCacheDebug(){
 		Sys.println("<h2>pending carts</h2>");

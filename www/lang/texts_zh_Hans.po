@@ -3135,14 +3135,6 @@ msgstr ""
 msgid "To be validated"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/volunteersSummary.mtt:1840 ../lang/master/tpl/distribution/volunteersCalendar.mtt:4175
-msgid "Unsubscribe"
-msgstr ""
-
-#: ../lang/master/tpl/distribution/volunteersSummary.mtt:2010 ../lang/master/tpl/distribution/volunteersCalendar.mtt:4478
-msgid "Join"
-msgstr ""
-
 #: ../lang/master/tpl/distribution/default.mtt:48 ../lang/master/tpl/contractadmin/design.mtt:874 ../lang/master/tpl/design.mtt:2424
 msgid "Distributions"
 msgstr ""
