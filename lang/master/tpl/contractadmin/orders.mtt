@@ -93,7 +93,7 @@
 						<td>
 							<!--::if distribution!=null::-->
 							<a class="btn btn-default btn-xs"
-								onclick="_Cagette.initOrderBox(::m.userId::,::multiDistribId::,::distribution._catalog.id::,::distribution._catalog.type::,'::escapeJS(hDate(distribution.date))::','::escapeJS(distribution._place.toString())::','::escapeJS(m.userName)::','::user.getGroup().currency::', ::user.getGroup().hasPayments()::, '/contractAdmin/orders/::c.id::?d=::distribution.id::', ::user.getGroup().hasCagette2()::)">
+								onclick="_Cagette.initOrderBox(::m.userId::,::multiDistribId::,::distribution._catalog.id::,::distribution._catalog.type::,'::escapeJS(hDate(distribution.date))::','::escapeJS(distribution._place.toString())::','::escapeJS(m.userName)::','::user.getGroup().currency::', ::user.getGroup().hasPayments()::, '/contractAdmin/orders/::c.id::?d=::distribution.id::', ::user.getGroup().hasCagette2()::, ::user.getGroup().id::, ::basket.id::)">
 								<i class="icon icon-edit"></i>
 								::_("Edit")::
 							</a>							

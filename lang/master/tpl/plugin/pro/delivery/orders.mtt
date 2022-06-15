@@ -42,7 +42,7 @@
 						</td>
 						<td>
 							<a class="btn btn-default btn-xs"
-							onclick="_Cagette.initOrderBox(::m.userId::,::distribution._multiDistrib.id::,::distribution._catalog.id::,::distribution._catalog.type::,'::hDate(distribution.date)::','::escapeJS(distribution._place.toString())::','::escapeJS(m.userName)::','::distribution._catalog._group.currency::', '::distribution._catalog._group.hasPayments()::', '/p/pro/delivery/orders/::distribution.id::', ::distribution._catalog._group.hasCagette2()::, ::distribution._catalog._group.id::)">
+							onclick="_Cagette.initOrderBox(::m.userId::,::distribution._multiDistrib.id::,::distribution._catalog.id::,::distribution._catalog.type::,'::hDate(distribution.date)::','::escapeJS(distribution._place.toString())::','::escapeJS(m.userName)::','::distribution._catalog._group.currency::', '::distribution._catalog._group.hasPayments()::', '/p/pro/delivery/orders/::distribution.id::', ::distribution._catalog._group.hasCagette2()::, ::distribution._catalog._group.id::, ::m.basketId::)">
 							<span class="glyphicon glyphicon-edit"></span>
 							::_("Edit")::
 							</a>
