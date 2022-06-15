@@ -26,7 +26,12 @@ class CagettePro extends sys.db.Object
 	
 	public function new(){
 		super();
-		setVatRates([{label:"TVA alimentaire 5,5%",value:5.5},{label:"TVA 20%",value:20},{label:"Non assujeti à TVA", value:0}]);
+		setVatRates([
+			{label:"TVA alimentaire 5,5%",value:5.5},
+			{label:"TVA 20%",value:20},
+			{label:"TVA 10%",value:10},
+			{label:"Non assujeti à TVA", value:0}
+		]);
 		offer = Discovery;
 		network = false;		
 		cdate = Date.now();

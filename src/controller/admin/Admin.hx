@@ -409,7 +409,7 @@ class Admin extends Controller {
 		];
 		f.addElement(new sugoi.form.elements.StringSelect("output", "Sortie", data, "table", true, ""));
 
-		var sql_select = "SELECT g.*,gs.active,gs.membersNum,p.name as pname, p.address1,p.address2,p.zipCode,p.country,p.city";
+		var sql_select = "SELECT g.*,gs.active,gs.membersNum,gs.contractNum,p.name as pname, p.address1,p.address2,p.zipCode,p.country,p.city";
 		var sql_where_or = [];
 		var sql_where_and = [];
 		var sql_end = "ORDER BY g.id ASC";
@@ -489,7 +489,7 @@ class Admin extends Controller {
 			case "csv":
 				var headers = [
 					"id", "name","mode","placeName", "address1", "address2", "zipCode", "city", "active", "url",
-					"contactName","contactEmail","contactPhone","membersNum"
+					"contactName","contactEmail","contactPhone","membersNum","contractNum"
 				];
 				var data = [];
 				for (g in groups) {
@@ -512,7 +512,8 @@ class Admin extends Controller {
 						contactName : contact!=null ? contact.getName() : "",
 						contactEmail: contact!=null ? contact.email : "",
 						contactPhone: contact!=null ? contact.phone : "",
-						membersNum : untyped g.membersNum			
+						membersNum : untyped g.membersNum,
+						contractNum : untyped g.contractNum			
 					});
 				}
 
