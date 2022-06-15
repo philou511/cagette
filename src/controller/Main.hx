@@ -265,9 +265,14 @@ class Main extends Controller {
 		d.dispatch(new controller.Shop());
 	}
 
+
 	@tpl('shop/default.mtt')
-	function doShop2(md:db.MultiDistrib, ?args:{continueShopping:Bool}) {
-		throw Redirect("/shop/" + md.id + "?continueShopping=" + (args != null ? args.continueShopping : false));
+	function doShop2(md:db.MultiDistrib, ?args:{continueShopping:Bool, basketId: Int}) {
+		var uri = "/shop/" + md.id + "?continueShopping=" + (args != null ? args.continueShopping : false);
+		if (args.basketId != null) {
+			uri+= "&basketId=" + args.basketId;
+		}
+		throw Redirect(uri);
 
 		// if( app.getCurrentGroup()==null || app.getCurrentGroup().id!=md.getGroup().id){
 		// 	throw  Redirect("/group/"+md.getGroup().id);
