@@ -78,7 +78,7 @@
                     <tr>
                         <td></td>
                         <th class="text-right">TOTAL : </th>
-                        <th>::formatNum(tmpBasket.getTotal())::&nbsp;::currency()::</th>
+                        <th>::formatNum(tmpBasket.getTmpTotal())::&nbsp;::currency()::</th>
                     </tr>
                 </table>
                 

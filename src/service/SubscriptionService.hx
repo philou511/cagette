@@ -911,22 +911,22 @@ class SubscriptionService
 
 	/**
 		Update default orders (store it in the subscription entity) and create the recurrent UserOrders
-		DefaultOrders can be on a variable contract with requiresOrdering=true
+		DefaultOrders can be on a variable contract 
 		Or can be the recurring order of a constant CSA contrat
 	**/
 	public function updateDefaultOrders( subscription:db.Subscription, defaultOrders:Array<CSAOrder>){
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );	
 		subscription.lock();	
-		if( subscription.catalog.isVariableOrdersCatalog()){
+		/*if( subscription.catalog.isVariableOrdersCatalog()){
 			if ( subscription.catalog.distribMinOrdersTotal>0 && (defaultOrders==null || defaultOrders.length==0 ) ) {
 				throw new Error('La commande par défaut ne peut pas être vide. (Souscription de ${subscription.user.getName()})');
 			}
-		}else{
+		}else{*/
 			if ( defaultOrders==null || defaultOrders.length==0 ) {
 				throw new Error('La commande par défaut ne peut pas être vide. (Souscription de ${subscription.user.getName()})');
 			}
-		}	
+		//}	
 		
 		createRecurrentOrders( subscription, defaultOrders );
 

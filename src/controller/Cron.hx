@@ -1,4 +1,5 @@
 package controller;
+import hosted.db.GroupStats;
 import Common;
 import db.Catalog;
 import db.MultiDistrib;
@@ -150,64 +151,11 @@ class Cron extends Controller
 		});
 		task.execute(!App.config.DEBUG);
 
-		//Send warnings about subscriptions that are not validated yet and for which there is a distribution that starts in the right time range.
-		//  /!\ subscription validation is needed only with catalog with payments
-		var task = new TransactionWrappedTask( "Subscriptions to validate alert emails");
-		task.setTask(function() {
-			
-			var fromNow = now.setHourMinute( now.getHours(), 0 );
-			var toNow = now.setHourMinute( now.getHours() + 1, 0);
-			var subscriptionsToValidate = db.Subscription.manager.unsafeObjects(
-				'SELECT DISTINCT Subscription.* 
-				FROM Subscription INNER JOIN Catalog
-				ON Subscription.catalogId = Catalog.id
-				INNER JOIN Distribution
-				ON Distribution.catalogId = Catalog.id
-				WHERE Subscription.isPaid = false 
-				AND Catalog.type = ${db.Catalog.TYPE_CONSTORDERS}
-				AND Catalog.hasPayments = 0 
-				AND Distribution.date >= DATE_ADD(\'${fromNow}\', INTERVAL 3 DAY)
-				AND Distribution.date < DATE_ADD(\'${toNow}\', INTERVAL 3 DAY);',false).array();
-			
-			var subscriptionsToValidateByCatalog = new Map<db.Catalog, Array<db.Subscription>>();
-			for ( subscription in subscriptionsToValidate ) {
-				if ( subscriptionsToValidateByCatalog[ subscription.catalog ] == null ) {
-					subscriptionsToValidateByCatalog[ subscription.catalog ] = [];
-				}
-				subscriptionsToValidateByCatalog[ subscription.catalog ].push( subscription );
-			}
-
-			//List of subscriptions grouped by catalog
-			for ( catalog in subscriptionsToValidateByCatalog.keys() ) {
-
-				task.log( catalog.name );
-
-				var message : String = 'Bonjour, <br /><br />
-				Attention, les souscriptions suivantes n\'ont pas été validées, alors qu\'une distribution approche.
-				Vous devez au plus vite valider ou effacer ces souscriptions et vous assurer qu\'elles correspondent
-				bien au contrat signé, et aux produits que l\'adhérent a commandés.';
-
-				message += '<h3> Catalogue : ' + catalog.name + '</h3> <ul>';
-				subscriptionsToValidateByCatalog[ catalog ].sort( function(b, a) {
-	
-					return  a.user.getName() < b.user.getName() ? 1 : -1;
-				} );
-				for ( subscription in subscriptionsToValidateByCatalog[ catalog ] ) {
-					message += '<li>' + subscription.user.getName() + '</li>';
-				}
-				message += '</ul>';
-				App.quickMail( catalog.contact.email, catalog.name + ' : Il y a des souscriptions à valider', message, catalog.group );
-			}
-			
-		});		
-		task.execute(!App.config.DEBUG);
-
 		//Distribution time notifications
 		var task = new TransactionWrappedTask("Distrib notifications");
 		task.setTask(function(){
 			distribNotif(task,this.now,4,db.User.UserFlags.HasEmailNotif4h); //4h before
 			distribNotif(task,this.now,24,db.User.UserFlags.HasEmailNotif24h); //24h before
-			
 		});
 		task.execute(!App.config.DEBUG);
 
@@ -403,9 +351,27 @@ class Cron extends Controller
 			for( k in GraphService.getAllGraphKeys()){
 				GraphService.getDay(k,yesterday);
 			}
-
 		});
 		task.execute();
+
+
+		var task = new TransactionWrappedTask( "Refresh group Stats");
+		task.setTask(function() {			
+			//split groups in 7 segments so the update is made every week
+			var maxId = sys.db.Manager.cnx.request("select max(id) from `Group`").getIntResult(0);
+			var dayOfWeek = Date.now().getDay();
+			var segmentLength = Math.ceil(maxId/7);
+			task.log('maxId : $maxId, dayOfWeek : $dayOfWeek, segmentLength : $segmentLength');
+
+			var groups = db.Group.manager.search($id >=(dayOfWeek*segmentLength) && $id<((dayOfWeek+1)*segmentLength) );
+
+			for(g in groups){
+				var gs = GroupStats.getOrCreate(g.id);
+				gs.updateStats();
+				task.log("update "+g.id+" - "+g.name);
+			}
+		});
+		task.execute(!App.config.DEBUG);
 
 		
 	

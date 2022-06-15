@@ -14,7 +14,7 @@ class Subscription extends Object {
 	@:relation(catalogId) public var catalog : db.Catalog;
 	public var startDate : SDateTime;
 	public var endDate : SDateTime;
-	@hideInForms public var isPaid : SBool;
+	// @hideInForms public var isPaid : SBool;
 	public var defaultOrders : SNull<SText>;
 	public var absentDistribIds : SNull<SText>;
 
@@ -33,8 +33,7 @@ class Subscription extends Object {
 	public function getTotalPrice() : Float {
 		if( this.id == null ) return 0;
 		var totalPrice : Float = 0;
-		var orders = db.UserOrder.manager.search( $subscription == this, false );
-		for ( order in orders ) {
+		for ( order in db.UserOrder.manager.search( $subscription == this, false ) ) {
 			totalPrice += Formatting.roundTo( order.quantity * order.productPrice, 2 );
 		}
 		return Formatting.roundTo( totalPrice, 2 );
@@ -62,14 +61,7 @@ class Subscription extends Object {
 		get subscription balance
 	**/
 	public function getBalance() : Float {
-
-		if( this.id == null ) return 0;
-
-		var total = 0.0;
-		var totalOperation = getTotalOperation();
-		if ( totalOperation != null ) total = totalOperation.amount;
-
-		return Formatting.roundTo( getPaymentsTotal() + total, 2 );
+		return Formatting.roundTo( this.getPaymentsTotal() - this.getTotalPrice() , 2 );
 	}
 
 	public function getDefaultOrders( ?filterByProductId : Int ) : Array<CSAOrder> {

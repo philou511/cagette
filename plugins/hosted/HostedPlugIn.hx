@@ -28,7 +28,7 @@ class HostedPlugIn extends PlugIn implements IPlugIn{
 					if (gid == null || gid == 0) return;					
 					if(db.Group.manager.get(gid,false) == null) return;
 					var h = hosted.db.GroupStats.getOrCreate(gid, true);
-					h.updateVisible();
+					h.updateStats();
 				}
 
 			case Nav(nav,name,id) :

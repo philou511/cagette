@@ -643,6 +643,10 @@ class OrderService
 	**/
 	public static function checkTmpBasket(user:db.User,group:db.Group){
 
+		if (group.hasCagette2()) {
+			return;
+		}
+
 		//check for a basket created when logged off ( tmpBasketId stored in session )
 		var tmpBasket = getTmpBasketFromSession(group);
 		if(tmpBasket!=null){
