@@ -833,14 +833,8 @@ class SubscriptionService
 			ordersData = subscription.getDefaultOrders();
 		}
 
-		if(catalog.isConstantOrdersCatalog()){
-			if ( hasPastDistribOrders(subscription) && !adminMode ) {
-				throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées, il faut recréer une nouvelle souscription avec une nouvelle commande.', SubscriptionServiceError.PastOrders );
-			}
-		}
-
 		//delete existing userOrders
-		var subscriptionAllOrders = getSubscriptionAllOrders( subscription );
+		var subscriptionAllOrders = getSubscriptionAllOrders(subscription);
 		var now = Date.now().getTime();
 		for ( order in subscriptionAllOrders ) {
 
@@ -927,6 +921,13 @@ class SubscriptionService
 				throw new Error('La commande par défaut ne peut pas être vide. (Souscription de ${subscription.user.getName()})');
 			}
 		//}	
+
+		//if constantOrders, the user (not admin) cannot edit default orders if sub has past distrib orders
+		if(subscription.catalog.isConstantOrdersCatalog()){
+			if ( hasPastDistribOrders(subscription) && !adminMode ) {
+				throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées, il faut recréer une nouvelle souscription avec une nouvelle commande.', SubscriptionServiceError.PastOrders );
+			}
+		}
 		
 		createRecurrentOrders( subscription, defaultOrders );
 
