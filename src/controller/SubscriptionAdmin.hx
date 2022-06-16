@@ -29,7 +29,7 @@ class SubscriptionAdmin extends controller.Controller
 		//subs sorting
 		var orderBy = app.params.get("orderBy");
 		if(orderBy=="userName" || orderBy==null){
-			catalogSubscriptions.sort( (a,b) -> a.user.lastName > b.user.lastName ? 1 : -1);
+			catalogSubscriptions.sort( (a,b) -> a.user.lastName.toUpperCase() > b.user.lastName.toUpperCase() ? 1 : -1);
 			orderBy = "userName";
 		}
 		view.orderBy = orderBy;
@@ -490,7 +490,7 @@ class SubscriptionAdmin extends controller.Controller
 		view.c = catalog;
 		view.subscriptions = catalogSubscriptions;
 		catalogSubscriptions.sort(function(a,b){
-			if( a.user.lastName > b.user.lastName ){
+			if( a.user.lastName.toUpperCase() > b.user.lastName.toUpperCase() ){
 				return 1;
 			}else{
 				return -1;

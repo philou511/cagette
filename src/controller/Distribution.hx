@@ -135,10 +135,10 @@ class Distribution extends Controller {
 		view.products = products;
 
 		// users
-		var users = Lambda.array(d.getUsers());
+		var users = d.getUsers().array();
 		// var usersMap = tools.ObjectListTool.toIdMap(users);
 		users.sort(function(b, a) {
-			return (a.lastName < b.lastName) ? 1 : -1;
+			return (a.lastName.toUpperCase() < b.lastName.toUpperCase()) ? 1 : -1;
 		});
 		view.users = users;
 		// view.usersMap = usersMap;
