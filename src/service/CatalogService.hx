@@ -237,8 +237,6 @@ class CatalogService{
 			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > Date.now(), { orderBy : date }, true );
 			for ( distrib in futureDistribs ) {
 
-				distrib.lock();
-
 				if ( newOrderStartDays != null ) {	
 					distrib.orderStartDate = DateTools.delta( distrib.date, -1000.0 * 60 * 60 * 24 * newOrderStartDays );
 				}

@@ -123,11 +123,6 @@ class ContractAdmin extends Controller
 					var msg = CatalogService.updateFutureDistribsStartEndOrdersDates( catalog, newOrderStartDays, newOrderEndHours );
 					if(msg!=null) messages.push(msg);  
 
-					//payements : update or create operations
-					// for ( sub in SubscriptionService.getCatalogSubscriptions(catalog)){
-					// 	SubscriptionService.createOrUpdateTotalOperation( sub );
-					// }
-
 				}
 				
 				//update rights

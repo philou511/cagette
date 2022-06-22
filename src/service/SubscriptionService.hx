@@ -515,7 +515,8 @@ class SubscriptionService
 	public static function checkVarOrders(ordersByDistrib:Map<db.Distribution,Array<CSAOrder>>,?subscription:db.Subscription):Bool{
 		var keys = [];
 		for( k in ordersByDistrib.keys()) keys.push(k);
-		var catalog = keys[0].catalog;
+		if(keys.length==0) throw "Aucune distribution ouverte à la commande pour cette souscription";
+		var catalog = keys.find(d -> d!=null).catalog;
 		
 		//Minimum by distribution
 		if ( catalog.distribMinOrdersTotal > 0 ) {
@@ -601,6 +602,7 @@ class SubscriptionService
 	 public function createSubscription( user:db.User, catalog:db.Catalog, ?ordersData:Array<CSAOrder>, ?absenceDistribIds:Array<Int>,?absenceNb:Int,?startDate:Date, ?endDate:Date ):db.Subscription {
 
 		if ( startDate == null ) startDate = getNewSubscriptionStartDate( catalog );
+		if ( startDate == null ) throw "Aucune distribution non fermée dans le futur";
 		if ( endDate == null ) 	endDate = catalog.endDate;
 		
 		//if the user is not a member of the group
