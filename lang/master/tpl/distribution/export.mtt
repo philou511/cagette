@@ -1,0 +1,13 @@
+::use 'design.mtt'::
+
+<div id="attendance-sheet-neo-container" style="margin-right: 16px; margin-left: 16px; margin-bottom: 16px;"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+       neo.createNeoModule("attendance-sheet-neo-container", "attendanceSheetShopMode", {
+            multiDistribId: ::multiDistribId::
+        });
+    });
+</script>
+
+::end::

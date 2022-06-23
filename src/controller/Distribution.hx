@@ -171,6 +171,11 @@ class Distribution extends Controller {
 	function doListByDate(date:Date, place:db.Place, ?type:String, ?fontSize:String) {
 		checkHasDistributionSectionAccess();
 
+		var md = db.MultiDistrib.get(date, place);
+		if (md.getGroup().hasCagette2()){
+			throw Redirect('/distribution/export/'+md.id);
+		}
+
 		view.place = place;
 		view.onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(app.user.getGroup());
 
@@ -1602,4 +1607,19 @@ class Distribution extends Controller {
 
 		view.multiDistribId = multiDistrib.id;
 	}
+
+	/**
+		Cagette 2 distribution attendance sheet and export page
+	**/
+	@tpl('distribution/export.mtt')
+	function doExport(multiDistrib: db.MultiDistrib) {
+		checkHasDistributionSectionAccess();
+
+		if (!multiDistrib.getGroup().hasCagette2()){
+			throw Error('/', t._('Forbidden action'));
+		}
+
+		view.multiDistribId = multiDistrib.id;
+	}
+
 }
