@@ -33,11 +33,11 @@ class DistributionService
 		}
 		
 		if (d.distribStartDate.getTime() < d.orderEndDate.getTime() ){
-			throw new Error(t._("The distribution start date must be set after the orders end date."));
+			throw new Error('La date de début de distribution doit se situer après la fermeture des commandes. (multidistrib#${d.id})');
 		} 
 
 		if (d.orderStartDate.getTime() > d.orderEndDate.getTime() ){
-			throw new Error(t._("The orders end date must be set after the orders start date !"));
+			throw new Error(t._("The orders end date must be set after the orders start date"));
 		} 
 		
 	}
@@ -45,7 +45,6 @@ class DistributionService
 	/**
 	 * checks if dates are correct and if that there is no other distribution in the same time range
 	 *  and for the same contract and place
-	 * @param d
 	 */
 	public static function checkDistrib(d:db.Distribution) {
 
@@ -77,9 +76,10 @@ class DistributionService
 		if (distribs1.length != 0 || distribs2.length != 0 || distribs3.length != 0) {
 			throw new Error(t._("There is already a distribution at this place overlapping with the time range you've selected."));
 		}*/
+		
 		var catalogStartDate = DateTool.setHourMinute(catalog.startDate,0,0);
 		var catalogEndDate = DateTool.setHourMinute(catalog.endDate,23,59);
-		// trace(catalogEndDate);
+
 		if (d.date.getTime() > catalogEndDate.getTime()){
 			throw new Error(t._("The date of the delivery must be prior to the end of the catalog (::contractEndDate::)", {contractEndDate:view.hDate(catalog.endDate)}));
 		}
@@ -88,8 +88,13 @@ class DistributionService
 			throw new Error(t._("The date of the delivery must be after the begining of the catalog (::contractBeginDate::)", {contractBeginDate:view.hDate(catalog.startDate)}));
 		} 
 
-		if (d.date.getTime() < d.orderEndDate.getTime() ) throw new Error(t._("The distribution start date must be set after the orders end date."));
-		if ( catalog.type == db.Catalog.TYPE_VARORDER && d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw new Error(t._("The orders end date must be set after the orders start date !"));
+		if (d.date.getTime() < d.orderEndDate.getTime() ){
+			throw new Error('La date de début de distribution doit se situer après la fermeture des commandes. (distrib#${d.id})');
+		} 
+		
+		if ( catalog.type == db.Catalog.TYPE_VARORDER && d.orderStartDate.getTime() > d.orderEndDate.getTime() ) {
+			throw new Error(t._("The orders end date must be set after the orders start date !"));
+		}			
 	}
 
 	 /**
@@ -414,10 +419,39 @@ class DistributionService
 	}
 
 	/**
-		Edit attendance of a vendor  to a multidistribution
+		Edit attendance of a vendor to a multidistribution
 	**/
-	public static function editAttendance(d:db.Distribution,newMd:db.MultiDistrib,orderStartDate:Date,orderEndDate:Date,?dispatchEvent=true):db.Distribution {
+	public static function editAttendance(d:db.Distribution,orderStartDate:Date,orderEndDate:Date,?dispatchEvent=true):db.Distribution {
 
+		//We prevent others from modifying it
+		d.lock();
+		var t = sugoi.i18n.Locale.texts;
+
+		if(d.multiDistrib.validated) {
+			throw new Error(t._("You cannot edit a distribution which has been already validated."));
+		}
+	
+		if(d.catalog.type==db.Catalog.TYPE_VARORDER){
+			d.orderStartDate = orderStartDate;
+		}
+		d.orderEndDate = orderEndDate;
+		
+		checkDistrib(d);
+
+		if(dispatchEvent) App.current.event(EditDistrib(d));
+		
+		if (d.date == null){
+			return d;
+		} else {
+			d.update();
+			return d;
+		}
+	}
+
+	/**
+		shift a distribution 
+	**/
+	public static function shiftDistribution(d:db.Distribution,newMd:db.MultiDistrib,dispatchEvent:Bool){
 		//We prevent others from modifying it
 		d.lock();
 		var t = sugoi.i18n.Locale.texts;
@@ -427,97 +461,95 @@ class DistributionService
 		}
 
 		//Distribution shift
-		if(newMd.id!=d.multiDistrib.id){
-
-			//check that the vendor does not already participate
-			if( newMd.getDistributionForContract(d.catalog) != null){
-				throw new Error(d.catalog.vendor.name+" participe déjà à la distribution du "+Formatting.hDate(newMd.getDate()));
-			}
-
-			var oldMd = d.multiDistrib;
-
-			d.multiDistrib = newMd;
-			d.update();
-
-			/* 
-			FORBID THIS WITH CREDIT CARD PAYMENTS 
-			because it would make the order and payment ops out of sync
-			*/
-			var orders = d.getOrders();
-
-			#if plugins
-			if(d.catalog.group.hasPayments() && orders.length>0){
-				var paymentTypes = PaymentService.getPaymentTypes( PaymentContext.PCPayment , newMd.getGroup() );
-				if( paymentTypes.find( p -> return p.type==MangopayECPayment.TYPE ) != null ){
-					throw new Error("Les décalages de distributions sont interdits lorsque le paiement en ligne est activé et que des commandes sont déjà enregistrées.");
-				}
-			}
-			#end
-
-			//different multidistrib id : assign orders to the newMd baskets
-			for ( o in orders ){
-				o.lock();
-				//find new basket
-				o.basket = db.Basket.getOrCreate(o.user, newMd);
-				o.update();
-			}
-
-			//recompute order operations for oldMd and newMd baskets
-			if(newMd.group.hasShopMode() && newMd.group.hasPayments()){
-				for( b in oldMd.getBaskets()){
-					PaymentService.onOrderConfirm( b.getOrders() );
-				}
-				for( b in newMd.getBaskets()){
-					PaymentService.onOrderConfirm( b.getOrders() );
-				}
-			}
-			
-			//renumbering baskets
-			for( b in newMd.getBaskets()){
-				b.renumber();
-			}
-
-			//extends contract if needed
-			if( newMd.distribStartDate.getTime() > d.catalog.endDate.getTime() ){
-				var catalog = d.catalog;
-				catalog.lock();
-				catalog.endDate = newMd.distribStartDate;
-				catalog.update();
-			}
-
-			//extends subscriptions ?
-			if( !d.catalog.group.hasShopMode() ) { //When a group is in csa mode all catalogs have subscription management
-				var subscriptionService = new SubscriptionService();
-				//get subscriptions that were concerned by this distribution
-				var subscriptions = Subscription.manager.search($catalog==d.catalog && $startDate <= d.date && $endDate >= d.date , true );
-				for ( sub in subscriptions ){
-					//if the subscription is closing before the new date, extends it
-					if(sub.endDate.getTime() < newMd.getDate().getTime()){
-						subscriptionService.updateSubscription( sub, sub.startDate, newMd.getDate() );
-					}					
-				}
-				/**
-				2020-03-04 francois :
-				il peut se produire un bug pour une souscription concernée par la distrib reportée, si cette souscription est terminée de maniere anticipée.
-				le code actuel va reporter sa date de fin à la distrib reportée, ce qui va certainement englober d'autres distribs non souhaitées.
-				**/
-			}
-			
+		if(newMd.id==d.multiDistrib.id){
+			throw "Multidistrib is the same. No need to shift";
 		}
 
+		//check that the vendor does not already participate
+		if( newMd.getDistributionForContract(d.catalog) != null){
+			throw new Error(d.catalog.vendor.name+" participe déjà à la distribution du "+Formatting.hDate(newMd.getDate()));
+		}
+
+		var oldMd = d.multiDistrib;
+
+		//set new multidistrib, and new dates
+		d.multiDistrib = newMd;
 		d.date = newMd.distribStartDate;
 		d.end = newMd.distribEndDate;
-		
-		if(d.catalog.type==db.Catalog.TYPE_VARORDER){
-			d.orderStartDate = orderStartDate;
+		d.orderStartDate = newMd.orderStartDate;
+		d.orderEndDate = newMd.orderEndDate;
+		d.update();
+
+		/* 
+		FORBID THIS WITH CREDIT CARD PAYMENTS 
+		because it would make the order and payment ops out of sync
+		*/
+		var orders = d.getOrders();
+
+		#if plugins
+		if(d.catalog.group.hasPayments() && orders.length>0){
+			var paymentTypes = PaymentService.getPaymentTypes( PaymentContext.PCPayment , newMd.getGroup() );
+			if( paymentTypes.find( p -> return p.type==MangopayECPayment.TYPE ) != null ){
+				throw new Error("Les décalages de distributions sont interdits lorsque le paiement en ligne est activé et que des commandes sont déjà enregistrées.");
+			}
 		}
-		d.orderEndDate = orderEndDate;
+		#end
+
+		//different multidistrib id : assign orders to the newMd baskets
+		for ( o in orders ){
+			o.lock();
+			//find new basket
+			o.basket = db.Basket.getOrCreate(o.user, newMd);
+			o.update();
+		}
+
+		//recompute order operations for oldMd and newMd baskets
+		if(newMd.group.hasShopMode() && newMd.group.hasPayments()){
+			for( b in oldMd.getBaskets()){
+				PaymentService.onOrderConfirm( b.getOrders() );
+			}
+			for( b in newMd.getBaskets()){
+				PaymentService.onOrderConfirm( b.getOrders() );
+			}
+		}
 		
-		
+		//renumbering baskets
+		for( b in newMd.getBaskets()){
+			b.renumber();
+		}
+
+		//extends contract if needed
+		if( newMd.distribStartDate.getTime() > d.catalog.endDate.getTime() ){
+			var catalog = d.catalog;
+			catalog.lock();
+			catalog.endDate = newMd.distribStartDate;
+			catalog.update();
+		}
+
+		//extends subscriptions
+		if( !d.catalog.group.hasShopMode() ) { 
+			var ss = new SubscriptionService();
+			ss.adminMode = true;
+
+			//get subscriptions that were concerned by this distribution
+			var subscriptions = Subscription.manager.search($catalog==d.catalog && $startDate <= d.date && $endDate >= d.date , true );
+			for ( sub in subscriptions ){
+				//if the subscription is closing before the new date, extends it
+				if(sub.endDate.getTime() < newMd.getDate().getTime()){
+					ss.updateSubscription( sub, sub.startDate, newMd.getDate() );
+				}					
+			}
+			/**
+			2020-03-04 francois :
+			il peut se produire un bug pour une souscription concernée par la distrib reportée, si cette souscription est terminée de maniere anticipée.
+			le code actuel va reporter sa date de fin à la distrib reportée, ce qui va certainement englober d'autres distribs non souhaitées.
+			**/
+		}
+
 		checkDistrib(d);
 
 		if(dispatchEvent) App.current.event(EditDistrib(d));
-		
+
 		if (d.date == null){
 			return d;
 		} else {

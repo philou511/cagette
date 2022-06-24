@@ -344,19 +344,18 @@ class SubscriptionService
 		if(!adminMode){
 			var newSubscriptionStartDate = getNewSubscriptionStartDate( subscription.catalog );
 			if ( newSubscriptionStartDate == null ) {
-				throw TypedError.typed( "Toutes les distributions futures sont déjà fermées, ou il n'existe aucune distribution dans le futur.", InvalidParameters );
+				throw TypedError.typed('Toutes les distributions futures sont déjà fermées, ou il n\'existe aucune distribution dans le futur.', InvalidParameters );
 			}
 			if( subscription.id == null ) {
 				//new sub
 				if ( subscription.startDate.getTime() < newSubscriptionStartDate.getTime() ) {
-					throw TypedError.typed( 'La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : ' + Formatting.dDate( newSubscriptionStartDate ), InvalidParameters );
+					throw TypedError.typed('La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : ${Formatting.dDate(newSubscriptionStartDate)}', InvalidParameters );
 				}
 			} else {	
 				//existing sub		
 				if ( previousStartDate.toString() != subscription.startDate.toString() ) {
 					if ( Date.now().getTime() <= subscription.startDate.getTime() && subscription.startDate.getTime() < newSubscriptionStartDate.getTime() ) {
-						throw TypedError.typed( 'La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : '
-											+ Formatting.dDate( newSubscriptionStartDate ), InvalidParameters );
+						throw TypedError.typed('La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : ${Formatting.dDate(newSubscriptionStartDate)}', InvalidParameters );
 					}
 				}
 			}

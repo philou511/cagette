@@ -337,7 +337,7 @@ class Distribution extends Controller {
 			}
 			try {
 				// do not launch event, avoid notifs for now
-				d = DistributionService.editAttendance(d, d.multiDistrib, orderStartDate, orderEndDate, false);
+				d = DistributionService.editAttendance(d, orderStartDate, orderEndDate, false);
 			} catch (e:tink.core.Error) {
 				throw Error(sugoi.Web.getURI(), e.message);
 			}
@@ -404,7 +404,7 @@ class Distribution extends Controller {
 				md = db.MultiDistrib.manager.get(mdid);
 
 				// do not launch event, avoid notifs for now
-				d = DistributionService.editAttendance(d, md, d.orderStartDate, d.orderEndDate, false);
+				d = DistributionService.shiftDistribution(d, md, false);
 				
 			} catch (e:tink.core.Error) {
 				throw Error(sugoi.Web.getURI(), e.message);
