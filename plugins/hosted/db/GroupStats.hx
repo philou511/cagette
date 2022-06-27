@@ -12,9 +12,14 @@ class GroupStats extends sys.db.Object
 	@:relation(groupId) public var group : db.Group;	
 	public var active : SBool; // distrib en cours
 	public var visible : SBool; // visible sur les cartes et annuaires
+	public var mode : SString<16>; // AMAP / MARKET
 	public var membersNum: SInt; //nbre de membres
 	public var contractNum : SInt; //nbre de catalogue actifs
-	// public var cproContractNum : SInt; //nbre de contrats pro actifs
+	public var vendorNum : SInt; //nbre de prods actifs
+	public var hasPayment : SBool;
+	public var turnover90days : SInt;
+	public var basketNumber90days : SInt;
+	public var iro:SInt; // indice de richesse de l'offre
 	
 	public function new() 
 	{
@@ -27,14 +32,14 @@ class GroupStats extends sys.db.Object
 	}
 
 	public static function getOrCreate(groupId:Int,?lock=false) {
-		var  o =  manager.select($groupId==groupId, lock);
-		if (o == null) {
-			o = new hosted.db.GroupStats();
-			o.groupId = groupId;
-			o.membersNum = o.getMembersNum();
-			o.insert();
+		var  gs =  manager.select($groupId==groupId, lock);
+		if (gs == null) {
+			gs = new GroupStats();
+			gs.groupId = groupId;
+			gs.insert();
+			gs.updateStats();
 		}
-		return o;
+		return gs;
 	}
 	
 	
@@ -48,6 +53,7 @@ class GroupStats extends sys.db.Object
 	public function updateStats(){
 		
 		var g = this.group;		
+		var now = Date.now();
 
 		//compute main place
 		var mainPlace = g.getMainPlace();
@@ -66,7 +72,21 @@ class GroupStats extends sys.db.Object
 		this.visible = (del && cn );
 		this.active = del;
 		this.membersNum = g.getMembersNum();
-		this.contractNum = g.getActiveContracts().length;
+		var activeCatalogs = g.getActiveContracts();
+		this.contractNum = activeCatalogs.length;
+		this.vendorNum = activeCatalogs.map(c -> c.vendor).deduplicate().length;
+		this.hasPayment = !g.hasShopMode() || g.hasPayments(); 
+		this.mode = g.hasShopMode() ? "MARKET" : "AMAP";
+
+		var mds = db.MultiDistrib.getFromTimeRange(g,DateTools.delta(now, -1000.0 * 60 * 60 * 24 * 90),now);
+		this.turnover90days = 0;
+		for(md in mds){
+			this.turnover90days+=Math.round(md.getTotalIncome());
+		}
+
+		var mdids:Array<Int> = mds.map(m->m.id);
+		basketNumber90days = db.Basket.manager.count($multiDistribId in mdids);
+
 		this.update();
 		
 		return {

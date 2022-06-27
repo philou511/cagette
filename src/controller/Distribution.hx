@@ -1292,20 +1292,15 @@ class Distribution extends Controller {
 		// duty periods user's participation		
 		var timeframe = group.getMembershipTimeframe(Date.now());
 		var multidistribs = db.MultiDistrib.getFromTimeRange(group, timeframe.from, timeframe.to);
-
 		
 		var uniqueRoles = VolunteerService.getUsedRolesInMultidistribs(multidistribs);
-		
 		var participation = VolunteerService.getUserParticipation([user],app.getCurrentGroup(),timeframe.from,timeframe.to).get(user.id);
-
-		view.multidistribs = multidistribs;
 		
 		//needed at component init
 		view.daysBeforeDutyPeriodsOpen = app.user.getGroup().daysBeforeDutyPeriodsOpen;
 		view.uniqueRoles = uniqueRoles;
 		view.toBeDone = participation.genericRolesToBeDone + participation.contractRolesToBeDone;
 		view.done = participation.genericRolesDone + participation.contractRolesDone;
-		view.timeframe = timeframe;
 		if (distrib != null) {
 			view.multiDistribId = distrib.id;
 		}

@@ -567,4 +567,16 @@ class Admin extends Controller {
 		}
 
 	}
+
+	public function doUpdate(){
+
+		for(g in db.Group.manager.search(true,false)){
+
+			var gs = hosted.db.GroupStats.getOrCreate(g.id,true);
+			gs.updateStats();
+			Sys.print(g.name+" #"+g.id+" <br/>");
+
+		}
+
+	}
 }
