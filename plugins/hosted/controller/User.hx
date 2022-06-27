@@ -1,8 +1,8 @@
 package hosted.controller;
 
 import db.Operation.COrderInfos;
-import tools.ObjectListTool;
 import pro.db.PUserCompany;
+import tools.ObjectListTool;
 
 class User extends sugoi.BaseController
 {
@@ -131,5 +131,20 @@ class User extends sugoi.BaseController
 		if (app.params.exists("csv")) {
 			sugoi.tools.Csv.printCsvDataFromObjects(users, ["email", "firstName", "lastName",/* "CLIENT",*/"zipCode","city"], "Clients-cagette");
 		}
+	}
+
+	@admin
+	function doDelete(user:db.User) {
+		if (!app.user.isAdmin()){
+			return;
+		}
+
+		try {
+			service.BridgeService.call('/auth/delete-user/${user.id}');
+		} catch (e: Dynamic) {
+			Sys.println(e);
+		}
+	
+		throw Redirect('/p/hosted/user');
 	}
 }

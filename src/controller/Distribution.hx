@@ -1301,6 +1301,7 @@ class Distribution extends Controller {
 		view.uniqueRoles = uniqueRoles;
 		view.toBeDone = participation.genericRolesToBeDone + participation.contractRolesToBeDone;
 		view.done = participation.genericRolesDone + participation.contractRolesDone;
+		view.timeframe = timeframe;
 		if (distrib != null) {
 			view.multiDistribId = distrib.id;
 		}
