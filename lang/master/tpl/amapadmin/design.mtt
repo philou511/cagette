@@ -1,34 +1,41 @@
 ::use 'design.mtt'::
 <div class="col-md-3">
 
-	<div class="panel panel-warning">
-		
-		<ul id="subnav" class="nav nav-tabs nav-stacked" >
-			<li id="rights" ::attr class if(nav!=null && nav[1]=="rights") 'active'::>
+	<div class="article">
+
+		::if(breadcrumb()[2]!=null)::
+		::set category = breadcrumb()[2].id::
+		::end::
+		<ul id="subnav" class="nav nav-pills nav-stacked" >
+			<li id="rights" ::attr class if(category=="rights") 'active'::>
 				<a href="/amapadmin/rights/">::_("Administration rights")::</a>
 			</li>
-			<li id="rates">
+			<li id="rates" ::attr class if(category=="vatrates") 'active'::>
 				<a href="/amapadmin/vatRates/">::_("VAT rates")::</a>
 			</li>			
-			<li id="volunteers" ::attr class if(nav!=null && nav[1]=="volunteers") 'active'::>
+			<li id="volunteers" ::attr class if(category=="volunteers") 'active'::>
 				<a href="/amapadmin/volunteers/">
 					<i class="icon icon-users"></i>  ::_("Duty Periods")::</a>
 			</li>
-			<li id="membership" ::attr class if(nav!=null && nav[1]=="membership") 'active'::>
+			<li id="membership" ::attr class if(category=="membership") 'active'::>
 				<a href="/amapadmin/membership/">
 					<i class="icon icon-users"></i>  Adhésions</a>
 			</li>
-			<li id="currency">
+			<li id="places" ::attr class if(category=="places") 'active'::>
+				<a href="/place/">
+					<i class="icon icon-map-marker"></i> Lieux de distribution</a>
+			</li>
+			<li id="currency" ::attr class if(category=="currency") 'active'::>
 				 <a href="/amapadmin/currency/">
 					<i class="icon icon-payment-type"></i> ::_("Currency")::
 				</a>
 			</li>
-			<li id="documents" ::attr class if(nav!=null && nav[1]=="documents") 'active'::>
+			<li id="documents" ::attr class if(category=="documents") 'active'::>
 				<a href="/amapadmin/documents">
 					<i class="icon icon-file-pdf"></i> Documents
 				</a>
 			</li>
-			<li id="stats" ::attr class if(nav!=null && nav[1]=="stats") 'active'::>
+			<li id="stats" ::attr class if(category=="stats") 'active'::>
 				<a href="/amapadmin/stats">
 					<i class="icon icon-chart"></i> Statistiques
 				</a>
@@ -49,7 +56,6 @@
 		
 	</div>
 </div>
-
 
 <div class="col-md-9">
 	<div class="article">

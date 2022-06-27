@@ -2,7 +2,9 @@
 
 		<h3>::_("Administration rights")::</h3>		
 		
-		$$insert(::_("Add a right")::,/amapadmin/editRight)
+		<p>
+			$$insert(::_("Add a right")::,/amapadmin/editRight)
+		</p>
 		
 		<table class="table table-bordered">
 			<tr>
@@ -35,6 +37,14 @@
 			::end::
 		</table>
 		
+
+		
+            <div class="alert alert-warning">
+                <i class="icon icon-info"></i>
+                Pour connaître en détail le fonctionnement des droits, 
+                <a href="https://wiki.cagette.net/admin:droits" target="_blank">consultez la documentation</a>
+            </div>
+        
 
 
 
