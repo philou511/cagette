@@ -94,7 +94,7 @@ class Messages extends controller.Controller
 	
 	function getLists() :FormData<String>{
 		var out = [
-			{value:'1', label:'Tous mes clients (coordinateurs de contrat)' },
+			{value:'1', label:'Tous mes coordinateurs de catalogue' },
 			//{value:'2', label:'Le bureau : les responsables + contrats + adhésions' },			
 		];
 		

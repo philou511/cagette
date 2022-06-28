@@ -14,7 +14,6 @@ class CatalogService{
 		}
 
 		var t = sugoi.i18n.Locale.texts;
-		var hasPayments = catalog.hasPayments;
 
 		var customMap = new form.CagetteForm.FieldTypeToElementMap();
 		customMap["DDate"] = form.CagetteForm.renderDDate;
@@ -37,7 +36,7 @@ class CatalogService{
 			//SHOP MODE
 			form.removeElement(form.getElement("orderStartDaysBeforeDistrib"));
 			form.removeElement(form.getElement("orderEndHoursBeforeDistrib"));
-			form.removeElement(form.getElement("requiresOrdering"));
+			// form.removeElement(form.getElement("requiresOrdering"));
 			form.removeElement(form.getElement("distribMinOrdersTotal"));
 			form.removeElement(form.getElement("catalogMinOrdersTotal"));			
 			
@@ -50,13 +49,12 @@ class CatalogService{
 			var absencesIndex = 16;
 			if ( catalog.type == Catalog.TYPE_VARORDER ) {
 				//VAR
-				form.addElement( new sugoi.form.elements.Html( 'distribconstraints', '<h4>Engagement par distribution</h4>', '' ), 10 );
-				form.addElement( new sugoi.form.elements.Html( 'catalogconstraints', '<h4>Engagement sur la durée du contrat</h4>', '' ), 13 );
+				form.addElement( new sugoi.form.elements.Html( 'constraints', '<h4>Engagement</h4>', '' ), 10 );
+				form.addElement( new sugoi.form.elements.Html( 'constraintsHtml', 'Définissez ici l\'engagement minimum pour ce contrat. <br/><a href="https://wiki.cagette.net/admin:contratsamapvariables#engagements" target="_blank"><i class="icon icon-info"></i> Pour plus d\'informations, consultez la documentation</a>.', '' ), 11 );
 
 				form.getElement("orderStartDaysBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#ouverture_et_fermeture_de_commande";
-				form.getElement("orderEndHoursBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#ouverture_et_fermeture_de_commande";
-				if( !catalog.hasPayments ) form.getElement("catalogMinOrdersTotal").label = "Minimum de commandes sur la durée du contrat (en €)";
-				form.getElement("catalogMinOrdersTotal").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#minimum_de_commandes_sur_la_duree_du_contrat";
+				form.getElement("orderEndHoursBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#ouverture_et_fermeture_de_commande";				
+				// form.getElement("catalogMinOrdersTotal").docLink = "";
 				
 			} else { 
 				//CONST
@@ -102,21 +100,6 @@ class CatalogService{
 		form.addElement( contact, 4 );
 		contact.required = true;
 
-		//payments management
-		if( !catalog.group.hasShopMode() ){
-			
-			if(catalog.id < db.Catalog.CATALOG_ID_HASPAYMENTS ){
-				form.addElement( new sugoi.form.elements.Html( "payementsHtml", '<h4>Gestion des paiements</h4>' ) );
-				form.addElement( new sugoi.form.elements.Checkbox('hasPayments',"Gérer les paiements liés aux souscriptions à ce contrat", catalog.hasPayments ));
-			}else{
-				form.addElement( new sugoi.form.elements.Html( "payementsHtml", '<h4>Gestion des paiements</h4>' ) );
-				form.addElement( new sugoi.form.elements.Html( "payementsHtml2",'La gestion des paiements est obligatoirement activée pour tous les nouveaux contrats' ) );
-				var input = new sugoi.form.elements.IntInput('hasPayments',"",1 );
-				input.inputType = ITHidden;
-				form.addElement( input );
-			}
-		}
-			
 		return form;
     }
     
@@ -153,17 +136,16 @@ class CatalogService{
 					Si vous voulez utiliser l\'ouverture par défaut des distributions laissez le champ vide.');
 				}
 				
-				if( form.getValueOf("distribMinOrdersTotal") > 0 ) {
-					catalog.requiresOrdering = true;
+				if( form.getValueOf("distribMinOrdersTotal")==0 && form.getValueOf("catalogMinOrdersTotal")==0 ){
+					throw new Error("Vous devez définir un minimum de commande ( par distribution et/ou sur la durée du contrat )");
 				}
 
-				if( form.getValueOf("requiresOrdering")==true && form.getValueOf("distribMinOrdersTotal")==null  ){
-					throw new Error("Si vous activez la commande obligatoire, vous devez définir le montant minimum de commande par distribution.");
+				//clean absence datas if not needed
+				if(form.getValueOf("catalogMinOrdersTotal")==0){
+					catalog.absencesEndDate = null;
+					catalog.absencesStartDate = null;
+					catalog.absentDistribsMaxNb = 0;
 				}
-
-				// if( form.getValueOf("requiresOrdering")==false && form.getValueOf('absentDistribsMaxNb')!=null){
-				// 	throw new Error("Si vous n'activez pas la commande obligatoire, la gestion des absences n'est pas nécéssaire, laissez le champs 'Nombre maximum d'absences' vide.");
-				// }
 
 				var catalogMinOrdersTotal = form.getValueOf("catalogMinOrdersTotal");
 				/*var allowedOverspend = form.getValueOf("allowedOverspend");
@@ -182,8 +164,6 @@ class CatalogService{
 
 			if ( catalog.id != null ) {
 
-				
-			
 				if ( catalog.hasPercentageOnOrders() && catalog.percentageValue == null ) {
 					throw new Error( t._("If you would like to add fees to the order, define a rate (%) and a label.") );
 				}
@@ -222,7 +202,7 @@ class CatalogService{
 				throw new Error( 'La date de début des absences doit être avant la date de fin des absences.' );
 			}
 
-			var absencesDistribsNb = service.SubscriptionService.getContractAbsencesDistribs( catalog ).length;
+			var absencesDistribsNb = AbsencesService.getContractAbsencesDistribs( catalog ).length;
 			if ( absentDistribsMaxNb > 0 && absentDistribsMaxNb > absencesDistribsNb ) {
 				throw new Error( 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
 				Il doit être inférieur ou égal au nombre de distributions dans la période d\'absences : ' + absencesDistribsNb );				
@@ -256,8 +236,6 @@ class CatalogService{
 
 			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > Date.now(), { orderBy : date }, true );
 			for ( distrib in futureDistribs ) {
-
-				distrib.lock();
 
 				if ( newOrderStartDays != null ) {	
 					distrib.orderStartDate = DateTools.delta( distrib.date, -1000.0 * 60 * 60 * 24 * newOrderStartDays );

@@ -35,21 +35,21 @@ class Catalog extends Object
 	public var orderStartDaysBeforeDistrib : SNull<SInt>;
 	public var orderEndHoursBeforeDistrib : SNull<SInt>;
 
-	public var requiresOrdering : SNull<Bool>;			// ordering at each distrib is a compulsory
-	public var distribMinOrdersTotal : SNull<SFloat>;
-	public var catalogMinOrdersTotal : SNull<SFloat>;
+	// public var requiresOrdering : SNull<Bool>;			// ordering at each distrib is a compulsory
+	public var distribMinOrdersTotal : SFloat;
+	public var catalogMinOrdersTotal : SFloat;
 	// public var allowedOverspend : SNull<SFloat>;  //removed 
 
 	//absences in CSA groups
-	public var absentDistribsMaxNb : SNull<SInt>;
+	public var absentDistribsMaxNb : SInt;
 	public var absencesStartDate : SNull<SDateTime>;
 	public var absencesEndDate : SNull<SDateTime>;
 
-	public var hasPayments : SBool; //only for CSA groups
+	// public var hasPayments : SBool; //only for CSA groups
 
 	@:skip inline public static var TYPE_CONSTORDERS = 0; 	//constant orders catalog (contrat AMAP classique)
 	@:skip inline public static var TYPE_VARORDER = 1;		//variable orders catalog (contrat AMAP variable)
-	@:skip inline public static var CATALOG_ID_HASPAYMENTS = 53442;		//payments is mandatory when id > CATALOG_ID_HASPAYMENTS
+	// @:skip inline public static var CATALOG_ID_HASPAYMENTS = 53442;		//payments is mandatory when id > CATALOG_ID_HASPAYMENTS
 	@:skip var cache_hasActiveDistribs : Bool;
 
 	public function new() 
@@ -85,8 +85,12 @@ class Catalog extends Object
 		
 	}
 
-	public function isConstantOrders(){
+	public function isConstantOrdersCatalog(){
 		return type == TYPE_CONSTORDERS;
+	}
+
+	public function isVariableOrdersCatalog(){
+		return type == TYPE_VARORDER;
 	}
 	
 	/**
@@ -111,15 +115,14 @@ class Catalog extends Object
 		var now = Date.now();
 		var contractOpen = flags.has(UsersCanOrder) && now.getTime() < this.endDate.getTime() && now.getTime() > this.startDate.getTime();
 
-		if(this.isConstantOrders()){
+		if(this.isConstantOrdersCatalog()){
 			return contractOpen;
 		}else{			
 			var d = db.Distribution.manager.count( $orderStartDate <= now && $orderEndDate > now && $catalogId==this.id);
 			return contractOpen && d > 0;
 		}		
 	}
-	
-	
+		
 	public function hasPercentageOnOrders():Bool {
 		return flags.has(PercentageOnOrders) && percentageValue!=null && percentageValue!=0;
 	}
@@ -129,11 +132,16 @@ class Catalog extends Object
 	}
 
 	public function hasConstraints() : Bool {
-		return this.type == TYPE_VARORDER && ( this.requiresOrdering || ( this.distribMinOrdersTotal != null &&  this.distribMinOrdersTotal != 0 ) || ( this.catalogMinOrdersTotal != null &&  this.catalogMinOrdersTotal != 0 ) );
+		return this.isVariableOrdersCatalog() && ( this.distribMinOrdersTotal>0  || this.catalogMinOrdersTotal>0 );
 	}
 
 	public function hasAbsencesManagement() : Bool {
-		return this.absentDistribsMaxNb != null && this.absentDistribsMaxNb != 0 && this.absencesStartDate != null && this.absencesEndDate != null;
+		//absence mgmt is available if CSA mode + constant orders or var orders with distribMinOrdersTotal>0
+		if(!this.group.hasShopMode() && (isConstantOrdersCatalog() || distribMinOrdersTotal>0)){
+			return this.absentDistribsMaxNb > 0 && this.absencesStartDate != null && this.absencesEndDate != null;
+		}else{
+			return false;
+		}		
 	}
 
 	/**
@@ -170,31 +178,27 @@ class Catalog extends Object
 				App.current.session.addMessage('La description du produit "${p.name}" est mal encodée et risque de poser des problèmes d\'affichage.',true);
 			}
 		}
-
 	}
 	
 	/**
-	 * 
-	 * @param	amap
+	 * Get active catalogs
 	 * @param	large = false	Si true, montre les contrats terminés depuis moins d'un mois
 	 * @param	lock = false
 	 */
-	public static function getActiveContracts(amap:db.Group,?large = false, ?lock = false) {
+	public static function getActiveContracts(group:db.Group,?large = false, ?lock = false) {
 		var now = Date.now();
-		var end = Date.now();
-	
+		var end = Date.now();	
 		if (large) {
 			end = DateTools.delta(end , -1000.0 * 60 * 60 * 24 * 30);
-			return db.Catalog.manager.search($group == amap && $endDate > end,{orderBy:-vendorId}, lock);	
+			return db.Catalog.manager.search($group == group && $endDate > end,{orderBy:-vendorId}, lock);	
 		}else {
-			return db.Catalog.manager.search($group == amap && $endDate > now && $startDate < now,{orderBy:-vendorId}, lock);	
+			return db.Catalog.manager.search($group == group && $endDate > now && $startDate < now,{orderBy:-vendorId}, lock);	
 		}
 	}
 	
 	/**
 	 * get products in this contract
 	 * @param	onlyActive = true
-	 * @return
 	 */
 	public function getProducts(?onlyActive = true):List<Product> {
 		if (onlyActive) {
@@ -254,41 +258,14 @@ class Catalog extends Object
 	}
 
 	/**
-	 * Get orders for a user.
-	 *
-	 * @param	d
-	 * @return
+	 * Get orders for a user in a distrib.
 	 */
-	public function getUserOrders(u:db.User,?d:db.Distribution,?includeUser2=true):Array<db.UserOrder> {
-		if (type == TYPE_VARORDER && d == null) throw "This type of contract must have a delivery";
-
-		var pids = getProducts(false).map(function(x) return x.id);
-		var ucs = new List<db.UserOrder>();
-		if (d != null && d.catalog.type==TYPE_VARORDER) {
-			if(includeUser2){
-				ucs = db.UserOrder.manager.search( ($productId in pids) && $distribution==d && ($user==u || $user2==u ), false);
-			}else{
-				ucs = db.UserOrder.manager.search( ($productId in pids) && $distribution==d && ($user==u), false);
-			}
+	public function getUserOrders(u:db.User,d:db.Distribution,?includeUser2=true):Array<db.UserOrder> {
+		if(includeUser2){
+			return db.UserOrder.manager.search( $distribution==d && ($user==u || $user2==u ), false).array();
 		}else{
-
-			if ( includeUser2 ) {
-
-				var orders = db.UserOrder.manager.search( ($productId in pids) && ($user==u || $user2==u ), false );
-				if( orders.length != 0 ) {
-					ucs.push( orders.first() );
-				}
-				
-			} else {
-
-				var orders = db.UserOrder.manager.search( ( $productId in pids ) && ( $user == u ), false );
-				if( orders.length != 0 ) {
-					ucs.push( orders.first() );
-				}
-			}
-			
-		}
-		return Lambda.array(ucs);
+			return db.UserOrder.manager.search( $distribution==d && ($user==u), false).array();
+		}		
 	}
 
 	public function getDistribs(excludeOld = true,?limit=999):List<Distribution> {
@@ -324,8 +301,8 @@ class Catalog extends Object
 	}
 
 	public function isDemoCatalog():Bool{
-        return this.vendor.email == 'jean@cagette.net' || this.vendor.email == 'galinette@cagette.net';
-    }
+		return this.vendor.email == 'jean@cagette.net' || this.vendor.email == 'galinette@cagette.net';
+	}
 	
 	override function toString() {
 		return name+" du "+this.startDate.toString().substr(0,10)+" au "+this.endDate.toString().substr(0,10);
@@ -338,22 +315,12 @@ class Catalog extends Object
 	override public function update(){
 		startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate()	, 0, 0, 0 );
 		endDate 	= new Date( endDate.getFullYear(),   endDate.getMonth(),   endDate.getDate()	, 23, 59, 59 );
-
-		if(this.id > CATALOG_ID_HASPAYMENTS){
-			this.hasPayments = true;
-		} 
-
 		super.update();
 	}
 
 	override public function insert(){
 		startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate()	, 0, 0, 0 );
 		endDate 	= new Date( endDate.getFullYear(),   endDate.getMonth(),   endDate.getDate()	, 23, 59, 59 );
-
-		if(this.id > CATALOG_ID_HASPAYMENTS){
-			this.hasPayments = true;
-		} 
-
 		super.insert();
 	}
 	
@@ -390,7 +357,7 @@ class Catalog extends Object
 			"orderEndHoursBeforeDistrib" 	=> "Fermeture des commandes (nbre d'heures avant distribution)",
 			"requiresOrdering" 				=> "Commande obligatoire à chaque distribution",
 			"distribMinOrdersTotal" 		=> "Minimum de commande par distribution (en €)",
-			"catalogMinOrdersTotal" 		=> "Provision minimum initiale (en €)",
+			"catalogMinOrdersTotal" 		=> /*"Provision minimum initiale (en €)"*/"Minimum de commandes sur la durée du contrat (en €)",
 			// "allowedOverspend" 				=> "Dépassement autorisé (en €)",
 			"absentDistribsMaxNb" 			=> "Nombre maximum d'absences",
 			"absencesStartDate" 			=> "Date de début de la période d'absences",

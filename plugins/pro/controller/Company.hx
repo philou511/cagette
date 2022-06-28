@@ -66,14 +66,22 @@ class Company extends controller.Controller
 		view.nav.push("users");
 		
 		var f = new sugoi.form.Form("user");
-		f.addElement( new sugoi.form.elements.StringInput("firstName","Prénom",null,true));
-		f.addElement( new sugoi.form.elements.StringInput("lastName","Nom",null,true));
+		// f.addElement( new sugoi.form.elements.StringInput("firstName","Prénom",null,true));
+		// f.addElement( new sugoi.form.elements.StringInput("lastName","Nom",null,true));
 		f.addElement( new sugoi.form.elements.StringInput("email","Email",null,true));
 		f.addElement( new sugoi.form.elements.Checkbox("legalRepresentative","Représentant légal",null,true));
 		
 		if (f.isValid()){
 			var v = new pro.db.PUserCompany();
-			var u = service.UserService.getOrCreate(f.getValueOf("firstName"),f.getValueOf("lastName"), f.getValueOf("email"));
+			var u = service.UserService.get(f.getValueOf("email"));
+			if(u==null){
+				throw Error('/p/pro/company/users','Il n\'y a aucun compte avec l\'email "${f.getValueOf("email")}". Cette personne doit s\'inscrire avant que vous puissiez lui donner accès à votre compte producteur.');
+			}
+
+			if(company.getUsers().find(uc -> uc.id==u.id)!=null){
+				throw Error('/p/pro/company/users','Cet utilisateur a déjà accès à votre compte producteur.');
+			}
+
 			v.company = company;
 			v.user = u;			
 			v.legalRepresentative = f.getValueOf("legalRepresentative");
@@ -99,14 +107,21 @@ class Company extends controller.Controller
 		var uc = pro.db.PUserCompany.manager.select( $company==company && $user==user, true );
 		
 		var f = new sugoi.form.Form("user");
-		f.addElement( new sugoi.form.elements.StringInput("firstName","Prénom",uc.user.firstName,true));
-		f.addElement( new sugoi.form.elements.StringInput("lastName","Nom",uc.user.lastName,true));
+		// f.addElement( new sugoi.form.elements.StringInput("firstName","Prénom",uc.user.firstName,true));
+		// f.addElement( new sugoi.form.elements.StringInput("lastName","Nom",uc.user.lastName,true));
 		f.addElement( new sugoi.form.elements.StringInput("email","Email",uc.user.email,true));
 		f.addElement( new sugoi.form.elements.Checkbox("legalRepresentative","Représentant légal",uc.legalRepresentative,true));
 		
 		if (f.isValid()){
 			
-			var u = service.UserService.getOrCreate(f.getValueOf("firstName"),f.getValueOf("lastName"), f.getValueOf("email"));
+			var u = service.UserService.get(f.getValueOf("email"));
+			if(u==null){
+				throw Error('/p/pro/company/users','Il n\'y a aucun compte avec l\'email "${f.getValueOf("email")}". Cette personne doit s\'inscrire avant que vous puissiez lui donner accès à votre compte producteur.');
+			}
+
+			if(company.getUsers().find(uc -> uc.id==u.id)!=null){
+				throw Error('/p/pro/company/users','Cet utilisateur a déjà accès à votre compte producteur.');
+			}
 			
 			uc.company = company;
 			uc.user = u;			

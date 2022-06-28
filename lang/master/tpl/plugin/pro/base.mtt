@@ -63,15 +63,12 @@
 		$$matomo()
 		  
 		<script type="text/javascript"> 
-			//Tooltips & popovers
-			/*
-			document.addEventListener("DOMContentLoaded", function(event) {			  
-				//tutorials
-				::if tuto!=null::		
-				_Cagette.getTuto("::tuto.name::",::tuto.step::);
-				::end::			  
-			})
-			*/
+			//track Matomo events from the backend
+			var events = JSON.parse('::raw getMatomoEvents()::');
+			for(ev of events){
+				console.info("track Matomo event",ev);
+				_paq.push(['trackEvent', ev.category, ev.action, ev.name, ev.value]);
+			}
 		</script>
 
 		::foreach script getNeoModuleScripts()::

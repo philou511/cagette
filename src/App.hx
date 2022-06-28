@@ -234,13 +234,12 @@ class App extends sugoi.BaseApp {
 		out.set("contact", "Reponsable");
 		out.set("vendor", "Producteur");
 		out.set("text", "Texte");
+	
 		out.set("flags", "Options");
-		out.set("4h", "Recevoir des notifications par email 4h avant les distributions");
 		out.set("HasEmailNotif4h", "Recevoir des notifications par email 4h avant les distributions");
-		out.set("24h", "Recevoir des notifications par email 24h avant les distributions");
 		out.set("HasEmailNotif24h", "Recevoir des notifications par email 24h avant les distributions");
-		out.set("Ouverture", "Recevoir des notifications par email pour l'ouverture des commandes");
-		out.set("Tuto", "Activer tutoriels");
+		out.set("HasEmailNotifOuverture", "Recevoir des notifications par email pour l'ouverture des commandes");
+
 		out.set("HasMembership", "Gestion des adhésions");
 		out.set("DayOfWeek", "Jour de la semaine");
 		out.set("Monday", "Lundi");
@@ -374,8 +373,7 @@ class App extends sugoi.BaseApp {
 		if (group != null) m.setSender(group.contact == null ? App.config.get("default_email") : group.contact.email, group.name);
 		current.event(SendEmail(m));
 		var params = group==null ? null : {remoteId:group.id};
-		getMailer().send(m,params,function(o){});
-		
+		getMailer().send(m,params,function(o){});		
 	}
 	
 	public static function quickMail(to:String, subject:String, html:String,?group:db.Group){

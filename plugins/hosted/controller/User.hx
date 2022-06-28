@@ -80,4 +80,19 @@ class User extends sugoi.BaseController
 			sugoi.tools.Csv.printCsvDataFromObjects(users, ["email", "firstName", "lastName",/* "CLIENT",*/"zipCode","city"], "Clients-cagette");
 		}
 	}
+
+	@admin
+	function doDelete(user:db.User) {
+		if (!app.user.isAdmin()){
+			return;
+		}
+
+		try {
+			service.BridgeService.call('/auth/delete-user/${user.id}');
+		} catch (e: Dynamic) {
+			Sys.println(e);
+		}
+	
+		throw Redirect('/p/hosted/user');
+	}
 }

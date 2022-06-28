@@ -13,7 +13,7 @@ enum NotifType {
 
 typedef CatalogImportContent = {
 	//placeId : Int,
- 	catalogId:Int,
+ 	catalogId:Int, //pcatalog id
 	userId:Int, //client remote id
 	message : String,
 	catalogType : Int,
@@ -82,7 +82,45 @@ class PNotif extends Object
 		return out;
 	}
 
-	public function getContent(){
+	public function getContent():Dynamic{
 		return haxe.Json.parse(this.content);
 	}
+
+	/**
+		get company notifications
+	**/
+	public static function getNotifications(company:CagettePro){
+
+		var notifs = pro.db.PNotif.manager.search($company == company, {orderBy: -date}, true).array();
+
+		for( n in notifs.copy()){
+			//check validity
+			switch(n.type){
+				case NotifType.NTCatalogImportRequest:
+					var content : CatalogImportContent = n.getContent();
+					var catalog = pro.db.PCatalog.manager.get(content.catalogId);
+					if(catalog==null){
+						//pcatalog does not exists anymore
+						notifs.remove(n);
+						n.delete();
+					}
+
+				case NotifType.NTDeliveryUpdate :
+
+				case NotifType.NTOrdersClosed :
+
+				case NotifType.NTDeliveryRequest :
+					var content : DeliveryRequestContent = n.getContent();
+					var distrib = db.MultiDistrib.manager.get(content.distribId);
+					if( distrib==null || distrib.distribEndDate.getTime() < Date.now().getTime() ){
+						//if distrib is null or in the past
+						notifs.remove(n);
+						n.delete();
+					}
+			}
+		}
+		
+		return notifs;
+
+	} 
 }

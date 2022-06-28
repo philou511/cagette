@@ -185,4 +185,8 @@ class Operation extends sys.db.Object
 		check();
 		super.insert();
 	}
+
+	public override function toString(){
+		return 'operation #${this.id}, user : ${this.user.toString()}, type : ${this.type}, amount : ${this.amount}';
+	}
 }

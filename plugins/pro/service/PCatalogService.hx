@@ -1,6 +1,7 @@
 package pro.service;
 import Common;
 import connector.db.RemoteCatalog;
+import service.BridgeService;
 
 class PCatalogService{
 
@@ -328,11 +329,12 @@ class PCatalogService{
 		//create remoteCatalog record
 		var rc = link(pcatalog,contract);
 		
-		
 		//create products
 		for ( co in pcatalog.getOffers()){
 			pro.service.PCatalogService.syncProduct(co, null, contract,true, false);
 		}
+
+		BridgeService.matomoEvent(pcatalog.company.getMainContact().id,"Producteurs","Catalogue relié",'Catalogue #${pcatalog.id}');
 		
 		return rc;
 	}

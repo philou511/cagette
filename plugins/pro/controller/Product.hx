@@ -1,4 +1,6 @@
 package pro.controller;
+import tools.Matomo;
+import haxe.macro.Tools.TMacroStringTools;
 import Common.Unit;
 import pro.service.PProductService;
 import form.CagetteForm;
@@ -38,7 +40,7 @@ class Product extends controller.Controller
 
 		var notCategorizedProducts = products.filter(p -> p.txpProduct==null);
 		if(notCategorizedProducts.length>0){
-			App.current.session.addMessage("Attention, les produits suivants n'ont pas de catégorie et risquent de mal s'afficher dans les boutiques : <b>"+notCategorizedProducts.map(p->p.name).join(", ")+".",true);
+			App.current.session.addMessage("Attention, les produits suivants n'ont pas de catégorie et risquent de mal s'afficher dans les boutiques : <b>"+notCategorizedProducts.map(p->p.name).join(", ")+"</b>.",true);
 		}
 		
 		view.unlinkedCatalogs = service.VendorService.getUnlinkedCatalogs(company);
@@ -126,6 +128,11 @@ class Product extends controller.Controller
 			}
 			
 			p.insert();
+
+			if(company.offer==Discovery && pro.db.PProduct.manager.count($company==this.company)==1){
+				service.BridgeService.matomoEvent(app.user.id,"Producteurs","Premier produit créé");
+			}
+
 			throw Ok(baseUrl,'Le produit a été enregistrée');
 		}
 		

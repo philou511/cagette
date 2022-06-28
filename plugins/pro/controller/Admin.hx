@@ -1,5 +1,8 @@
 package pro.controller;
 
+import payment.Check;
+import service.PaymentService;
+import controller.Cron;
 import service.DistributionService;
 import db.User;
 import haxe.DynamicAccess;
@@ -280,7 +283,7 @@ class Admin extends controller.Controller {
 	/**
 	 * Massive import of groups from CSV
 	 */
-	@admin @tpl('plugin/pro/admin/import.mtt')
+	/*@admin @tpl('plugin/pro/admin/import.mtt')
 	function doImportGroup(?args:{confirm:Bool}) {
 		var csv = new sugoi.tools.Csv();
 		var step = 1;
@@ -307,10 +310,6 @@ class Admin extends controller.Controller {
 		if (args != null && args.confirm) {
 			var i:Iterable<Dynamic> = cast app.session.data.csvImportedData;
 			for (p in i) {
-				/*mettre seb et françois en adhérent
-					mettre le producteur en membre dans le groupe et lui donner accès à son contrat
-				 */
-
 				// group
 				var group = new db.Group();
 				group.name = p[0];
@@ -397,6 +396,22 @@ class Admin extends controller.Controller {
 		}
 
 		view.csv = csv;
+	}*/
+
+	@admin
+	function doUserOrderFix(){
+		/**
+			2022-05-25
+			need to assign basketId to UserOrders... there is still userOrder without basketId
+		**/
+		for( order in db.UserOrder.manager.search($basket==null,{limit:1000},true)){
+
+			order.basket = db.Basket.getOrCreate(order.user, order.distribution.multiDistrib);	
+			order.update();
+			Sys.println('order ${order.id} fixed<br>');
+		}
+		var count = db.UserOrder.manager.count($basket==null);
+		Sys.println('Still ${count} userOrder without basket<br>');
 	}
 
 	@admin
@@ -849,7 +864,7 @@ class Admin extends controller.Controller {
 	/**
 	 * Massive import of groups from CSV FOR CORTO/Givrés/VRAC
 	 */
-	@admin @tpl('plugin/pro/admin/import.mtt')
+	/*@admin @tpl('plugin/pro/admin/import.mtt')
 	function doImportGroupCustom(?args:{confirm:Bool}) {
 		var csv = new sugoi.tools.Csv();
 		csv.step = 1;
@@ -935,15 +950,15 @@ class Admin extends controller.Controller {
 						pro.service.PCatalogService.linkCatalogToGroup(catTQ, group, group.contact.id);
 					}
 
-					/*var catalogId = Std.parseInt(p["catalog"]);
-						if ( catalogId == 0 || catalogId == null ) throw "catalog is null : " + p;
-						var catalog = pro.db.PCatalog.manager.get(catalogId);
-						contract = pro.service.PCatalogService.linkCatalogToGroup(catalog, group, contact.id).getContract();
+					// var catalogId = Std.parseInt(p["catalog"]);
+					// 	if ( catalogId == 0 || catalogId == null ) throw "catalog is null : " + p;
+					// 	var catalog = pro.db.PCatalog.manager.get(catalogId);
+					// 	contract = pro.service.PCatalogService.linkCatalogToGroup(catalog, group, contact.id).getContract();
 
-						if(catalog.company.image!=null){
-							group.image = catalog.company.image;
-							group.update();
-					}*/
+					// 	if(catalog.company.image!=null){
+					// 		group.image = catalog.company.image;
+					// 		group.update();
+					// }
 
 					// access to admins and vendor
 					// for ( a in admins){
@@ -951,13 +966,13 @@ class Admin extends controller.Controller {
 					// 	u.makeMemberOf(group);
 					// }
 
-					/*for ( x in catalog.company.getUsers()){
-						var um = x.makeMemberOf(group);
-						um.giveRight(Right.Membership);
-						um.giveRight(Right.Messages);
-						um.giveRight(Right.GroupAdmin);
-						um.giveRight(Right.ContractAdmin());
-					}*/
+					// for ( x in catalog.company.getUsers()){
+					// 	var um = x.makeMemberOf(group);
+					// 	um.giveRight(Right.Membership);
+					// 	um.giveRight(Right.Messages);
+					// 	um.giveRight(Right.GroupAdmin);
+					// 	um.giveRight(Right.ContractAdmin());
+					// }
 
 					// place
 					place = new db.Place();
@@ -979,12 +994,12 @@ class Admin extends controller.Controller {
 					// d.place = place;
 					// d.insert();
 
-					/*try{
-							group.contact.sendInvitation(group);
-						}catch(e:Dynamic){
-							trace(group.contact.name);
-							trace(e);
-					}*/
+					try{
+						// 	group.contact.sendInvitation(group);
+						// }catch(e:Dynamic){
+						// 	trace(group.contact.name);
+						// 	trace(e);
+					}
 				}
 			} // end for
 
@@ -999,7 +1014,7 @@ class Admin extends controller.Controller {
 		}
 
 		view.csv = csv;
-	}
+	}*/
 
 	/**
 		Duplicate a group
@@ -1402,6 +1417,116 @@ class Admin extends controller.Controller {
 	@admin @tpl('plugin/pro/admin/certification.mtt')
 	function doCertification() { }
 
+	/**
+	- détecte les operations invalides ou orphelines	
+	- détecte les orders sans souscription et recréé les subs
+	**/
+	@admin
+	function doFixCsaOrders(group:db.Group,?args:{?fixUserOrder:db.UserOrder,?fixInvalidOps:Bool,?fixPendingPayments:Bool}){
+		
+		if(group.hasShopMode()) throw "Pour les AMAP only !";
+		var print = Cron.print;
+		print('<h1>#${group.id} ${group.name}</h1>');
+		print('<h1>Operations</h1>');
+
+		//invalid ops
+		if(args!=null && args.fixInvalidOps){
+			Operation.manager.delete($group==group && $type==VOrder);
+		}
+		var invalidOperations = Operation.manager.search($group==group && $type==VOrder);
+		Sys.print('Operations invalides (de type VOrder): <a href="/p/pro/admin/fixCsaOrders/${group.id}?fixInvalidOps=1">[fix]</a> <ul>');
+		for (o in invalidOperations) Sys.print('<li><a href="/db/Operation/edit/${o.id}">$o</a></li>');
+		Sys.print("</ul>");
+
+		//unlinked ops
+		var unlinkedOps = Operation.manager.search($group==group && $type==Payment && $subscription==null);
+		Sys.print("Operations orphelines (paiements non liés à une sub, non lié à une adhésion): <ul>");
+		for (o in unlinkedOps) {
+			if(o.relation!=null && o.relation.type==Membership) continue;
+			Sys.print('<li><a href="/db/Operation/edit/${o.id}">$o</a></li>');
+		}
+		Sys.print("</ul>");
+
+		//pending payments
+		if(args!=null && args.fixPendingPayments){
+			for( op in Operation.manager.search($group==group && $type==Payment && $pending==true, true) ){
+				op.pending = false;
+				op.update();
+			}
+			for(m in group.getMembers()){
+				service.PaymentService.updateUserBalance(m,group);
+			}
+		}
+		var pendingPayments = Operation.manager.search($group==group && $type==Payment && $pending==true,false);
+		Sys.print('Paiement non confirmés <a href="/p/pro/admin/fixCsaOrders/${group.id}?fixPendingPayments=1">[fix]</a> <ul>');
+		for (o in pendingPayments) {
+			Sys.print('<li><a href="/db/Operation/edit/${o.id}">$o</a></li>');
+		}
+		Sys.print("</ul>");
+
+
+		print('<h1>Commandes non rattachées à des souscriptions</h1>');
+
+		//run fix
+		var subToCreate = null;
+		if(args!=null && args.fixUserOrder!=null){
+
+			var sub = Subscription.manager.select($user == args.fixUserOrder.user && $catalog == args.fixUserOrder.product.catalog);
+			if(sub!=null){
+				throw args.fixUserOrder.user+" a dejà une sub #"+sub.id+" dans "+args.fixUserOrder.product.catalog;
+			}
+
+			var sub = new db.Subscription();
+			sub.user = args.fixUserOrder.user;
+			sub.catalog = args.fixUserOrder.product.catalog; 
+			sub.insert();
+
+			for( d in sub.catalog.getDistribs(false)){
+				var orders = db.UserOrder.manager.search($distribution == d  && $user==sub.user, true).array();
+				if(orders.length>0){
+					for(o in orders) {
+						o.subscription = sub; 
+						o.update();
+					}
+
+					//find dates
+					if( sub.startDate==null || d.date.getTime() < sub.startDate.getTime()){
+						sub.startDate = d.date;
+					}
+					if( sub.endDate==null || d.date.getTime() > sub.endDate.getTime()){
+						sub.endDate = d.date;
+					}
+				}
+			}
+
+			sub.update();			
+			print('<pre>Souscription créée pour ${sub.user} dans le contrat ${sub.catalog}</pre>');
+		}
+
+
+		//detect
+		for(c in group.getActiveContracts(true)){
+			print('<h2>#${c.id} ${c.name}</h2>');
+			for( d in c.getDistribs(false)){
+				print('<h3>#${d.id} ${Formatting.dDate(d.date)}</h3>');
+				var orders = db.UserOrder.manager.search($subscription==null && $distribution==d,false).array();
+
+				if(orders.length>0){
+					Sys.print("<ul>");
+					for (o in orders){
+						Sys.print('<li>$o');
+						Sys.print('<a href="/p/pro/admin/fixCsaOrders/${group.id}?fixUserOrder=${o.id}">[fix]</a>');
+						Sys.print('<a href="/db/UserOrder/edit/${o.id}">[edit]</a>');
+						Sys.print('</li>');
+					} 
+					Sys.print("</ul>");
+				}
+			}
+		}
+
+	}
+
+
 	@admin
 	function doFixCsaOps(group:db.Group){
 
@@ -1428,9 +1553,9 @@ class Admin extends controller.Controller {
 			}
 			
 			//remove ops of catalogs where payments are not activated
-			if(op.subscription!=null && !op.subscription.catalog.hasPayments){
-				op.delete();
-			}
+			// if(op.subscription!=null && !op.subscription.catalog.hasPayments){
+			// 	op.delete();
+			// }
 		}
 
 		//update balances
@@ -1471,4 +1596,53 @@ class Admin extends controller.Controller {
 			}
 		}
 	}*/
+
+	/**
+		gestion des paiements obligatoire dans les AMAP
+		2022-05
+	**/
+	function doMigrateCsaPayments20220530(){
+		var print = controller.Cron.print;
+		for ( g in db.Group.manager.search(!$flags.has(ShopMode))){
+			print("<h2>"+g.name+"</h2>");
+
+			//remove shopMode operations
+			for( op in Operation.manager.search($group==g,true)){
+				if(op.type==VOrder){
+					print('delete shopMode op #${op.id}');
+					op.delete();
+				}
+			}
+
+
+			for ( cat in g.getActiveContracts()){
+				if(untyped cat.hasPayments) continue;
+				print(cat.name);
+				for (sub in SubscriptionService.getCatalogSubscriptions(cat)){
+					print("----sub "+sub.id);
+					//create payements operation
+					var orderOp = SubscriptionService.createOrUpdateTotalOperation(sub);
+
+					if(untyped sub.isPaid){
+						if (db.Operation.manager.count( $subscription == sub && $type==Payment )>0 ) continue;
+
+						var op = PaymentService.makePaymentOperation(sub.user,g,Check.TYPE,Math.abs(orderOp.amount),"Paiement créé automatiquement car souscription marquée comme payée",orderOp);
+						op.subscription = sub;
+						op.date = orderOp.date;
+						op.pending = false;
+						op.update();
+						
+						print("create order op "+orderOp.amount);
+						print("create payment op "+op.amount);
+					}
+
+					
+				}
+			}
+
+			for( u in g.getMembers()){
+				service.PaymentService.updateUserBalance(u,g);
+			}
+		}
+	}
 }

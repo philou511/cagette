@@ -4,6 +4,7 @@ import db.Catalog;
 import db.MultiDistrib;
 import haxe.CallStack;
 import haxe.display.Display.CompletionModeKind;
+import hosted.db.GroupStats;
 import service.GraphService;
 import sugoi.Web;
 import sugoi.db.Cache;
@@ -150,64 +151,11 @@ class Cron extends Controller
 		});
 		task.execute(!App.config.DEBUG);
 
-		//Send warnings about subscriptions that are not validated yet and for which there is a distribution that starts in the right time range.
-		//  /!\ subscription validation is needed only with catalog with payments
-		var task = new TransactionWrappedTask( "Subscriptions to validate alert emails");
-		task.setTask(function() {
-			
-			var fromNow = now.setHourMinute( now.getHours(), 0 );
-			var toNow = now.setHourMinute( now.getHours() + 1, 0);
-			var subscriptionsToValidate = db.Subscription.manager.unsafeObjects(
-				'SELECT DISTINCT Subscription.* 
-				FROM Subscription INNER JOIN Catalog
-				ON Subscription.catalogId = Catalog.id
-				INNER JOIN Distribution
-				ON Distribution.catalogId = Catalog.id
-				WHERE Subscription.isPaid = false 
-				AND Catalog.type = ${db.Catalog.TYPE_CONSTORDERS}
-				AND Catalog.hasPayments = 0 
-				AND Distribution.date >= DATE_ADD(\'${fromNow}\', INTERVAL 3 DAY)
-				AND Distribution.date < DATE_ADD(\'${toNow}\', INTERVAL 3 DAY);',false).array();
-			
-			var subscriptionsToValidateByCatalog = new Map<db.Catalog, Array<db.Subscription>>();
-			for ( subscription in subscriptionsToValidate ) {
-				if ( subscriptionsToValidateByCatalog[ subscription.catalog ] == null ) {
-					subscriptionsToValidateByCatalog[ subscription.catalog ] = [];
-				}
-				subscriptionsToValidateByCatalog[ subscription.catalog ].push( subscription );
-			}
-
-			//List of subscriptions grouped by catalog
-			for ( catalog in subscriptionsToValidateByCatalog.keys() ) {
-
-				task.log( catalog.name );
-
-				var message : String = 'Bonjour, <br /><br />
-				Attention, les souscriptions suivantes n\'ont pas été validées, alors qu\'une distribution approche.
-				Vous devez au plus vite valider ou effacer ces souscriptions et vous assurer qu\'elles correspondent
-				bien au contrat signé, et aux produits que l\'adhérent a commandés.';
-
-				message += '<h3> Catalogue : ' + catalog.name + '</h3> <ul>';
-				subscriptionsToValidateByCatalog[ catalog ].sort( function(b, a) {
-	
-					return  a.user.getName() < b.user.getName() ? 1 : -1;
-				} );
-				for ( subscription in subscriptionsToValidateByCatalog[ catalog ] ) {
-					message += '<li>' + subscription.user.getName() + '</li>';
-				}
-				message += '</ul>';
-				App.quickMail( catalog.contact.email, catalog.name + ' : Il y a des souscriptions à valider', message, catalog.group );
-			}
-			
-		});		
-		task.execute(!App.config.DEBUG);
-
 		//Distribution time notifications
 		var task = new TransactionWrappedTask("Distrib notifications");
 		task.setTask(function(){
 			distribNotif(task,this.now,4,db.User.UserFlags.HasEmailNotif4h); //4h before
 			distribNotif(task,this.now,24,db.User.UserFlags.HasEmailNotif24h); //24h before
-			
 		});
 		task.execute(!App.config.DEBUG);
 
@@ -223,7 +171,7 @@ class Cron extends Controller
 		task.setTask(distribValidationNotif.bind(task));
 		task.execute(!App.config.DEBUG);
 
-		var task = new TransactionWrappedTask( 'Default automated orders for CSA variable contracts with compulsory ordering' );
+		var task = new TransactionWrappedTask( 'Default automated orders for CSA variable contracts' );
 		task.setTask( function() {
 
 			var range = tools.DateTool.getLastHourRange( now );
@@ -232,67 +180,57 @@ class Cron extends Controller
 			'SELECT Distribution.* 
 			FROM Distribution INNER JOIN Catalog
 			ON Distribution.catalogId = Catalog.id
-			WHERE Catalog.requiresOrdering = 1
+			WHERE Catalog.distribMinOrdersTotal > 0
 			AND Distribution.orderEndDate >= \'${range.from}\'
 			AND Distribution.orderEndDate < \'${range.to}\';', false );
 				
 			for ( distrib in distributionsToCheckForMissingOrders ) {
+				var distribSubscriptions = db.Subscription.manager.search( $catalog == distrib.catalog && $startDate <= distrib.date && $endDate >= distrib.date, false );
 
-				if ( distrib.catalog.requiresOrdering ) {
+				for ( subscription in distribSubscriptions ) {
 
-					var distribSubscriptions = db.Subscription.manager.search( $catalog == distrib.catalog && $startDate <= distrib.date && $endDate >= distrib.date, false );
+					if ( subscription.getAbsentDistribIds().find( id -> id == distrib.id ) == null ) {
+					
+						var distribSubscriptionOrders = db.UserOrder.manager.search( $subscription == subscription && $distribution == distrib );
+						if ( distribSubscriptionOrders.length == 0 ) {
 
-					for ( subscription in distribSubscriptions ) {
+							// if ( service.SubscriptionService.areAutomatedOrdersValid( subscription, distrib ) ) {
 
-						if ( subscription.getAbsentDistribIds().find( id -> id == distrib.id ) == null ) {
-						
-							var distribSubscriptionOrders = db.UserOrder.manager.search( $subscription == subscription && $distribution == distrib );
-							if ( distribSubscriptionOrders.length == 0 ) {
+								var defaultOrders = subscription.getDefaultOrders();
 
-								// if ( service.SubscriptionService.areAutomatedOrdersValid( subscription, distrib ) ) {
+								var automatedOrders = [];
+								for ( order in defaultOrders ) {
 
-									var defaultOrders = subscription.getDefaultOrders();
-
-									var automatedOrders = [];
-									for ( order in defaultOrders ) {
-
-										var product = db.Product.manager.get( order.productId, false );
-										if ( product != null && order.quantity != null && order.quantity != 0 ) {
-											automatedOrders.push( service.OrderService.make( subscription.user, order.quantity, product, distrib.id, null, subscription ) );	
-										}
+									var product = db.Product.manager.get( order.productId, false );
+									if ( product != null && order.quantity != null && order.quantity != 0 ) {
+										automatedOrders.push( service.OrderService.make( subscription.user, order.quantity, product, distrib.id, null, subscription ) );	
 									}
+								}
 
-									if( automatedOrders.length != 0 ) {
+								if( automatedOrders.length != 0 ) {
 
-										var message = 'Bonjour ${subscription.user.firstName},<br /><br />
-										A défaut de commande de votre part, votre commande par défaut a été appliquée automatiquement 
-										à la distribution du ${view.hDate( distrib.date )} du contrat "${subscription.catalog.name}".
-										<br /><br />
-										Votre commande par défaut : <br /><br />${subscription.getDefaultOrdersToString()}
-										<br /><br />
-										La commande à chaque distribution est obligatoire dans le contrat "${subscription.catalog.name}". 
-										Vous pouvez modifier votre commande par défaut en accédant à votre souscription à ce contrat depuis la page "commandes".';
+									var message = 'Bonjour ${subscription.user.firstName},<br /><br />
+									A défaut de commande de votre part, votre commande par défaut a été appliquée automatiquement 
+									à la distribution du ${view.hDate( distrib.date )} du contrat "${subscription.catalog.name}".
+									<br /><br />
+									Votre commande par défaut : <br /><br />${subscription.getDefaultOrdersToString()}
+									<br /><br />
+									La commande à chaque distribution est obligatoire dans le contrat "${subscription.catalog.name}". 
+									Vous pouvez modifier votre commande par défaut en accédant à votre souscription à ce contrat depuis la page "commandes" sur Cagette.net';
 
-										//fail silently
-										try{} catch(e:Dynamic){
-											App.quickMail( subscription.user.email, distrib.catalog.name + ' : Commande par défaut', message, distrib.catalog.group );
-										}
-										
+									//fail silently
+									try{} catch(e:Dynamic){
+										App.quickMail( subscription.user.email, distrib.catalog.name + ' : Commande par défaut', message, distrib.catalog.group );
 									}
-								
-									//Create order operation only
-									if ( distrib.catalog.group.hasPayments() ) {
-										service.SubscriptionService.createOrUpdateTotalOperation( subscription );
-									}
-								// }
-							}
-
+								}
+							
+								//Create order operation only
+								service.SubscriptionService.createOrUpdateTotalOperation( subscription );
 						}
+
 					}
-				
 				}
 			}
-		
 		});
 		task.execute(!App.config.DEBUG);
 
@@ -413,9 +351,27 @@ class Cron extends Controller
 			for( k in GraphService.getAllGraphKeys()){
 				GraphService.getDay(k,yesterday);
 			}
-
 		});
 		task.execute();
+
+
+		var task = new TransactionWrappedTask( "Refresh group Stats");
+		task.setTask(function() {			
+			//split groups in 7 segments so the update is made every week
+			var maxId = sys.db.Manager.cnx.request("select max(id) from `Group`").getIntResult(0);
+			var dayOfWeek = Date.now().getDay();
+			var segmentLength = Math.ceil(maxId/7);
+			task.log('maxId : $maxId, dayOfWeek : $dayOfWeek, segmentLength : $segmentLength');
+
+			var groups = db.Group.manager.search($id >=(dayOfWeek*segmentLength) && $id<((dayOfWeek+1)*segmentLength) );
+
+			for(g in groups){
+				var gs = GroupStats.getOrCreate(g.id);
+				gs.updateStats();
+				task.log("update "+g.id+" - "+g.name);
+			}
+		});
+		task.execute(!App.config.DEBUG);
 
 		
 	

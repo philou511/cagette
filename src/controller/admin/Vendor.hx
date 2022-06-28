@@ -1,6 +1,8 @@
 package controller.admin;
+import haxe.Json;
 import pro.db.VendorStats;
 import service.BridgeService;
+import sugoi.apis.linux.Curl;
 
 /**
  * Vendor admin
@@ -211,6 +213,11 @@ class Vendor extends controller.Controller
 			uc.disabled = false;
 			uc.update();
 		}*/
+
+		/*var req = new Curl();
+		req.setPostData("body",Json.stringify(v.getInfos()));
+		req.call("POST","https://hooks.zapier.com/hooks/catch/6566570/b868f9v/");
+		*/
 
 		view.stats = pro.db.VendorStats.getOrCreate(v);
 		view.courses = hosted.db.CompanyCourse.manager.search($company == cpro, false);

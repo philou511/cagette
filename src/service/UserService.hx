@@ -17,9 +17,9 @@ class UserService
 		this.user = u;		
 	}
 
-	public static function getOrCreate(firstName:String, lastName:String, email:String):db.User{
+	public static function get(email:String,?lock=false):db.User{
 
-		var t  = sugoi.i18n.Locale.texts;
+		/*var t  = sugoi.i18n.Locale.texts;
 		
 		if (!sugoi.form.validators.EmailValidator.check(email)){
 			throw new Error(500,t._("Invalid email address")+" : "+email);
@@ -33,7 +33,9 @@ class UserService
 			u.email = email;			
 			u.insert();
 		}
-		return u;
+		return u;*/
+
+		return db.User.manager.select($email == email || $email2 == email, lock);
 	}
 
 	/**

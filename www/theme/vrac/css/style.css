@@ -86,10 +86,10 @@ form p.desc {
 }
 
 /*@-webkit-keyframes bounce { 
-0%, 20%, 50%, 80%, 100% {-webkit-transform: translateY(0);} 
-40% {-webkit-transform: translateY(-30px);} 
-60% {-webkit-transform: translateY(-15px);} 
-} */
+	0%, 20%, 50%, 80%, 100% {-webkit-transform: translateY(0);} 
+	40% {-webkit-transform: translateY(-30px);} 
+	60% {-webkit-transform: translateY(-15px);} 
+ } */
 @keyframes bounce {
   0%, 50%, 90%, 100% {
     transform: translateY(0);
@@ -114,10 +114,10 @@ form p.desc {
 }
 
 ul.nav.admin {
-  background-color: #EEE;
+  background-color: #eee;
 }
 ul.nav.admin li.active > a {
-  background-color: #E0E0E0 !important;
+  background-color: #e0e0e0 !important;
 }
 ul.nav li {
   text-transform: uppercase;
@@ -127,7 +127,7 @@ ul.nav li a {
   color: #777;
 }
 ul.nav li.active > a {
-  background-color: #EEE !important;
+  background-color: #eee !important;
   color: #e95216 !important;
 }
 
@@ -146,7 +146,7 @@ ul.nav li.active > a {
   /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
-/* Footer */
+/* Page Footer */
 #footer {
   background: #e4c94b;
   border-radius: 8px;
@@ -180,13 +180,13 @@ ul.nav li.active > a {
   display: inline-block;
 }
 #footer .cagsocialmedia li.cagfb {
-  background-color: #4267B2;
+  background-color: #4267b2;
 }
 #footer .cagsocialmedia li.cagtwitter {
-  background-color: #1DA1F2;
+  background-color: #1da1f2;
 }
 #footer .cagsocialmedia li.cagyoutube {
-  background-color: #FF0000;
+  background-color: #ff0000;
 }
 #footer .cagsocialmedia li.caggithub {
   background-color: #333333;
@@ -207,14 +207,14 @@ ul.nav li.active > a {
 .sqlLog {
   margin-top: 24px;
   font-size: 10px;
-  background: #AAA;
+  background: #aaa;
 }
 .sqlLog a {
   color: #666;
 }
 
 .contact {
-  border: 2px solid #CCC;
+  border: 2px solid #ccc;
   border-radius: 8px;
   margin: 8px;
   padding: 8px;
@@ -224,7 +224,7 @@ ul.nav li.active > a {
 
 .homeBlock {
   margin-bottom: 32px;
-  background: #FFF;
+  background: #fff;
   border-radius: 8px;
   position: relative;
   padding: 8px;
@@ -241,7 +241,7 @@ span.panel-title {
 
 .article {
   margin-bottom: 16px;
-  background: #FFF;
+  background: #fff;
   border-radius: 8px;
   position: relative;
   padding: 8px;
@@ -249,7 +249,7 @@ span.panel-title {
 
 .white {
   margin-bottom: 16px;
-  background: #FFF;
+  background: #fff;
   border-radius: 4px;
   position: relative;
 }
@@ -261,7 +261,7 @@ span.panel-title {
 /* block marron */
 .block {
   margin-bottom: 12px;
-  background: #FFF;
+  background: #fff;
   border-radius: 8px;
   position: relative;
   padding: 8px;
@@ -270,11 +270,11 @@ span.panel-title {
 /* block marron + contours */
 .block2 {
   margin-bottom: 32px;
-  background: #F0D277;
+  background: #f0d277;
   border-radius: 8px;
   position: relative;
   padding: 8px;
-  border: 2px solid #C3A04C;
+  border: 2px solid #c3a04c;
 }
 
 /* product in shop */
@@ -303,30 +303,35 @@ table.table {
   	opacity:0.4;
   }*/
 }
-table.table tr.head > td, table.table thead tr td, table.table tr.head > th {
-  border-top: 3px solid #DDD;
+table.table tr.head > td,
+table.table thead tr td,
+table.table tr.head > th {
+  border-top: 3px solid #ddd;
   height: 30px;
   font-size: 120%;
   vertical-align: bottom;
 }
-table.table tr.darkhead > td, table.table tr.darkhead > th {
+table.table tr.darkhead > td,
+table.table tr.darkhead > th {
   background-color: #777;
   color: white;
   height: 30px;
   font-size: 120%;
   vertical-align: bottom;
 }
-table.table tr.darkhead > td a:not(.btn), table.table tr.darkhead > th a:not(.btn) {
+table.table tr.darkhead > td a:not(.btn),
+table.table tr.darkhead > th a:not(.btn) {
   color: white;
 }
-table.table tr.greyhead > td, table.table tr.greyhead > th {
-  background-color: #EEE;
+table.table tr.greyhead > td,
+table.table tr.greyhead > th {
+  background-color: #eee;
   vertical-align: middle;
   text-align: center;
   font-weight: bold;
 }
 table.table tr.subrow {
-  background-color: #EEE;
+  background-color: #eee;
 }
 
 table.listing tr td {
@@ -337,22 +342,22 @@ table.listing tr td {
 /* DIV TABLE */
 div.tableHeader {
   font-weight: bold;
-  color: #AAA;
-  border-bottom: 1px solid #DDD;
+  color: #aaa;
+  border-bottom: 1px solid #ddd;
   margin-bottom: 12px;
 }
 
 div.reportHeader {
-  background-color: #DDD;
+  background-color: #ddd;
 }
 
 /* a product order in a table style */
 .productOrder {
-  border-bottom: 1px solid #DDD;
+  border-bottom: 1px solid #ddd;
   margin-bottom: 6px;
 }
 .productOrder .infos {
-  color: #AAA;
+  color: #aaa;
   font-size: 0.8em;
 }
 
@@ -367,14 +372,14 @@ div.reportHeader {
 .linkToShare {
   font-family: Monospace;
   padding: 12px;
-  border: 1px solid #DDD;
+  border: 1px solid #ddd;
   border-radius: 6px;
   background-color: #f5f5f5;
 }
 
 .boxed {
   display: block;
-  border: 1px #DDD solid;
+  border: 1px #ddd solid;
   border-radius: 8px;
   color: inherit;
   background-color: white;
@@ -388,7 +393,7 @@ div.reportHeader {
 /* make <a> like clickable divs  */
 .clickable {
   display: block;
-  border: 1px #DDD solid;
+  border: 1px #ddd solid;
   border-radius: 8px;
   color: inherit;
   background-color: white;
@@ -404,7 +409,7 @@ div.reportHeader {
 }
 .clickable:active {
   cursor: pointer;
-  background-color: #F0D277;
+  background-color: #f0d277;
   border-color: #ebc349;
   text-decoration: none;
   transform: scale(0.95);
@@ -429,14 +434,14 @@ div.reportHeader {
   font-size: 1.5em;
 }
 .iconBadge.farmer-pro {
-  color: #85BD56;
-  border-color: #85BD56;
+  color: #85bd56;
+  border-color: #85bd56;
   border: 3px solid;
   background-color: white;
 }
 .iconBadge.farmer-pro i.icon {
   margin-top: -6px;
-  color: #85BD56;
+  color: #85bd56;
 }
 .iconBadge.farmer {
   color: #e4ba2b;
@@ -523,7 +528,7 @@ div.reportHeader {
 	SHOP v1
 */
 .shop .header {
-  background-color: #749E3C;
+  background-color: #749e3c;
   display: inline-block;
   width: 100%;
   border-top-left-radius: 8px;
@@ -549,7 +554,7 @@ div.reportHeader {
   font-weight: bold;
   font-size: 1.2em;
   color: #583816;
-  border-bottom: 1px solid #CCC;
+  border-bottom: 1px solid #ccc;
   width: 100%;
 }
 .shop .product {
@@ -613,7 +618,7 @@ div.reportHeader {
   font-size: 120%;
   margin-bottom: 12px;
   margin-top: 12px;
-  border-top: 1px solid #FFF;
+  border-top: 1px solid #fff;
 }
 
 .place {
@@ -622,11 +627,11 @@ div.reportHeader {
   margin-top: 13px;
   padding: 8px;
   font-size: 13px;
-  border-top: 1px solid #CCC;
+  border-top: 1px solid #ccc;
 }
 
 .distribMessage {
-  color: #FFF;
+  color: #fff;
   font-weight: bold;
   padding: 4px;
   margin-top: 13px;
@@ -645,7 +650,7 @@ div.reportHeader {
 .dateBox {
   border-radius: 8px;
   background-color: #c59654;
-  color: #FFF;
+  color: #fff;
   font-size: 13px;
   line-height: 13px;
   text-align: center;
@@ -658,7 +663,7 @@ div.reportHeader {
 }
 .dateBox .box {
   line-height: 22px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   color: #666;
   font-size: 14px;
   font-weight: bold;
@@ -667,10 +672,10 @@ div.reportHeader {
   border-radius: 4px;
 }
 .dateBox a {
-  color: #FFFFFF !important;
+  color: #ffffff !important;
 }
 .dateBox a:hover {
-  color: #FFFFFF !important;
+  color: #ffffff !important;
 }
 
 /* categories */
@@ -713,47 +718,56 @@ div.reportHeader {
 /**
 	Popovers for help and tutorials
 **/
-.popover {
-  color: white;
-  font-size: 14px;
-}
-.popover h3.popover-title {
-  color: #BB9931 !important;
-  font-weight: normal;
-  font-size: 20px;
-}
-.popover .popover-content {
-  font-size: 16px;
-}
-.popover .popover-content b {
-  color: #FC0;
-  font-weight: normal;
-}
-.popover .popover-content a {
-  color: #FC0;
-  font-weight: normal;
-  text-decoration: underline;
-}
-.popover .footer {
-  height: 45px;
-  padding: 12px 0;
-}
-.popover .footer .pull-left .btn {
-  background-color: #583816;
-  color: #BB9931;
-  border: 1px solid #BB9931;
-}
-.popover .footer .pull-right .btn {
-  background-color: #FC0;
-  color: #583816;
-  border: 1px solid #583816;
-}
+/*.popover{
 
+	color:white;
+	font-size:14px;
+
+	h3.popover-title{
+		//padding: 4px;
+		color:#BB9931 !important;
+		//border-bottom:1px solid #BB9931 !important;
+		//background-color:none;
+		font-weight:normal;
+		font-size: 20px;
+	}
+
+	.popover-content{
+		font-size: 16px;
+		b{ 
+			color:#FC0;
+			font-weight:normal;
+		}
+		a{ 
+			color:#FC0;
+			font-weight:normal;
+			text-decoration:underline; 
+		}
+	}
+
+	.footer{
+		//border-top: 1px solid #BB9931;
+		height: 45px;
+		padding: 12px 0;
+
+		.pull-left .btn{
+			background-color:#583816;
+			color:#BB9931;
+			border:1px solid #BB9931;
+		}
+
+		.pull-right .btn{
+			background-color:#FC0;
+			color:#583816;
+			border:1px solid #583816;
+		}
+	}
+}*/
 /* skin a modal like a tuto popover */
 .modal.help .modal-header {
   font-size: 1.3em;
-  color: #BB9931 !important;
-  border-bottom: 1px solid #BB9931 !important;
+  color: #bb9931 !important;
+  border-bottom: 1px solid #bb9931 !important;
   font-weight: bold !important;
   background-color: #583816 !important;
 }
@@ -762,7 +776,7 @@ div.reportHeader {
   color: white;
 }
 .modal.help .modal-footer {
-  border-top: 1px solid #BB9931 !important;
+  border-top: 1px solid #bb9931 !important;
 }
 
 /* hightlight a zone for tutos */
@@ -781,43 +795,45 @@ div.reportHeader {
   overflow: hidden;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
-  color: #FFF;
-  background-color: #B2823F;
+  color: #fff;
+  background-color: #b2823f;
   margin: 0;
   padding: 6px 6px 6px 90px;
+  min-height: 70px;
 }
 .distrib .header.disabled {
   background-color: #999;
   opacity: 1;
 }
 .distrib .header.orders {
-  background-color: #B2823F;
+  background-color: #b2823f;
 }
 .distrib .header.active {
-  background-color: #85B14D;
+  background-color: #85b14d;
 }
 .distrib .header .info {
   font-size: 16px;
-  line-height: 22px;
+  line-height: 27px;
   /* place link */
 }
 .distrib .header .info a {
-  color: #FFFFFF !important;
+  color: #ffffff !important;
 }
 .distrib .header .info a:hover {
-  color: #FFFFFF !important;
+  color: #ffffff !important;
 }
 .distrib .header .date {
   line-height: 23px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   color: #666;
   font-size: 14px;
   text-align: center;
   margin: 0 8px 0 0;
   border-radius: 6px;
-  border: 4px solid #C6C6C6;
+  border: 4px solid #c6c6c6;
 }
-.distrib .header .address, .distrib .header .closing {
+.distrib .header .address,
+.distrib .header .closing {
   font-weight: normal;
   font-size: 0.9em;
   line-height: 16px;
@@ -827,32 +843,34 @@ div.reportHeader {
   background-color: white;
 }
 .distrib .content.myorder {
-  background: #FFF;
-  font-weight: bold;
+  background: #eee;
   color: #999;
-  background: white;
-  padding: 11px 0 4px 16px;
+  padding: 8px 8px 8px 20px;
+  font-weight: bold;
 }
 .distrib .content.disabled {
   opacity: 1;
 }
 .distrib .content.orders {
-  background: #FFF;
+  background: #fff;
   padding-left: 50px;
 }
 .distrib .content .alert {
   margin-bottom: 0;
 }
-.distrib .footer {
-  min-height: 8px;
+.distrib .content .orderFooter {
   color: #999;
-  font-size: 0.9em;
+  margin: 10px 0;
+}
+.distrib .content .orderFooter a {
+  color: #999;
+  margin-right: 12px;
+}
+.distrib .footer {
+  height: 8px;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
-  background: #FFF;
-}
-.distrib .footer a {
-  color: #999;
+  background: #fff;
 }
 
 div.groupImg {
@@ -948,7 +966,7 @@ div.productBox .price {
 .tt-suggestion {
   background-color: #f5e3ac;
   padding: 8px;
-  border-top: 1px solid #CCC;
+  border-top: 1px solid #ccc;
   color: #634e0c;
   cursor: pointer;
   font-style: italic;
@@ -958,7 +976,7 @@ div.productBox .price {
 }
 
 #pInput .txpProduct {
-  color: #AAA;
+  color: #aaa;
   font-weight: bold;
   font-size: 0.8em;
   margin: 4px 0;
@@ -987,7 +1005,7 @@ div.basketNumber {
   border-radius: 10px;
   padding: 6px;
   font-weight: bold;
-  color: #CCC;
+  color: #ccc;
 }
 
 tr.success td div.basketNumber {
@@ -996,7 +1014,7 @@ tr.success td div.basketNumber {
 }
 
 tr.danger td div.basketNumber {
-  background-color: #DF3826;
+  background-color: #df3826;
   color: white;
 }
 
@@ -1009,7 +1027,7 @@ tr.danger td div.basketNumber {
   width: 100%;
   margin: 0;
   padding: 8px;
-  border-top: 3px solid #CCC;
+  border-top: 3px solid #ccc;
   z-index: 99;
 }
 
@@ -1045,6 +1063,20 @@ i.icon {
   vertical-align: middle;
   min-width: 1em;
   text-align: center;
+}
+
+.subPanel {
+  border-color: #eee !important;
+  border-width: 3px !important;
+  text-align: center;
+}
+.subPanel .panel-body {
+  height: 80px;
+  overflow-x: auto;
+}
+.subPanel .panel-heading {
+  border: none !important;
+  font-weight: bold;
 }
 
 /*

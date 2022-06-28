@@ -2416,12 +2416,8 @@ msgstr ""
 msgid "Admin"
 msgstr ""
 
-#: ../lang/master/tpl/macros.mtt:2357
-msgid "Database"
-msgstr ""
-
-#: ../lang/master/tpl/macros.mtt:2462
-msgid "Log out"
+#: ../lang/master/tpl/home.mtt:9976
+msgid "We need <b>::rolesNum::</b> volunteer(s) for the following roles:"
 msgstr ""
 
 #: ../lang/master/tpl/macros.mtt:2654 ../lang/master/tpl/group/view.mtt:3637
@@ -2780,35 +2776,7 @@ msgstr ""
 msgid "To be validated"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/volunteersSummary.mtt:1840
-#: ../lang/master/tpl/distribution/volunteersCalendar.mtt:2903
-msgid "Unsubscribe"
-msgstr ""
-
-#: ../lang/master/tpl/distribution/volunteersSummary.mtt:2010
-#: ../lang/master/tpl/distribution/volunteersCalendar.mtt:3206
-msgid "Join"
-msgstr ""
-
-#: ../lang/master/tpl/distribution/default.mtt:806
-#: ../lang/master/tpl/contractadmin/design.mtt:874
-#: ../lang/master/tpl/design.mtt:2629
-msgid "Distributions"
-msgstr ""
-
-#: ../lang/master/tpl/distribution/default.mtt:1437
-#: ../lang/master/tpl/distribution/default.mtt:7867
-#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:37
-msgid "Duty periods"
-msgstr ""
-
-#: ../lang/master/tpl/distribution/default.mtt:1736
-msgid "Duty periods participations"
-msgstr ""
-
-#: ../lang/master/tpl/distribution/default.mtt:3430
 #, fuzzy
-#| msgid "Orders opening date"
 msgid "Orders opening"
 msgstr "Data de abertura de pedidos"
 
