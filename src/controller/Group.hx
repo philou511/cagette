@@ -113,8 +113,7 @@ class Group extends controller.Controller
 
 		var p = new db.Place();
 		var f = form.CagetteForm.fromSpod(p);
-		f.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),p.country,true));
-			
+		f.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),p.country,true));			
 		f.addElement(new StringInput("groupName", t._("Name of your group"), "", true),1);
 		
 		//group type
@@ -122,7 +121,7 @@ class Group extends controller.Controller
 			{
 				label:"Mode marché",
 				value:"2",
-				desc : "Drive de producteurs sans engagement.<br/>Configuration par défaut : Groupe ouvert (n'importe qui peut s'inscrire et commander) <a data-toggle='tooltip' title='En savoir plus' href='https://wiki.cagette.net/admin:admin_boutique#mode_marche' target='_blank'><i class='icon icon-info'></i></a>"
+				desc : "Drive de producteurs sans engagement.<br/>Configuration par défaut : Groupe ouvert, n'importe qui peut s'inscrire et commander <a data-toggle='tooltip' title='En savoir plus' href='https://wiki.cagette.net/admin:admin_boutique#mode_marche' target='_blank'><i class='icon icon-info'></i></a>"
 			},
 			{ 
 				label:"Mode AMAP",
@@ -133,9 +132,11 @@ class Group extends controller.Controller
 		var gt = new sugoi.form.elements.RadioGroup("type", t._("Group type"), data ,"2", Std.string( db.Catalog.TYPE_VARORDER ), true, true, true);
 		f.addElement(gt,2);
 
-		f.getElement("name").label = "Nom du lieu de distribution";
+		f.getElement("name").label = "Nom du lieu";
 		f.removeElementByName("lat");
 		f.removeElementByName("lng");
+
+		f.addElement(new sugoi.form.elements.Html("infos","<h4>Lieu de distribution</h4>Renseignez le nom et adresse du lieu qui acceuillera les distributions de produits.<br/>Vous pourrez changer cette adresse plus tard si nécéssaire."),3);
 		
 		if (f.checkToken()) {
 			

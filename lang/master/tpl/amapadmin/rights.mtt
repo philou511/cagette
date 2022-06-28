@@ -1,6 +1,12 @@
 ::use 'amapadmin/design.mtt'::
 
 		<h3>::_("Administration rights")::</h3>		
+
+		<div class="alert alert-warning">
+			<i class="icon icon-info"></i>
+			Pour connaître en détail le fonctionnement des droits, 
+			<a href="https://wiki.cagette.net/admin:droits" target="_blank">consultez la documentation</a>
+		</div>
 		
 		<p>
 			$$insert(::_("Add a right")::,/amapadmin/editRight)
@@ -39,11 +45,7 @@
 		
 
 		
-            <div class="alert alert-warning">
-                <i class="icon icon-info"></i>
-                Pour connaître en détail le fonctionnement des droits, 
-                <a href="https://wiki.cagette.net/admin:droits" target="_blank">consultez la documentation</a>
-            </div>
+            
         
 
 

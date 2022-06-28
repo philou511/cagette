@@ -23,7 +23,7 @@
 			</li>
 			<li id="places" ::attr class if(category=="places") 'active'::>
 				<a href="/place/">
-					<i class="icon icon-map-marker"></i> Lieux de distribution</a>
+					<i class="icon icon-map-marker"></i> Lieu de distribution</a>
 			</li>
 			<li id="currency" ::attr class if(category=="currency") 'active'::>
 				 <a href="/amapadmin/currency/">
