@@ -107,7 +107,7 @@ class Member extends Controller
 	 */
 	@tpl('form.mtt')
 	function doEdit(member:db.User) {
-		
+		/*
 		if (member.isAdmin() && !app.user.isAdmin()) throw Error("/", t._("You cannot modify the account of an administrator"));
 		
 		var form = db.User.getForm(member);
@@ -180,7 +180,7 @@ class Member extends Controller
 		}
 		
 		view.form = form;
-		
+		*/
 	}
 	
 	/**

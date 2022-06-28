@@ -344,19 +344,18 @@ class SubscriptionService
 		if(!adminMode){
 			var newSubscriptionStartDate = getNewSubscriptionStartDate( subscription.catalog );
 			if ( newSubscriptionStartDate == null ) {
-				throw TypedError.typed( "Toutes les distributions futures sont déjà fermées, ou il n'existe aucune distribution dans le futur.", InvalidParameters );
+				throw TypedError.typed('Toutes les distributions futures sont déjà fermées, ou il n\'existe aucune distribution dans le futur.', InvalidParameters );
 			}
 			if( subscription.id == null ) {
 				//new sub
 				if ( subscription.startDate.getTime() < newSubscriptionStartDate.getTime() ) {
-					throw TypedError.typed( 'La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : ' + Formatting.dDate( newSubscriptionStartDate ), InvalidParameters );
+					throw TypedError.typed('La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : ${Formatting.dDate(newSubscriptionStartDate)}', InvalidParameters );
 				}
 			} else {	
 				//existing sub		
 				if ( previousStartDate.toString() != subscription.startDate.toString() ) {
 					if ( Date.now().getTime() <= subscription.startDate.getTime() && subscription.startDate.getTime() < newSubscriptionStartDate.getTime() ) {
-						throw TypedError.typed( 'La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : '
-											+ Formatting.dDate( newSubscriptionStartDate ), InvalidParameters );
+						throw TypedError.typed('La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : ${Formatting.dDate(newSubscriptionStartDate)}', InvalidParameters );
 					}
 				}
 			}
@@ -515,7 +514,8 @@ class SubscriptionService
 	public static function checkVarOrders(ordersByDistrib:Map<db.Distribution,Array<CSAOrder>>,?subscription:db.Subscription):Bool{
 		var keys = [];
 		for( k in ordersByDistrib.keys()) keys.push(k);
-		var catalog = keys[0].catalog;
+		if(keys.length==0) throw "Aucune distribution ouverte à la commande pour cette souscription";
+		var catalog = keys.find(d -> d!=null).catalog;
 		
 		//Minimum by distribution
 		if ( catalog.distribMinOrdersTotal > 0 ) {
@@ -530,7 +530,7 @@ class SubscriptionService
 
 				if ( distribTotal < catalog.distribMinOrdersTotal ) {
 					var message = 'Distribution du ${Formatting.hDate( distrib.date )} : ';
-					message += 'Le montant votre commande doit être d\'au moins ${catalog.distribMinOrdersTotal} € par distribution.';
+					message += 'Le montant de votre commande doit être d\'au moins ${catalog.distribMinOrdersTotal} € par distribution.';
 					throw TypedError.typed( message, CatalogRequirementsNotMet );					
 				}
 			}
@@ -601,6 +601,7 @@ class SubscriptionService
 	 public function createSubscription( user:db.User, catalog:db.Catalog, ?ordersData:Array<CSAOrder>, ?absenceDistribIds:Array<Int>,?absenceNb:Int,?startDate:Date, ?endDate:Date ):db.Subscription {
 
 		if ( startDate == null ) startDate = getNewSubscriptionStartDate( catalog );
+		if ( startDate == null ) throw "Aucune distribution non fermée dans le futur";
 		if ( endDate == null ) 	endDate = catalog.endDate;
 		
 		//if the user is not a member of the group
@@ -639,7 +640,10 @@ class SubscriptionService
 		this.updateDefaultOrders( subscription, ordersData );
 		
 		//Email notification
-		sendSubscriptionCreatedEmail(subscription);
+		if(ordersData!=null && ordersData.length > 0){
+			//cannot send email if defaultOrder is not defined
+			sendSubscriptionCreatedEmail(subscription);
+		}
 
 		return subscription;
 	}
@@ -830,14 +834,8 @@ class SubscriptionService
 			ordersData = subscription.getDefaultOrders();
 		}
 
-		if(catalog.isConstantOrdersCatalog()){
-			if ( hasPastDistribOrders(subscription) && !adminMode ) {
-				throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées, il faut recréer une nouvelle souscription avec une nouvelle commande.', SubscriptionServiceError.PastOrders );
-			}
-		}
-
 		//delete existing userOrders
-		var subscriptionAllOrders = getSubscriptionAllOrders( subscription );
+		var subscriptionAllOrders = getSubscriptionAllOrders(subscription);
 		var now = Date.now().getTime();
 		for ( order in subscriptionAllOrders ) {
 
@@ -908,22 +906,29 @@ class SubscriptionService
 
 	/**
 		Update default orders (store it in the subscription entity) and create the recurrent UserOrders
-		DefaultOrders can be on a variable contract with requiresOrdering=true
+		DefaultOrders can be on a variable contract 
 		Or can be the recurring order of a constant CSA contrat
 	**/
 	public function updateDefaultOrders( subscription:db.Subscription, defaultOrders:Array<CSAOrder>){
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );	
 		subscription.lock();	
-		if( subscription.catalog.isVariableOrdersCatalog()){
+		/*if( subscription.catalog.isVariableOrdersCatalog()){
 			if ( subscription.catalog.distribMinOrdersTotal>0 && (defaultOrders==null || defaultOrders.length==0 ) ) {
 				throw new Error('La commande par défaut ne peut pas être vide. (Souscription de ${subscription.user.getName()})');
 			}
-		}else{
+		}else{*/
 			if ( defaultOrders==null || defaultOrders.length==0 ) {
 				throw new Error('La commande par défaut ne peut pas être vide. (Souscription de ${subscription.user.getName()})');
 			}
-		}	
+		//}	
+
+		//if constantOrders, the user (not admin) cannot edit default orders if sub has past distrib orders
+		if(subscription.catalog.isConstantOrdersCatalog()){
+			if ( hasPastDistribOrders(subscription) && !adminMode ) {
+				throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées, il faut recréer une nouvelle souscription avec une nouvelle commande.', SubscriptionServiceError.PastOrders );
+			}
+		}
 		
 		createRecurrentOrders( subscription, defaultOrders );
 

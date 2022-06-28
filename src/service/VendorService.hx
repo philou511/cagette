@@ -65,7 +65,7 @@ class VendorService{
 			for( n in search.name.split(" ")){
 				n = n.toLowerCase();
 				if(Lambda.has(["le","la","les","du","de","l'","a","à","au","en","sur","qui","ferme","GAEC","EARL","SCEA","jardin","jardins"],n)) continue;
-				if(Lambda.has(["create","delete","drop","select","count"],n)) continue; //no SQL injection !
+				if(Lambda.has(["create","delete","drop","select","count","truncate"],n)) continue; //no SQL injection !
 			
 				names.push(n);
 			}

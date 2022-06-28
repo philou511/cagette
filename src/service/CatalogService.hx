@@ -49,7 +49,7 @@ class CatalogService{
 			var absencesIndex = 16;
 			if ( catalog.type == Catalog.TYPE_VARORDER ) {
 				//VAR
-				form.addElement( new sugoi.form.elements.Html( 'constraints', '<h4>Engagements par distribution</h4>', '' ), 10 );
+				form.addElement( new sugoi.form.elements.Html( 'constraints', '<h4>Engagement</h4>', '' ), 10 );
 				form.addElement( new sugoi.form.elements.Html( 'constraintsHtml', 'Définissez ici l\'engagement minimum pour ce contrat. <br/><a href="https://wiki.cagette.net/admin:contratsamapvariables#engagements" target="_blank"><i class="icon icon-info"></i> Pour plus d\'informations, consultez la documentation</a>.', '' ), 11 );
 
 				form.getElement("orderStartDaysBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#ouverture_et_fermeture_de_commande";
@@ -236,8 +236,6 @@ class CatalogService{
 
 			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > Date.now(), { orderBy : date }, true );
 			for ( distrib in futureDistribs ) {
-
-				distrib.lock();
 
 				if ( newOrderStartDays != null ) {	
 					distrib.orderStartDate = DateTools.delta( distrib.date, -1000.0 * 60 * 60 * 24 * newOrderStartDays );

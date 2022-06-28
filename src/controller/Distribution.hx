@@ -135,10 +135,10 @@ class Distribution extends Controller {
 		view.products = products;
 
 		// users
-		var users = Lambda.array(d.getUsers());
+		var users = d.getUsers().array();
 		// var usersMap = tools.ObjectListTool.toIdMap(users);
 		users.sort(function(b, a) {
-			return (a.lastName < b.lastName) ? 1 : -1;
+			return (a.lastName.toUpperCase() < b.lastName.toUpperCase()) ? 1 : -1;
 		});
 		view.users = users;
 		// view.usersMap = usersMap;
@@ -337,7 +337,7 @@ class Distribution extends Controller {
 			}
 			try {
 				// do not launch event, avoid notifs for now
-				d = DistributionService.editAttendance(d, d.multiDistrib, orderStartDate, orderEndDate, false);
+				d = DistributionService.editAttendance(d, orderStartDate, orderEndDate, false);
 			} catch (e:tink.core.Error) {
 				throw Error(sugoi.Web.getURI(), e.message);
 			}
@@ -368,7 +368,7 @@ class Distribution extends Controller {
 		var text = "Si la date à laquelle vous souhaitez reporter la distribution n'est pas dans la liste, créez la dans l'onglet \"Distributions\".";
 		text += "<div class='alert alert-warning'><i class='icon icon-info'></i> Attention, reporter une distribution peut... :<ul>";
 		text += "<li>Provoquer une renumérotation des paniers de la distribution cible.</li>";
-		text += "<li>Provoquer la modification de le date de fin du catalogue/contrat pour prendre en compte la nouvelle date.</li>";
+		text += "<li>Provoquer la modification de la date de fin du catalogue/contrat pour prendre en compte la nouvelle date.</li>";
 		if (d.catalog.isConstantOrdersCatalog()) {
 			text += "<li>Provoquer l'extension des souscriptions pour prendre en compte la nouvelle date tout en préservant le même nombre de distributions. Pensez à vérifier les souscriptions après avec effectué cette action.</li>";
 		}
@@ -400,11 +400,11 @@ class Distribution extends Controller {
 			try {
 				var mdid = form.getValueOf("md");
 				if (mdid == null)
-					throw "Sélectionnez une date de distribution";
+					throw new tink.core.Error("Sélectionnez une date de distribution");
 				md = db.MultiDistrib.manager.get(mdid);
 
 				// do not launch event, avoid notifs for now
-				d = DistributionService.editAttendance(d, md, d.orderStartDate, d.orderEndDate, false);
+				d = DistributionService.shiftDistribution(d, md, false);
 				
 			} catch (e:tink.core.Error) {
 				throw Error(sugoi.Web.getURI(), e.message);
@@ -1122,7 +1122,7 @@ class Distribution extends Controller {
 	}
 
 	/**
-		Manage volunteer roles for the specified multidistrib
+		enable/disable volunteer roles for the specified multidistrib
 	**/
 	@tpl("form.mtt")
 	function doVolunteerRoles(distrib:db.MultiDistrib) {
@@ -1132,8 +1132,8 @@ class Distribution extends Controller {
 
 		// Get all the volunteer roles for the group and for the selected contracts
 		var allRoles = VolunteerService.getRolesFromGroup(distrib.getGroup());
-		var generalRoles = Lambda.filter(allRoles, function(role) return role.catalog == null);
-		var checkedRoles = new Array<String>();
+		var generalRoles = allRoles.filter(role -> role.catalog == null);
+		var checkedRoles = [];
 		var roleIds:Array<Int> = distrib.volunteerRolesIds != null ? distrib.volunteerRolesIds.split(",").map(Std.parseInt) : [];
 
 		// general roles
@@ -1147,13 +1147,24 @@ class Distribution extends Controller {
 		// display roles linked to active contracts in this distrib
 		for (distrib in distrib.getDistributions()) {
 			var cid = distrib.catalog.id;
-			var contractRoles = Lambda.filter(allRoles, function(role) return role.catalog != null && role.catalog.id == cid);
+			var contractRoles = allRoles.filter(role -> role.catalog != null && role.catalog.id == cid);
 			for (role in contractRoles) {
 				roles.push({label: role.name + " - " + distrib.catalog.vendor.name, value: Std.string(role.id)});
 				if (roleIds == null || Lambda.has(roleIds, role.id)) {
 					checkedRoles.push(Std.string(role.id));
 				}
 			}
+		}
+
+		//display activated roles which should not be active
+		var unactivatedRoleIds = roleIds.filter( rid -> {
+			return checkedRoles.find(r -> r==Std.string(rid))==null;
+		});
+		for(rid in unactivatedRoleIds){
+			var role = allRoles.find( r -> r.id==rid);
+			if(role==null) continue;
+			roles.push({label: role.name +" (?)", value: Std.string(role.id)});
+			checkedRoles.push(Std.string(role.id));
 		}
 
 		var volunteerRolesCheckboxes = new sugoi.form.elements.CheckboxGroup("roles", "", roles, checkedRoles, true);
@@ -1182,16 +1193,18 @@ class Distribution extends Controller {
 		var form = new sugoi.form.Form("volunteers");
 
 		var volunteerRoles = distrib.getVolunteerRoles();
+		var volunteers = distrib.getVolunteers();
+		
+
 		if (volunteerRoles == null) {
-			throw Error('/distribution/volunteerRoles/' + distrib.id, t._("You need to first select the volunteer roles for this distribution"));
+			throw Error('/distribution/volunteerRoles/${distrib.id}', t._("You need to first select the volunteer roles for this distribution"));
 		}
 
-		var members = Lambda.array(Lambda.map(app.user.getGroup().getMembers(), function(user) return {label: user.getName(), value: user.id}));
-		for (role in volunteerRoles) {
-			var selectedVolunteer = distrib.getVolunteerForRole(db.VolunteerRole.manager.get(role.id));
+		var members = app.user.getGroup().getMembers().array().map(user -> {label: user.getName(), value: user.id});
+		for (role in volunteerRoles) {			
+			var selectedVolunteer = distrib.getVolunteerForRole(role);
 			var selectedUserId = selectedVolunteer != null ? selectedVolunteer.user.id : null;
-			form.addElement(new IntSelect(Std.string(role.id), db.VolunteerRole.manager.get(role.id).name, members, selectedUserId, false,
-				t._("No volunteer assigned")));
+			form.addElement(new IntSelect(Std.string(role.id), role.name, members, selectedUserId, false, t._("No volunteer assigned")));
 		}
 
 		if (form.isValid()) {
@@ -1279,12 +1292,10 @@ class Distribution extends Controller {
 		// duty periods user's participation		
 		var timeframe = group.getMembershipTimeframe(Date.now());
 		var multidistribs = db.MultiDistrib.getFromTimeRange(group, timeframe.from, timeframe.to);
-
 		
 		var uniqueRoles = VolunteerService.getUsedRolesInMultidistribs(multidistribs);
-		
 		var participation = VolunteerService.getUserParticipation([user],app.getCurrentGroup(),timeframe.from,timeframe.to).get(user.id);
-
+		
 		//needed at component init
 		view.daysBeforeDutyPeriodsOpen = app.user.getGroup().daysBeforeDutyPeriodsOpen;
 		view.uniqueRoles = uniqueRoles;

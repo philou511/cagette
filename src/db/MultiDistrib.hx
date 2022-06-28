@@ -547,14 +547,11 @@ class MultiDistrib extends Object
 	@:skip private var volunteersCache:Array<db.Volunteer>;
 	
 	public function getVolunteers() {
-
 		if(!useCache || volunteersCache==null){
 			volunteersCache = db.Volunteer.manager.search($multiDistrib == this, false).array();
 		}
 		return volunteersCache;
-		
 	}
-
 
 	public function hasVacantVolunteerRoles() {
 

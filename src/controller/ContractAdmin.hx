@@ -94,7 +94,7 @@ class ContractAdmin extends Controller
 		view.category = 'contractadmin';
 		if (!app.user.isContractManager( catalog )) throw Error('/', t._("Forbidden action"));
 
-		view.title = t._("Edit catalog \"::contractName::\"", { contractName : catalog.name } );
+		view.title = 'Modifier le catalogue "${catalog.name}"';
 
 		var group = catalog.group;
 		var currentContact = catalog.contact;
@@ -122,11 +122,6 @@ class ContractAdmin extends Controller
 					var newOrderEndHours = catalog.orderEndHoursBeforeDistrib != previousOrderEndHours ? catalog.orderEndHoursBeforeDistrib : null;
 					var msg = CatalogService.updateFutureDistribsStartEndOrdersDates( catalog, newOrderStartDays, newOrderEndHours );
 					if(msg!=null) messages.push(msg);  
-
-					//payements : update or create operations
-					// for ( sub in SubscriptionService.getCatalogSubscriptions(catalog)){
-					// 	SubscriptionService.createOrUpdateTotalOperation( sub );
-					// }
 
 				}
 				

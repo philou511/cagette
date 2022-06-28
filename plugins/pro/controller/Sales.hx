@@ -132,13 +132,7 @@ class Sales extends controller.Controller
 				orderEndDate = form.getValueOf("orderEndDate");
 
 				//do not launch event, avoid notifs for now
-				d = DistributionService.editAttendance(
-					d,
-					d.multiDistrib,
-					orderStartDate,
-					orderEndDate,
-					false
-				);							
+				d = DistributionService.editAttendance(d,orderStartDate,orderEndDate,false);							
 
 			} catch(e:tink.core.Error){
 				throw Error('/p/pro/sales' , e.message);

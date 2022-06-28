@@ -36,8 +36,8 @@ class Catalog extends Object
 	public var orderEndHoursBeforeDistrib : SNull<SInt>;
 
 	// public var requiresOrdering : SNull<Bool>;			// ordering at each distrib is a compulsory
-	public var distribMinOrdersTotal : SInt;
-	public var catalogMinOrdersTotal : SInt;
+	public var distribMinOrdersTotal : SFloat;
+	public var catalogMinOrdersTotal : SFloat;
 	// public var allowedOverspend : SNull<SFloat>;  //removed 
 
 	//absences in CSA groups
@@ -45,7 +45,7 @@ class Catalog extends Object
 	public var absencesStartDate : SNull<SDateTime>;
 	public var absencesEndDate : SNull<SDateTime>;
 
-	public var hasPayments : SBool; //only for CSA groups
+	// public var hasPayments : SBool; //only for CSA groups
 
 	@:skip inline public static var TYPE_CONSTORDERS = 0; 	//constant orders catalog (contrat AMAP classique)
 	@:skip inline public static var TYPE_VARORDER = 1;		//variable orders catalog (contrat AMAP variable)

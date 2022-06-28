@@ -66,11 +66,12 @@
                     <table class="table table-striped table-bordered">
                         <tr class="greyhead">
                             <th>Membre</th>
-                            <th ::cond catalog.isConstantOrdersCatalog()::>Engagement</th>
+                            <th>Engagement</th>
                             <th>Période d'engagement</th>
                             <th>Nbre de distributions</th>
                             <th>Total commandé</th>
                             <th>Solde</th>
+                            <th></th>
                         </tr>
                         ::foreach subscription subscriptions::
                             

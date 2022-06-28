@@ -29,14 +29,14 @@ class SubscriptionAdmin extends controller.Controller
 		//subs sorting
 		var orderBy = app.params.get("orderBy");
 		if(orderBy=="userName" || orderBy==null){
-			catalogSubscriptions.sort( (a,b) -> a.user.lastName > b.user.lastName ? 1 : -1);
+			catalogSubscriptions.sort( (a,b) -> a.user.lastName.toUpperCase() > b.user.lastName.toUpperCase() ? 1 : -1);
 			orderBy = "userName";
 		}
 		view.orderBy = orderBy;
 		view.catalog = catalog;
 		view.c = catalog;
 		view.subscriptions = catalogSubscriptions;
-		view.negativeBalanceCount = catalogSubscriptions.count( function( subscription ) { return  subscription.getBalance() < 0; } );
+		view.negativeBalanceCount = catalogSubscriptions.count( sub -> sub.getBalance() < 0 );
 		view.subscriptionService = SubscriptionService;
 		view.nav.push( 'subscriptions' );
 
@@ -490,7 +490,7 @@ class SubscriptionAdmin extends controller.Controller
 		view.c = catalog;
 		view.subscriptions = catalogSubscriptions;
 		catalogSubscriptions.sort(function(a,b){
-			if( a.user.lastName > b.user.lastName ){
+			if( a.user.lastName.toUpperCase() > b.user.lastName.toUpperCase() ){
 				return 1;
 			}else{
 				return -1;
@@ -522,6 +522,7 @@ class SubscriptionAdmin extends controller.Controller
 
 					var op = PaymentService.makePaymentOperation(sub.user,catalog.group,paymentType,amount,label);
 					op.subscription = sub;
+					op.pending = false;
 					op.update();
 
 				}else{

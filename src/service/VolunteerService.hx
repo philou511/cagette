@@ -383,6 +383,7 @@ class VolunteerService
 			uniqueRolesIds = uniqueRolesIds.concat(md.getVolunteerRoleIds());			
 		}
 		var uniqueRoles = tools.ArrayTool.deduplicate(uniqueRolesIds).map( rid -> return db.VolunteerRole.manager.get(rid,false));
+		uniqueRoles = uniqueRoles.filter(u -> u!=null);
 
 		//sort by catalog id and role name
 		uniqueRoles.sort(function(b, a) {

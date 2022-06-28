@@ -116,12 +116,7 @@
 		::if b.next::<a href="::url::/?page=::b.next::">::_("Next")::</a>::else:: ::_("Next"):: ::end:: &gt;
 	</macro>
 	
-	<macro name="nullSafe(text)">
-		::if text==null::
-		::else::
-		::raw text::
-		::end::
-	</macro>
+	<macro name="nullSafe(text)">::if text==null::	::else::::raw text::::end::</macro>
 	
 	<macro name="edit(text,url)">		
 		<a href="::url::" class="btn btn-default btn-sm">
