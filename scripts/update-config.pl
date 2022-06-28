@@ -9,7 +9,7 @@ use warnings FATAL => qw/uninitialized/;
 use XML::Twig;
 use utf8::all;
 
-my $url = "mysql://$ENV{DB_USER}:$ENV{DB_USER_PW}\@$ENV{DB_HOST}/$ENV{DB_NAME}?useSSL=true&verifyServerCertificate=false";
+my $url = "mysql://$ENV{DB_USER}:$ENV{DB_USER_PW}\@$ENV{DB_HOST}/$ENV{DB_NAME}";
 
 my $twig = XML::Twig->new(
     pretty_print => 'nsgmls' # to pretty print attributes
