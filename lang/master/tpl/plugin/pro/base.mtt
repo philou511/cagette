@@ -62,14 +62,17 @@
 		
 		$$matomo()
 		  
-		<script type="text/javascript"> 
-			//track Matomo events from the backend
-			var events = JSON.parse('::raw getMatomoEvents()::');
-			for(ev of events){
-				console.info("track Matomo event",ev);
-				_paq.push(['trackEvent', ev.category, ev.action, ev.name, ev.value]);
-			}
-		</script>
+		::set matomoUrl = getMatomoUrl()::
+		::if(matomoUrl!="")::
+			<script type="text/javascript"> 
+				//track Matomo events from the backend
+				var events = JSON.parse('::raw getMatomoEvents()::');
+				for(ev of events){
+					console.info("track Matomo event",ev);
+					_paq.push(['trackEvent', ev.category, ev.action, ev.name, ev.value]);
+				}
+			</script>
+		::end::
 
 		::foreach script getNeoModuleScripts()::
 			<script src="::script::"></script>
