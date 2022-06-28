@@ -756,7 +756,7 @@ class Admin extends controller.Controller {
 	/**
 	 * Create a cpro account
 	 */
-	function doCreateCpro(vendor:db.Vendor) {
+	/*function doCreateCpro(vendor:db.Vendor) {
 		if (pro.db.CagettePro.getFromVendor(vendor) != null)
 			throw Error("/admin/vendor/view/" + vendor.id, vendor.name + " a deja un compte producteur");
 
@@ -781,7 +781,7 @@ class Admin extends controller.Controller {
 		VendorStats.updateStats(vendor);
 
 		throw Ok("/admin/vendor/view/" + vendor.id, "Compte producteur créé");
-	}
+	}*/
 	
 
 	@tpl("form.mtt")
