@@ -1298,7 +1298,6 @@ class Distribution extends Controller {
 		
 		//needed at component init
 		view.daysBeforeDutyPeriodsOpen = app.user.getGroup().daysBeforeDutyPeriodsOpen;
-		view.uniqueRoles = uniqueRoles;
 		view.toBeDone = participation.genericRolesToBeDone + participation.contractRolesToBeDone;
 		view.done = participation.genericRolesDone + participation.contractRolesDone;
 		view.timeframe = timeframe;

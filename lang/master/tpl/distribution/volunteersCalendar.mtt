@@ -7,14 +7,6 @@
 				userId: ::user.id::,
 				toBeDone: ::toBeDone::,
 				done: ::done::,
-				roles:[
-					:: foreach r uniqueRoles::
-                    {
-						id: ::r.id::,
-						name: "::r.name::"
-					},
-                    :: end::
-				],
 				fromDate: "::timeframe.from::",
 				toDate: "::timeframe.to::",
 				daysBeforeDutyPeriodsOpen: ::daysBeforeDutyPeriodsOpen::,
