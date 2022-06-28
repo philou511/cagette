@@ -1285,8 +1285,6 @@ class Distribution extends Controller {
 		
 		var participation = VolunteerService.getUserParticipation([user],app.getCurrentGroup(),timeframe.from,timeframe.to).get(user.id);
 
-		view.multidistribs = multidistribs;
-		
 		//needed at component init
 		view.daysBeforeDutyPeriodsOpen = app.user.getGroup().daysBeforeDutyPeriodsOpen;
 		view.uniqueRoles = uniqueRoles;
