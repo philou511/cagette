@@ -1672,4 +1672,11 @@ class Admin extends controller.Controller {
 			}
 		}
 	}
+
+
+	/*function doStats(){
+		for( gs in hosted.db.GroupStats.manager.search($contactType=="",true)){
+			gs.updateStats();
+		}
+	}*/
 }
