@@ -16,8 +16,7 @@
 			<tr>
 				<th>::_("Name")::</th>
 				<th>::_("Rights")::</th>
-				<th>::_("Actions")::</th>
-				
+				<th>::_("Actions")::</th>				
 			</tr>
 			::foreach u users::
 			<tr>
@@ -35,19 +34,7 @@
 				<td>
 					$$edit(::_("Modify")::,/amapadmin/editRight/::u.userId::)
 				</td>
-				
-				
 			</tr>
-			
-			
 			::end::
 		</table>
-		
-
-		
-            
-        
-
-
-
 ::end::

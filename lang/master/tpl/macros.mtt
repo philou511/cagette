@@ -223,7 +223,7 @@
 		<a href="/history/subscriptionPayments/::sub.id::" style="color: ::color::;"><i class="icon icon-euro"></i> Solde : ::balance::€</a>
 	</macro>
 
-	<macro name="subscription(subscription)">
+	<macro name="subscription(subscription,currentUser)">
 		::set catalog = subscription._catalog::
 
 		<div class="panel panel-default">
@@ -331,8 +331,20 @@
 							</a>							
 						</div>
 					</div>
-				</div>		
+				</div>	
+				
+				::if(subscription.userId==currentUser.id)::
+				<div class="col-md-12">
+					<div class="text-center">
+						<a href="/subscriptions/contract/::subscription.catalogId::" class="btn btn-default">
+							<i class="icon icon-edit"></i> Modifier ma souscription
+						</a>
+					</div>
+				</div>	
+				::end::
+
 			</div>
+			
 		</div>
 	</macro>
 	
