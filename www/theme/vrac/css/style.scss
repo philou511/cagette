@@ -8,4 +8,13 @@
 
 #footer {
   background: transparent;
+
+  #vrac-interlaced-lines-footer {
+    width: 465%;
+    display: none;
+
+    @media (min-width: 992px) {
+      display: block;
+    }
+  }
 }

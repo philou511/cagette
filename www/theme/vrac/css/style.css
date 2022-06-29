@@ -1086,5 +1086,14 @@ i.icon {
 #footer {
   background: transparent;
 }
+#footer #vrac-interlaced-lines-footer {
+  width: 465%;
+  display: none;
+}
+@media (min-width: 992px) {
+  #footer #vrac-interlaced-lines-footer {
+    display: block;
+  }
+}
 
 /*# sourceMappingURL=style.css.map */
