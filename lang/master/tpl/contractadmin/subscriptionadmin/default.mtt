@@ -23,14 +23,14 @@
                     </tr>
                     <tr style="text-align: center;">                       
                         <td class="::class::" style="vertical-align: middle;">
-                            ::if catalog.distribMinOrdersTotal != null::
+                            ::if catalog.distribMinOrdersTotal > 0::
                                 ::catalog.distribMinOrdersTotal::&nbsp;::currency()::
                             ::else::
                                 Aucun
                             ::end::
                         </td>
                         <td style="vertical-align: middle;">
-                            ::if catalog.catalogMinOrdersTotal != null::
+                            ::if catalog.catalogMinOrdersTotal > 0::
                                 ::catalog.catalogMinOrdersTotal::&nbsp;::currency()::
                             ::else::
                                 Aucun
