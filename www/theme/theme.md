@@ -5,11 +5,12 @@ _style.css_, _style.css.map_, _style.min.css_, _style.min.css.map_, _bootstrap.m
 # Compile SASS
 
 In the theme folder modify the _style.scss_.
-In the backend folder run build:sass
+In the backend folder run **build:sass** to build style.min.css and **dev:sass** to build style.css
 
 ```
 cd backend
 npm run build:sass
+npm run dev:sass
 ```
 
 # Compile Bootstrap
