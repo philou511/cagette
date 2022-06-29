@@ -155,7 +155,7 @@
 	</div>
 	
 	<div class="col-md-12" >
-		<p>Vous êtes membre des <b>groupes Cagette</b> suivants :</p>
+		<p>Vous êtes membre des <b>groupes ::theme.name::</b> suivants :</p>
 	</div>
 
 	<!-- groups -->

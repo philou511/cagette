@@ -10,10 +10,10 @@
         <ul>
             <li>Une copie des statuts de votre association</li>
             <li>Un contrat papier signé entre un de vos adhérents et un de vos producteurs</li>
-            <li>L'email avec lequel vous êtes inscrit sur Cagette.net</li>
+            <li>L'email avec lequel vous êtes inscrit sur ::theme.name::</li>
         </ul>
         <p>
-            <a class="btn btn-primary" href="mailto: ::theme.supportEmail::?subject=Créer un groupe AMAP : ::groupName::">Ecrire au support Cagette.net</a>
+            <a class="btn btn-primary" href="mailto: ::theme.supportEmail::?subject=Créer un groupe AMAP : ::groupName::">Ecrire au support ::theme.name::</a>
         </p>
     </div>
 </div>
