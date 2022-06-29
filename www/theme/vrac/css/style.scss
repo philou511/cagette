@@ -3,8 +3,7 @@
 	Use it with with bootstrap 3
 */
 @use "../../cagette/css/style" with (
-  $secondaryColor: #e4c94b,
-  $backgroundColor: #efefef
+  $secondaryColor: #e4c94b
 );
 
 #footer {
