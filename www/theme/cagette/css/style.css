@@ -151,7 +151,7 @@ ul.nav li.active > a {
   background: #85bd56;
   border-radius: 8px;
   padding: 20px;
-  min-height: 200px;
+  overflow: auto;
 }
 #footer ul > li > a {
   color: #333;
