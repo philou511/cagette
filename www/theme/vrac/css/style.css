@@ -1083,5 +1083,8 @@ i.icon {
 	Cagette.net SASS stylesheet
 	Use it with with bootstrap 3
 */
+#footer {
+  background: transparent;
+}
 
 /*# sourceMappingURL=style.css.map */
