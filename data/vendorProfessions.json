@@ -57,6 +57,7 @@
     { "id": 55, "name": "Paludier" },
     { "id": 56, "name": "Pâtissier" },
     { "id": 57, "name": "Pêcheur" },
+    { "id": 74, "name": "Pépiniériste" },
     { "id": 58, "name": "Pisciculteur" },
     { "id": 59, "name": "Poissonnier" },
     { "id": 60, "name": "Restaurateur" },
