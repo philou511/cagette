@@ -1215,8 +1215,8 @@ class Admin extends controller.Controller {
 	@admin @tpl("form.mtt")
 	function doCopyProducts() {
 		var f = new sugoi.form.Form("movecata");
-		f.addElement(new sugoi.form.elements.IntInput("sourcevid", "ID du producteur avec compte producteur source", null, true));
-		f.addElement(new sugoi.form.elements.IntInput("desvid", "ID du producteur avec compte producteur destination", null, true));
+		f.addElement(new sugoi.form.elements.IntInput("sourcevid", "ID du producteur source", null, true));
+		f.addElement(new sugoi.form.elements.IntInput("desvid", "ID du producteur destination", null, true));
 
 		if (f.isValid()) {
 			var vendor = db.Vendor.manager.get(f.getValueOf("sourcevid"));

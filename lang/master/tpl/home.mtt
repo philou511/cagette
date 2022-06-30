@@ -12,14 +12,13 @@ $$browserDetection()
 		<h3>Bienvenue sur ::theme.name:: !</h3>
 		<p>
 			Félicitations, vous venez juste de créer un nouveau groupe !<br/>
-			A titre d'exemple, nous avons créé un catalogue de produits factice pour vous montrer comment ::theme.name:: fonctionne.
-			Une fois votre exploration terminée, vous pourrez les supprimer sans risque.
+			Vous pouvez maintenant <a href="/contract/defineVendor/" style="font-weight: bold;">inviter des producteurs dans votre groupe</a>, planifier des distributions et inviter des membres.
 		</p>		
-		<p>
+		<!--<p>
 			<a href="/home?action=deleteDemoContracts&token=::token::" class="btn btn-default btn-sm">
 				::_("Delete example orders and catalogs")::
 			</a>
-		</p>
+		</p>-->
 	</div>
 	::end::
 

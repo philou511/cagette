@@ -25,7 +25,15 @@ class Distributions extends Controller {
 		var user = app.user;
 		var multidistribs = db.MultiDistrib.getFromTimeRange(group, from, to);
 		var uniqueRoles = VolunteerService.getUsedRolesInMultidistribs(multidistribs);
-		var out = [];
+		var out = {
+			 multiDistribs: new Array(),
+			 roles: uniqueRoles.map(function(r) 
+				return {
+					id: r.id,
+					name: r.name
+				}
+			)
+		};
 
 		for( md in multidistribs){
 			var o = {
@@ -58,11 +66,9 @@ class Distributions extends Controller {
 			}
 			o.volunteerForRole = volunteerForRole;
 			
-			out.push(o);
+			out.multiDistribs.push(o);
 		}
 
 		json(out);
-                    
-
 	}
 }

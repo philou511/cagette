@@ -147,12 +147,7 @@
 		</p>
 		
 		<a href="/p/pro/public/askImport/::catalog.id::" target="_top" class="btn btn-primary btn-lg"><i class="fa fa-download" style="color:white;" aria-hidden="true"></i> 
-			::set groupName = getCurrentGroup()::
-			::if(groupName!=null)::
-				Relier ce catalogue à <b>::groupName::</b>
-			::else::
-				Relier ce catalogue à mon groupe Cagette
-			::end::
+			Relier ce catalogue à un de mes groupes			
 		</a>
 		</div>
 	</div>
