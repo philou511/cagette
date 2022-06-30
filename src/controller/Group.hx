@@ -108,7 +108,11 @@ class Group extends controller.Controller
 	 */
 	@tpl("form.mtt")
 	function doCreate() {
-		
+		var cagettePros = service.VendorService.getCagetteProFromUser(App.current.user);
+		if (!(App.current.settings.onlyVendorsCanCreateGroup=="true" && cagettePros!=null && cagettePros.length>0)) {
+			throw Redirect("/");
+		}
+
 		view.title = "Créer un nouveau groupe " + App.current.theme.name;
 
 		var p = new db.Place();

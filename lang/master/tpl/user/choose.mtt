@@ -190,12 +190,13 @@
 		::if session.lang!="de"::
 			<a class="btn btn-default btn-lg" href="/group/map">
 				<i class="icon icon-search"></i> ::_("Find other groups near me")::
-			</a>	
+			</a>
 		::end::
-		<a class="btn btn-default btn-lg" href="/group/create/">
-			<i class="icon icon-plus"></i> Créer un groupe
-		</a>	
-		
+		::if settings.onlyVendorsCanCreateGroup=="true" && cagettePros!=null && cagettePros.length>0::
+			<a class="btn btn-default btn-lg" href="/group/create/">
+				<i class="icon icon-plus"></i> Créer un groupe
+			</a>
+		::end::
 	</div>
 
 		
