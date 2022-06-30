@@ -53,10 +53,13 @@ jobs:
                 -- mysql -h SG-aliloMysql-4270-mysql-master.servers.mongodirector.com \
                 -u sgroot --password=$DB_ROOT_PW
 
-      - name: remove db-pw secret
+      - name: remove secrets
         run: |
-          kubectl -n $NAMESPACE delete secret --ignore-not-found=true \
-          ${{ env.project_name }}-db-pw
+          for name in db-pw smtp tls-secret
+          do
+            kubectl -n $NAMESPACE delete secret --ignore-not-found=true \
+                     ${{ env.project_name }}-$name
+          done
 
       - name: remove project images
         run: |
