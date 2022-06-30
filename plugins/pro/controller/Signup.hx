@@ -24,7 +24,7 @@ class Signup extends controller.Controller
 		var uc = pro.db.PUserCompany.manager.search($user ==app.user);
 		if( uc.length>0){
 			// if (uc.find( c -> c.company.vendor.isTest==true) == null) {
-				throw Error("/","Vous avez déjà accès à un compte Producteur : "+uc.map(c -> return c.company.vendor.name).join(', ')+"</b>. Contactez le support sur <a href='mailto:::theme.supportEmail::'>::theme.supportEmail::</a> pour clarifier votre situation.");
+				throw Error("/","Vous avez déjà accès à un compte Producteur : "+uc.map(c -> return c.company.vendor.name).join(', ')+"</b>. Contactez le support sur <a href='mailto:"+app.theme.supportEmail+"'>"+app.theme.supportEmail+"</a> pour clarifier votre situation.");
 			// }
 		}
 

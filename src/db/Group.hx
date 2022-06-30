@@ -138,7 +138,7 @@ class Group extends Object
 			var noCagette2Vendors = getVendors().filter(v->!v.betaFlags.has(db.Vendor.VendorBetaFlags.Cagette2));
 			if ( noCagette2Vendors.length>0 ){
 				var name = noCagette2Vendors.map(v -> v.name).join(", ");
-				throw sugoi.ControllerAction.ControllerAction.ErrorAction("/user/choose",'Le groupe "${this.name}" a l\'option Cagette2 activée et ne peut pas fonctionner avec des producteurs qui n\'ont pas activé cette option ($name). Contactez nous sur <b>::theme.supportEmail::</b> pour régler le problème.');
+				throw sugoi.ControllerAction.ControllerAction.ErrorAction("/user/choose",'Le groupe "${this.name}" a l\'option Cagette2 activée et ne peut pas fonctionner avec des producteurs qui n\'ont pas activé cette option ($name). Contactez nous sur <b>'+App.current.theme.supportEmail+'</b> pour régler le problème.');
 			}
 			
 		} 

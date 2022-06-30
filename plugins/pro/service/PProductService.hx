@@ -368,7 +368,7 @@ class PProductService
 		var html = service.ProductService.getCategorizerHtml(d.name,txId,f.name);
 		f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
 
-		f.addElement(new sugoi.form.elements.Html("html","<span class='disabled'>Une catégorie manquante selon vous ? Écrivez au support : ::theme.supportEmail::</span><br/>",""),2);
+		f.addElement(new sugoi.form.elements.Html("html","<span class='disabled'>Une catégorie manquante selon vous ? Écrivez au support : "+App.current.theme.supportEmail+"</span><br/>",""),2);
 
 		return f;
 	}
