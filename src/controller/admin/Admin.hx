@@ -579,4 +579,7 @@ class Admin extends Controller {
 		}
 
 	}
+
+	@tpl('admin/settings.mtt')
+	function doSettings(){}
 }

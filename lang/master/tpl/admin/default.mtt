@@ -7,4 +7,6 @@
 	IP : ::ip::
 </p>
 
+<a href="/admin/settings"><i class="icon icon-cog"></i> Paramètres d'instance</a>
+
 ::end::

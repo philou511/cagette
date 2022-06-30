@@ -1,0 +1,11 @@
+::use 'admin/design.mtt'::
+
+<div id="settings-admin-container"></div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    neo.createNeoModule("settings-admin-container", "settingsAdmin");
+  });
+</script>
+
+::end::
