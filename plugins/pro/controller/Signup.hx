@@ -8,6 +8,10 @@ class Signup extends controller.Controller
 
 	@tpl('plugin/pro/signup/discovery.mtt')
 	public function doDiscovery(?group:db.Group, ?invitationSender:db.User){
+		if (App.current.settings.noVendorSignup == "true") {
+			throw Redirect("/");
+		}
+
 		if (group!=null) {
 			view.groupName = group.name;
 			view.groupId = group.id;
