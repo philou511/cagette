@@ -18,6 +18,7 @@ class View extends sugoi.BaseView {
 	var tuto:{name:String, step:Int};
 
 	var theme : Theme;
+	var settings : Settings;
 
 	public function new() {
 		super();
@@ -50,6 +51,7 @@ class View extends sugoi.BaseView {
 		super.init();
 
 		this.theme = App.current.theme;
+		this.settings = App.current.settings;
 		
 		// tuto widget display
 		/*var u = App.current.user;

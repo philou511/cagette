@@ -322,3 +322,9 @@ typedef Theme = {
 	};
 	var brandedEmailLayoutFooter:String; // footer of the branded email layout in html
 }
+
+typedef Settings = {
+	var ?noVendorSignup: String;
+	var ?noCsa: String;
+	var ?usersCanCreateGroup: String;
+}

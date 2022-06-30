@@ -14,6 +14,7 @@ class App extends sugoi.BaseApp {
 	public var plugins : Array<sugoi.plugin.IPlugIn>;
 	public var breadcrumb : Array<Link>;
 	public var theme	: Theme;
+	public var settings	: Settings;
 
 	/**
 	 * Version management
@@ -57,6 +58,8 @@ class App extends sugoi.BaseApp {
 		#end
 
 		setTheme();
+
+		setSettings();
 
 		super.mainLoop();
 	}
@@ -146,6 +149,11 @@ class App extends sugoi.BaseApp {
 		}
 		var whiteLabelStringified = sugoi.db.Variable.get("whiteLabel");
 		this.theme = whiteLabelStringified != null ? haxe.Json.parse(whiteLabelStringified) : cagetteTheme;
+	}
+
+	private function setSettings(){
+		var settingsStringified = sugoi.db.Variable.get("settings");
+		this.settings = settingsStringified != null ? haxe.Json.parse(settingsStringified) : {};
 	}
 	
 	public function getCurrentGroup(){		
