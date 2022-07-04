@@ -124,8 +124,6 @@ class ProPlugIn extends PlugIn implements IPlugIn{
 				
 			case DailyCron(now):
 
-				
-
 			case StockMove(e):
 				//an order has been made or modified
 				//get related offer in cpro
@@ -149,13 +147,8 @@ class ProPlugIn extends PlugIn implements IPlugIn{
 						/*}else{
 							pro.service.PStockService.updateStockInGroupsByProduct(offer.product);	
 						}*/
-						
-
 					} 
 				}
-
-	
-
 			default :
 		}
 	}

@@ -658,7 +658,8 @@ class SubscriptionService
 		var html = '<p><b>Vous venez de souscrire au contrat AMAP "${catalog.name}" avec le paysan "${catalog.vendor.name}".</b></p>';
 		
 		html += "<p>";
-		html += 'Votre engagement : ${SubscriptionService.getSubscriptionConstraints(subscription)}<br/>';
+		var engagement = SubscriptionService.getSubscriptionConstraints(subscription);
+		html += 'Votre engagement : ${(engagement==null?"":engagement)}<br/>';
 		html += 'Nombre de distributions : ${SubscriptionService.getSubscriptionDistribsNb(subscription)}<br/>';
 		if(catalog.isVariableOrdersCatalog() && catalog.distribMinOrdersTotal>0){
 			html += 'Votre commande par défaut est :<ul>';
@@ -934,6 +935,9 @@ class SubscriptionService
 	public function updateDefaultOrders( subscription:db.Subscription, defaultOrders:Array<CSAOrder>){
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );	
+
+		defaultOrders = defaultOrders.filter(o -> o.quantity > 0);
+
 		subscription.lock();	
 		/*if( subscription.catalog.isVariableOrdersCatalog()){
 			if ( subscription.catalog.distribMinOrdersTotal>0 && (defaultOrders==null || defaultOrders.length==0 ) ) {
