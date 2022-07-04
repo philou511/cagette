@@ -495,6 +495,7 @@ class SubscriptionService
 		var catalog = subscription.catalog;		
 		
 		if ( catalog.distribMinOrdersTotal == 0  && catalog.catalogMinOrdersTotal == 0 ) {
+			//nothing to check
 			return true;
 		}
 
@@ -555,7 +556,7 @@ class SubscriptionService
 			}
 
 			//Checks that the orders total is higher than the required minimum
-			var allDistribs = [];
+			/*var allDistribs = [];
 			if(subscription!=null){
 				allDistribs = getSubscriptionDistributions( subscription, 'all' );
 			}else{
@@ -570,14 +571,14 @@ class SubscriptionService
 				var includeLastDistrib = ordersDistribIds.find( id -> id == lastDistrib.id ) != null;
 				var lastDistribIsOpen = lastDistrib.orderStartDate.getTime() <= now.getTime() &&  now.getTime() < lastDistrib.orderEndDate.getTime();
 				
-				if ( includeLastDistrib && lastDistribIsOpen ) {
+				if ( includeLastDistrib && lastDistribIsOpen ) {*/
 					if ( ordersTotal < catalogMinOrdersTotal ) {
 						var message = 'Le total de vos commandes sur la durée du contrat est de $ordersTotal € '; 
 						message += 'alors qu\'il doit être supérieur à $catalogMinOrdersTotal €. Vous devez commander plus pour respecter le contrat.';
 						throw TypedError.typed( message, CatalogRequirementsNotMet );						
 					}
-				}
-			}
+			//	}
+			//}
 
 		}
 		
@@ -672,6 +673,7 @@ class SubscriptionService
 				var p = db.Product.manager.get(o.productId,false);
 				return '<li>${o.quantity} x ${p.getName()} : ${o.quantity*p.price} €</li>';
 			} ).join('');
+			html += '</ul>';
 		}
 		html += "</p>";
 

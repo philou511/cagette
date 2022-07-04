@@ -100,10 +100,6 @@ class GroupStats extends sys.db.Object
 			this.contactType = "NONE";
 		}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> feature/amap44
 		this.update();
 		
 		return {
