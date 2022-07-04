@@ -137,7 +137,7 @@
 		<div id="email-root">
 			::raw __content__::
 			<div id="email-group">
-				<a class="button" href="http://::HOST::/group/::group.id::" target="_blank" rel="noreferrer noopener">
+				<a class="button" href="http://::HOST::/group/::group.id::" target="_blank" rel="noreferrer noopener notrack">
 					<span class="button-label">
 						::group.name::
 					</span>
@@ -147,11 +147,11 @@
 
 		<div id="email-footer">
 			<img src="http://::HOST::/img/logo3.png" alt="logo Cagette.net" style="margin-bottom: 16px; max-width: 200px;"/>
-			<p>Ce courriel a été envoyé depuis <a href="http://::HOST::" target="_blank" rel="noreferrer noopener">Cagette.net</a>.</p>
+			<p>Ce courriel a été envoyé depuis <a href="http://::HOST::" target="_blank" rel="noreferrer noopener notrack">Cagette.net</a>.</p>
 			<p>Vous recevez ce message car vous faites partie de <b>::group.name::</b>::if list!=null:: (::list::) ::end::</p>
 			::if (user!=null)::
-			<p><a href="::user.getEditNotificationsLink(group)::">Changer les préférences de notification</a></p>
-			<p><a href="::user.getQuitGroupLink(group)::">Quitter ce groupe</a></p>
+			<p><a href="::user.getEditNotificationsLink(group)::" rel="notrack">Changer les préférences de notification</a></p>
+			<p><a href="::user.getQuitGroupLink(group)::" rel="notrack">Quitter ce groupe</a></p>
 			::end::
 		</div>
 	</body>
