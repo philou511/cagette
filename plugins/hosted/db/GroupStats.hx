@@ -20,7 +20,7 @@ class GroupStats extends sys.db.Object
 	public var turnover90days : SInt;
 	public var basketNumber90days : SInt;
 	public var iro:SInt; // indice de richesse de l'offre
-	public var contactType:SString<32>;
+	public var contactType:SString<32>; //
 	
 	public function new() 
 	{
@@ -29,7 +29,6 @@ class GroupStats extends sys.db.Object
 		visible = false;
 		membersNum = 0;
 		contractNum = 0;
-		// cproContractNum  = 0;
 	}
 
 	public static function getOrCreate(groupId:Int,?lock=false) {
@@ -101,7 +100,10 @@ class GroupStats extends sys.db.Object
 			this.contactType = "NONE";
 		}
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature/amap44
 		this.update();
 		
 		return {
