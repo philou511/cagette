@@ -41,6 +41,12 @@ enum GroupType{
 }
 
 
+@:enum
+abstract GroupDisabledReason(String) {
+  var BLOCKED_BY_ADMIN = "BLOCKED_BY_ADMIN";
+  var MOVED = "MOVED";
+}
+
 /**
  * Group
  */
@@ -97,6 +103,8 @@ class Group extends Object
 	@hideInForms public var daysBeforeDutyPeriodsOpen: SInt;
 	@hideInForms public var alertMailContent: SText;
 	
+	@hideInForms public var disabled : SNull<SString<32>>; //Mysql enum GroupDisabledReason
+
 	public function new() 
 	{
 		super();
