@@ -109,7 +109,7 @@ class Group extends controller.Controller
 	@tpl("form.mtt")
 	function doCreate() {
 		var cagettePros = service.VendorService.getCagetteProFromUser(App.current.user);
-		if (!(App.current.settings.onlyVendorsCanCreateGroup=="true" && cagettePros!=null && cagettePros.length>0)) {
+		if (!(App.current.settings.onlyVendorsCanCreateGroup==true && cagettePros!=null && cagettePros.length>0)) {
 			throw Redirect("/");
 		}
 
@@ -121,7 +121,7 @@ class Group extends controller.Controller
 		f.addElement(new StringInput("groupName", t._("Name of your group"), "", true),1);
 		
 		//group type
-		if (App.current.settings.noCsa != "true") {
+		if (App.current.settings.noCsa != true) {
 			var data = [
 				{
 					label:"Mode marché",
@@ -153,7 +153,7 @@ class Group extends controller.Controller
 			g.contact = user;
 			
 			var type:GroupType;
-			if (App.current.settings.noCsa == "true") {
+			if (App.current.settings.noCsa == true) {
 				type = GroupType.ProducerDrive;
 			}else {
 				type = Type.createEnumIndex(GroupType, Std.parseInt(f.getValueOf("type")) );

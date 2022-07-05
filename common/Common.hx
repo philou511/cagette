@@ -324,7 +324,7 @@ typedef Theme = {
 }
 
 typedef Settings = {
-	var ?noVendorSignup: String;
-	var ?noCsa: String;
-	var ?onlyVendorsCanCreateGroup: String;
+	var ?noVendorSignup: Bool;
+	var ?noCsa: Bool;
+	var ?onlyVendorsCanCreateGroup: Bool;
 }

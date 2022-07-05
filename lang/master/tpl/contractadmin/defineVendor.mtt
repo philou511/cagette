@@ -62,7 +62,7 @@
 							
 							::else::
 								<!-- NOT compte producteur -->
-								::if shopMode && settings.noVendorSignup!="true"::
+								::if shopMode && settings.noVendorSignup!=true::
 									<!--<a href="/contract/insert/::v.id::" class="btn btn-default btn-sm">
 										<i class="icon icon-plus"></i> Nouveau catalogue
 									</a>-->
@@ -95,7 +95,7 @@
 				<div class="col-md-12">
 					$$empty(::_("We could not find any vendor matching your search")::)
 				</div>
-				::if user.getGroup().hasShopMode() && settings.noVendorSignup!="true":: 
+				::if user.getGroup().hasShopMode() && settings.noVendorSignup!=true:: 
 					<div class="col-md-12" style="margin-bottom:16px; text-align: center;">
 						<a href="/contract/inviteVendor" class="btn btn-primary btn-lg">
 							<i class="icon icon-mail"></i> Inviter un nouveau producteur
@@ -113,7 +113,7 @@
 	</div>
 </div>
 
-	::if settings.noVendorSignup!="true"::
+	::if settings.noVendorSignup!=true::
 		::if !user.getGroup().hasShopMode():: 
 			<div class="col-md-12">
 				<div class="article text-center">

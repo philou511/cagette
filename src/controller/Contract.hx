@@ -104,7 +104,7 @@ class Contract extends Controller
 	**/
 	@logged @tpl("contractadmin/inviteVendor.mtt")
 	public function doInviteVendor(?vendor:db.Vendor) {
-		if (!(App.current.settings.noVendorSignup=="true")) {
+		if (App.current.settings.noVendorSignup==true) {
 			throw Redirect("/");
 		}
 		view.groupId = app.user.getGroup().id;
@@ -116,7 +116,7 @@ class Contract extends Controller
 	**/
 	@logged @tpl("form.mtt")
 	public function doInsertVendor(?name:String) {
-		if (!(App.current.settings.noVendorSignup=="true")) {
+		if (App.current.settings.noVendorSignup==true) {
 			throw Redirect("/");
 		}
 		if(app.user.getGroup().hasShopMode()) throw Error("/", t._("Access forbidden"));
