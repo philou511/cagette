@@ -275,4 +275,9 @@ class Group extends controller.Controller
 		view.lng = args.lng;
 		view.address = args.address;		
 	}
+
+	@tpl("group/disabled.mtt")
+	public function doDisabled(){
+		view.group = App.current.getCurrentGroup();
+	}
 }
