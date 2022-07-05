@@ -28,7 +28,7 @@
 			</div>				
 		</div>
 
-			::if user != null && noGroup!=true::
+			::if user != null && noGroup!=true && getCurrentGroup().disabled==null::
 
 			<nav class="navbar navbar-default" ::cond user.getGroup()!=null::>
 					<div class="navbar-header">
