@@ -192,7 +192,7 @@
 				<i class="icon icon-search"></i> ::_("Find other groups near me")::
 			</a>
 		::end::
-		::if settings.onlyVendorsCanCreateGroup=="true" && cagettePros!=null && cagettePros.length>0::
+		::if settings.onlyVendorsCanCreateGroup==null || settings.onlyVendorsCanCreateGroup=="false" || (settings.onlyVendorsCanCreateGroup=="true" && cagettePros!=null && cagettePros.length>0)::
 			<a class="btn btn-default btn-lg" href="/group/create/">
 				<i class="icon icon-plus"></i> Créer un groupe
 			</a>
