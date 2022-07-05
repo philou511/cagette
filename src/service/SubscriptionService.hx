@@ -344,19 +344,18 @@ class SubscriptionService
 		if(!adminMode){
 			var newSubscriptionStartDate = getNewSubscriptionStartDate( subscription.catalog );
 			if ( newSubscriptionStartDate == null ) {
-				throw TypedError.typed( "Toutes les distributions futures sont déjà fermées, ou il n'existe aucune distribution dans le futur.", InvalidParameters );
+				throw TypedError.typed('Toutes les distributions futures sont déjà fermées, ou il n\'existe aucune distribution dans le futur.', InvalidParameters );
 			}
 			if( subscription.id == null ) {
 				//new sub
 				if ( subscription.startDate.getTime() < newSubscriptionStartDate.getTime() ) {
-					throw TypedError.typed( 'La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : ' + Formatting.dDate( newSubscriptionStartDate ), InvalidParameters );
+					throw TypedError.typed('La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : ${Formatting.dDate(newSubscriptionStartDate)}', InvalidParameters );
 				}
 			} else {	
 				//existing sub		
 				if ( previousStartDate.toString() != subscription.startDate.toString() ) {
 					if ( Date.now().getTime() <= subscription.startDate.getTime() && subscription.startDate.getTime() < newSubscriptionStartDate.getTime() ) {
-						throw TypedError.typed( 'La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : '
-											+ Formatting.dDate( newSubscriptionStartDate ), InvalidParameters );
+						throw TypedError.typed('La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : ${Formatting.dDate(newSubscriptionStartDate)}', InvalidParameters );
 					}
 				}
 			}
@@ -496,11 +495,14 @@ class SubscriptionService
 		var catalog = subscription.catalog;		
 		
 		if ( catalog.distribMinOrdersTotal == 0  && catalog.catalogMinOrdersTotal == 0 ) {
+			//nothing to check
 			return true;
 		}
 
 		//get orders in correct format
-		var ordersByDistrib = ordersToOrdersByDistrib(getSubscriptionAllOrders(subscription));
+		var allOrders = getSubscriptionAllOrders(subscription);
+		if(allOrders.length==0) throw "Aucune commande dans cette souscription";
+		var ordersByDistrib = ordersToOrdersByDistrib(allOrders);
 
 		checkVarOrders(ordersByDistrib,subscription);
 
@@ -508,14 +510,17 @@ class SubscriptionService
 	}
 
 	/**
-		Check if orders fit the catalog constraints : 
-		distribMinOrdersTotal and catalogMinOrdersTotal
-		Can be used at every order submission, but also when defining default order before subscribing or update the default order
+		Check if orders fit the catalog constraints : distribMinOrdersTotal and catalogMinOrdersTotal
+		Can be used : 
+		- at every order submission
+		- but also when defining default order before subscribing
+		- or update the default order
 	**/
 	public static function checkVarOrders(ordersByDistrib:Map<db.Distribution,Array<CSAOrder>>,?subscription:db.Subscription):Bool{
 		var keys = [];
 		for( k in ordersByDistrib.keys()) keys.push(k);
-		var catalog = keys[0].catalog;
+		if(keys.length==0) throw "Aucune distribution ouverte à la commande pour cette souscription";
+		var catalog = keys.find(d -> d!=null).catalog;
 		
 		//Minimum by distribution
 		if ( catalog.distribMinOrdersTotal > 0 ) {
@@ -551,7 +556,7 @@ class SubscriptionService
 			}
 
 			//Checks that the orders total is higher than the required minimum
-			var allDistribs = [];
+			/*var allDistribs = [];
 			if(subscription!=null){
 				allDistribs = getSubscriptionDistributions( subscription, 'all' );
 			}else{
@@ -566,14 +571,14 @@ class SubscriptionService
 				var includeLastDistrib = ordersDistribIds.find( id -> id == lastDistrib.id ) != null;
 				var lastDistribIsOpen = lastDistrib.orderStartDate.getTime() <= now.getTime() &&  now.getTime() < lastDistrib.orderEndDate.getTime();
 				
-				if ( includeLastDistrib && lastDistribIsOpen ) {
+				if ( includeLastDistrib && lastDistribIsOpen ) {*/
 					if ( ordersTotal < catalogMinOrdersTotal ) {
 						var message = 'Le total de vos commandes sur la durée du contrat est de $ordersTotal € '; 
 						message += 'alors qu\'il doit être supérieur à $catalogMinOrdersTotal €. Vous devez commander plus pour respecter le contrat.';
 						throw TypedError.typed( message, CatalogRequirementsNotMet );						
 					}
-				}
-			}
+			//	}
+			//}
 
 		}
 		
@@ -601,6 +606,7 @@ class SubscriptionService
 	 public function createSubscription( user:db.User, catalog:db.Catalog, ?ordersData:Array<CSAOrder>, ?absenceDistribIds:Array<Int>,?absenceNb:Int,?startDate:Date, ?endDate:Date ):db.Subscription {
 
 		if ( startDate == null ) startDate = getNewSubscriptionStartDate( catalog );
+		if ( startDate == null ) throw "Aucune distribution non fermée dans le futur";
 		if ( endDate == null ) 	endDate = catalog.endDate;
 		
 		//if the user is not a member of the group
@@ -636,41 +642,59 @@ class SubscriptionService
 		check(subscription);
 		subscription.insert();
 
-		this.updateDefaultOrders( subscription, ordersData );
+		if(catalog.hasDefaultOrdersManagement()){	
+			//default orders is used only in constant orders, or variable orders with distribMinOrdersTotal
+			this.updateDefaultOrders( subscription, ordersData );
+		}
 		
 		//Email notification
-		if(ordersData!=null && ordersData.length > 0){
-			//cannot send email if defaultOrder is not defined
-			sendSubscriptionCreatedEmail(subscription);
-		}
-
+		sendSubscriptionCreatedEmail(subscription);
+		
 		return subscription;
 	}
 
 	function sendSubscriptionCreatedEmail(subscription:db.Subscription){
 		var catalog = subscription.catalog;
 		var html = '<p><b>Vous venez de souscrire au contrat AMAP "${catalog.name}" avec le paysan "${catalog.vendor.name}".</b></p>';
+		
 		html += "<p>";
-		html += 'Votre engagement : ${SubscriptionService.getSubscriptionConstraints(subscription)}<br/>';
+		var engagement = SubscriptionService.getSubscriptionConstraints(subscription);
+		html += 'Votre engagement : ${(engagement==null?"":engagement)}<br/>';
 		html += 'Nombre de distributions : ${SubscriptionService.getSubscriptionDistribsNb(subscription)}<br/>';
-		if(catalog.type == db.Catalog.TYPE_VARORDER){
+		if(catalog.isVariableOrdersCatalog() && catalog.distribMinOrdersTotal>0){
 			html += 'Votre commande par défaut est :<ul>';
 			html += subscription.getDefaultOrders().map( o -> {
 				var p = db.Product.manager.get(o.productId,false);
 				return '<li>${o.quantity} x ${p.getName()} : ${o.quantity*p.price} €</li>';
 			} ).join('');
 			html += '</ul>C\'est un contrat AMAP variable, votre commande est donc modifiable date par date<br/>';
+		}else if(catalog.isConstantOrdersCatalog()){
+			html += 'Vous recevrez à chaque distribution les produits suivants :<ul>';
+			html += subscription.getDefaultOrders().map( o -> {
+				var p = db.Product.manager.get(o.productId,false);
+				return '<li>${o.quantity} x ${p.getName()} : ${o.quantity*p.price} €</li>';
+			} ).join('');
+			html += '</ul>';
 		}
 		html += "</p>";
+
 		if(catalog.hasAbsencesManagement()){
 			var absentDistribs = subscription.getAbsentDistribs();
 			var absencesTxt = absentDistribs.map( d -> Formatting.hDate(d.date) ).join(", ");
 			html += '<p>Vous avez choisi d\'être absent(e) pendant ${absentDistribs.length} distributions : $absencesTxt.</p>';
 		}
-		if(catalog.type == db.Catalog.TYPE_VARORDER){
-			html += '<p>Merci de préparer un chèque de provision correspondant au total de votre commande par défaut multiplié par le nombre de distribution, soit ${subscription.getTotalPrice()} €.<br/>';
-			html += 'Si un contrat papier est associé à votre souscription, pensez à la compléter et à remettre le(s) chèque(s).</br>';	
-			html += 'Une régularisation pourra être demandée en fin de contrat en fonction de votre solde.</p>';
+
+		if(catalog.isVariableOrdersCatalog()){
+			if(catalog.distribMinOrdersTotal>0){
+				html += '<p>Merci de préparer un chèque de provision correspondant au total de votre commande par défaut multiplié par le nombre de distribution, soit ${subscription.getTotalPrice()} €.<br/>';
+				html += 'Si un contrat papier est associé à votre souscription, pensez à la compléter et à remettre le(s) chèque(s).</br>';	
+				html += 'Une régularisation pourra être demandée en fin de contrat en fonction de votre solde.</p>';
+			}else if(catalog.catalogMinOrdersTotal>0){
+				html += '<p>Merci de préparer un chèque de provision correspondant au minimum de commande, soit ${getCatalogMinOrdersTotal( catalog, subscription )} €.<br/>';
+				html += 'Si un contrat papier est associé à votre souscription, pensez à la compléter et à remettre le(s) chèque(s).</br>';	
+				html += 'Une régularisation pourra être demandée en fin de contrat en fonction de votre solde.</p>';
+			}
+			
 		}else{
 			html += '<p>Si un contrat papier est associé à votre souscription, pensez à le compléter et à remettre le(s) chèque(s) pour un total de ${subscription.getTotalPrice()} €.</p>';
 		}
@@ -722,7 +746,7 @@ class SubscriptionService
 
 		subscription.update();
 
-		if(ordersData!=null){
+		if(subscription.catalog.hasDefaultOrdersManagement() && ordersData!=null){
 			updateDefaultOrders( subscription, ordersData );						
 		}
 	}
@@ -833,14 +857,8 @@ class SubscriptionService
 			ordersData = subscription.getDefaultOrders();
 		}
 
-		if(catalog.isConstantOrdersCatalog()){
-			if ( hasPastDistribOrders(subscription) && !adminMode ) {
-				throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées, il faut recréer une nouvelle souscription avec une nouvelle commande.', SubscriptionServiceError.PastOrders );
-			}
-		}
-
 		//delete existing userOrders
-		var subscriptionAllOrders = getSubscriptionAllOrders( subscription );
+		var subscriptionAllOrders = getSubscriptionAllOrders(subscription);
 		var now = Date.now().getTime();
 		for ( order in subscriptionAllOrders ) {
 
@@ -917,6 +935,9 @@ class SubscriptionService
 	public function updateDefaultOrders( subscription:db.Subscription, defaultOrders:Array<CSAOrder>){
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );	
+
+		defaultOrders = defaultOrders.filter(o -> o.quantity > 0);
+
 		subscription.lock();	
 		/*if( subscription.catalog.isVariableOrdersCatalog()){
 			if ( subscription.catalog.distribMinOrdersTotal>0 && (defaultOrders==null || defaultOrders.length==0 ) ) {
@@ -927,6 +948,13 @@ class SubscriptionService
 				throw new Error('La commande par défaut ne peut pas être vide. (Souscription de ${subscription.user.getName()})');
 			}
 		//}	
+
+		//if constantOrders, the user (not admin) cannot edit default orders if sub has past distrib orders
+		if(subscription.catalog.isConstantOrdersCatalog()){
+			if ( hasPastDistribOrders(subscription) && !adminMode ) {
+				throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées, il faut recréer une nouvelle souscription avec une nouvelle commande.', SubscriptionServiceError.PastOrders );
+			}
+		}
 		
 		createRecurrentOrders( subscription, defaultOrders );
 

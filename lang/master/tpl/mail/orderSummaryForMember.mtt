@@ -54,7 +54,7 @@
 					<td>
 						<!-- frais -->
 						::if m.percentageValue!=null::
-						<a href="#" data-toggle="tooltip" data-placement="top" title="::m.percentageName:: : ::m.percentageValue:: %">
+						<a href="#" data-toggle="tooltip" data-placement="top" title="::m.percentageName:: : ::m.percentageValue:: %" rel="notrack">
 							::formatNum(m.fees)::&nbsp;::currency()::
 						</a>
 						::end::

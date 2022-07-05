@@ -29,7 +29,7 @@ class SubscriptionAdmin extends controller.Controller
 		//subs sorting
 		var orderBy = app.params.get("orderBy");
 		if(orderBy=="userName" || orderBy==null){
-			catalogSubscriptions.sort( (a,b) -> a.user.lastName > b.user.lastName ? 1 : -1);
+			catalogSubscriptions.sort( (a,b) -> a.user.lastName.toUpperCase() > b.user.lastName.toUpperCase() ? 1 : -1);
 			orderBy = "userName";
 		}
 		view.orderBy = orderBy;
@@ -100,45 +100,51 @@ class SubscriptionAdmin extends controller.Controller
 				}
 				
 				var ordersData = new Array<CSAOrder>();
-				for ( product in catalogProducts ) {
+				if(catalog.hasDefaultOrdersManagement()){
+					for ( product in catalogProducts ) {
 
-					var quantity : Float = 0;
-					var qtyParam = app.params.get( 'quantity' + product.id );
-					if ( qtyParam != "" ) quantity = Std.parseFloat( qtyParam );
-					var user2 : db.User = null;
-					var userId2 : Int = null;
-					if( catalog.type == Catalog.TYPE_CONSTORDERS ) {
-						userId2 = Std.parseInt( app.params.get( 'user2' + product.id ) );
-					}
-					var invert = false;
-					if ( userId2 != null && userId2 != 0 ) {
-
-						user2 = db.User.manager.get( userId2, false );
-						if ( user2 == null ) {
-							throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, t._( "Unable to find user #::num::", { num : userId2 } ) );
-						}
-						if ( !user2.isMemberOf( catalog.group ) ) {
-							throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, user + " ne fait pas partie de ce groupe." );
-						}
-						if ( user.id == user2.id ) {
-							throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, "Vous ne pouvez pas alterner avec la personne qui a la souscription." );
-						}
-						invert = app.params.get( 'invert' + product.id ) == "true";
-					}
-
-					if ( quantity != 0 ) {
+						var quantity : Float = 0;
+						var qtyParam = app.params.get( 'quantity' + product.id );
+						if ( qtyParam != "" ) quantity = Std.parseFloat( qtyParam );
+						var user2 : db.User = null;
+						var userId2 : Int = null;
 						if( catalog.type == Catalog.TYPE_CONSTORDERS ) {
-							ordersData.push( { 
-								productId : product.id,
-								productPrice : product.price,
-								quantity : quantity,
-								userId2 : userId2,
-								invertSharedOrder : invert
-							});
-						} else {
-							ordersData.push( { productId : product.id, productPrice : product.price, quantity : quantity } );
+							userId2 = Std.parseInt( app.params.get( 'user2' + product.id ) );
 						}
-					}					
+						var invert = false;
+						if ( userId2 != null && userId2 != 0 ) {
+	
+							user2 = db.User.manager.get( userId2, false );
+							if ( user2 == null ) {
+								throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, t._( "Unable to find user #::num::", { num : userId2 } ) );
+							}
+							if ( !user2.isMemberOf( catalog.group ) ) {
+								throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, user + " ne fait pas partie de ce groupe." );
+							}
+							if ( user.id == user2.id ) {
+								throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, "Vous ne pouvez pas alterner avec la personne qui a la souscription." );
+							}
+							invert = app.params.get( 'invert' + product.id ) == "true";
+						}
+	
+						if ( quantity != 0 ) {
+							if( catalog.isConstantOrdersCatalog() ) {
+								ordersData.push({ 
+									productId : product.id,
+									productPrice : product.price,
+									quantity : quantity,
+									userId2 : userId2,
+									invertSharedOrder : invert
+								});
+							} else {
+								ordersData.push({ 
+									productId : product.id,
+									productPrice : product.price,
+									quantity : quantity 
+								});
+							}
+						}					
+					}
 				}
 
 				//absences
@@ -156,7 +162,6 @@ class SubscriptionAdmin extends controller.Controller
 			} catch( error : Error ) {
 				throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, error.message );
 			}
-
 		}
 			
 		view.edit = false;
@@ -202,7 +207,6 @@ class SubscriptionAdmin extends controller.Controller
 
 		var subscriptionService = new service.SubscriptionService();
 		subscriptionService.adminMode = true;
-		
 
 		if ( checkToken() ) {
 
@@ -218,51 +222,57 @@ class SubscriptionAdmin extends controller.Controller
 				}
 
 				var ordersData = new Array<CSAOrder>();
-				
-				//get orders from the form ( constant order, ou default order is catalog.requiresOrdering)
-				for ( product in catalogProducts ) {
+				if(subscription.catalog.hasDefaultOrdersManagement()){
+					//get default orders from the form 					
+					for ( product in catalogProducts ) {
 
-					var quantity : Float = 0;
-					var qtyParam = app.params.get( 'quantity' + product.id );
-					if ( qtyParam != "" ) quantity = Std.parseFloat( qtyParam );
-					var user2 : db.User = null;
-					var userId2 : Int = null;
-					if( subscription.catalog.type == Catalog.TYPE_CONSTORDERS ) {							
-						userId2 = Std.parseInt( app.params.get( 'user2' + product.id ) );
+						var quantity : Float = 0;
+						var qtyParam = app.params.get( 'quantity' + product.id );
+						if ( qtyParam != "" ) quantity = Std.parseFloat( qtyParam );
+						var user2 : db.User = null;
+						var userId2 : Int = null;
+						if( subscription.catalog.type == Catalog.TYPE_CONSTORDERS ) {							
+							userId2 = Std.parseInt( app.params.get( 'user2' + product.id ) );
+						}
+						var invert = false;
+						if ( userId2 != null && userId2 != 0 ) {
+
+							user2 = db.User.manager.get( userId2, false );
+							if ( user2 == null ) {
+								throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, t._( "Unable to find user #::num::", { num : userId2 } ) );
+							}
+
+							if ( !user2.isMemberOf( subscription.catalog.group ) ) {
+								throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, subscription.user + " ne fait pas partie de ce groupe." );
+							}
+
+							if ( subscription.user.id == user2.id ) {
+								throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous ne pouvez pas alterner avec la personne qui a la souscription." );
+							}
+
+							invert = app.params.get( 'invert' + product.id ) == "true";
+						}
+
+						if ( quantity!=null && quantity > 0 ) {
+							if( subscription.catalog.isConstantOrdersCatalog() ) {
+								ordersData.push( { 
+									productId : product.id,
+									productPrice : product.price,
+									quantity : quantity,
+									userId2 : userId2,
+									invertSharedOrder : invert
+								} );
+							} else {
+								ordersData.push( { 
+									productId : product.id,
+									productPrice: product.price,
+									quantity : quantity
+								} );
+							}
+						}						
 					}
-					var invert = false;
-					if ( userId2 != null && userId2 != 0 ) {
-
-						user2 = db.User.manager.get( userId2, false );
-						if ( user2 == null ) {
-							throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, t._( "Unable to find user #::num::", { num : userId2 } ) );
-						}
-
-						if ( !user2.isMemberOf( subscription.catalog.group ) ) {
-							throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, subscription.user + " ne fait pas partie de ce groupe." );
-						}
-
-						if ( subscription.user.id == user2.id ) {
-							throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous ne pouvez pas alterner avec la personne qui a la souscription." );
-						}
-
-						invert = app.params.get( 'invert' + product.id ) == "true";
-					}
-
-					if ( quantity!=null && quantity > 0 ) {
-						if( subscription.catalog.isConstantOrdersCatalog() ) {
-							ordersData.push( { 
-								productId : product.id,
-								productPrice : product.price,
-								quantity : quantity,
-								userId2 : userId2,
-								invertSharedOrder : invert
-							} );
-						} else {
-							ordersData.push( { productId : product.id, productPrice: product.price,  quantity : quantity } );
-						}
-					}						
 				}
+				
 
 				//absences
 				var absenceDistribIds = [];
@@ -490,7 +500,7 @@ class SubscriptionAdmin extends controller.Controller
 		view.c = catalog;
 		view.subscriptions = catalogSubscriptions;
 		catalogSubscriptions.sort(function(a,b){
-			if( a.user.lastName > b.user.lastName ){
+			if( a.user.lastName.toUpperCase() > b.user.lastName.toUpperCase() ){
 				return 1;
 			}else{
 				return -1;

@@ -110,7 +110,8 @@ class Subscription extends Controller
         if(post!=null){
             var defaultOrder:Array<CSAOrder> = Json.parse(StringTools.urlDecode(post));
 
-            if(catalog.isConstantOrdersCatalog()){
+            //no default order to check in those cases
+            if(catalog.isConstantOrdersCatalog() || catalog.distribMinOrdersTotal==0){                
                 return json({defaultOrderCheck:true});
             }
 

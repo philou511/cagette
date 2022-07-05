@@ -134,10 +134,10 @@ class Distribution extends Controller {
 		view.products = products;
 
 		// users
-		var users = Lambda.array(d.getUsers());
+		var users = d.getUsers().array();
 		// var usersMap = tools.ObjectListTool.toIdMap(users);
 		users.sort(function(b, a) {
-			return (a.lastName < b.lastName) ? 1 : -1;
+			return (a.lastName.toUpperCase() < b.lastName.toUpperCase()) ? 1 : -1;
 		});
 		view.users = users;
 		// view.usersMap = usersMap;
@@ -341,7 +341,7 @@ class Distribution extends Controller {
 			}
 			try {
 				// do not launch event, avoid notifs for now
-				d = DistributionService.editAttendance(d, d.multiDistrib, orderStartDate, orderEndDate, false);
+				d = DistributionService.editAttendance(d, orderStartDate, orderEndDate, false);
 			} catch (e:tink.core.Error) {
 				throw Error(sugoi.Web.getURI(), e.message);
 			}
@@ -408,7 +408,7 @@ class Distribution extends Controller {
 				md = db.MultiDistrib.manager.get(mdid);
 
 				// do not launch event, avoid notifs for now
-				d = DistributionService.editAttendance(d, md, d.orderStartDate, d.orderEndDate, false);
+				d = DistributionService.shiftDistribution(d, md, false);
 				
 			} catch (e:tink.core.Error) {
 				throw Error(sugoi.Web.getURI(), e.message);
@@ -1299,17 +1299,12 @@ class Distribution extends Controller {
 		// duty periods user's participation		
 		var timeframe = group.getMembershipTimeframe(Date.now());
 		var multidistribs = db.MultiDistrib.getFromTimeRange(group, timeframe.from, timeframe.to);
-
 		
 		var uniqueRoles = VolunteerService.getUsedRolesInMultidistribs(multidistribs);
-		
 		var participation = VolunteerService.getUserParticipation([user],app.getCurrentGroup(),timeframe.from,timeframe.to).get(user.id);
-
-		view.multidistribs = multidistribs;
 		
 		//needed at component init
 		view.daysBeforeDutyPeriodsOpen = app.user.getGroup().daysBeforeDutyPeriodsOpen;
-		view.uniqueRoles = uniqueRoles;
 		view.toBeDone = participation.genericRolesToBeDone + participation.contractRolesToBeDone;
 		view.done = participation.genericRolesDone + participation.contractRolesDone;
 		view.timeframe = timeframe;
