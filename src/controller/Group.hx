@@ -1,6 +1,7 @@
 package controller;
 import Common;
 import db.Group;
+import payment.Cash;
 import service.BridgeService;
 import service.DistributionService;
 import service.OrderService;
@@ -109,7 +110,10 @@ class Group extends controller.Controller
 	@tpl("form.mtt")
 	function doCreate() {
 		var cagettePros = service.VendorService.getCagetteProFromUser(App.current.user);
-		if (!(App.current.settings.onlyVendorsCanCreateGroup==true && cagettePros!=null && cagettePros.length>0)) {
+		if (!(App.current.settings.onlyVendorsCanCreateGroup==null
+			 || App.current.settings.onlyVendorsCanCreateGroup==false 
+			 || (App.current.settings.onlyVendorsCanCreateGroup==true && cagettePros!=null && cagettePros.length>0))
+			 ) {
 			throw Redirect("/");
 		}
 
