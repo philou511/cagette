@@ -250,21 +250,23 @@
 		</table>
 </p>
 
-<p>
-	<h4>Formations suivies</h4>
-	<table class="table table-bordered">
-		::foreach c courses::		
-		<tr>
-			<td>::c._course.ref::</td>
-			<td>
-				<a href="/p/hosted/course/view/::c._course.id::">::c._course.name::</a>
-			</td>
-			<td>
-				Du ::sDate(c._course.date):: au ::sDate(c._course.end)::
-			</td> 
-		</tr>
-		::end::
-	</table>
-</p>
+::if settings.noCourse!=true::
+	<p>
+		<h4>Formations suivies</h4>
+		<table class="table table-bordered">
+			::foreach c courses::		
+			<tr>
+				<td>::c._course.ref::</td>
+				<td>
+					<a href="/p/hosted/course/view/::c._course.id::">::c._course.name::</a>
+				</td>
+				<td>
+					Du ::sDate(c._course.date):: au ::sDate(c._course.end)::
+				</td> 
+			</tr>
+			::end::
+		</table>
+	</p>
+::end::
 
 ::end::

@@ -14,6 +14,9 @@ class Course extends sugoi.BaseController
 	**/
 	@tpl("plugin/pro/hosted/course/default.mtt")
 	function doDefault(){
+if (App.current.settings.noCourse==true) {
+			throw Redirect("/");
+		}
 
 		var now :DateTime = Date.now();				
 		var from = now.snap(Month(Down)).add(Day(-1)).snap(Month(Down)).getDate();			

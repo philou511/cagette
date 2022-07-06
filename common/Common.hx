@@ -327,4 +327,5 @@ typedef Settings = {
 	var ?noVendorSignup: Bool;
 	var ?noCsa: Bool;
 	var ?onlyVendorsCanCreateGroup: Bool;
+	var ?noCourse: Bool;
 }
