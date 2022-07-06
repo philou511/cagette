@@ -573,12 +573,31 @@ class Delivery extends controller.Controller
 	function doOrders(d:db.Distribution) {
 		
 		view.nav.push("detail");
-		view.distribution = d;
-		var contract = d.catalog;
-		view.c = contract;
-		view.orders = service.OrderService.getOrders(contract, d, app.params.exists("csv"));
-	}
-	
+		view.distribution = d;		
+		view.multiDistribId = d.multiDistrib.id;
+		view.catalog = view.c = d.catalog;
+		
+		if ( App.current.params.get("csv")=="1" ) {
+
+			var data = [];			
+			for( basket in d.multiDistrib.getBaskets()){
+				for(o in service.OrderService.prepare(basket.getDistributionOrders(d))){
+					data.push( { 
+						"name":o.userName,
+						"productName":o.productName,
+						"price":view.formatNum(o.productPrice),
+						"quantity":view.formatNum(o.quantity),
+						"fees":view.formatNum(o.fees),
+						"total":view.formatNum(o.total),
+						"paid":o.paid
+					});				
+				}
+			}
+			
+			var exportName = d.catalog.group.name + " - " + t._("Delivery ::contractName:: ", {contractName:d.catalog.name}) + d.date.toString().substr(0, 10);								
+			sugoi.tools.Csv.printCsvDataFromObjects(data, ["name",  "productName", "price", "quantity", "fees", "total", "paid"], exportName+" - " + t._("Per member"));			
+		}
+	}	
 
 	@tpl('distribution/list.mtt')
 	function doList(d:db.Distribution) {

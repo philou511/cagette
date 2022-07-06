@@ -122,7 +122,9 @@ class MangopayController extends controller.Controller
 			AuthorId: naturalUserId,
 			ReturnURL: host+"/p/pro/transaction/mangopay/return/"+type+"/"+tmpBasket.id,
 			CardType: "CB_VISA_MASTERCARD",
-			Culture: "FR"
+			Culture: "FR",
+			SecureMode:"NO_CHOICE",
+			Requested3DSVersion:"V2_1"
 		};
 		var cardWebPayIn : CardWebPayIn = Mangopay.createCardWebPayIn(payIn);
 		throw Redirect(cardWebPayIn.RedirectURL);

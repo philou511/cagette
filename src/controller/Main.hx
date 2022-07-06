@@ -267,10 +267,10 @@ class Main extends Controller {
 
 
 	@tpl('shop/default.mtt')
-	function doShop2(md:db.MultiDistrib, ?args:{continueShopping:Bool, basketId: Int}) {
+	function doShop2(md:db.MultiDistrib, ?args:{continueShopping:Bool, basket: db.Basket}) {
 		var uri = "/shop/" + md.id + "?continueShopping=" + (args != null ? args.continueShopping : false);
-		if (args.basketId != null) {
-			uri+= "&basketId=" + args.basketId;
+		if (args!=null && args.basket != null) {
+			uri+= "&basketId=" + args.basket.id;
 		}
 		throw Redirect(uri);
 
