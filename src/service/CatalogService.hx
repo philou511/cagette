@@ -128,7 +128,7 @@ class CatalogService{
 
 			var t = sugoi.i18n.Locale.texts;
 
-			if( catalog.type == Catalog.TYPE_VARORDER ) {
+			if( catalog.isVariableOrdersCatalog() ) {
 
 				var orderStartDaysBeforeDistrib = form.getValueOf("orderStartDaysBeforeDistrib");
 				if( orderStartDaysBeforeDistrib == 0 ) {
@@ -140,21 +140,25 @@ class CatalogService{
 					throw new Error("Vous devez définir un minimum de commande ( par distribution et/ou sur la durée du contrat )");
 				}
 
-				//clean absence datas if not needed
-				if(form.getValueOf("catalogMinOrdersTotal")==0){
+				//no absences datas if distribMinOrdersTotal=0
+				if(form.getValueOf("distribMinOrdersTotal")==0){
 					catalog.absencesEndDate = null;
 					catalog.absencesStartDate = null;
 					catalog.absentDistribsMaxNb = 0;
 				}
 
-				var catalogMinOrdersTotal = form.getValueOf("catalogMinOrdersTotal");
-				/*var allowedOverspend = form.getValueOf("allowedOverspend");
+				if(form.getValueOf("catalogMinOrdersTotal")>0){
+					App.current.session.addMessage("Pensez à laisser suffisamment de distributions ouvertes à la commande pour que les membres puissent atteindre le minimum de commande de "+form.getValueOf("catalogMinOrdersTotal")+" €");
+				}
+
+				/*var catalogMinOrdersTotal = form.getValueOf("catalogMinOrdersTotal");
+				var allowedOverspend = form.getValueOf("allowedOverspend");
 				if( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 && allowedOverspend == null ) {
 					throw new Error( 'Vous devez obligatoirement définir un dépassement autorisé car vous avez rentré un minimum de commandes/provision minimale sur la durée du contrat.');
 				}*/
 			}
 
-			if( catalog.type == Catalog.TYPE_CONSTORDERS ) {
+			if( catalog.isConstantOrdersCatalog() ) {
 				
 				var orderEndHoursBeforeDistrib = form.getValueOf("orderEndHoursBeforeDistrib");
 				if( orderEndHoursBeforeDistrib == null || orderEndHoursBeforeDistrib == 0 ) {
@@ -236,8 +240,6 @@ class CatalogService{
 
 			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > Date.now(), { orderBy : date }, true );
 			for ( distrib in futureDistribs ) {
-
-				distrib.lock();
 
 				if ( newOrderStartDays != null ) {	
 					distrib.orderStartDate = DateTools.delta( distrib.date, -1000.0 * 60 * 60 * 24 * newOrderStartDays );

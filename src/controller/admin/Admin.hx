@@ -247,7 +247,7 @@ class Admin extends Controller {
 		}
 	}
 
-	function doVendorNum(){
+	/*function doVendorNum(){
 		//nbre de vendor actifs dans des groupes qui ont eu des payout mangopay en octobre
 		var vendorsNum = 0;
 		var payoutNum = 0;
@@ -270,26 +270,8 @@ class Admin extends Controller {
 		vendors = ObjectListTool.deduplicate(vendors);
 		Sys.print('${vendors.length} vendors actifs');
 
-	}
+	}*/
 
-	function doLastCproTest() {
-		// cagette pro test par date de creation du cpro
-		/*var vendors = db.Vendor.manager.unsafeObjects("SELECT v.*,cpro.cdate as cprocdate FROM CagettePro cpro, Vendor v WHERE v.id=cpro.vendorId and isTest=1 order by cpro.cdate DESC",
-			false);
-		Sys.print("<h2>Derniers Cagette Pro test</h2>");
-		Sys.print('<p>${vendors.length} producteurs</p>');
-		Sys.print('<table class="table"><tr><th>Producteur</th><th>Bloqué</th><th>Inscription</th></tr>');
-		for (v in vendors) {
-			var cpro = pro.db.CagettePro.getFromVendor(v);
-			var blocked = cpro.getUserCompany().exists(uc -> uc.disabled);
-
-			Sys.print('<tr><td><a href="/admin/vendor/view/${v.id}" target="_blank">${v.id} - ${v.name}</a></td>');
-			Sys.print('<td>${blocked?"OUI":"NON"}</a></td>');
-			Sys.print('<td>${untyped v.cprocdate}</a></td>');
-			Sys.print("</tr>");
-		}
-		Sys.print('</table>');*/
-	}
 
 	/**
 		Stats sur les groupes actifs
@@ -409,7 +391,7 @@ class Admin extends Controller {
 		];
 		f.addElement(new sugoi.form.elements.StringSelect("output", "Sortie", data, "table", true, ""));
 
-		var sql_select = "SELECT g.*,gs.active,gs.membersNum,p.name as pname, p.address1,p.address2,p.zipCode,p.country,p.city";
+		var sql_select = "SELECT g.*,gs.active,gs.membersNum,gs.contractNum,p.name as pname, p.address1,p.address2,p.zipCode,p.country,p.city";
 		var sql_where_or = [];
 		var sql_where_and = [];
 		var sql_end = "ORDER BY g.id ASC";
@@ -489,7 +471,7 @@ class Admin extends Controller {
 			case "csv":
 				var headers = [
 					"id", "name","mode","placeName", "address1", "address2", "zipCode", "city", "active", "url",
-					"contactName","contactEmail","contactPhone","membersNum"
+					"contactName","contactEmail","contactPhone","membersNum","contractNum"
 				];
 				var data = [];
 				for (g in groups) {
@@ -512,7 +494,8 @@ class Admin extends Controller {
 						contactName : contact!=null ? contact.getName() : "",
 						contactEmail: contact!=null ? contact.email : "",
 						contactPhone: contact!=null ? contact.phone : "",
-						membersNum : untyped g.membersNum			
+						membersNum : untyped g.membersNum,
+						contractNum : untyped g.contractNum			
 					});
 				}
 
@@ -563,6 +546,18 @@ class Admin extends Controller {
 				text:"Lorem Ipsum"
 			} );
 			Sys.print(res);
+		}
+
+	}
+
+	public function doUpdate(){
+
+		for(g in db.Group.manager.search(true,false)){
+
+			var gs = hosted.db.GroupStats.getOrCreate(g.id,true);
+			gs.updateStats();
+			Sys.print(g.name+" #"+g.id+" <br/>");
+
 		}
 
 	}

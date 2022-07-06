@@ -30,6 +30,7 @@ RUN chown www-data:www-data /srv /var/www
 
 RUN haxelib setup /usr/share/haxelib
 RUN haxelib install templo
+# this produces a temploc2 executable in current directory, hence the cd /usr/bin
 RUN cd /usr/bin && haxelib run templo
 
 # WHY: src/App.hx:20: characters 58-84 : Cannot execute `git log -1 --format=%h`. fatal: not a git repository (or any of the parent directories): .git

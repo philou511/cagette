@@ -29,6 +29,7 @@ class Catalog extends Controller
             constraints : SubscriptionService.getContractConstraints(catalog),
             absences : AbsencesService.getAbsencesDescription(catalog),
             absentDistribsMaxNb : catalog.absentDistribsMaxNb,
+            distribMinOrdersTotal : catalog.distribMinOrdersTotal,
         }
 
         json(out);

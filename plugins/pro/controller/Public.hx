@@ -22,7 +22,6 @@ class Public extends controller.Controller
 		}else{
 			view.container = "container"; //boostrap 3 fluid layout
 		}	
-		
 	}
 	
 	@tpl("plugin/pro/catalog/askImport.mtt")
@@ -111,22 +110,14 @@ class Public extends controller.Controller
 				
 				throw Ok("/contractAdmin", "Votre demande a été envoyée au producteur. Vous serez prévenu par email de sa décision.");
 			}
-			
-
-			
-
 		}
 	}
 
 	function isCproVendor(company:pro.db.CagettePro):Bool{
-
 		for( u in company.getUsers()){
 			if(u.id == app.user.id) return true;
 		}
-		
 		return false;
-		
-
 	}
 
 	@tpl('plugin/pro/public/vendor.mtt')
@@ -141,13 +132,13 @@ class Public extends controller.Controller
 				return;
 			}
 		}
-		if(Web.getClientHeader('user-agent').toLowerCase().indexOf("python")>-1){
+
+		if(Web.getClientHeader('user-agent')==null || Web.getClientHeader('user-agent').toLowerCase().indexOf("python")>-1){
 			App.current.setTemplate(null);
 			return;
 		}
 
 		vendorPage(vendor);
-
 	}
 
 	public static function vendorPage(vendor:db.Vendor){

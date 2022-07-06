@@ -25,7 +25,15 @@ class Distributions extends Controller {
 		var user = app.user;
 		var multidistribs = db.MultiDistrib.getFromTimeRange(group, from, to);
 		var uniqueRoles = VolunteerService.getUsedRolesInMultidistribs(multidistribs);
-		var out = [];
+		var out = {
+			 multiDistribs: new Array(),
+			 roles: uniqueRoles.map(function(r) 
+				return {
+					id: r.id,
+					name: r.name
+				}
+			)
+		};
 
 		for( md in multidistribs){
 			var o = {
@@ -58,31 +66,9 @@ class Distributions extends Controller {
 			}
 			o.volunteerForRole = volunteerForRole;
 			
-			out.push(o);
+			out.multiDistribs.push(o);
 		}
 
 		json(out);
-                    
-
 	}
-
-	/*private function checkAdminRights() {
-		if (!App.current.user.isGroupManager()) {
-			throw new tink.core.Error(403, "Forbidden, you're not group manager");
-		}
-		if (app.user.getGroup().id != this.distrib.getGroup().id) {
-			throw new tink.core.Error(403, "Forbidden, this distrib does not belong to the group you're connected to");
-		}
-	}
-
-	private function checkIsGroupMember() {
-		// user must be logged
-		if (app.user == null)
-			throw new tink.core.Error(403, "Forbidden, user is null");
-
-		// user must be member of group
-		if (UserGroup.get(app.user, distrib.getGroup()) == null) {
-			throw new tink.core.Error(403, "User is not member of this group");
-		}
-	}*/
 }

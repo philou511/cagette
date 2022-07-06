@@ -177,12 +177,7 @@ class Vendor extends controller.Controller
 							case true: "OUI";
 							case false: "NON";
 						},
-						type: switch (type) {
-							case 0: "cpro";
-							case 1: "gratuit";
-							case 2: "invité";
-							default: "?";
-						},
+						type: Std.string(Type.createEnumIndex(VendorType,type)),
 					});
 				}
 
