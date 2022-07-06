@@ -112,6 +112,13 @@ class Basket extends Object
 			return out;
 		}		
 	}
+
+	/**
+		get basket's orders for this distribution (one vendor)
+	**/
+	public function getDistributionOrders(d:db.Distribution):Array<db.UserOrder>{
+		return db.UserOrder.manager.search($basket == this && $distribution==d, false).array();
+	}
 	
 	/**
 	 * Returns the list of operations which paid this basket

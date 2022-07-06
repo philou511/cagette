@@ -156,6 +156,7 @@ typedef UserOrder = {
 	?productQt:Float,
 	?productUnit:Unit,
 	?productHasVariablePrice:Bool,
+	
 
 	//new way
 	?product:ProductInfo,
