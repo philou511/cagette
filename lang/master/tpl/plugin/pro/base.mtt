@@ -6,13 +6,18 @@
 		<title>Compte producteur</title>
 
 		<!-- Cagette CSS -->
-		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
+		::if(DEBUG)::
+			<link rel="stylesheet" type="text/css" href="/theme/::theme.id::/css/::getVariable('css')::/style.css" />
+		::else::
+			<link rel="stylesheet" type="text/css" href="/theme/::theme.id::/css/::getVariable('css')::/style.min.css" />
+		::end::
 
 		<!-- Cagette very own icon font -->
 		<link rel="stylesheet" href="/font/icons.css?v=::getVariable('css')::" />
 			
 		<!-- BOOTSTRAP 	-->
-		<link rel="stylesheet" href="/css/::getVariable('css')::/bootstrap.min.css" />
+		<link rel="stylesheet" href="/theme/::theme.id::/css/::getVariable('css')::/bootstrap.min.css" />
+
 				
 		<!-- polyfill for IE11 : Object.assign() doesnt exists in IE11 , error in libs.prod.js -->
 		<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
@@ -57,14 +62,17 @@
 		
 		$$matomo()
 		  
-		<script type="text/javascript"> 
-			//track Matomo events from the backend
-			var events = JSON.parse('::raw getMatomoEvents()::');
-			for(ev of events){
-				console.info("track Matomo event",ev);
-				_paq.push(['trackEvent', ev.category, ev.action, ev.name, ev.value]);
-			}
-		</script>
+		::set matomoUrl = getMatomoUrl()::
+		::if(matomoUrl!="")::
+			<script type="text/javascript"> 
+				//track Matomo events from the backend
+				var events = JSON.parse('::raw getMatomoEvents()::');
+				for(ev of events){
+					console.info("track Matomo event",ev);
+					_paq.push(['trackEvent', ev.category, ev.action, ev.name, ev.value]);
+				}
+			</script>
+		::end::
 
 		::foreach script getNeoModuleScripts()::
 			<script src="::script::"></script>

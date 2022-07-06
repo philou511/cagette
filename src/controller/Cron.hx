@@ -1,10 +1,10 @@
 package controller;
-import hosted.db.GroupStats;
 import Common;
 import db.Catalog;
 import db.MultiDistrib;
 import haxe.CallStack;
 import haxe.display.Display.CompletionModeKind;
+import hosted.db.GroupStats;
 import service.GraphService;
 import sugoi.Web;
 import sugoi.db.Cache;
@@ -82,7 +82,7 @@ class Cron extends Controller
 				if ( volunteers.length != 0 ) {
 					task.log(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 					var mail = new Mail();
-					mail.setSender(App.config.get("default_email"),"Cagette.net");
+					mail.setSender(App.config.get("default_email"), App.current.theme.name);
 					var volunteersList = "<ul>";
 					for ( volunteer in  volunteers ) {
 						
@@ -127,7 +127,7 @@ class Cron extends Controller
 			for (multidistrib  in vacantVolunteerRolesMultidistribs) {
 				task.log(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 				var mail = new Mail();
-				mail.setSender(App.config.get("default_email"),"Cagette.net");
+				mail.setSender(App.config.get("default_email"), App.current.theme.name);
 				for ( member in multidistrib.group.getMembers() ) {
 					mail.addRecipient( member.email, member.getName() );
 					if ( member.email2 != null ) {
@@ -294,15 +294,15 @@ class Cron extends Controller
 			var errors = sugoi.db.Error.manager.search( $date < yest24h && $date > yest0h  );		
 			if (errors.length > 0) {
 				var report = new StringBuf();
-				report.add("<h1>" + App.config.NAME + " : ERRORS</h1>");
+				report.add("<h1>" + App.current.theme.name + " : ERRORS</h1>");
 				for (e in errors) {
 					report.add("<div><pre>"+e.error + " at URL " + e.url + " ( user : " + (e.user!=null?e.user.toString():"none") + ", IP : " + e.ip + ")</pre></div><hr/>");
 				}
 				
 				var m = new Mail();
-				m.setSender(App.config.get("default_email"),"Cagette.net");
+				m.setSender(App.config.get("default_email"), App.current.theme.name);
 				m.addRecipient(App.config.get("webmaster_email"));
-				m.setSubject(App.config.NAME+" Errors");
+				m.setSubject(App.current.theme.name+" Errors");
 				m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:report.toString() } ) );
 				App.sendMail(m);
 			}
@@ -500,7 +500,7 @@ class Cron extends Controller
 				
 					try{
 						var m = new Mail();
-						m.setSender(App.config.get("default_email"), "Cagette.net");
+						m.setSender(App.config.get("default_email"), App.current.theme.name);
 						if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
 						m.addRecipient(u.user.email, u.user.getName());
 						if (u.user.email2 != null) m.addRecipient(u.user.email2);
@@ -586,7 +586,7 @@ class Cron extends Controller
 											
 						try{
 							var m = new Mail();
-							m.setSender(App.config.get("default_email"), "Cagette.net");
+							m.setSender(App.config.get("default_email"), App.current.theme.name);
 							if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
 							m.addRecipient(user.email, user.getName());
 							if (user.email2 != null) m.addRecipient(user.email2);
@@ -651,7 +651,7 @@ class Cron extends Controller
 			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.id;
 			var html = t._("<p>Your distribution just finished, don't forget to <b>validate</b> it</p>");
 			html += explain;
-			html += t._("<p><a href='::distriburl::'>Click here to validate the distribution</a> (You must be connected to your group Cagette)", {distriburl:url});
+			html += "<p><a href='" + url + "'>Cliquez ici pour valider la distribution</a> (vous devez être connecté·e à votre groupe " + App.current.theme.name + ")</p>";
 			App.quickMail(d.getGroup().contact.email, subj, html, d.getGroup());
 		}
 		
@@ -677,7 +677,7 @@ class Cron extends Controller
 			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.id;		
 			var html = t._("<p>Reminder: you have a delivery to validate.</p>");
 			html += explain;
-			html += t._("<p><a href='::distriburl::'>Click here to validate the delivery</a> (You must be connected to your Cagette group)", {distriburl:url});
+			html += "<p><a href='" + url + "'>Cliquez ici pour valider la distribution</a> (vous devez être connecté·e à votre groupe " + App.current.theme.name + ")</p>";
 			
 			if(d.getGroup().contact!=null){
 				App.quickMail(d.getGroup().contact.email, subj, html, d.getGroup());

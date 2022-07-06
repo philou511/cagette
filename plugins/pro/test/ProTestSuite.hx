@@ -22,7 +22,7 @@ class ProTestSuite
    	}
 
 	public static function initDatas(){
-		//cagette Pro profile
+		//cPro profile
 		var vendor = new db.Vendor();
 		vendor.name = "GAEC YABON";
 		vendor.email = "yabon@yabon.fr";

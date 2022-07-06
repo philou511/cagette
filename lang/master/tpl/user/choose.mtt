@@ -20,7 +20,7 @@
 					</p>				
 					<p><b>Pour prendre en main l’outil c’est par ici !</b><br/>
 						C’est l’espace où vous trouverez tous les tutoriels 
-						pour vous lancer sur Cagette.net. 
+						pour vous lancer sur ::theme.name::. 
 					</p>	
 				</div>
 				
@@ -63,7 +63,7 @@
 					<p>
 						<b>Pour prendre en main l’outil c’est par ici !</b><br/>
 						C’est l’espace où vous trouverez tous les tutoriels<br/> 
-						pour vous lancer sur Cagette.net.
+						pour vous lancer sur ::theme.name::.
 					</p>
 					
 				</div>
@@ -117,7 +117,7 @@
 	
 	<div class="col-md-12" ::cond cagettePros!=null || tmpVendors.length>0:: >
 		<div class="row">
-		<!-- cagette pro -->
+		<!-- cpro -->
 		::foreach cp cagettePros::
 			::set v = cp._vendor::
 			<div class="col-md-4">
@@ -144,7 +144,7 @@
 				<h4>::tmp.farmName::</h4>
 				<p class="disabled">
 					<i class="icon icon-clock"></i>
-					Demande d'ouverture de compte producteur en attente de validation par l'équipe Cagette.net
+					Demande d'ouverture de compte producteur en attente de validation par l'équipe ::theme.name::
 				</p>
 			</a>
 		</div>
@@ -155,7 +155,7 @@
 	</div>
 	
 	<div class="col-md-12" >
-		<p>Vous êtes membre des <b>groupes Cagette</b> suivants :</p>
+		<p>Vous êtes membre des <b>groupes ::theme.name::</b> suivants :</p>
 	</div>
 
 	<!-- groups -->
@@ -190,12 +190,13 @@
 		::if session.lang!="de"::
 			<a class="btn btn-default btn-lg" href="/group/map">
 				<i class="icon icon-search"></i> ::_("Find other groups near me")::
-			</a>	
+			</a>
 		::end::
-		<a class="btn btn-default btn-lg" href="/group/create/">
-			<i class="icon icon-plus"></i> Créer un groupe
-		</a>	
-		
+		::if settings.onlyVendorsCanCreateGroup==null || settings.onlyVendorsCanCreateGroup==false || (settings.onlyVendorsCanCreateGroup==true && cagettePros!=null && cagettePros.length>0)::
+			<a class="btn btn-default btn-lg" href="/group/create/">
+				<i class="icon icon-plus"></i> Créer un groupe
+			</a>
+		::end::
 	</div>
 
 		

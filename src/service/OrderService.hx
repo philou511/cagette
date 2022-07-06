@@ -537,7 +537,7 @@ class OrderService
 		
 		var m = new sugoi.mail.Mail();
 		m.addRecipient(d.catalog.contact.email , d.catalog.contact.getName());
-		m.setSender(App.config.get("default_email"),"Cagette.net");
+		m.setSender(App.config.get("default_email"), App.current.theme.name);
 		m.setSubject('[${d.catalog.group.name}] Distribution du ${Formatting.dDate(d.date)} (${d.catalog.name})');
 		var orders = service.ReportService.getOrdersByProduct(d);
 
@@ -571,7 +571,7 @@ class OrderService
 			var m = new sugoi.mail.Mail();
 			m.addRecipient(user.email , user.getName(),user.id);
 			if(user.email2!=null) m.addRecipient(user.email2 , user.getName(),user.id);
-			m.setSender(App.config.get("default_email"),"Cagette.net");
+			m.setSender(App.config.get("default_email"), App.current.theme.name);
 			m.setSubject(title);
 			var orders = prepare(d.catalog.getUserOrders(user,d));
 

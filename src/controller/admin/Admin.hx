@@ -1,5 +1,4 @@
 package controller.admin;
-import sys.FileSystem;
 import Common;
 import db.BufferedJsonMail;
 import db.Catalog;
@@ -12,6 +11,7 @@ import pro.db.VendorStats;
 import service.GraphService;
 import sugoi.Web;
 import sugoi.db.Variable;
+import sys.FileSystem;
 import tools.ObjectListTool;
 import tools.Timeframe;
 
@@ -561,4 +561,7 @@ class Admin extends Controller {
 		}
 
 	}
+
+	@tpl('admin/settings.mtt')
+	function doSettings(){}
 }

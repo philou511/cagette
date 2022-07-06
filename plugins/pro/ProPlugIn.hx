@@ -51,7 +51,7 @@ class ProPlugIn extends PlugIn implements IPlugIn{
 
 					for ( d in distribs){
 
-						//We ignore all non cagette pro distribs
+						//We ignore all non cpro distribs
 						var rc = connector.db.RemoteCatalog.getFromContract(d.catalog);					
 						if(rc==null) {
 							task.log(" -- not cpro : "+d.toString());
@@ -98,7 +98,7 @@ class ProPlugIn extends PlugIn implements IPlugIn{
 					
 					for ( d in db.Distribution.manager.search($end >= range.from && $end < range.to, false)){
 						if(d.catalog==null) continue;
-						//We ignore all non cagette pro distribs
+						//We ignore all non cpro distribs
 						var contract = d.catalog;
 						var rc = connector.db.RemoteCatalog.getFromContract(contract);					
 						if(rc==null) continue;
@@ -198,7 +198,7 @@ class ProPlugIn extends PlugIn implements IPlugIn{
 				}
 			
 				
-				//quand une distrib est finie, il faudrait mettre à jour le stock cagette pro en déduisant la livraison
+				//quand une distrib est finie, il faudrait mettre à jour le stock cpro en déduisant la livraison
 			}
 			
 		}

@@ -50,6 +50,8 @@ class Main extends Controller {
 			throw Redirect("/user/choose");
 		} else if (app.user == null && (group == null || group.regOption != db.Group.RegOption.Open)) {
 			throw Redirect("/user/login");
+		}else if(group.disabled!=null){
+			throw Redirect("/group/disabled");
 		}
 
 		group.checkIsolate();
@@ -357,7 +359,7 @@ class Main extends Controller {
 
 	// CGU
 	public function doCgu() {
-		throw Redirect("https://www.cagette.net/wp-content/uploads/2020/11/cgu-.pdf");
+		throw Redirect(App.current.theme.cguLink);
 	}
 
 	// CGV
