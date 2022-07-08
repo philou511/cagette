@@ -249,11 +249,15 @@ class Transaction extends controller.Controller
 	@tpl("transaction/tmpBasket.mtt")
 	public function doTmpBasket(tmpBasket:db.Basket,?args:{cancel:Bool,confirm:Bool,continueShopping:Bool}){
 
-		if(tmpBasket.status!=Std.string(BasketStatus.OPEN)) throw "basket should be OPEN";
+		var group = app.getCurrentGroup();
 
-		if(app.getCurrentGroup()==null){
+		if(group==null){ 
 			throw Redirect("/");
 		}
+
+		if(tmpBasket.status!=Std.string(BasketStatus.OPEN) && !group.hasCagette2()){
+			throw "basket should be OPEN";
+		} 
 
 		if(args!=null){
 			if(args.cancel){
@@ -270,12 +274,12 @@ class Transaction extends controller.Controller
 		
 		#if plugins
 		//MANGOPAY : search for "unlinked" confirmed payIns on Mangopay
-		if(mangopay.MangopayPlugin.checkTmpBasket(tmpBasket)!=null){
+		if(tmpBasket.status==Std.string(BasketStatus.OPEN) && mangopay.MangopayPlugin.checkTmpBasket(tmpBasket)!=null){
 			throw Ok("/home","Votre paiement a été pris en compte et votre commande a bien été enregistrée.");
 		}
 		#end
 
-		view.group = app.getCurrentGroup();
+		view.group = group;
 		view.tmpBasket = tmpBasket;		
 	}
 	
