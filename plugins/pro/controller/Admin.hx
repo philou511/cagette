@@ -1674,9 +1674,35 @@ class Admin extends controller.Controller {
 	}
 
 
-	/*function doStats(){
-		for( gs in hosted.db.GroupStats.manager.search($contactType=="",true)){
-			gs.updateStats();
+	function doFix(){
+
+		//fill defaultOrder in constant order subs when empty
+		var now = Date.now();
+		var print = controller.Cron.print;
+		for( sub in Subscription.manager.search($startDate < now && $endDate > now,true)){
+			
+			if(sub.catalog.isConstantOrdersCatalog()){
+				
+				var dord = sub.getDefaultOrders();
+				
+				if(dord.length==0){
+					print(sub+" has null defaultOrders");
+
+					var newdo = service.SubscriptionService.getCSARecurrentOrders(sub,[]);
+		
+					var newdo2 : Array<CSAOrder> = newdo.map( order -> {
+						productId:order.product.id,
+						productPrice:order.productPrice,
+						quantity:order.productPrice,
+						userId2:null,
+						invertSharedOrder:null						
+					});
+					sub.defaultOrders = haxe.Json.stringify( newdo2 );
+					sub.update();
+				}
+
+
+			}
 		}
-	}*/
+	}
 }
