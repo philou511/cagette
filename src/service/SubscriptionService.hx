@@ -523,10 +523,15 @@ class SubscriptionService
 		var catalog = keys.find(d -> d!=null).catalog;
 		
 		//Minimum by distribution
+		var now = Date.now().getTime();
 		if ( catalog.distribMinOrdersTotal > 0 ) {
 
 			var distribTotal;
 			for ( distrib in keys ) {
+
+				//Do not check closed distribs. It allows to have non-fitting passed orders. 
+				//(an admin may have modified passed orders, thus making them not fitting the constraint)
+				if(distrib.orderEndDate.getTime() < now) continue;
 
 				distribTotal = .0;
 				for ( o in ordersByDistrib[distrib] ) {
