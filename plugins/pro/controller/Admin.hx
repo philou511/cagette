@@ -783,33 +783,7 @@ class Admin extends controller.Controller {
 		throw Ok("/admin/vendor/view/" + vendor.id, "Compte Cagette Pro créé");
 	}*/
 
-	/*function doCproTest(vendor:db.Vendor) {
-		vendor.lock();
 
-		var cpro = pro.db.CagettePro.getFromVendor(vendor);
-
-		if (cpro == null) {
-			cpro = new pro.db.CagettePro();
-			cpro.vendor = vendor;
-			cpro.insert();
-
-			// user
-			var user = service.UserService.getOrCreate("", "", vendor.email);
-
-			// access
-			var uc = new pro.db.PUserCompany();
-			uc.company = cpro;
-			uc.user = user;
-			uc.insert();
-		}
-
-		vendor.isTest = true;
-		vendor.update();
-
-		VendorStats.updateStats(vendor);
-
-		throw Ok("/admin/vendor/view/" + vendor.id, "Compte passé en Cagette Pro Test");
-	}*/
 
 	@tpl("form.mtt")
 	public function doNewVendor() {
@@ -1590,39 +1564,6 @@ class Admin extends controller.Controller {
 			service.PaymentService.updateUserBalance(m, group);	
 		}
 	}
-
-
-	/*function doCleanCproTest(){
-
-		var vendors = db.Vendor.manager.search($isTest==true,false);
-		var print = controller.Cron.print;
-		for ( v in vendors ){
-
-			print('<a target="_blank" href="/admin/vendor/view/${v.id}">${v.name}</a>');
-			
-			var cpro = v.getCpro();
-			if(cpro==null){
-				print("No Cpro !!");
-			}else{
-				// for( uc in pro.db.PUserCompany.getUsers(cpro)){
-				// 	if(!uc.disabled){
-				// 		print('${uc.user.getName()} is not disabled !');
-				// 	}
-				// }
-
-				for ( catalog in cpro.getCatalogs() ){
-
-					//break linkage
-					var rcs = RemoteCatalog.getFromCatalog(catalog,true);
-					for( rc in rcs) rc.delete();
-				}
-
-				cpro.delete();
-				print('${v.name} redevient invité !');
-				VendorStats.updateStats(v);				
-			}
-		}
-	}*/
 
 	/**
 		gestion des paiements obligatoire dans les AMAP

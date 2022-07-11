@@ -272,6 +272,7 @@ class Vendor extends Object
 		if(address2!=null) str.add(", "+address2);
 		if(zipCode!=null) str.add(", "+zipCode);
 		if(city!=null) str.add(" "+city);
+		if(country!=null) str.add(", "+country);
 		return str.toString();
 	}
 
@@ -322,12 +323,12 @@ class Vendor extends Object
 	}
 
 	function check(){
-		if(this.email==null){
+		/*if(this.email==null){
 			throw new tink.core.Error("Vous devez obligatoirement saisir un email pour ce producteur.");
-		}
+		}*/
 
-		if(!EmailValidator.check(this.email) ) {
-			throw new tink.core.Error("Email invalide.");
+		if(this.email!=null && !EmailValidator.check(this.email) ) {
+			throw new tink.core.Error('Email du producteur ${this.id} invalide.');
 		}
 
 		//disable if missing legal infos
