@@ -20,6 +20,7 @@ class GroupStats extends sys.db.Object
 	public var turnover90days : SInt;
 	public var basketNumber90days : SInt;
 	public var iro:SInt; // indice de richesse de l'offre
+	public var contactType:SString<32>; //
 	
 	public function new() 
 	{
@@ -28,7 +29,6 @@ class GroupStats extends sys.db.Object
 		visible = false;
 		membersNum = 0;
 		contractNum = 0;
-		// cproContractNum  = 0;
 	}
 
 	public static function getOrCreate(groupId:Int,?lock=false) {
@@ -86,6 +86,19 @@ class GroupStats extends sys.db.Object
 
 		var mdids:Array<Int> = mds.map(m->m.id);
 		basketNumber90days = db.Basket.manager.count($multiDistribId in mdids);
+
+		//contact type
+		if(g.contact!=null){
+			var cpros = service.VendorService.getCagetteProFromUser(g.contact);
+			if(cpros.length>0){
+				var vendor = cpros.find(cpro -> cpro.offer!=Training);				
+				this.contactType = vendor==null ? "USER" : Std.string(vendor.offer);
+			} else {
+				this.contactType = "USER";
+			}
+		}else{
+			this.contactType = "NONE";
+		}
 
 		this.update();
 		

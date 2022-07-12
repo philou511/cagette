@@ -72,7 +72,6 @@ class Vendor extends Object
 	@hideInForms public var companyCapital : SNull<SInt>; //capital social
 	@hideInForms public var activityCode:SNull<SString<8>>;//code NAF (NAFRev2)
 	
-	// @hideInForms public var vendorPolicy:SBool; //charte producteurs
 	@hideInForms public var tosVersion: SNull<SInt>; //CGV version checked
 	
 	public var linkText:SNull<SString<256>>;
@@ -87,8 +86,6 @@ class Vendor extends Object
 	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
 	@hideInForms public var disabled : SNull<SEnum<DisabledReason>>; // vendor is disabled
 	
-	// @hideInForms public var isTest : SBool; //cpro test account
-
 	@hideInForms public var lat:SNull<SFloat>;
 	@hideInForms public var lng:SNull<SFloat>;
 
@@ -272,6 +269,7 @@ class Vendor extends Object
 		if(address2!=null) str.add(", "+address2);
 		if(zipCode!=null) str.add(", "+zipCode);
 		if(city!=null) str.add(" "+city);
+		if(country!=null) str.add(", "+country);
 		return str.toString();
 	}
 
@@ -321,13 +319,19 @@ class Vendor extends Object
 		return str;
 	}
 
-	function check(){
-		if(this.email==null){
-			throw new tink.core.Error("Vous devez obligatoirement saisir un email pour ce producteur.");
-		}
+	/**NAF**/
+	function getActivity():{id:String,name:String}{
+		var naf = activityCode.split(".").join("");
+		return service.VendorService.getActivityCodes().find(p -> Std.string(p.id) == naf);
+	}
 
-		if(!EmailValidator.check(this.email) ) {
-			throw new tink.core.Error("Email invalide.");
+	function check(){
+		/*if(this.email==null){
+			throw new tink.core.Error("Vous devez obligatoirement saisir un email pour ce producteur.");
+		}*/
+
+		if(this.email!=null && !EmailValidator.check(this.email) ) {
+			throw new tink.core.Error('Email du producteur ${this.id} invalide.');
 		}
 
 		//disable if missing legal infos

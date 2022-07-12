@@ -1,4 +1,5 @@
 package controller;
+import payment.Cash;
 import Common;
 import db.Group;
 import payment.Cash;
@@ -182,11 +183,13 @@ class Group extends controller.Controller
 				
 			case ProducerDrive,FarmShop : 
 				g.flags.set(ShopMode);								
-				g.flags.set(PhoneRequired);
+				g.flags.set(PhoneRequired);				
 				g.regOption = Open;
 			}
 			
 			g.groupType = type;
+			g.flags.set(HasPayments);
+			g.setAllowedPaymentTypes([payment.Cash.TYPE,payment.Check.TYPE]);
 			g.insert();
 			
 			var ua = new db.UserGroup();

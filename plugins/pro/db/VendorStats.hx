@@ -54,8 +54,25 @@ class VendorStats extends sys.db.Object
 	**/
 	public static function updateStats(vendor:db.Vendor){
 
-		var vs = getOrCreate(vendor);
+		//Find lat/lnt if not set
+		if(vendor.lat==null && !vendor.isDisabled()){
+			vendor.lock();
 
+			var address = vendor.getAddress();
+			
+			var res = service.Mapbox.geocode(address);
+	
+			if(res!=null){
+				if(res.geometry.coordinates[0]!=null){					
+					vendor.lat = res.geometry.coordinates[1];
+					vendor.lng = res.geometry.coordinates[0];
+					vendor.update();
+				}
+			}
+			
+		}
+
+		var vs = getOrCreate(vendor);
 		var cpro = pro.db.CagettePro.getFromVendor(vendor);
 
 		//type
@@ -96,18 +113,6 @@ class VendorStats extends sys.db.Object
 			}
 		}
 
-		//active
-		/*var isActive = false;
-		else{
-			//should have open distribs
-			for( c in vendor.getActiveContracts() ){				
-				if ( c!=null && c.getDistribs(true).length > 0 ){
-					isActive=true;
-					break;
-				}			
-			}
-		}*/
-		
 		var now = Date.now();
 		vs.ldate = now;
 		

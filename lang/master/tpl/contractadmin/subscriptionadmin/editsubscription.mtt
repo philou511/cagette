@@ -32,71 +32,73 @@
 				<hr/>
 			::end::
 
-			<div class="form-group" >
-				<label class="col-sm-3 control-label"></label>
-				<div class="col-sm-5">
-					<h4>
-						::if catalog.isConstantOrdersCatalog() ::
-						Commande récurrente
-						::else::
-						Commande par défaut
-						::end::
-					</h4>
-				</div>
-			</div>
-
-			<div class="form-group" style="font-weight: bold;">				
-				<div class="col-sm-3"></div>
-				<div class="col-sm-2">Quantité</div>
-				::if catalog.isConstantOrdersCatalog()::
-					<div class="col-sm-5">Alterner avec</div>
-					<div class="col-sm-2">Inverser alternance</div>
-				::end::
-			</div>
-			
-			::foreach product products::
-
-				::set quantity = 0::
-				::set user2Id = null::
-				::set invert = false::
-
-				::if edit ::
-					::if catalog.isConstantOrdersCatalog()::
-						::set productOrder = getProductOrder(product.id)::
-						::if productOrder != null::
-							::set quantity = productOrder.quantity::
-							::set user2Id = productOrder.userId2::
-							::set invert = productOrder.hasInvertSharedOrder()::
-						::end::
-					::else::
-						::set defaultProductOrder = subscription.getDefaultOrders(product.id)::
-						::if defaultProductOrder.length != 0 && defaultProductOrder[0] != null::
-							::set quantity = defaultProductOrder[0].quantity::
-						::end::
-					::end::
-				::end::
-
-				<div class="form-group">
-					<label class="col-sm-3 control-label" for="quantity::product.id::" id="quantity::product.id::Label">
-						::product.name + " " + product.price + " €"::
-					</label>
-					<div class="col-sm-2">
-						<input class="form-control" type="text" name="quantity::product.id::" id="quantity::product.id::" value="::quantity::" />
+			::if(catalog.hasDefaultOrdersManagement())::
+				<div class="form-group" >
+					<label class="col-sm-3 control-label"></label>
+					<div class="col-sm-5">
+						<h4>
+							::if catalog.isConstantOrdersCatalog() ::
+							Commande récurrente
+							::else::
+							Commande par défaut
+							::end::
+						</h4>
 					</div>
+				</div>
+
+				<div class="form-group" style="font-weight: bold;">				
+					<div class="col-sm-3"></div>
+					<div class="col-sm-2">Quantité</div>
 					::if catalog.isConstantOrdersCatalog()::
-						<div class="col-sm-6">
-							<select name="user2::product.id::" id="user2::product.id::" class="form-control">
-								<option value="0">-</option>
-								::foreach member members::
-									<option value="::member.value::" ::attr selected if( member.value == user2Id ) '1' ::>::member.label::</option>
-								::end::
-							</select>
-						</div>
-						<div class="col-sm-1">
-							<input data-toggle="tooltip" title="::_("Reverse the alternation")::" type="checkbox" name="invert::product.id::" id="invert::product.id::" value="true" ::attr checked if( invert ) '1' :: />
-						</div>
+						<div class="col-sm-5">Alterner avec</div>
+						<div class="col-sm-2">Inverser alternance</div>
 					::end::
 				</div>
+				
+				::foreach product products::
+
+					::set quantity = 0::
+					::set user2Id = null::
+					::set invert = false::
+
+					::if edit ::
+						::if catalog.isConstantOrdersCatalog()::
+							::set productOrder = getProductOrder(product.id)::
+							::if productOrder != null::
+								::set quantity = productOrder.quantity::
+								::set user2Id = productOrder.userId2::
+								::set invert = productOrder.hasInvertSharedOrder()::
+							::end::
+						::else::
+							::set defaultProductOrder = subscription.getDefaultOrders(product.id)::
+							::if defaultProductOrder.length != 0 && defaultProductOrder[0] != null::
+								::set quantity = defaultProductOrder[0].quantity::
+							::end::
+						::end::
+					::end::
+
+					<div class="form-group">
+						<label class="col-sm-3 control-label" for="quantity::product.id::" id="quantity::product.id::Label">
+							::product.name + " " + product.price + " €"::
+						</label>
+						<div class="col-sm-2">
+							<input class="form-control" type="text" name="quantity::product.id::" id="quantity::product.id::" value="::quantity::" />
+						</div>
+						::if catalog.isConstantOrdersCatalog()::
+							<div class="col-sm-6">
+								<select name="user2::product.id::" id="user2::product.id::" class="form-control">
+									<option value="0">-</option>
+									::foreach member members::
+										<option value="::member.value::" ::attr selected if( member.value == user2Id ) '1' ::>::member.label::</option>
+									::end::
+								</select>
+							</div>
+							<div class="col-sm-1">
+								<input data-toggle="tooltip" title="::_("Reverse the alternation")::" type="checkbox" name="invert::product.id::" id="invert::product.id::" value="true" ::attr checked if( invert ) '1' :: />
+							</div>
+						::end::
+					</div>
+				::end::
 			::end::
 
 			<!-- help for VARORDERS -->

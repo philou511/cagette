@@ -157,7 +157,7 @@ class Vendor extends controller.Controller
 
 			case "csv":
 				var headers = [
-					"id", "name", "email", "phone", "address1", "address2", "zipCode", "city", "active", "type"
+					"id", "name", "email", "phone", "address1", "address2", "zipCode", "city", "active", "type","profession"
 				];
 				var data = [];
 				for (v in vendors) {
@@ -176,12 +176,8 @@ class Vendor extends controller.Controller
 							case true: "OUI";
 							case false: "NON";
 						},
-						type: switch (type) {
-							case 0: "cpro";
-							case 1: "gratuit";
-							case 2: "invité";
-							default: "?";
-						},
+						type: Std.string(Type.createEnumIndex(VendorType,type)),
+						profession : v.getProfession()
 					});
 				}
 
@@ -288,7 +284,6 @@ class Vendor extends controller.Controller
 			v.lock();
 			service.VendorService.update(v, form.getDatasAsObject(), true);
 			v.update();
-
 			throw Ok("/admin/vendor/view/" + v.id, "Producteur mis à jour");
 		}
 		view.form = form;

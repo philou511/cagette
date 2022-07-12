@@ -780,9 +780,10 @@ class Admin extends controller.Controller {
 
 		VendorStats.updateStats(vendor);
 
-		throw Ok("/admin/vendor/view/" + vendor.id, "Compte producteur créé");
+		throw Ok("/admin/vendor/view/" + vendor.id, "Compte Cagette Pro créé");
 	}*/
-	
+
+
 
 	@tpl("form.mtt")
 	public function doNewVendor() {
@@ -1564,39 +1565,6 @@ class Admin extends controller.Controller {
 		}
 	}
 
-
-	/*function doCleanCproTest(){
-
-		var vendors = db.Vendor.manager.search($isTest==true,false);
-		var print = controller.Cron.print;
-		for ( v in vendors ){
-
-			print('<a target="_blank" href="/admin/vendor/view/${v.id}">${v.name}</a>');
-			
-			var cpro = v.getCpro();
-			if(cpro==null){
-				print("No Cpro !!");
-			}else{
-				// for( uc in pro.db.PUserCompany.getUsers(cpro)){
-				// 	if(!uc.disabled){
-				// 		print('${uc.user.getName()} is not disabled !');
-				// 	}
-				// }
-
-				for ( catalog in cpro.getCatalogs() ){
-
-					//break linkage
-					var rcs = RemoteCatalog.getFromCatalog(catalog,true);
-					for( rc in rcs) rc.delete();
-				}
-
-				cpro.delete();
-				print('${v.name} redevient invité !');
-				VendorStats.updateStats(v);				
-			}
-		}
-	}*/
-
 	/**
 		gestion des paiements obligatoire dans les AMAP
 		2022-05
@@ -1642,6 +1610,39 @@ class Admin extends controller.Controller {
 
 			for( u in g.getMembers()){
 				service.PaymentService.updateUserBalance(u,g);
+			}
+		}
+	}
+
+
+	function doFix(){
+
+		//fill defaultOrder in constant order subs when empty
+		var now = Date.now();
+		var print = controller.Cron.print;
+		for( sub in Subscription.manager.search($startDate < now && $endDate > now,true)){
+			
+			if(sub.catalog.isConstantOrdersCatalog()){
+				
+				var dord = sub.getDefaultOrders();
+				
+				if(dord.length==0){
+					print(sub+" has null defaultOrders");
+
+					var newdo = service.SubscriptionService.getCSARecurrentOrders(sub,[]);
+		
+					var newdo2 : Array<CSAOrder> = newdo.map( order -> {
+						productId:order.product.id,
+						productPrice:order.productPrice,
+						quantity:order.productPrice,
+						userId2:null,
+						invertSharedOrder:null						
+					});
+					sub.defaultOrders = haxe.Json.stringify( newdo2 );
+					sub.update();
+				}
+
+
 			}
 		}
 	}

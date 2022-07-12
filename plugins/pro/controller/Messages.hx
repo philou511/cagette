@@ -1,9 +1,9 @@
 package pro.controller;
-import sugoi.form.ListData;
-import sugoi.form.validators.EmailValidator;
-import sugoi.form.elements.*;
-import sugoi.form.Form;
 import db.UserGroup;
+import sugoi.form.Form;
+import sugoi.form.ListData;
+import sugoi.form.elements.*;
+import sugoi.form.validators.EmailValidator;
 
 class Messages extends controller.Controller
 {
@@ -56,14 +56,13 @@ class Messages extends controller.Controller
 			e.setSubject(form.getValueOf("subject"));
 			for ( m in mails ) e.addRecipient(m);
 			
-			e.setSender(App.config.get("default_email"),form.getValueOf("senderName"));		
 			e.setReplyTo(form.getValueOf("senderMail"), form.getValueOf("senderName"));
 			
 			var text :String = form.getValueOf("text");
 			var html = app.processTemplate("plugin/pro/mail/message.mtt", { text:text,list:getListName(listId) });		
 			e.setHtmlBody(html);
 			
-			App.sendMail(e);				
+			App.sendMail(e, null, {email: form.getValueOf("senderMail"), name: form.getValueOf("senderName")});
 			
 			var m = new pro.db.PMessage();
 			m.sender = app.user;

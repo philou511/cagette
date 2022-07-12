@@ -114,7 +114,7 @@
 						::set subscriptions = subscriptionsByCatalog.get(catalog)::
 						::foreach subscription subscriptions::
 
-							$$subscription(::subscription::)
+							$$subscription(::subscription::,::user::)
 							
 						::end::
 					::end::

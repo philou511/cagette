@@ -375,10 +375,11 @@ class App extends sugoi.BaseApp {
 	/**
 	 * Send an email
 	 */
-	public static function sendMail(m:sugoi.mail.Mail, ?group:db.Group, ?listId:String, ?sender:db.User){
+	public static function sendMail(m:sugoi.mail.Mail, ?group:db.Group, ?sender:{email: String, ?name: String,?userId: Int}){
 		
 		if (group == null) group = App.current.user == null ? null:App.current.user.getGroup();
 		if (group != null) m.setSender(group.contact == null ? App.config.get("default_email") : group.contact.email, group.name);
+		if (sender != null) m.setSender(sender.email, sender.name, sender.userId);
 		current.event(SendEmail(m));
 		var params = group==null ? null : {remoteId:group.id};
 		getMailer().send(m,params,function(o){});		
