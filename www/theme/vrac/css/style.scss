@@ -9,12 +9,18 @@
 #footer {
   background: transparent;
 
-  #vrac-interlaced-lines-footer {
+  /*#vrac-interlaced-lines-footer {
     width: 465%;
     display: none;
 
     @media (min-width: 992px) {
       display: block;
     }
-  }
+  }*/
 }
+#subfooter{
+  background-image: url(/theme/vrac/entremelees.png);
+  height: 220px;
+  background-repeat: no-repeat;
+}
+

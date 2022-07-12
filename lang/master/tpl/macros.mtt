@@ -609,9 +609,9 @@
 			</div>
 		</div>
 		::end::
-		<!--<div class="row" id="subfooter">
-			<span>version ::VERSION::-::getPlatform()::</span>
-		</div>-->
+		<div class="row">
+			<div id="subfooter"></div>
+		</div>
 	</macro>
 
 	<macro name="matomo()">
