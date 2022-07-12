@@ -548,8 +548,7 @@ class OrderService
 		} );
 		
 		m.setHtmlBody(html);
-		App.sendMail(m);					
-
+		App.sendMail(m, d.catalog.group);
 	}
 
 
