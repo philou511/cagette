@@ -127,11 +127,6 @@ class ContractAdmin extends Controller
 					var msg = CatalogService.updateFutureDistribsStartEndOrdersDates( catalog, newOrderStartDays, newOrderEndHours );
 					if(msg!=null) messages.push(msg);  
 
-					//payements : update or create operations
-					// for ( sub in SubscriptionService.getCatalogSubscriptions(catalog)){
-					// 	SubscriptionService.createOrUpdateTotalOperation( sub );
-					// }
-
 				}
 				
 				//update rights
@@ -487,7 +482,7 @@ class ContractAdmin extends Controller
 	 * Overview of orders for this contract in backoffice
 	 */
 	@tpl("contractadmin/orders.mtt")
-	function doOrders( catalog : db.Catalog, ?args : { d : db.Distribution, ?delete : db.UserOrder } ) {
+	function doOrders( catalog:db.Catalog, ?args:{ d:db.Distribution, ?delete:db.UserOrder } ) {
 
 		view.nav.push( "orders" );
 		sendNav( catalog );
@@ -511,34 +506,32 @@ class ContractAdmin extends Controller
 			}
 			
 		}
-
-		if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
-			app.setTemplate('contractadmin/csaorders.mtt');
-		}
 		
 		view.distribution = args.d;
 		view.multiDistribId = args.d.multiDistrib.id;
-		view.c = catalog;
+		view.c = view.catalog = catalog;		
 
-		var orders = service.OrderService.getOrders( catalog, args.d, app.params.exists("csv") );
-		
-		if ( !app.params.exists("csv") ) {
-			
-			//show orders on disabled products
-			var disabledProducts = 0;
-			for ( o in orders ){
-				if ( !db.Product.manager.get(o.productId, false).active ) {
-					disabledProducts++;
-					Reflect.setField(o, "disabled", true);
+		if ( App.current.params.get("csv")=="1" ) {
+
+			var data = [];			
+			for( basket in args.d.multiDistrib.getBaskets()){
+				for(o in service.OrderService.prepare(basket.getDistributionOrders(args.d))){
+					data.push( { 
+						"name":o.userName,
+						"productName":o.productName,
+						"price":view.formatNum(o.productPrice),
+						"quantity":view.formatNum(o.quantity),
+						"fees":view.formatNum(o.fees),
+						"total":view.formatNum(o.total),
+						"paid":o.paid
+					});				
 				}
 			}
-		
-			view.disabledProducts = disabledProducts;
-			view.orders = orders;	
+			
+			var exportName = catalog.group.name + " - " + t._("Delivery ::contractName:: ", {contractName:catalog.name}) + args.d.date.toString().substr(0, 10);								
+			sugoi.tools.Csv.printCsvDataFromObjects(data, ["name",  "productName", "price", "quantity", "fees", "total", "paid"], exportName+" - " + t._("Per member"));			
 		}
-		
 	}
-	
 	
 	/**
 	 * hidden feature : updates orders by setting current product price.

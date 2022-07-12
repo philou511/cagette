@@ -21,12 +21,17 @@ class CagettePro extends sys.db.Object
 	@hideInForms public var network:SBool;	//enable network management features
 	@hideInForms public var captiveGroups:SBool;	//the groups are a captive network
 	@hideInForms public var networkGroupIds:SNull<SString<512>>; //network groups, ints separated by comas
-	@hideInForms public var cdate:SNull<SDateTime>; //date when vendor became Cagette Pro
+	@hideInForms public var cdate:SNull<SDateTime>; //date when vendor became cpro
 	@hideInForms public var offer:SEnum<CagetteProOffer>;
 	
 	public function new(){
 		super();
-		setVatRates([{label:"TVA alimentaire 5,5%",value:5.5},{label:"TVA 20%",value:20},{label:"Non assujeti à TVA", value:0}]);
+		setVatRates([
+			{label:"TVA alimentaire 5,5%",value:5.5},
+			{label:"TVA 20%",value:20},
+			{label:"TVA 10%",value:10},
+			{label:"Non assujeti à TVA", value:0}
+		]);
 		offer = Discovery;
 		network = false;		
 		cdate = Date.now();
@@ -247,7 +252,7 @@ class CagettePro extends sys.db.Object
 			"desc" 		=> t._("Description"),			
 			"linkText" 	=> /*t._("Website Label")*/"Nom du site Web",			
 			"linkUrl" 	=> /*t._("Website URL")*/"URL du site web",			
-			"freeCpro" 	=> "Accès gratuit à Cagette Pro (stagiaire formation)",		
+			"freeCpro" 	=> "Accès gratuit au compte producteur (stagiaire formation)",		
 		];
 	}
 }

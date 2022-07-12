@@ -144,6 +144,14 @@ class Catalog extends Object
 		}		
 	}
 
+	public function hasDefaultOrdersManagement() : Bool{
+		if(!this.group.hasShopMode() && (isConstantOrdersCatalog() || distribMinOrdersTotal>0)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 	/**
 	 * computes a 'percentage' fee
 	 */

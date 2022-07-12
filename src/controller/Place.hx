@@ -10,6 +10,15 @@ class Place extends Controller
 	public function new()
 	{
 		super();
+		addBc('amapadmin',"Admin","amapadmin");
+		addBc('places',"Lieux","place");
+	}
+
+	@tpl('amapadmin/places.mtt')
+	function doDefault(){
+		view.places = app.getCurrentGroup().getPlaces();
+		checkToken();
+		
 	}
 	
 	@tpl('place/view.mtt')
@@ -26,7 +35,7 @@ class Place extends Controller
 		view.addr = view.escapeJS(addr);
 	}
 	
-	@tpl('form.mtt')
+	@tpl('amapadmin/form.mtt')
 	function doEdit(p:db.Place) {
 		
 		var currentAddress = p.getAddress();
@@ -47,14 +56,14 @@ class Place extends Controller
 			}
 
 			p.update();
-			throw Ok('/contractAdmin',t._("this place has been updated"));
+			throw Ok('/place',t._("this place has been updated"));
 		}
 		
 		view.form = f;
 		view.title = t._("Edit a place");
 	}
 	
-	@tpl("form.mtt")
+	@tpl("amapadmin/form.mtt")
 	public function doInsert() {
 		
 		var d = new db.Place();
@@ -70,7 +79,7 @@ class Place extends Controller
 			f.toSpod(d); 
 			d.group = app.user.getGroup();
 			d.insert();
-			throw Ok('/contractAdmin',t._("The place has been registred") );
+			throw Ok('/place',t._("The place has been registred") );
 		}
 		
 		view.form = f;
@@ -86,7 +95,7 @@ class Place extends Controller
 			
 			p.lock();
 			p.delete();
-			throw Ok("/contractAdmin", t._("Place deleted") );
+			throw Ok("/place", t._("Place deleted") );
 		}
 		
 	}

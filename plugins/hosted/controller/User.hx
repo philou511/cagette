@@ -1,8 +1,8 @@
 package hosted.controller;
 
 import db.Operation.COrderInfos;
-import tools.ObjectListTool;
 import pro.db.PUserCompany;
+import tools.ObjectListTool;
 
 class User extends sugoi.BaseController
 {
@@ -45,58 +45,6 @@ class User extends sugoi.BaseController
 			vendors.push(uv.company.vendor);
 		}
 		view.vendors = ObjectListTool.deduplicate(vendors);
-
-	
-
-		//delete ?		
-		/*if(checkToken() && args!=null && args.delete){
-			var msg  = "";
-			var johnDoe = db.User.manager.select($email=="deleted@cagette.net",false);
-
-			//replace orders.
-			for( uo in db.UserOrder.manager.search($user==u)){
-				uo.user=johnDoe;
-				uo.update();
-				msg += uo.toString()+"\n";
-			}
-			for( uo in db.UserOrder.manager.search($user2==u)){
-				uo.user2=johnDoe;
-				uo.update();
-				msg += uo.toString()+"\n";
-			}
-			//replace contacts
-			for( c in db.Catalog.manager.search($contact==u)){
-				c.contact = johnDoe;
-				c.update();
-				msg += "Removed contact of contract "+c.name+"\n";
-			}
-
-			for( c in db.Group.manager.search($contact==u)){
-				c.contact = johnDoe;
-				c.update();
-				msg += "Removed contact of group "+c.name+"\n";
-			}
-
-			for( b in db.Basket.manager.search($user==u,true)){
-				b.user = johnDoe;
-				b.update();
-			}
-
-			for(op in db.Operation.manager.search($user==u,true)){
-				if(op.amount==0){
-					op.delete();
-				}else{
-					op.user = johnDoe;
-					op.update();
-				}
-				
-			}
-
-			var name = u.getName();
-			u.delete();
-			throw Ok("/p/hosted",name+" a été effacé.<br/>"+msg.split("\n").join("<br/>"));
-
-		}*/
 	}
 	
     /**
@@ -131,5 +79,20 @@ class User extends sugoi.BaseController
 		if (app.params.exists("csv")) {
 			sugoi.tools.Csv.printCsvDataFromObjects(users, ["email", "firstName", "lastName",/* "CLIENT",*/"zipCode","city"], "Clients-cagette");
 		}
+	}
+
+	@admin
+	function doDelete(user:db.User) {
+		if (!app.user.isAdmin()){
+			return;
+		}
+
+		try {
+			service.BridgeService.call('/auth/delete-user/${user.id}');
+		} catch (e: Dynamic) {
+			Sys.println(e);
+		}
+	
+		throw Redirect('/p/hosted/user');
 	}
 }

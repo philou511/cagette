@@ -11,24 +11,19 @@
 			::set cpro = vendor.getCpro()::
 
 			::if(cpro!=null)::
-				::if(vendor.isTest==true)::
-				<!--cpro test-->
-				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Cagette Pro Test">
+				
+				::if cpro.offer==0::
+				<!-- offre découverte -->
+				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur limité à 1000€ de ventes par an">
 					<i class="icon icon-farmer"></i>
 				</div>
 				::else::
-					::if cpro.offer==0::
-					<!-- offre découverte -->
-					<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur limité à 1000€ de ventes par an">
-						<i class="icon icon-farmer"></i>
-					</div>
-					::else::
-					<!-- offre pro formé ou abonné -->
-					<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur avec ventes illimitées">
-						<i class="icon icon-farmer-pro"></i>
-					</div>
-					::end::
+				<!-- offre pro formé ou abonné -->
+				<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur avec ventes illimitées">
+					<i class="icon icon-farmer-pro"></i>
+				</div>
 				::end::
+				
 			::else::
 				<!--invité-->
 				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur limité à 1000€ de ventes par an">
@@ -148,7 +143,7 @@
 	
 	<macro name="bool(v)">
 		::if v==true::
-		<i class="icon icon-circle" style="color:#84bd55"></i>
+		<i class="icon icon-circle greenColor" ></i>
 		::else::
 		<i class="icon icon-circle-empty" style="color:#888"></i>
 		::end::
@@ -156,7 +151,7 @@
 
 	<macro name="bigBool(v)">
 		::if v==true::
-		<div class="iconBadge" style="background-color:#84bd55;margin: 6px;">
+		<div class="iconBadge greenBg" style="margin: 6px;">
 			<i class="icon icon-check"></i>
 		</div>
 		::else::
@@ -168,19 +163,19 @@
 	
 	<macro name="check(v)">
 		::if(v==true || v==1)::
-		<i class="icon icon-check" style="color:#84bd55"></i>
+		<i class="icon icon-check greenColor" ></i>
 		::else::
-		<i class="icon icon-alert" style="color:#a94442"></i>
+		<i class="icon icon-alert redColor"></i>
 		::end::
 	</macro>
 	
 	<macro name="balance(balance)">
 		::if balance<0:: 
-			::set color = "C00"::
+			::set color = "redColor"::
 		::else::
-			::set color = "0C0"::
+			::set color = "greenColor"::
 		::end::
-		<span style="color:#::color::;">
+		<span class="::color::">
 			::formatNum(balance)::&nbsp;::currency()::
 		</span>
 	</macro>
@@ -216,14 +211,14 @@
 	<macro name="subscriptionBalance(sub)">
         ::set balance = sub.getBalance()::
 		::if balance < 0::
-			::set color = "#d9534f"::
+			::set color = "redBg"::
 		::else::
-			::set color = "#84bd55"::
+			::set color = "greenBg"::
 		::end::
 		<a href="/history/subscriptionPayments/::sub.id::" style="color: ::color::;"><i class="icon icon-euro"></i> Solde : ::balance::€</a>
 	</macro>
 
-	<macro name="subscription(subscription)">
+	<macro name="subscription(subscription,currentUser)">
 		::set catalog = subscription._catalog::
 
 		<div class="panel panel-default">
@@ -320,19 +315,31 @@
 						<div class="panel-heading">Solde</div>
 						::set balance = subscription.getPaymentsTotal() - subscription.getTotalPrice()::
 						::if balance < 0::
-							::set color = "#d9534f"::
+							::set color = "redColor"::
 						::else::
-							::set color = "#84bd55"::
+							::set color = "greenColor"::
 						::end::
 						<div class="panel-body" >
-							<span style="color: ::color::">::formatNum(balance)::&nbsp;::currency()::</span>
+							<span style="::color::">::formatNum(balance)::&nbsp;::currency()::</span>
 							<a href="/history/subscriptionPayments/::subscription.id::" class="btn btn-default btn-xs">
 								Paiements
 							</a>							
 						</div>
 					</div>
-				</div>		
+				</div>	
+				
+				::if(subscription.userId==currentUser.id)::
+				<div class="col-md-12">
+					<div class="text-center">
+						<a href="/subscriptions/contract/::subscription.catalogId::" class="btn btn-default">
+							<i class="icon icon-edit"></i> Modifier ma souscription
+						</a>
+					</div>
+				</div>	
+				::end::
+
 			</div>
+			
 		</div>
 	</macro>
 	
@@ -579,106 +586,53 @@
 		</div>
 	</macro>
 
-	<macro name="footer()">	
+	<macro name="footer()">
+		::if(theme.footer!=null)::
 		<div class="row">
 			<div class="col-md-12">
 				<div id="footer" >
 				
 						<div class="col-md-3" >
-							<a href="http://www.cagette.net" target="_blank">
-								<img src="/img/logo.png" alt="::_("Cagette.net")::"/>
-							</a>  
+							::if(theme.footer.bloc1!=null):: ::raw theme.footer.bloc1:: ::end::
 						</div>
 						<div class="col-md-3" >
-							<ul>
-								<li>								
-									<a href="https://www.cagette.net/comment-ca-marche/" target="_blank">Comment ça marche ?</a> 
-								</li>
-								<li> 
-									<a href="/charte/" target="_blank">Charte producteurs</a> 
-								</li>
-								<li> 
-									<a href="https://wiki.cagette.net" target="_blank">::_("Documentation")::</a> 
-								</li>
-								<li>
-									<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank">::_("Facebook group")::</a> 
-								</li>
-								<li>
-									<a href="http://www.cagette.net/producteurs" target="_blank">Information producteurs</a> 
-								</li>												
-								<li>
-									<a href="/cgu" target="_blank">Conditions générales d'utilisation</a> 
-								</li>
-								<li>
-									<a href="/cgv" target="_blank">Conditions générales de vente</a> 
-								</li>	
-								<li>
-									<a href="/mgp" target="_blank">C.G.U Mangopay</a> 
-								</li>
-							</ul>						
+							::if(theme.footer.bloc2!=null):: ::raw theme.footer.bloc2:: ::end::
 						</div>
 						<div class="col-md-3" >
-							SOUTENEZ-NOUS
-							<ul>
-								<li>
-									<a href="http://www.lilo.org/fr/cagette-net/?utm_source=cagette-net" target="_blank">Notre page sur Lilo.org</a>
-								</li>
-							</ul>
-							<!-- PAYPAL !-->
-							<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" style="margin-top:12px;">
-								<input type="hidden" name="cmd" value="_s-xclick"/>
-								<input type="hidden" name="hosted_button_id" value="S9KT7FQS7P622"/>
-								<input type="image" src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal, le réflexe sécurité pour payer en ligne"/>
-								<img alt="" border="0" src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="1"/>
-							</form>
+							::if(theme.footer.bloc3!=null):: ::raw theme.footer.bloc3:: ::end::
 						</div>
 						<div class="col-md-3" >
-							::_("FOLLOW US")::
-							<ul class="cagsocialmedia">
-								<li class="cagfb">
-									<a title="Facebook" href="https://www.facebook.com/cagette" target="_blank"> <i class="icon icon-facebook"></i></a>	
-								</li>
-								<li class="cagtwitter">
-									<a title="Twitter" href="https://twitter.com/Cagettenet" target="_blank"> <i class="icon icon-twitter"></i></a> 
-								</li>
-								<li class="cagyoutube">
-									<a title="Youtube" href="https://www.youtube.com/channel/UC3cvGxAUrbN9oSZmr1oZEaw" target="_blank"> <i class="icon icon-youtube"></i></a> 						
-								</li>
-								<li style="background-color:#333;">
-									<a title="Github" href="https://github.com/bablukid/cagette" target="_blank"> <i class="icon icon-github"></i></a> 						
-								</li>
-							</ul>
-		
-							<br/>
-							Cagette.net est réalisé <br/>
-							par la <a href='https://www.alilo.fr' target='_blank'>SCOP Alilo</a>
+							::if(theme.footer.bloc4!=null):: ::raw theme.footer.bloc4:: ::end::
 						</div>
 					
 				</div>
 			</div>
 		</div>
+		::end::
 		<!--<div class="row" id="subfooter">
 			<span>version ::VERSION::-::getPlatform()::</span>
 		</div>-->
 	</macro>
 
 	<macro name="matomo()">
-		
-		<script type="text/javascript">
-		var _paq = window._paq = window._paq || [];
-		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */		
-		_paq.push(['trackPageView']);
-		_paq.push(['enableLinkTracking']);
-		::if(user!=null):: _paq.push(['setUserId', '::user.id::']); ::end::
-		(function() {
-			var u="https://cagette.matomo.cloud/";
-			_paq.push(['setTrackerUrl', u+'matomo.php']);
-	  		_paq.push(['setSiteId', '1']);
-			var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-			g.async=true; g.src='//cdn.matomo.cloud/cagette.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
-		})();
-		</script>
-
+		::set matomoUrl = getMatomoUrl()::
+		::set matomoSiteId = getMatomoSiteId()::
+		::if(matomoUrl!="" && matomoSiteId!="")::
+			<script type="text/javascript">
+			var _paq = window._paq = window._paq || [];
+			/* tracker methods like "setCustomDimension" should be called before "trackPageView" */		
+			_paq.push(['trackPageView']);
+			_paq.push(['enableLinkTracking']);
+			::if(user!=null):: _paq.push(['setUserId', '::user.id::']); ::end::
+			(function() {
+				var u="https://cagette.matomo.cloud/";
+				_paq.push(['setTrackerUrl', u+'matomo.php']);
+				_paq.push(['setSiteId', '1']);
+				var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+				g.async=true; g.src='//cdn.matomo.cloud/cagette.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+			})();
+			</script>
+		::end::
 	</macro>
 
 	<macro name="vendorType(s)">		
@@ -689,9 +643,7 @@
 		::elseif(s==2)::
 			Invité
 		::elseif(s==3)::
-			Invité sur un Cagette Pro
-		::elseif(s==4)::
-			Cagette Pro test 
+			Invité sur un compte producteur
 		::elseif(s==5)::
 			Compte pédagogique
 		::elseif(s==6)::
@@ -782,7 +734,7 @@
             var content = document.createElement("p");
             content.classList.add("browser-detection-content");
             content.textContent =
-            "Votre navigateur Internet est trop ancien pour afficher Cagette.net. \n Cela peut entraîner des problèmes d'affichage. \n Nous vous conseillons fortement de télécharger un navigateur plus récent, comme Firefox ou Brave.";
+            "Votre navigateur Internet est trop ancien pour afficher ::theme.name::. \n Cela peut entraîner des problèmes d'affichage. \n Nous vous conseillons fortement de télécharger un navigateur plus récent, comme Firefox ou Brave.";
             contentContainer.append(content);
             box.append(contentContainer);
 

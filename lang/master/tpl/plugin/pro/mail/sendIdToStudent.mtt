@@ -28,7 +28,7 @@ L'idée de cet exercice préparatoire c'est que tu arrives en salle en connaissa
 </p>
 <p>
     <ul>
-        <li>1 - Rend toi sur le site <a href="http://formation.alilo.fr">formation.alilo.fr</a></li>
+        <li>1 - Rend toi sur le site <a href="http://formation.alilo.fr" rel="notrack">formation.alilo.fr</a></li>
         <li>2 - Dans la rubrique "Cours disponibles", clique sur "Développer sa vente directe en ligne"</li>
         <li>3 - Connecte toi avec tes identifiants :</li>
         <ul>
@@ -46,7 +46,7 @@ L'idée de cet exercice préparatoire c'est que tu arrives en salle en connaissa
             Tu y retrouveras notamment des conseils, un questionnaire autodiagnostic (obligatoire pour VIVEA) et un exercice à réaliser sur Cagette.net.</li>
         <li>6 - Pour te connecter à Cagette.net :</li>
         <ul>
-            <li>Rend toi sur le site <a href="https://www.cagette.net">www.cagette.net</a>.</li>
+            <li>Rend toi sur le site <a href="https://www.cagette.net" rel="notrack">www.cagette.net</a>.</li>
             <li>Clique sur le bouton rouge connexion</li>
             <li>Connecte toi avec tes identifiants :</li>
             <li>Mail : <b>::companyCourse.cagetteUser::</b></li>
@@ -59,7 +59,7 @@ L'idée de cet exercice préparatoire c'est que tu arrives en salle en connaissa
             ::end::
         </ul>
         <li>
-            7 - Si jamais tu as des difficultés, écris nous à support@cagette.net en nous précisant 
+            7 - Si jamais tu as des difficultés, écris nous à ::theme.supportEmail:: en nous précisant 
             que tu écris dans le cadre de ta préparation à la journée collective en salle.
         </li>
     </ul>

@@ -9,17 +9,16 @@ $$browserDetection()
 	<!-- Welcoming message + access to tutos-->
 	::if newGroup::
 	<div class="alert alert-success">
-		<h3>::_("Welcome to Cagette.net !")::</h3>
+		<h3>Bienvenue sur ::theme.name:: !</h3>
 		<p>
 			Félicitations, vous venez juste de créer un nouveau groupe !<br/>
-			A titre d'exemple, nous avons créé un catalogue de produits factice pour vous montrer comment Cagette.net fonctionne.
-			Une fois votre exploration terminée, vous pourrez les supprimer sans risque.
+			Vous pouvez maintenant <a href="/contract/defineVendor/" style="font-weight: bold;">inviter des producteurs dans votre groupe</a>, planifier des distributions et inviter des membres.
 		</p>		
-		<p>
+		<!--<p>
 			<a href="/home?action=deleteDemoContracts&token=::token::" class="btn btn-default btn-sm">
 				::_("Delete example orders and catalogs")::
 			</a>
-		</p>
+		</p>-->
 	</div>
 	::end::
 
@@ -460,30 +459,5 @@ $$browserDetection()
 	::end::
 	::end::
 </div>
-
-
-<script>
-	//<![CDATA[
-	document.addEventListener("DOMContentLoaded", function (event) {
-		/*window.setTimeout(function(){
-			var txt = "Cet onglet vous permet d'avoir une vue d'ensemble sur toutes vos distributions, leurs commandes et les producteurs qui y participent.";
-			txt += "<br/><br/><a href='https://wiki.cagette.net/admin:distributions' target='_blank'>En savoir plus</a>";
-			_Cagette.newFeature("#cagette-navbar #distributions","Nouvel onglet \"Distributions\"",txt,"bottom");
-		},2000);
-
-		::if !hasShopMode::
-		
-		window.setTimeout(function(){
-			var txt = "Il est maintenant possible de gérer les paiements en mode AMAP.";
-			txt += "<br/><br/><a href='/amap/edit'>Activez la gestion des paiements dans les propriétés du groupe.</a>";
-			_Cagette.newFeature("#cagette-navbar #amapadmin","Gestion des paiements pour les AMAP",txt,"bottom");
-		},3000);
-
-		::end::
-		*/
-
-	});
-	//]]>
-</script>
 
 ::end::

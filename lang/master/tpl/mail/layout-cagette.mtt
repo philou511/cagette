@@ -40,31 +40,20 @@
 				background-color: #d9ead3; 
 			}
 		</style>
-		<title>Cagette.net</title>
+		<title>::theme.name::</title>
 	</head>
 
 	<body id="email-body">
 		<div id="email-root">
 			<div id="email-header">
-				<img src="http://::HOST::/img/logo2.png" alt="logo Cagette.net"/>
+				<img src="http://::HOST::/theme/::theme.id::/logo2.png" alt="logo ::theme.name::" style="width:166px;"/>
 			</div>
 
 			::raw __content__::
 		</div>
 
 		<div id="email-footer">
-			<p>Cagette.net - ALILO SCOP, 4 impasse Durban, 33000 Bordeaux</p>
-			<div style="display: flex; justify-content: center; align-items: center;">
-				<a href="https://cagette.net" target="_blank" rel="noreferrer noopener" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
-					<img src="http://::HOST::/img/emails/website.png" alt="Site web" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>Site web
-				</a>
-				<a href="https://www.facebook.com/cagette" target="_blank" rel="noreferrer noopener" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
-					<img src="http://::HOST::/img/emails/facebook.png" alt="Facebook" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>Facebook
-				</a>
-				<a href="https://www.youtube.com/channel/UC3cvGxAUrbN9oSZmr1oZEaw" target="_blank" rel="noreferrer noopener" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
-					<img src="http://::HOST::/img/emails/youtube.png" alt="YouTube" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>YouTube
-				</a>
-			</div>
+			::raw theme.brandedEmailLayoutFooter::
 		</div>
 	</body>
 

@@ -146,20 +146,8 @@
 	<div class="article" id="places">
 		
 		<h2>::_("Delivery places")::</h2>
-		<table class="table">
-			::foreach p places::		
-				<tr>
-					<td><b>::p.name::</b></td>
-					<td>
-						<div class="btn-group" role="group">
-						$$edit(::_("Edit")::,/place/edit/::p.id::)
-						::if user.isAmapManager():: $$delete(::_("Del.||short version for delete")::,/place/delete/::p.id::?token=::token::) ::end::
-						</div>
-					</td>
-				</tr>
-			::end::
-		</table>
-		$$insert(::_("New delivery place")::,/place/insert/)
+		<div class="alert alert-warning text-center">La gestion des lieux a été déplacée dans <a href="/place">l'onglet "paramètres"</a></div>
+		
 	</div>
 </div>
 	

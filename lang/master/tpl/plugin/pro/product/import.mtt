@@ -123,7 +123,7 @@
 				<div class="alert alert-error">
 					<b>Oups !</b>
 					<p>On dirait qu'il n'y a aucune donnée à importer. 
-					Vérifiez que les données de votre fichier sont valides ou que les produits ne sont pas déjà enregistrées dans la base de données de Cagette.net</p>
+					Vérifiez que les données de votre fichier sont valides ou que les produits ne sont pas déjà enregistrées dans la base de données de ::theme.name::</p>
 					<a href="/p/pro/product/import/">Recommencer</a>
 				</div>
 			

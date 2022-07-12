@@ -1,7 +1,7 @@
 package connector.db ;
 import sys.db.Types;
 /**
- * Permet coté Cagette.net d'avoir des infos sur un contrat Cagette pro
+ * Permet coté Cagette.net d'avoir des infos sur un contrat cpro
  */
 @:index(remoteCatalogId,needSync)
 class RemoteCatalog extends sys.db.Object

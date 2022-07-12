@@ -9,7 +9,7 @@ class CourseService {
 
     public static function attachDiscoveryAccountToCourse(trainingCpro:pro.db.CagettePro,defVendor:db.Vendor, course:hosted.db.Course) {
 
-        if(trainingCpro.offer!=Training) throw "ce Cagette Pro n'est pas un Cagette Pro pédagogique !";
+        if(trainingCpro.offer!=Training) throw "ce compte producteur n'est pas un compte pédagogique !";
         
         // var props = ["name","email","image","phone","address1","address2","zipCode","city","desc","linkText","linkUrl","vatRates"];
 		// var v = trainingCpro.vendor;
