@@ -79,9 +79,9 @@
 	<hr/>-->
 	
 	<p class="text-center">
-		Catalogue valable
-		du  ::hDate(catalog.startDate)::<br/>
-		au ::hDate(catalog.endDate)::
+		Catalogue valable<br/>
+		du ::dDate(catalog.startDate)::<br/>
+		au ::dDate(catalog.endDate)::
 	</p>
 	
 </div>

@@ -158,7 +158,7 @@ class Vendor extends controller.Controller
 
 			case "csv":
 				var headers = [
-					"id", "name", "email", "phone", "address1", "address2", "zipCode", "city", "active", "type"
+					"id", "name", "email", "phone", "address1", "address2", "zipCode", "city", "active", "type","profession"
 				];
 				var data = [];
 				for (v in vendors) {
@@ -178,6 +178,7 @@ class Vendor extends controller.Controller
 							case false: "NON";
 						},
 						type: Std.string(Type.createEnumIndex(VendorType,type)),
+						profession : v.getProfession()
 					});
 				}
 
