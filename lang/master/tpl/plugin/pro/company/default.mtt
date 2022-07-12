@@ -1,26 +1,72 @@
 ::use 'plugin/pro/company/design.mtt'::
 	
 	<div class=" article">
-		<h3>::vendor.name::</h3>
-		<h4 class="disabled">Producteur n° ::vendor.id::</h4>
 		
-		<p>
-			$$edit(Modifier les propriétés,/p/pro/company/edit)
-			::if(company!=null)::
-				$$edit(Taux de TVA,/p/pro/company/vatRates)
-			::end::
-			<!--<a href="/p/pro/company/addVendorImage/::vendor.id::" class="btn btn-default btn-sm">
-					<span class="glyphicon glyphicon-picture"></span>&nbsp;Définir un logo</a>
-				-->
-		</p>
-	
+		
 
-		<hr/>
+		<div class="row">
+			<div class="col-md-6">
+				<h4>Informations principales</h4>
+				
+				<table class="table table-condensed table-striped table-bordered">
+					<tr>
+						<td>N° producteur</td>
+						<td>::vendor.id::</td>
+					</tr>
+					<tr>
+						<td>Nom</td>
+						<td>
+							<b>::vendor.name::</b>
+						</td>
+					</tr>
+					<tr>
+						<td>Exploitant(s)</td>
+						<td>
+							::if(vendor.peopleName!=null)::
+								::vendor.peopleName::
+							::end::
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>$$edit(Modifier,/p/pro/company/edit)</td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-md-6">
+				<h4>Informations légales</h4>
+				<table class="table table-condensed table-striped table-bordered">
+					<tr>
+						<td>SIRET</td>
+						<td>::vendor.companyNumber::</td>
+					</tr>
+					<tr>
+						<td>Métier</td>
+						<td>::vendor.getProfession()::</td>						
+					</tr>
+					<tr>
+						<td>Forme juridique</td>
+						<td>::vendor.getLegalStatus(true)::</td>
+					</tr>
+					<tr>
+						<td>code NAF</td>
+						<td>
+							::set act = vendor.getActivity()::
+							::if(act!=null)::
+								::act.name:: (::act.id::)
+							::end::
+						</td>
+					</tr>
+				</table>
+	
+				
+			</div>
+		</div>
 
 		::set images = vendor.getImages()::
 
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-3">
 				<p>	
 					<h4>Votre logo</h4>
 					<a class="btn btn-default btn-sm" onclick="_Cagette.openImageUploader('company', ::company.id::, 300, 300, 'logo')">
@@ -28,15 +74,13 @@
 					</a>
 				</p>
 			</div>			
-			<div class="col-md-6">				
+			<div class="col-md-3">				
 				::if images.logo!=null::
 				<img src="::file(images.logo)::" style="max-width: 256px;max-height: 128px;" class="thumbnail" />
 				::end::
 			</div>
-		</div>
 		
-		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-3">
 				<p>	
 					<h4>Votre portrait</h4>				
 					<a class="btn btn-default btn-sm" onclick="_Cagette.openImageUploader('company', ::company.id::, 300, 300, 'portrait')">
@@ -44,7 +88,7 @@
 					</a>
 				</p>
 			</div>			
-			<div class="col-md-6">				
+			<div class="col-md-3">				
 				::if images.portrait!=null::
 				<img src="::file(images.portrait)::" style="max-width: 256px;max-height: 128px;" class="thumbnail" />
 				::end::

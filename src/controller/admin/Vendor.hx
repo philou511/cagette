@@ -290,7 +290,6 @@ class Vendor extends controller.Controller
 			v.lock();
 			service.VendorService.update(v, form.getDatasAsObject(), true);
 			v.update();
-
 			throw Ok("/admin/vendor/view/" + v.id, "Producteur mis à jour");
 		}
 		view.form = form;

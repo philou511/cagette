@@ -1,4 +1,6 @@
 package pro.controller;
+import sugoi.form.elements.Html;
+import sugoi.form.elements.TextArea;
 import mangopay.Mangopay;
 import pro.db.PVendorCompany;
 import service.VendorService;
@@ -34,16 +36,26 @@ class Company extends controller.Controller
 	function doEdit() {
 		view.nav.push("default");
 
-		var form = VendorService.getForm(vendor, company.offer!=Training );
+		// var form = VendorService.getForm(vendor, company.offer!=Training );
+		var form = new sugoi.form.Form("company");
+		form.addElement(new TextArea("desc","Description courte de votre ferme",vendor.desc));
+		form.addElement(new StringInput("email","Email commercial<br/>(visible par vos clients)",vendor.email,true));
+		form.addElement(new StringInput("linkText","Intitulé du lien<br/>(site web, page facebook...)",vendor.linkText));
+		form.addElement(new StringInput("linkUrl","URL du lien",vendor.linkUrl));
+		form.addElement( new Html("html","<div class='alert alert-warning'><p><i class='icon icon-info'></i> 
+		Si vous souhaitez changer une autre information comme le nom de votre entreprise ou son adresse, 
+		contactez le support sur <a href='mailto:support@cagette.net' target='_blank'>support@cagette.net</a>
+		</p></div>",""));
+		view.title = "Modifier les propriétés";
 
-		if(company.offer!=Training){ 
-			app.session.addMessage("Attention, afin de mieux informer les consommateurs, vous devez maintenant renseigner votre <b>numéro SIRET</b> et confirmer le fait que votre activité est conforme à la <b><a href=\"https://www.cagette.net/charte-producteurs\" target=\"_blank\">Charte Producteurs Cagette.net</a></b>.");
-		}
+		// if(company.offer!=Training){ 
+		// 	app.session.addMessage("Attention, afin de mieux informer les consommateurs, vous devez maintenant renseigner votre <b>numéro SIRET</b> et confirmer le fait que votre activité est conforme à la <b><a href=\"https://www.cagette.net/charte-producteurs\" target=\"_blank\">Charte Producteurs Cagette.net</a></b>.");
+		// }
 				
 		if (form.isValid()) {
 			vendor.lock();
 			try{
-				vendor = VendorService.update(vendor,form.getDatasAsObject(),company.offer!=Training);
+				vendor = VendorService.update(vendor,form.getDatasAsObject(),false);
 			}catch(e:tink.core.Error){
 				throw Error(sugoi.Web.getURI(),e.message);
 			}			
