@@ -125,6 +125,8 @@ class Main extends Controller {
 		}
 
 		view.visibleDocuments = group.getVisibleDocuments(isMemberOfGroup);
+
+		view.user = app.user;
 	}
 
 	// login and stuff
