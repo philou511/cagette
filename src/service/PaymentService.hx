@@ -122,7 +122,7 @@ class PaymentService {
 		op.basket = basket;
 		op.user = user;
 		op.group = group;
-		op.pending = true;
+		op.pending = false;
 
 		op.insert();
 		updateUserBalance(op.user, op.group);
