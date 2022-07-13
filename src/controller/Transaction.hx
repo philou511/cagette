@@ -1,14 +1,15 @@
 package controller;
-import db.Operation.OperationType;
 import Common;
+import db.Basket;
+import db.Operation.OperationType;
 import service.OrderService;
+import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
+
 using Lambda;
 #if plugins
 import mangopay.Mangopay;
 import mangopay.Types;
 #end
-import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
-import db.Basket;
 
 /**
  * Transction controller
@@ -251,13 +252,14 @@ class Transaction extends controller.Controller
 
 		var group = app.getCurrentGroup();
 
-		if(group==null){ 
+		var group = app.getCurrentGroup();
+		if(group==null){
 			throw Redirect("/");
 		}
 
-		if(tmpBasket.status!=Std.string(BasketStatus.OPEN) && !group.hasCagette2()){
-			throw "basket should be OPEN";
-		} 
+		if (group.hasCagette2()) {
+			throw Redirect("/shop/basket/"+tmpBasket.id);
+		}
 
 		if(args!=null){
 			if(args.cancel){
@@ -267,7 +269,7 @@ class Transaction extends controller.Controller
 			}else if(args.confirm){				
 				throw Redirect("/shop/validate/"+tmpBasket.id);
 			}else if(args.continueShopping){
-				throw Redirect("/shop2/"+tmpBasket.multiDistrib.id+"?continueShopping=1");
+				throw Redirect("/shop/"+tmpBasket.multiDistrib.id+"?continueShopping=1");
 			}
 		}
 
@@ -280,7 +282,7 @@ class Transaction extends controller.Controller
 		#end
 
 		view.group = group;
-		view.tmpBasket = tmpBasket;		
+		view.tmpBasket = tmpBasket;
 	}
 	
 	/**

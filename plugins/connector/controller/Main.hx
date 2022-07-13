@@ -12,12 +12,11 @@ class Main extends controller.Controller
 		super();
 	}
 	
-	@tpl("plugin/pro/contract.mtt")
 	public function doContract(c:db.Catalog){
 		
-		new controller.ContractAdmin().sendNav(c);
+		/*new controller.ContractAdmin().sendNav(c);
 		view.c = c;
-		view.nav = ["contractadmin", "cpro"];
+		view.nav = ["contractadmin", "cpro"];*/
 		
 		
 		var rc = connector.db.RemoteCatalog.manager.get(c.id);

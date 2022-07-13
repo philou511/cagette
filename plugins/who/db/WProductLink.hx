@@ -22,7 +22,7 @@ class WProductLink
 	}*/
 	
 	/**
-	 * autolink with Cagette Pro Data and store links
+	 * autolink with CPro Data and store links
 	 */
 	/*public static function autolink(c1:db.Contract,c2:db.Contract){
 		var rc1 = connector.db.RemoteCatalog.getFromContract(c1);

@@ -1,7 +1,7 @@
 ﻿<html lang="::LANG::">
 	<head>
-		<link rel="stylesheet" type="text/css" href="/css/0/style.css"/>
-		<link rel="stylesheet" href="/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="/theme/::theme.id::/css/style.css" />
+		<link rel="stylesheet" href="/theme/::theme.id::/css/bootstrap.min.css" />
 	</head>
 	<body class="container">
 		<div class="row" style="margin-top:40px;">

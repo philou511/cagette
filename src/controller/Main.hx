@@ -50,6 +50,8 @@ class Main extends Controller {
 			throw Redirect("/user/choose");
 		} else if (app.user == null && (group == null || group.regOption != db.Group.RegOption.Open)) {
 			throw Redirect("/user/login");
+		}else if(group.disabled!=null){
+			throw Redirect("/group/disabled");
 		}
 
 		group.checkIsolate();
@@ -125,6 +127,8 @@ class Main extends Controller {
 		}
 
 		view.visibleDocuments = group.getVisibleDocuments(isMemberOfGroup);
+
+		view.user = app.user;
 	}
 
 	// login and stuff
@@ -265,28 +269,6 @@ class Main extends Controller {
 		d.dispatch(new controller.Shop());
 	}
 
-
-	@tpl('shop/default.mtt')
-	function doShop2(md:db.MultiDistrib, ?args:{continueShopping:Bool, basket: db.Basket}) {
-		var uri = "/shop/" + md.id + "?continueShopping=" + (args != null ? args.continueShopping : false);
-		if (args!=null && args.basket != null) {
-			uri+= "&basketId=" + args.basket.id;
-		}
-		throw Redirect(uri);
-
-		// if( app.getCurrentGroup()==null || app.getCurrentGroup().id!=md.getGroup().id){
-		// 	throw  Redirect("/group/"+md.getGroup().id);
-		// }
-		// if(args!=null){
-		// 	if(!args.continueShopping){
-		// 		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
-		// 	}
-		// }
-		// view.category = 'shop';
-		// view.md = md;
-		// view.tmpBasketId = app.session.data.tmpBasketId;
-	}
-
 	@logged
 	function doProduct(d:Dispatch) {
 		d.dispatch(new controller.Product());
@@ -357,7 +339,7 @@ class Main extends Controller {
 
 	// CGU
 	public function doCgu() {
-		throw Redirect("https://www.cagette.net/wp-content/uploads/2020/11/cgu-.pdf");
+		throw Redirect(App.current.theme.cguLink);
 	}
 
 	// CGV

@@ -1,6 +1,8 @@
 #!/usr/bin/perl
 
 use strict;
+use v5.20;
+
 # blow up if a variable is not set
 use warnings FATAL => qw/uninitialized/;
 
@@ -15,11 +17,23 @@ my $twig = XML::Twig->new(
 
 $twig->parsefile( $ARGV[0] );
 
+my $cagette_api = "https://$ENV{NEST_HOST_PUBLIC}";
+
+my $cagette_bridge_api;
+if ($ENV{KUBERNETES_PORT}) {
+    say "Running in Kubernetes, using local address for Nest backend";
+    $cagette_bridge_api = "http://$ENV{NEST_HOST_INTERNAL}:3010";
+}
+else {
+    say "Running in Scalingo, using public address for Nest backend";
+    $cagette_bridge_api = $cagette_api;
+}
+
 my $config = $twig->root;
 $config->set_att(
     database           => $url,
-    cagette_api        => "https://$ENV{NEST_HOST_PUBLIC}",
-    cagette_bridge_api => "http://$ENV{NEST_HOST_INTERNAL}:3010",
+    cagette_api        => $cagette_api,
+    cagette_bridge_api => $cagette_bridge_api,
     host               => $ENV{NEKO_HOST_PUBLIC},
 	key                => $ENV{PW_HASH_KEY},
 );

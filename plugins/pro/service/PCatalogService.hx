@@ -1,7 +1,7 @@
 package pro.service;
-import service.BridgeService;
-import connector.db.RemoteCatalog;
 import Common;
+import connector.db.RemoteCatalog;
+import service.BridgeService;
 
 class PCatalogService{
 
@@ -290,7 +290,7 @@ class PCatalogService{
 		for( user in proCatalog.company.getUsers() ){
 			var ua = db.UserGroup.getOrCreate(user, groupCatalog.group);
 			if(proCatalog.company.captiveGroups){
-				//cagette pro users are admin in all groups if captiveGroups is activated
+				//cagette cpro users are admin in all groups if captiveGroups is activated
 				ua.giveRight(Right.GroupAdmin);
 				ua.giveRight(Right.Membership);
 				ua.giveRight(Right.Messages);

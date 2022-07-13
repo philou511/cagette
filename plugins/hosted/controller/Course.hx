@@ -217,7 +217,7 @@ class Course extends sugoi.BaseController
 	}
 
 	/**
-	 *  Créé des comptes cagette pro + génere des mots de passe pour Cagette et Moodle
+	 *  Créé des comptes cpro + génere des mots de passe pour Cagette et Moodle
 	 */
 	@admin @tpl('form.mtt')
 	public function doIdentifiers(course:hosted.db.Course){
@@ -344,7 +344,7 @@ class Course extends sugoi.BaseController
 		if(companyCourse.moodleUser==null) throw Error("/p/hosted/course/view/"+course.id,"Erreur : impossible d'envoyer le mail car le mot de passe Moodle n'a pas été sauvegardé");
 
 		var m = new sugoi.mail.Mail();
-		m.setSender(App.config.get("default_email"), "Cagette.net");
+		m.setSender(App.config.get("default_email"), App.current.theme.name);
 		m.setRecipient(companyCourse.user.email);
 		m.setReplyTo("deborah@alilo.fr", "Deborag REYT");							
 		m.setSubject("Formation Cagette - La formation commence maintenant" );		
@@ -390,7 +390,7 @@ class Course extends sugoi.BaseController
 		if(company.offer!=Training) throw "ce compte producteur n'est pas un compte pédagogique !";
 		var cc = hosted.db.CompanyCourse.manager.select($company==company);
 
-		//remove access to this cagette pro
+		//remove access to this cpro
 		var users = [];
 		for( uc in pro.db.PUserCompany.getUsers(company)){
 			uc.lock();
@@ -404,7 +404,7 @@ class Course extends sugoi.BaseController
 		v.disabled = DisabledReason.Banned;
 		v.update();
 
-		//remove access to groups linked to this cagette pro + remove future distribs
+		//remove access to groups linked to this cpro + remove future distribs
 		for( cat in company.getCatalogs()){
 			for( rc in connector.db.RemoteCatalog.getFromCatalog(cat,true)){
 

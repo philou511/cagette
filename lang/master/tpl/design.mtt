@@ -16,10 +16,10 @@
 					<h1>::groupName::</h1>
 				::else::
 					<div style="margin-bottom:22px;" >
-							<a href="http://www.cagette.net" target="_blank">
-								<img src="/img/logo3.png" alt="::NAME::" />
+							<a href="::theme.url::" target="_blank">
+								<img src="/theme/::theme.id::/logo3.png" alt="logo ::theme.name::" style="height:87px;"/>
 							</a>
-					</div>		
+					</div>
 				::end::
 			</div>
 			
@@ -28,7 +28,7 @@
 			</div>				
 		</div>
 
-			::if user != null && noGroup!=true::
+			::if user != null && noGroup!=true && (getCurrentGroup()==null || (getCurrentGroup()!=null && getCurrentGroup().disabled==null))::
 
 			<nav class="navbar navbar-default" ::cond user.getGroup()!=null::>
 					<div class="navbar-header">
@@ -193,7 +193,7 @@
 				created_at: ::(user.cdate.getTime()/1000)::, // Unix timestamp for the date the user signed up
 				id:         ::user.id::, 				// Optional: Unique id of the user (if set, this should not change)
 				type:       '::infos.type::', 		// Optional: segment your users by type
-				//Si cagette pro : nom de la ferme, sinon nom du groupe
+				//Si cpro : nom de la ferme, sinon nom du groupe
 				account: {
 					id:           ::infos.id::, // Optional: associate multiple users with a single account
 					name:         '::infos.name::', // Account name

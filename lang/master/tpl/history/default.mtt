@@ -150,11 +150,11 @@
 				Solde global :
 				::set background = ""::
 				::if userGroup.balance < 0::
-					::set background = "background-color: #d9534f;"::
+					::set background = "redBg"::
 				::else::
-				::set background = "background-color: #84bd55;"::
+					::set background = "greenBg"::
 				::end::
-				<span style="color: white;font-weight:bold; ::background::">
+				<span style="color: white;font-weight:bold;" class="::background::">
 					::formatNum(userGroup.balance)::&nbsp;::currency()::
 				</span>
 			::end::
