@@ -1,0 +1,15 @@
+::use 'design.mtt'::
+    ::if group.hasCagette2():: 
+        <div id="neo-container" style='padding: 0 15px 15px 15px;'></div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function(event) {
+                neo.createNeoModule("neo-container", "transaction", {
+                        basketId: ::basket.id::,
+                        groupId: ::group.id::,
+                        sid: "::getSid()::"
+                    });
+            });
+        </script>
+    ::end::
+::end::

@@ -1,9 +1,9 @@
 package controller;
-import service.OrderFlowService;
 import Common;
-import tools.ArrayTool;
-import service.OrderService;
 import db.Basket.BasketStatus;
+import service.OrderFlowService;
+import service.OrderService;
+import tools.ArrayTool;
 
 class Shop extends Controller
 {
@@ -339,5 +339,24 @@ class Shop extends Controller
 	public function doCheckTmpBasketId() {
 		Sys.print( haxe.Json.stringify( { tmpBasketId: app.session.data.tmpBasketId } ) );		
 	}
+
+	/**
+	 * Product infos popup used in many places
+	*/
+	@tpl('shop/basket.mtt')
+	public function doBasket(basket:db.Basket) {
+		
+		var group = app.getCurrentGroup();
+		if(group==null){
+			throw Redirect("/");
+		}
+
+		if (!group.hasCagette2()) {
+			throw Redirect("/transaction/tmpBasket/"+basket.id);
+		}
+
+		view.group = app.getCurrentGroup();
+		view.basket = basket;
+	} 
 
 }
