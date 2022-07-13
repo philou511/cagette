@@ -27,6 +27,7 @@ class Shop extends Controller
 		view.md = md;
 		view.tmpBasketId = app.session.data.tmpBasketId;
 		view.basketId = args == null ? null : args.basketId;
+		view.user = app.user;
 
 		// service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
 

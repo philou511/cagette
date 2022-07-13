@@ -263,6 +263,7 @@ $$browserDetection()
 							document.addEventListener("DOMContentLoaded", function(event) {
 								neo.createNeoModule("multidistrib-card-body-::md.id::", "multiDistribCard", {
 									multiDistribId: ::md.id::,
+									isAuth: ::user != null::
 								});
 							});
 						</script>
