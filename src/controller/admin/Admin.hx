@@ -30,7 +30,15 @@ class Admin extends Controller {
 	@tpl("admin/default.mtt")
 	function doDefault() {
 		view.now = Date.now();
-		view.ip = Web.getClientIP();		
+		view.ip = Web.getClientIP();
+		
+		if(app.params.get("reloadSettings")=="1"){
+			app.setSettings();
+			app.setTheme();
+			view.theme = app.getTheme();
+			view.settings = app.getSettings();
+			throw Ok('/admin',"Settings and theme reloaded, theme is "+app.getTheme().id);
+		}
 	}
 
 	@tpl('admin/basket.mtt')

@@ -8,13 +8,13 @@ class App extends sugoi.BaseApp {
 	public static var current : App = null;
 	public static var t : sugoi.i18n.translator.ITranslator;
 	public static var config = sugoi.BaseApp.config;
-
+	public static var eventDispatcher : hxevents.Dispatcher<Event>;	
+	public static var plugins : Array<sugoi.plugin.IPlugIn>;
 	
-	public var eventDispatcher :hxevents.Dispatcher<Event>;	
-	public var plugins : Array<sugoi.plugin.IPlugIn>;
+
 	public var breadcrumb : Array<Link>;
-	public var theme	: Theme;
-	public var settings	: Settings;
+	public static var theme	: Theme;
+	public static var settings	: Settings;
 
 	/**
 	 * Version management
@@ -43,28 +43,37 @@ class App extends sugoi.BaseApp {
 	 * Init plugins and event dispatcher just before launching the app
 	 */
 	override public function mainLoop() {
-		eventDispatcher = new hxevents.Dispatcher<Event>();
-		plugins = [];
-		//internal plugins
-		// plugins.push(new plugin.Tutorial());
-		
-		//optionnal plugins
-		#if plugins
-		plugins.push( new hosted.HostedPlugIn() );				
-		plugins.push( new pro.ProPlugIn() );		
-		plugins.push( new connector.ConnectorPlugIn() );				
-		plugins.push( new mangopay.MangopayPlugin() );
-		plugins.push( new who.WhoPlugIn() );
-		#end
-
-		setTheme();
-
-		setSettings();
-
 		super.mainLoop();
 	}
 
-	private function setTheme(){
+	override function init(){
+		var i = super.init();
+
+		if(eventDispatcher==null){
+			eventDispatcher = new hxevents.Dispatcher<Event>();
+			plugins = [];
+			
+			//internal plugins
+			// plugins.push(new plugin.Tutorial());
+			
+			//optionnal plugins
+			#if plugins
+			plugins.push( new hosted.HostedPlugIn() );				
+			plugins.push( new pro.ProPlugIn() );		
+			plugins.push( new connector.ConnectorPlugIn() );				
+			plugins.push( new mangopay.MangopayPlugin() );
+			plugins.push( new who.WhoPlugIn() );
+			#end
+
+			setTheme();
+			setSettings();
+		}
+
+		return i;
+
+	}
+
+	public function setTheme(){
 		var cagetteTheme: Theme = {
 			id: "cagette",
 			name: "Cagette.net",
@@ -147,13 +156,29 @@ class App extends sugoi.BaseApp {
 											</a>
 										</div>'
 		}
-		var whiteLabelStringified = sugoi.db.Variable.get("whiteLabel");
-		this.theme = whiteLabelStringified != null ? haxe.Json.parse(whiteLabelStringified) : cagetteTheme;
+		var res = this.cnx.request("SELECT value FROM Variable WHERE name='whiteLabel'").results();
+		var whiteLabelStringified = res.first()==null ? null : res.first().value;
+		App.theme = whiteLabelStringified != null ? haxe.Json.parse(whiteLabelStringified) : cagetteTheme;
 	}
 
-	private function setSettings(){
-		var settingsStringified = sugoi.db.Variable.get("settings");
-		this.settings = settingsStringified != null ? haxe.Json.parse(settingsStringified) : {};
+	public function setSettings(){
+		var res = this.cnx.request("SELECT value FROM Variable WHERE name='settings'").results();
+		var settingsStringified = res.first()==null ? null : res.first().value;
+		App.settings = settingsStringified != null ? haxe.Json.parse(settingsStringified) : {};
+	}
+
+	/**
+		Theme is stored as static var, thus it's inited only one time at app startup
+	**/
+	public function getTheme():Theme{
+		return App.theme;
+	}
+
+	/**
+		Settings is stored as static var, thus it's inited only one time at app startup
+	**/
+	public function getSettings():Settings{
+		return App.settings;
 	}
 	
 	public function getCurrentGroup(){		
@@ -193,7 +218,7 @@ class App extends sugoi.BaseApp {
 	
 	public function event(e:Event) {
 		if(e==null) return null;
-		this.eventDispatcher.dispatch(e);
+		App.eventDispatcher.dispatch(e);
 		return e;
 	}
 	
@@ -389,7 +414,7 @@ class App extends sugoi.BaseApp {
 		var e = new sugoi.mail.Mail();		
 		e.setSubject(subject);
 		e.setRecipient(to);			
-		e.setSender(App.config.get("default_email"), App.current.theme.name);				
+		e.setSender(App.config.get("default_email"), App.current.getTheme().name);				
 		var html = App.current.processTemplate("mail/message.mtt", {text:html,group:group});		
 		e.setHtmlBody(html);
 		App.sendMail(e, group);
@@ -403,7 +428,7 @@ class App extends sugoi.BaseApp {
 		
 		//inject usefull vars in view
 		Reflect.setField(ctx, 'HOST', App.config.HOST);
-		Reflect.setField(ctx, 'theme', this.theme);
+		Reflect.setField(ctx, 'theme', this.getTheme());
 		Reflect.setField(ctx, 'hDate', date -> return Formatting.hDate(date) );
 
 		ctx._ = App.current.view._;

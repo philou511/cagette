@@ -159,19 +159,19 @@ class Member extends Controller
 				//warn the user that his email has been updated
 				if (form.getValueOf("email") != member.email) {
 					var m = new sugoi.mail.Mail();
-					m.setSender(App.config.get("default_email"), App.current.theme.name);
+					m.setSender(App.config.get("default_email"), App.current.getTheme().name);
 					m.addRecipient(member.email);
 					m.addRecipient(member.email2);
-					m.setSubject("Changement de courriel sur votre compte "+App.current.theme.name);
-					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:app.user.getName() + "vient de modifier votre courriel dans votre compte "+App.current.theme.name+". <br/> Votre courriel est maintenant : "+form.getValueOf("email")  } ) );					App.sendMail(m);
+					m.setSubject("Changement de courriel sur votre compte "+App.current.getTheme().name);
+					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:app.user.getName() + "vient de modifier votre courriel dans votre compte "+App.current.getTheme().name+". <br/> Votre courriel est maintenant : "+form.getValueOf("email")  } ) );					App.sendMail(m);
 					
 				}
 				if (form.getValueOf("email2") != member.email2 && member.email2!=null) {
 					var m = new sugoi.mail.Mail();
-					m.setSender(App.config.get("default_email"), App.current.theme.name);
+					m.setSender(App.config.get("default_email"), App.current.getTheme().name);
 					m.addRecipient(member.email2);
-					m.setSubject("Changement de courriel sur votre compte "+App.current.theme.name);
-					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:app.user.getName() + "vient de modifier votre courriel dans votre compte "+App.current.theme.name+". <br/> Votre courriel est maintenant : "+form.getValueOf("email2")  } ) );
+					m.setSubject("Changement de courriel sur votre compte "+App.current.getTheme().name);
+					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:app.user.getName() + "vient de modifier votre courriel dans votre compte "+App.current.getTheme().name+". <br/> Votre courriel est maintenant : "+form.getValueOf("email2")  } ) );
 					App.sendMail(m);
 				}	
 			}

@@ -19,7 +19,7 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 		initi18n();
 		
 		//suscribe to events
-		App.current.eventDispatcher.add(onEvent);
+		App.eventDispatcher.add(onEvent);
 	}
 	
 	public function initi18n(){

@@ -14,7 +14,7 @@ class Course extends sugoi.BaseController
 	**/
 	@tpl("plugin/pro/hosted/course/default.mtt")
 	function doDefault(){
-if (App.current.settings.noCourse==true) {
+if (App.current.getSettings().noCourse==true) {
 			throw Redirect("/");
 		}
 
@@ -347,7 +347,7 @@ if (App.current.settings.noCourse==true) {
 		if(companyCourse.moodleUser==null) throw Error("/p/hosted/course/view/"+course.id,"Erreur : impossible d'envoyer le mail car le mot de passe Moodle n'a pas été sauvegardé");
 
 		var m = new sugoi.mail.Mail();
-		m.setSender(App.config.get("default_email"), App.current.theme.name);
+		m.setSender(App.config.get("default_email"), App.current.getTheme().name);
 		m.setRecipient(companyCourse.user.email);
 		m.setReplyTo("deborah@alilo.fr", "Deborag REYT");							
 		m.setSubject("Formation Cagette - La formation commence maintenant" );		

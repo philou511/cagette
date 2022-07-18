@@ -13,7 +13,7 @@ class HostedPlugIn extends PlugIn implements IPlugIn{
 		name = "hosted";
 		file = sugoi.tools.Macros.getFilePath();
 		//suscribe to events
-		App.current.eventDispatcher.add(onEvent);
+		App.eventDispatcher.add(onEvent);
 		
 	}
 	
@@ -30,13 +30,15 @@ class HostedPlugIn extends PlugIn implements IPlugIn{
 					if(db.Group.manager.get(gid,false) == null) return;
 					var h = hosted.db.GroupStats.getOrCreate(gid, true);
 					h.updateStats();
+
+					
 				}
 
 			case Nav(nav,name,id) :
 				switch(name) {
 					case "admin":
 						nav.push({id:"hosted",name:"Utilisateurs", link:"/p/hosted/user",icon:"user"});
-						if (App.current.settings.noCourse!=true) {
+						if (App.current.getSettings().noCourse!=true) {
 							nav.push({id:"courses",name:"Formations", link:"/p/hosted/course",icon:"student"});
 						}
 						nav.push({id:"ref",name:"Référencement", link:"/p/hosted/seo",icon:"cog"});

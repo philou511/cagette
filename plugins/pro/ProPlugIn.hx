@@ -14,7 +14,7 @@ class ProPlugIn extends PlugIn implements IPlugIn{
 		name = "pro";
 		file = sugoi.tools.Macros.getFilePath();
 		//suscribe to events
-		App.current.eventDispatcher.add(onEvent);		
+		App.eventDispatcher.add(onEvent);		
 	}
 	
 	public function onEvent(e:Event) {

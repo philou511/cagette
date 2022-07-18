@@ -50,8 +50,8 @@ class View extends sugoi.BaseView {
 	override function init() {
 		super.init();
 
-		this.theme = App.current.theme;
-		this.settings = App.current.settings;
+		this.theme = App.current.getTheme();
+		this.settings = App.current.getSettings();
 		
 		// tuto widget display
 		/*var u = App.current.user;

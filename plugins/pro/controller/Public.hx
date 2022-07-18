@@ -27,7 +27,7 @@ class Public extends controller.Controller
 	@tpl("plugin/pro/catalog/askImport.mtt")
 	public function doAskImport(catalog:pro.db.PCatalog){
 		
-		if(app.user==null) throw Error("/user/login?__redirect=/p/pro/public/askImport/"+catalog.id,"Vous devez être connecté à " + App.current.theme.name + " pour faire cette action");
+		if(app.user==null) throw Error("/user/login?__redirect=/p/pro/public/askImport/"+catalog.id,"Vous devez être connecté à " + App.current.getTheme().name + " pour faire cette action");
 
 		var isVendor = isCproVendor(catalog.company);
 		view.title = isVendor ? 'Relier un catalogue' : 'Demande de liaison de catalogue';
@@ -41,10 +41,10 @@ class Public extends controller.Controller
 			}
 		}
 		var id = app.user.getGroup()==null ? null : app.user.getGroup().id;
-		f.addElement( new sugoi.form.elements.IntSelect("group","Groupe " + App.current.theme.name + " qui accueillera le catalogue", datas, id , true) );
+		f.addElement( new sugoi.form.elements.IntSelect("group","Groupe " + App.current.getTheme().name + " qui accueillera le catalogue", datas, id , true) );
 		f.addElement( new sugoi.form.elements.Checkbox("csa","Ce catalogue sera un contrat AMAP classique",false));
 		if(!isVendor){
-			f.addElement( new sugoi.form.elements.TextArea("message","Message au producteur","Bonjour, \nJe souhaiterais proposer vos produits aux membres de mon groupe " + App.current.theme.name + "...",false,null,"rows='10'") );
+			f.addElement( new sugoi.form.elements.TextArea("message","Message au producteur","Bonjour, \nJe souhaiterais proposer vos produits aux membres de mon groupe " + App.current.getTheme().name + "...",false,null,"rows='10'") );
 		}
 		
 		view.form = f;
@@ -144,7 +144,7 @@ class Public extends controller.Controller
 	public static function vendorPage(vendor:db.Vendor){
 		App.current.setTemplate("plugin/pro/public/vendor.mtt");
 		App.current.view.vendor = vendor.getInfos();
-		App.current.view.pageTitle = vendor.name + " - " + App.current.theme.name;
+		App.current.view.pageTitle = vendor.name + " - " + App.current.getTheme().name;
 		var cpro = pro.db.CagettePro.getFromVendor(vendor);
 		if(cpro!=null && cpro.demoCatalog!=null){
 

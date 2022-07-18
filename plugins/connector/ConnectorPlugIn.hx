@@ -12,7 +12,7 @@ class ConnectorPlugIn extends PlugIn implements IPlugIn{
 		file = sugoi.tools.Macros.getFilePath();
 		
 		//suscribe to events
-		App.current.eventDispatcher.add(onEvent);
+		App.eventDispatcher.add(onEvent);
 		
 		//add i18n strings
 		//var i18n = App.t.getStrings();

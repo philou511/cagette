@@ -1,7 +1,12 @@
 ﻿<html lang="::LANG::">
 	<head>
+		::if(theme!=null)::
 		<link rel="stylesheet" href="/theme/::theme.id::/css/style.css" />
 		<link rel="stylesheet" href="/theme/::theme.id::/css/bootstrap.min.css" />
+		::else::
+		<link rel="stylesheet" href="/theme/cagette/css/style.css" />
+		<link rel="stylesheet" href="/theme/cagette/css/bootstrap.min.css" />
+		::end::
 	</head>
 	<body class="container">
 		<div class="row" style="margin-top:40px;">

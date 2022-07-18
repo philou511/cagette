@@ -175,9 +175,9 @@ class User extends Controller
 			sugoi.db.Cache.set(token, user.id, 60 * 60 * 24 * 30);
 			
 			var m = new sugoi.mail.Mail();
-			m.setSender(App.config.get("default_email"), App.current.theme.name);					
+			m.setSender(App.config.get("default_email"), App.current.getTheme().name);					
 			m.setRecipient(email, user.getName());					
-			m.setSubject( "["+App.current.theme.name+"] : "+t._("Password change"));
+			m.setSubject( "["+App.current.getTheme().name+"] : "+t._("Password change"));
 			m.setHtmlBody( app.processTemplate('mail/forgottenPassword.mtt', { user:user, link:'http://' + App.config.HOST + '/user/forgottenPassword/'+token+"/"+user.id }) );
 			App.sendMail(m);	
 		}
@@ -208,10 +208,10 @@ class User extends Controller
 				sugoi.db.Cache.destroy(key);
 
 				var m = new sugoi.mail.Mail();
-				m.setSender(App.config.get("default_email"), App.current.theme.name);					
+				m.setSender(App.config.get("default_email"), App.current.getTheme().name);					
 				m.setRecipient(user.email, user.getName());					
 				if(user.email2!=null) m.setRecipient(user.email2, user.getName());					
-				m.setSubject( "["+App.current.theme.name+"] : "+t._("New password confirmed"));
+				m.setSubject( "["+App.current.getTheme().name+"] : "+t._("New password confirmed"));
 				var emails = [user.email];
 				if(user.email2!=null) emails.push(user.email2);
 				var params = {
@@ -333,7 +333,7 @@ class User extends Controller
 			throw Redirect('/');
 		}
 		
-		view.title = "Mise à jour des conditions générales d'utilisation de "+ App.current.theme.name +' ( v. $tosVersion )';
+		view.title = "Mise à jour des conditions générales d'utilisation de "+ App.current.getTheme().name +' ( v. $tosVersion )';
 		view.form = form;
 	}
 	

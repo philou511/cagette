@@ -277,7 +277,7 @@ class Main extends controller.Controller
 
 	@admin
 	function doCourse(d:haxe.web.Dispatch){
-		if (App.current.settings.noCourse!=true) {
+		if (App.current.getSettings().noCourse!=true) {
 			d.dispatch(new hosted.controller.Course());
 		}
 	}

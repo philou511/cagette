@@ -354,7 +354,7 @@ class Main extends Controller {
 
 	// CGU
 	public function doCgu() {
-		throw Redirect(App.current.theme.cguLink);
+		throw Redirect(App.current.getTheme().cguLink);
 	}
 
 	// CGV

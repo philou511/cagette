@@ -111,14 +111,14 @@ class Group extends controller.Controller
 	@tpl("form.mtt")
 	function doCreate() {
 		var cagettePros = service.VendorService.getCagetteProFromUser(App.current.user);
-		if (!(App.current.settings.onlyVendorsCanCreateGroup==null
-			 || App.current.settings.onlyVendorsCanCreateGroup==false 
-			 || (App.current.settings.onlyVendorsCanCreateGroup==true && cagettePros!=null && cagettePros.length>0))
+		if (!(App.current.getSettings().onlyVendorsCanCreateGroup==null
+			 || App.current.getSettings().onlyVendorsCanCreateGroup==false 
+			 || (App.current.getSettings().onlyVendorsCanCreateGroup==true && cagettePros!=null && cagettePros.length>0))
 			 ) {
 			throw Redirect("/");
 		}
 
-		view.title = "Créer un nouveau groupe " + App.current.theme.name;
+		view.title = "Créer un nouveau groupe " + App.current.getTheme().name;
 
 		var p = new db.Place();
 		var f = form.CagetteForm.fromSpod(p);
@@ -126,7 +126,7 @@ class Group extends controller.Controller
 		f.addElement(new StringInput("groupName", t._("Name of your group"), "", true),1);
 		
 		//group type
-		if (App.current.settings.noCsa != true) {
+		if (App.current.getSettings().noCsa != true) {
 			var data = [
 				{
 					label:"Mode marché",
@@ -158,7 +158,7 @@ class Group extends controller.Controller
 			g.contact = user;
 			
 			var type:GroupType;
-			if (App.current.settings.noCsa == true) {
+			if (App.current.getSettings().noCsa == true) {
 				type = GroupType.ProducerDrive;
 			}else {
 				type = Type.createEnumIndex(GroupType, Std.parseInt(f.getValueOf("type")) );

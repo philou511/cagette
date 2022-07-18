@@ -587,11 +587,10 @@
 	</macro>
 
 	<macro name="footer()">
-		::if(theme.footer!=null)::
+		::if(theme!=null && theme.footer!=null)::
 		<div class="row">
 			<div class="col-md-12">
 				<div id="footer" >
-				
 						<div class="col-md-3" >
 							::if(theme.footer.bloc1!=null):: ::raw theme.footer.bloc1:: ::end::
 						</div>
@@ -604,7 +603,6 @@
 						<div class="col-md-3" >
 							::if(theme.footer.bloc4!=null):: ::raw theme.footer.bloc4:: ::end::
 						</div>
-					
 				</div>
 			</div>
 		</div>
@@ -733,8 +731,7 @@
             contentContainer.classList.add("browser-detection-content-root");
             var content = document.createElement("p");
             content.classList.add("browser-detection-content");
-            content.textContent =
-            "Votre navigateur Internet est trop ancien pour afficher ::theme.name::. \n Cela peut entraîner des problèmes d'affichage. \n Nous vous conseillons fortement de télécharger un navigateur plus récent, comme Firefox ou Brave.";
+            content.textContent = "Votre navigateur Internet est trop ancien pour afficher ce site. \n Cela peut entraîner des problèmes d'affichage. \n Nous vous conseillons fortement de télécharger un navigateur plus récent, comme Firefox ou Brave.";
             contentContainer.append(content);
             box.append(contentContainer);
 

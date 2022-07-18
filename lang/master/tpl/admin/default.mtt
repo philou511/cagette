@@ -6,7 +6,11 @@
 	::hDate(now)::<br/>
 	IP : ::ip::
 </p>
+<p>
+	<a href="/admin/settings"><i class="icon icon-cog"></i> Paramètres d'instance</a><br/>
+	<a href="/admin/?reloadSettings=1"><i class="icon icon-cog"></i> Recharger les paramètres et le thème</a><br/>
+	Thème courant : <b>::theme.id::</b>
 
-<a href="/admin/settings"><i class="icon icon-cog"></i> Paramètres d'instance</a>
+</p>
 
 ::end::
