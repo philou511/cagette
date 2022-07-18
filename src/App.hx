@@ -79,7 +79,9 @@ class App extends sugoi.BaseApp {
 			name: "Cagette.net",
 			url: "https://www.cagette.net",
 			supportEmail: "support@cagette.net",
-			cguLink: "https://www.cagette.net/wp-content/uploads/2020/11/cgu-.pdf",
+			termsOfServiceLink: "https://www.cagette.net/wp-content/uploads/2020/11/cgu-.pdf",
+			termsOfSaleLink: "https://www.cagette.net/wp-content/uploads/2020/11/cgv.pdf",
+			platformTermsLink: "",
 			footer: {
 				bloc1: '<a href="https://www.cagette.net" target="_blank">
 							<img src="/theme/cagette/logo.png" alt="logo Cagette.net" style="width:166px;"/>

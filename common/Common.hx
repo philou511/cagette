@@ -313,7 +313,9 @@ typedef Theme = {
 	var name:String; // readable name
 	var url:String; // company's website
 	var supportEmail:String; // email address of the support
-	var cguLink:String; // link to CGU
+	var termsOfServiceLink:String; // Terms of service (CGU)
+	var termsOfSaleLink:String;
+	var platformTermsLink:String;
 	var ?footer:{
 		?bloc1:String, // first footer bloc in html
 		?bloc2:String, // second footer bloc in html

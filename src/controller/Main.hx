@@ -354,17 +354,17 @@ class Main extends Controller {
 
 	// CGU
 	public function doCgu() {
-		throw Redirect(App.current.getTheme().cguLink);
+		throw Redirect(App.current.getTheme().termsOfServiceLink);
 	}
 
 	// CGV
 	public function doCgv() {
-		throw Redirect("https://www.cagette.net/wp-content/uploads/2020/11/cgv.pdf");
+		throw Redirect(App.current.getTheme().termsOfSaleLink);
 	}
 
 	// CGU MGP
 	public function doMgp() {
-		throw Redirect("https://www.cagette.net/wp-content/uploads/2019/03/psp_mangopay_fr.pdf");
+		throw Redirect("https://www.mangopay.com/terms/MANGOPAY_Terms-FR.pdf");
 	}
 
 	// charte

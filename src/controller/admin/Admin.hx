@@ -1,4 +1,6 @@
 package controller.admin;
+import haxe.Json;
+import sugoi.form.elements.TextArea;
 import Common;
 import db.BufferedJsonMail;
 import db.Catalog;
@@ -37,8 +39,36 @@ class Admin extends Controller {
 			app.setTheme();
 			view.theme = app.getTheme();
 			view.settings = app.getSettings();
-			throw Ok('/admin',"Settings and theme reloaded, theme is "+app.getTheme().id);
+			throw Ok('/admin',"Settings and theme reloaded");
 		}
+	}
+
+	@tpl("form.mtt")
+	function doTheme(){
+
+		var f = new sugoi.form.Form("theme");
+
+		f.addElement(new sugoi.form.elements.TextArea("theme","theme",Json.stringify(app.getTheme()),true,null,"style='height:800px;'"));
+		f.addElement(new sugoi.form.elements.Html("html","<a href='https://www.jsonlint.com/' target='_blank'>jsonlint.com</a>"));
+
+		if(f.isValid()){
+
+			var json:Theme = null;
+			try{
+				json = Json.parse(f.getValueOf("theme"));
+				Variable.set("whiteLabel",Json.stringify(json));
+			}catch(e:Dynamic){
+				throw Error('/admin/theme',"Erreur : "+Std.string(e));
+			}
+
+			throw Ok("/admin/","Thème mis à jour");
+		}
+
+
+		view.form = f;
+		view.title = "Modifier le thème";
+
+
 	}
 
 	@tpl('admin/basket.mtt')
