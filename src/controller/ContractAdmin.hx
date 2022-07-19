@@ -1,24 +1,27 @@
 package controller;
-import form.CagetteDatePicker;
-import sugoi.form.elements.IntInput;
-import connector.db.RemoteCatalog;
-import service.ProductService;
-import service.CatalogService;
-import service.SubscriptionService;
-import db.Catalog;
-import tink.core.Error;
-import db.UserOrder;
-import sugoi.form.elements.Checkbox;
-import sugoi.form.elements.Selectbox;
-import sugoi.form.Form;
-import sugoi.form.elements.StringInput;
-import sugoi.form.elements.RadioGroup;
-import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
 import Common;
+import connector.db.RemoteCatalog;
 import datetime.DateTime;
+import db.Basket.BasketStatus;
+import db.Catalog;
+import db.UserOrder;
+import form.CagetteDatePicker;
+import form.CagetteDatePicker;
+import service.CatalogService;
 import service.OrderService;
-using tools.ObjectListTool;
+import service.ProductService;
+import service.SubscriptionService;
+import sugoi.form.Form;
+import sugoi.form.elements.Checkbox;
+import sugoi.form.elements.IntInput;
+import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
+import sugoi.form.elements.RadioGroup;
+import sugoi.form.elements.Selectbox;
+import sugoi.form.elements.StringInput;
+import tink.core.Error;
+
 using tools.DateTool;
+using tools.ObjectListTool;
 
 
 class ContractAdmin extends Controller
@@ -30,6 +33,7 @@ class ContractAdmin extends Controller
 		if (!app.user.isContractManager()) throw Error("/", t._("You don't have the authorization to manage contracts"));
 		view.nav = ["contractadmin"];
 		
+
 	}
 	
 	public function sendNav(c){
@@ -478,7 +482,7 @@ class ContractAdmin extends Controller
 	 * Overview of orders for this contract in backoffice
 	 */
 	@tpl("contractadmin/orders.mtt")
-	function doOrders( catalog : db.Catalog, ?args : { d : db.Distribution, ?delete : db.UserOrder } ) {
+	function doOrders( catalog:db.Catalog, ?args:{ d:db.Distribution, ?delete:db.UserOrder } ) {
 
 		view.nav.push( "orders" );
 		sendNav( catalog );
@@ -502,34 +506,32 @@ class ContractAdmin extends Controller
 			}
 			
 		}
-
-		if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
-			app.setTemplate('contractadmin/csaorders.mtt');
-		}
 		
 		view.distribution = args.d;
 		view.multiDistribId = args.d.multiDistrib.id;
-		view.c = catalog;
+		view.c = view.catalog = catalog;		
 
-		var orders = service.OrderService.getOrders( catalog, args.d, app.params.exists("csv") );
-		
-		if ( !app.params.exists("csv") ) {
-			
-			//show orders on disabled products
-			var disabledProducts = 0;
-			for ( o in orders ){
-				if ( !db.Product.manager.get(o.productId, false).active ) {
-					disabledProducts++;
-					Reflect.setField(o, "disabled", true);
+		if ( App.current.params.get("csv")=="1" ) {
+
+			var data = [];			
+			for( basket in args.d.multiDistrib.getBaskets()){
+				for(o in service.OrderService.prepare(basket.getDistributionOrders(args.d))){
+					data.push( { 
+						"name":o.userName,
+						"productName":o.productName,
+						"price":view.formatNum(o.productPrice),
+						"quantity":view.formatNum(o.quantity),
+						"fees":view.formatNum(o.fees),
+						"total":view.formatNum(o.total),
+						"paid":o.paid
+					});				
 				}
 			}
-		
-			view.disabledProducts = disabledProducts;
-			view.orders = orders;	
+			
+			var exportName = catalog.group.name + " - " + t._("Delivery ::contractName:: ", {contractName:catalog.name}) + args.d.date.toString().substr(0, 10);								
+			sugoi.tools.Csv.printCsvDataFromObjects(data, ["name",  "productName", "price", "quantity", "fees", "total", "paid"], exportName+" - " + t._("Per member"));			
 		}
-		
 	}
-	
 	
 	/**
 	 * hidden feature : updates orders by setting current product price.
@@ -839,7 +841,7 @@ class ContractAdmin extends Controller
 	@tpl("contractadmin/tmpBaskets.mtt")
 	function doTmpBaskets(md:db.MultiDistrib){
 		view.md = md;
-		view.tmpBaskets = db.TmpBasket.manager.search($multiDistrib == md,false);
+		view.tmpBaskets = db.Basket.manager.search($multiDistrib == md && $status==Std.string(BasketStatus.OPEN),false);
 	}
 
 

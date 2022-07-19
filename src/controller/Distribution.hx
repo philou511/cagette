@@ -12,7 +12,6 @@ import mangopay.Types.Error;
 import sugoi.BaseApp;
 import pro.payment.MangopayECPayment;
 import db.Catalog;
-import db.TmpBasket;
 import service.OrderFlowService;
 import tools.ObjectListTool;
 import db.DistributionCycle;
@@ -171,6 +170,11 @@ class Distribution extends Controller {
 	@tpl('distribution/listByDate.mtt')
 	function doListByDate(date:Date, place:db.Place, ?type:String, ?fontSize:String) {
 		checkHasDistributionSectionAccess();
+
+		var md = db.MultiDistrib.get(date, place);
+		if (md.getGroup().hasCagette2()){
+			throw Redirect('/distribution/export/'+md.id);
+		}
 
 		view.place = place;
 		view.onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(app.user.getGroup());
@@ -962,6 +966,9 @@ class Distribution extends Controller {
 	@tpl('distribution/validate.mtt')
 	public function doValidate(multiDistrib:db.MultiDistrib) {
 		checkHasDistributionSectionAccess();
+		if (multiDistrib.getGroup().hasCagette2()){
+			throw Redirect('/distribution/ordersRecap/'+multiDistrib.id);
+		}
 		checkToken();
 		// view.users = multiDistrib.getUsers(db.Catalog.TYPE_VARORDER);
 
@@ -1575,10 +1582,39 @@ class Distribution extends Controller {
 	}
 
 	@tpl("distribution/selectTimeSlots.mtt")
-	function doSelectTimeSlots(tmpBasket:TmpBasket) {
+	function doSelectTimeSlots(tmpBasket:db.Basket) {
 		var flow = new OrderFlowService().setPlace(Place.TimeSlotSelection(tmpBasket));
 		view.url = flow.getPlaceUrl(flow.getNextPlace());
 
 		view.distribution = tmpBasket.multiDistrib;
 	}
+
+	/**
+		Cagette 2 distribution recap page
+	**/
+	@tpl('distribution/ordersRecap.mtt')
+	function doOrdersRecap(multiDistrib: db.MultiDistrib) {
+		checkHasDistributionSectionAccess();
+
+		if (!multiDistrib.getGroup().hasCagette2()){
+			throw Error('/', t._('Forbidden action'));
+		}
+
+		view.multiDistribId = multiDistrib.id;
+	}
+
+	/**
+		Cagette 2 distribution attendance sheet and export page
+	**/
+	@tpl('distribution/export.mtt')
+	function doExport(multiDistrib: db.MultiDistrib) {
+		checkHasDistributionSectionAccess();
+
+		if (!multiDistrib.getGroup().hasCagette2()){
+			throw Error('/', t._('Forbidden action'));
+		}
+
+		view.multiDistribId = multiDistrib.id;
+	}
+
 }

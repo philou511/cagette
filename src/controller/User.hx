@@ -106,23 +106,35 @@ class User extends Controller
 	
 	function doLogout() {
 		service.BridgeService.logout(App.current.user);
-		Web.setHeader("Set-Cookie", "Refresh=; HttpOnly; Path=/; Max-Age=0");
+		var domain = App.config.HOST;
+		if (domain.lastIndexOf('app.',0) == 0) {
+			domain = domain.split('app.').join("");
+		}
+		Web.setHeader("Set-Cookie", 'Refresh=; HttpOnly; Path=/; Max-Age=0; Domain=$domain');
 
 		App.current.session.delete();
 
 		// Haxe allows neither to set multiple "set-cookie" headers (https://github.com/HaxeFoundation/haxe/issues/3550)
 		// nor to set multiple cookies in one set-cookie header (https://www.rfc-editor.org/rfc/rfc2109#section-4.2.2)
 		// Hence we can workaround this by redirecting 3 times : one redirect for each cookie we want to delete
-		throw Redirect('/user/logoutDeleteAuthenticationToken');
+		throw Redirect('/user/logoutDeleteAuthenticationCookie');
 	}
 
-	function doLogoutDeleteAuthenticationToken() {
-		Web.setHeader("Set-Cookie", "Refresh=; HttpOnly; Path=/; Max-Age=0");
-		throw Redirect('/user/logoutDeleteAuthSidToken');
+	function doLogoutDeleteAuthenticationCookie() {
+		var domain = App.config.HOST;
+		if (domain.lastIndexOf('app.',0) == 0) {
+			domain = domain.split('app.').join("");
+		}
+		Web.setHeader("Set-Cookie", 'Authentication=; HttpOnly; Path=/; Max-Age=0; Domain=$domain');
+		throw Redirect('/user/logoutDeleteAuthSidCookie');
 	}
 
-	function doLogoutDeleteAuthSidToken() {
-		Web.setHeader("Set-Cookie", "Auth_sid=; HttpOnly; Path=/; Max-Age=0");
+	function doLogoutDeleteAuthSidCookie() {
+		var domain = App.config.HOST;
+		if (domain.lastIndexOf('app.',0) == 0) {
+			domain = domain.split('app.').join("");
+		}
+		Web.setHeader("Set-Cookie", 'Auth_sid=; HttpOnly; Path=/; Max-Age=0; Domain=$domain');
 		throw Redirect('/');
 	}
 	

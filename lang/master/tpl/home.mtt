@@ -256,9 +256,23 @@ $$browserDetection()
 							<i class="icon icon-clock"></i> La commande ouvrira ::hDate(ordersStartDate)::
 						</span>
 					::elseif(status=="open")::
+
+					::if(amap.hasCagette2())::
+						<div id="multidistrib-card-body-::md.id::"></div>
+						<script>
+							document.addEventListener("DOMContentLoaded", function(event) {
+								neo.createNeoModule("multidistrib-card-body-::md.id::", "multiDistribCard", {
+									multiDistribId: ::md.id::,
+									isAuth: ::user != null::
+								});
+							});
+						</script>
+					::else::
 						<a href="/shop/::md.id::" class="btn btn-lg btn-primary">
 							<i class="icon icon-chevron-right"></i> Commander
-						</a>
+						</a> 
+					::end::
+
 						<div class="disabled" style="font-size: 1.2em;margin-top:18px;">
 							<i class="icon icon-clock"></i> La commande fermera ::hDate(ordersEndDate)::
 						</div>

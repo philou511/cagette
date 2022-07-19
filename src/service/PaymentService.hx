@@ -1,5 +1,6 @@
 package service;
 
+import db.Basket.BasketStatus;
 import db.Catalog;
 import haxe.Json;
 import db.Operation;
@@ -121,7 +122,7 @@ class PaymentService {
 		op.basket = basket;
 		op.user = user;
 		op.group = group;
-		op.pending = true;
+		op.pending = false;
 
 		op.insert();
 		updateUserBalance(op.user, op.group);
@@ -421,6 +422,10 @@ class PaymentService {
 			order.paid = true;
 			order.update();
 		}
+
+		basket.lock();
+		basket.status = Std.string(BasketStatus.VALIDATED);
+		basket.update();
 
 		// validate order operation and payments
 		var operation = basket.getOrderOperation(false);

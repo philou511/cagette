@@ -154,7 +154,21 @@ class App {
         });
 	}
 	
-	public function initOrderBox(userId : Int, multiDistribId : Int, catalogId : Int, catalogType : Int, date : String, place : String, userName : String, currency : String, hasPayments : Bool, callbackUrl : String, hasCagette2 : Bool, groupId : Int) {
+	public function initOrderBox(
+        userId : Int,
+        multiDistribId : Int,
+        catalogId : Int,
+        catalogType : Int,
+        date : String,
+        place : String,
+        userName : String,
+        currency : String,
+        hasPayments : Bool,
+        callbackUrl : String,
+        hasCagette2 : Bool,
+        groupId : Int,
+        ?basketId : Int
+    ) {
         var node = js.Browser.document.createDivElement();
         node.id = "ordersdialog-container";
         js.Browser.document.body.appendChild(node);
@@ -184,8 +198,8 @@ class App {
                 place: place,
                 userName: userName,
                 callbackUrl: callbackUrl,
-                currency: currency,
                 hasPayments: hasPayments,
+                basketId: basketId
             });
         }
 	}

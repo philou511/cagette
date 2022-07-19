@@ -9,7 +9,9 @@ import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
 import sugoi.tools.Utils;
 import haxe.crypto.Base64;
 import db.Operation;
+import db.Basket;
 using tools.ObjectListTool;
+
 
 /**
  * Mangopay payment controller
@@ -21,7 +23,9 @@ class MangopayController extends controller.Controller
 		Mangopay payment entry point	
 	 */
 	@tpl("plugin/pro/transaction/mangopay/pay.mtt")
-	public function doDefault(type:String, tmpBasket:db.TmpBasket){
+	public function doDefault(type:String, tmpBasket:db.Basket){
+
+		if(tmpBasket.status!=Std.string(BasketStatus.OPEN)) throw "basket should be OPEN";
 		
 		// throw Error("/","Les paiements en ligne par Mangopay sont fermés pour une période indéterminée (panne chez Mangopay). ");
 
@@ -100,11 +104,11 @@ class MangopayController extends controller.Controller
 		// Creating a Card Web PayIn for the buyer
 		var group = app.user.getGroup();
 		var conf = MangopayPlugin.getGroupConfig(group);
-		var amount = MangopayPlugin.getAmountAndFees( tmpBasket.getTotal() , conf);
+		var amount = MangopayPlugin.getAmountAndFees( tmpBasket.getTmpTotal() , conf);
 		var host = App.config.DEBUG ? "http://" + App.config.HOST : "https://" + App.config.HOST;
 
 		var payIn : CardWebPayIn = {
-			Tag: tmpBasket.ref,
+			Tag: Std.string(tmpBasket.id),
 			StatementDescriptor : Mangopay.getStatment(group.name),
 			DebitedFunds: {
 				Currency: 	Euro,
@@ -118,7 +122,9 @@ class MangopayController extends controller.Controller
 			AuthorId: naturalUserId,
 			ReturnURL: host+"/p/pro/transaction/mangopay/return/"+type+"/"+tmpBasket.id,
 			CardType: "CB_VISA_MASTERCARD",
-			Culture: "FR"
+			Culture: "FR",
+			SecureMode:"NO_CHOICE",
+			Requested3DSVersion:"V2_1"
 		};
 		var cardWebPayIn : CardWebPayIn = Mangopay.createCardWebPayIn(payIn);
 		throw Redirect(cardWebPayIn.RedirectURL);
@@ -129,7 +135,7 @@ class MangopayController extends controller.Controller
 	 * Return/success URL
 	 */
 	@tpl("plugin/pro/transaction/mangopay/status.mtt")
-	public function doReturn(type:String,tmpBasket:db.TmpBasket, args : { transactionId:String }){
+	public function doReturn(type:String,tmpBasket:db.Basket, args : { transactionId:String }){
 
 		// if(App.config.DEBUG) throw "DEBUG : fake mangopay error";
 

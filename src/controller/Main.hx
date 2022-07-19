@@ -127,6 +127,8 @@ class Main extends Controller {
 		}
 
 		view.visibleDocuments = group.getVisibleDocuments(isMemberOfGroup);
+
+		view.user = app.user;
 	}
 
 	// login and stuff
@@ -265,23 +267,6 @@ class Main extends Controller {
 	function doShop(d:Dispatch) {
 		addBc("shop", "Boutique", "/shop");
 		d.dispatch(new controller.Shop());
-	}
-
-	@tpl('shop/default.mtt')
-	function doShop2(md:db.MultiDistrib, ?args:{continueShopping:Bool}) {
-		throw Redirect("/shop/" + md.id + "?continueShopping=" + (args != null ? args.continueShopping : false));
-
-		// if( app.getCurrentGroup()==null || app.getCurrentGroup().id!=md.getGroup().id){
-		// 	throw  Redirect("/group/"+md.getGroup().id);
-		// }
-		// if(args!=null){
-		// 	if(!args.continueShopping){
-		// 		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
-		// 	}
-		// }
-		// view.category = 'shop';
-		// view.md = md;
-		// view.tmpBasketId = app.session.data.tmpBasketId;
 	}
 
 	@logged
