@@ -476,7 +476,7 @@ class MultiDistrib extends Object
 	}
 
 	public function getGroup(){
-		return place.group;
+		return group;
 	}
 
 	/**
