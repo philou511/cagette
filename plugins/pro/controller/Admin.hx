@@ -1688,6 +1688,9 @@ class Admin extends controller.Controller {
 					// g.disabled = XXX;
 					// g.extUrl = "https://epicerie.vrac-asso.org/group/"+g.id;
 					// g.update();
+
+					//TODO : remove future distribs that have no orders !!
+
 					
 				}
 			}
