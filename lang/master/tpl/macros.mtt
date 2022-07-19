@@ -69,28 +69,44 @@
 
 		<!-- Help -->
 		<div class="dropdown pull-right text-right" id="helpMenu">
-					
-			<a  class="dropdown-toggle" type="button" id="dropdownMenuHelp" data-toggle="dropdown">
-				<i class="icon icon-info"></i> ::_("Aide")::
-			</a>
+			::if(theme.id=="cagette")::		
+				<a  class="dropdown-toggle" type="button" id="dropdownMenuHelp" data-toggle="dropdown">
+					<i class="icon icon-info"></i> ::_("Aide"):: 
+				</a>
 
-			<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuHelp">
-				<li>
-					<a href="http://wiki.cagette.net" target="_blank"><i class="icon icon-info"></i> Documentation</a> 
-				</li>
-				<li>
-					<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank"><i class="icon icon-facebook"></i> Groupe d'entraide Facebook</a> 
-				</li>
-				<li>
-					<a href="https://wiki.cagette.net/support" target="_blank"><i class="icon icon-question"></i> Contacter le support</a> 
-				</li>
-				<li>
-					<a href="https://cagette.uservoice.com/" target="_blank"><i class="icon icon-list"></i> Faire une suggestion</a> 
-				</li>
-				<li>
-					<a href="http://www.cagette.pro" target="_blank"><i class="icon icon-student"></i> Formation pour producteurs</a> 
-				</li>				
-			</ul>
+				<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuHelp">
+					<li>
+						<a href="http://wiki.cagette.net" target="_blank"><i class="icon icon-info"></i> Documentation</a> 
+					</li>
+					<li>
+						<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank"><i class="icon icon-facebook"></i> Groupe d'entraide Facebook</a> 
+					</li>
+					<li>
+						<a href="https://wiki.cagette.net/support" target="_blank"><i class="icon icon-question"></i> Contacter le support</a> 
+					</li>				
+					<li>
+						<a href="https://cagette.uservoice.com/" target="_blank"><i class="icon icon-list"></i> Faire une suggestion</a> 
+					</li>
+					<li>
+						<a href="http://www.cagette.pro" target="_blank"><i class="icon icon-student"></i> Formation pour producteurs</a> 
+					</li>
+				</ul>
+			::end::
+				
+			::if(theme.id=="vrac")::
+				::if (user!=null && user.isAmapManager())::
+				<a  class="dropdown-toggle" type="button" id="dropdownMenuHelp" data-toggle="dropdown">
+					<i class="icon icon-info"></i> ::_("Aide"):: 
+				</a>
+	
+				<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuHelp">
+					<li>
+						<a href="mailto:contact-france@vrac-asso.org" target="_blank"><i class="icon icon-question"></i> Contacter VRAC France</a> 
+					</li>
+				</ul>
+				::end::
+			::end::
+			
 		</div>
 
 		<!-- Home -->

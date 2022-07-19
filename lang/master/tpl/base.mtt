@@ -94,8 +94,8 @@
             _Cagette.lang = "::session.lang::";
 				:: if (user != null)::
                 _Cagette.userId = :: user.id:: ;
-            _Cagette.userName = "::user.getName()::";
-            _Cagette.userEmail = "::user.email::";
+                _Cagette.userName = "::user.getName()::";
+                _Cagette.userEmail = "::user.email::";
 				:: end::
 
 				//tutorials
@@ -103,13 +103,13 @@
                 _Cagette.getTuto("::tuto.name::",:: tuto.step:: );			
 				:: end::
 
-            _Cagette.antiDoubleClick();
-            _Cagette.theme = {
+                _Cagette.antiDoubleClick();
+                _Cagette.theme = {
                 id: "::theme.id::",
                 name: "::theme.name::",
                 url: "::theme.url::",
                 supportEmail: "::theme.supportEmail::",
-                cguLink: "::theme.cguLink::",
+                termsOfServiceLink: "::theme.cguLink::",
                 footer: {
                     bloc1: "::theme.bloc1::",
                     bloc2: "::theme.bloc2::",
@@ -120,7 +120,7 @@
             };
         })
 
-			//tracking 24x7
+		//tracking 24x7
         /*var rumMOKey='1d36c37d438ba069db210c73cb74308d';
         (function(){
             if(window.performance && window.performance.timing && window.performance.navigation) {
