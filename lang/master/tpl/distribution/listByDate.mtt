@@ -4,6 +4,7 @@
 	<meta charset="utf-8" />
 	<title>::_("Attendance sheet")::</title>
 	<link href="/css/print.css" rel="stylesheet"/>
+	$$favicons()
 </head>
 <body style="font-size: ::fontRatio::em;">
 	

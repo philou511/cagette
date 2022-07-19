@@ -13,6 +13,8 @@
         ::end::
     </title>
 
+    $$favicons()
+
     <!-- Cagette CSS -->
     ::if(DEBUG)::
         <link rel="stylesheet" type="text/css" href="/theme/::theme.id::/css/::getVariable('css')::/style.css" />

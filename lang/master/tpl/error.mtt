@@ -7,6 +7,9 @@
 		<link rel="stylesheet" href="/theme/cagette/css/style.css" />
 		<link rel="stylesheet" href="/theme/cagette/css/bootstrap.min.css" />
 		::end::
+
+		$$favicons()
+
 	</head>
 	<body class="container">
 		<div class="row" style="margin-top:40px;">
