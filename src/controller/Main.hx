@@ -354,12 +354,12 @@ class Main extends Controller {
 
 	// CGU
 	public function doCgu() {
-		throw Redirect(App.current.getTheme().termsOfServiceLink);
+		throw Redirect(App.current.getTheme().terms.termsOfServiceLink);
 	}
 
 	// CGV
 	public function doCgv() {
-		throw Redirect(App.current.getTheme().termsOfSaleLink);
+		throw Redirect(App.current.getTheme().terms.termsOfSaleLink);
 	}
 
 	// CGU MGP

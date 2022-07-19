@@ -312,17 +312,22 @@ typedef Theme = {
 	var id:String; // theme's id
 	var name:String; // readable name
 	var url:String; // company's website
-	var supportEmail:String; // email address of the support
-	var termsOfServiceLink:String; // Terms of service (CGU)
-	var termsOfSaleLink:String;
-	var platformTermsLink:String;
+	var supportEmail:String; // email address of the support	
 	var ?footer:{
 		?bloc1:String, // first footer bloc in html
 		?bloc2:String, // second footer bloc in html
 		?bloc3:String, // third footer bloc in html
 		?bloc4:String, // last footer bloc in html
 	};
-	var brandedEmailLayoutFooter:String; // footer of the branded email layout in html
+	var email : {
+		senderEmail:String,
+		brandedEmailLayoutFooter:String // footer of the branded email layout in html
+	};
+	var terms : {
+		var termsOfServiceLink:String; // Terms of service (CGU)
+		var termsOfSaleLink:String;
+		var platformTermsLink:String;
+	};
 }
 
 typedef Settings = {

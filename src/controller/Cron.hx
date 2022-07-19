@@ -82,7 +82,7 @@ class Cron extends Controller
 				if ( volunteers.length != 0 ) {
 					task.log(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 					var mail = new Mail();
-					mail.setSender(App.config.get("default_email"), App.current.getTheme().name);
+					mail.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);
 					var volunteersList = "<ul>";
 					for ( volunteer in  volunteers ) {
 						
@@ -127,7 +127,7 @@ class Cron extends Controller
 			for (multidistrib  in vacantVolunteerRolesMultidistribs) {
 				task.log(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 				var mail = new Mail();
-				mail.setSender(App.config.get("default_email"), App.current.getTheme().name);
+				mail.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);
 				for ( member in multidistrib.group.getMembers() ) {
 					mail.addRecipient( member.email, member.getName() );
 					if ( member.email2 != null ) {
@@ -300,7 +300,7 @@ class Cron extends Controller
 				}
 				
 				var m = new Mail();
-				m.setSender(App.config.get("default_email"), App.current.getTheme().name);
+				m.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);
 				m.addRecipient(App.config.get("webmaster_email"));
 				m.setSubject(App.current.getTheme().name+" Errors");
 				m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:report.toString() } ) );
@@ -500,7 +500,7 @@ class Cron extends Controller
 				
 					try{
 						var m = new Mail();
-						m.setSender(App.config.get("default_email"), App.current.getTheme().name);
+						m.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);
 						if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
 						m.addRecipient(u.user.email, u.user.getName());
 						if (u.user.email2 != null) m.addRecipient(u.user.email2);
@@ -586,7 +586,7 @@ class Cron extends Controller
 											
 						try{
 							var m = new Mail();
-							m.setSender(App.config.get("default_email"), App.current.getTheme().name);
+							m.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);
 							if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
 							m.addRecipient(user.email, user.getName());
 							if (user.email2 != null) m.addRecipient(user.email2);

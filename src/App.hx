@@ -78,10 +78,7 @@ class App extends sugoi.BaseApp {
 			id: "cagette",
 			name: "Cagette.net",
 			url: "https://www.cagette.net",
-			supportEmail: "support@cagette.net",
-			termsOfServiceLink: "https://www.cagette.net/wp-content/uploads/2020/11/cgu-.pdf",
-			termsOfSaleLink: "https://www.cagette.net/wp-content/uploads/2020/11/cgv.pdf",
-			platformTermsLink: "",
+			supportEmail: "support@cagette.net",			
 			footer: {
 				bloc1: '<a href="https://www.cagette.net" target="_blank">
 							<img src="/theme/cagette/logo.png" alt="logo Cagette.net" style="width:166px;"/>
@@ -145,18 +142,27 @@ class App extends sugoi.BaseApp {
 						Cagette.net est réalisé <br/>
 						par la <a href="https://www.alilo.fr" "target="_blank">SCOP Alilo</a>'
 			},
-			brandedEmailLayoutFooter:  '<p>Cagette.net - ALILO SCOP, 4 impasse Durban, 33000 Bordeaux</p>
-										<div style="display: flex; justify-content: center; align-items: center;">
-											<a href="https://www.cagette.net" target="_blank" rel="noreferrer noopener notrack" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
-												<img src="http://'+ App.config.HOST+'/img/emails/website.png" alt="Site web" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>Site web
-											</a>
-											<a href="https://www.facebook.com/cagette" target="_blank" rel="noreferrer noopener notrack" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
-												<img src="http://'+ App.config.HOST+'/img/emails/facebook.png" alt="Facebook" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>Facebook
-											</a>
-											<a href="https://www.youtube.com/channel/UC3cvGxAUrbN9oSZmr1oZEaw" target="_blank" rel="noreferrer noopener notrack" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
-												<img src="http://'+ App.config.HOST+'/img/emails/youtube.png" alt="YouTube" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>YouTube
-											</a>
-										</div>'
+			email:{
+				senderEmail : 'noreply@mj.cagette.net',
+				brandedEmailLayoutFooter:  '<p>Cagette.net - ALILO SCOP, 4 impasse Durban, 33000 Bordeaux</p>
+				<div style="display: flex; justify-content: center; align-items: center;">
+					<a href="https://www.cagette.net" target="_blank" rel="noreferrer noopener notrack" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
+						<img src="http://'+ App.config.HOST+'/img/emails/website.png" alt="Site web" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>Site web
+					</a>
+					<a href="https://www.facebook.com/cagette" target="_blank" rel="noreferrer noopener notrack" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
+						<img src="http://'+ App.config.HOST+'/img/emails/facebook.png" alt="Facebook" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>Facebook
+					</a>
+					<a href="https://www.youtube.com/channel/UC3cvGxAUrbN9oSZmr1oZEaw" target="_blank" rel="noreferrer noopener notrack" class="bold-green" style="text-decoration:none !important; padding: 8px; display: flex; align-items: center;">
+						<img src="http://'+ App.config.HOST+'/img/emails/youtube.png" alt="YouTube" height="25" style="width:auto!important; height:25px!important; vertical-align:middle" valign="middle" width="auto"/>YouTube
+					</a>
+				</div>'
+			},
+			terms: {
+				termsOfServiceLink: "https://www.cagette.net/wp-content/uploads/2020/11/cgu-.pdf",
+				termsOfSaleLink: "https://www.cagette.net/wp-content/uploads/2020/11/cgv.pdf",
+				platformTermsLink: "",
+			}
+			
 		}
 		var res = this.cnx.request("SELECT value FROM Variable WHERE name='whiteLabel'").results();
 		var whiteLabelStringified = res.first()==null ? null : res.first().value;
@@ -405,7 +411,7 @@ class App extends sugoi.BaseApp {
 	public static function sendMail(m:sugoi.mail.Mail, ?group:db.Group, ?sender:{email: String, ?name: String,?userId: Int}){
 		
 		if (group == null) group = App.current.user == null ? null:App.current.user.getGroup();
-		if (group != null) m.setSender(group.contact == null ? App.config.get("default_email") : group.contact.email, group.name);
+		if (group != null) m.setSender(group.contact == null ? App.current.getTheme().email.senderEmail : group.contact.email, group.name);
 		if (sender != null) m.setSender(sender.email, sender.name, sender.userId);
 		current.event(SendEmail(m));
 		var params = group==null ? null : {remoteId:group.id};
@@ -416,7 +422,7 @@ class App extends sugoi.BaseApp {
 		var e = new sugoi.mail.Mail();		
 		e.setSubject(subject);
 		e.setRecipient(to);			
-		e.setSender(App.config.get("default_email"), App.current.getTheme().name);				
+		e.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);				
 		var html = App.current.processTemplate("mail/message.mtt", {text:html,group:group});		
 		e.setHtmlBody(html);
 		App.sendMail(e, group);

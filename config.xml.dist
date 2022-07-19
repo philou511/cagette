@@ -5,7 +5,6 @@
 
 	host="localhost"
 	name = "Cagette.net"
-	default_email = "noreply@cagette.net"
 	webmaster_email = "mon_email@mon_domaine.fr"
 	
 	database="mysql://docker:docker@mysql/db"

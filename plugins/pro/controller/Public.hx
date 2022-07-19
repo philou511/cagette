@@ -103,7 +103,7 @@ class Public extends controller.Controller
 				var e = new sugoi.mail.Mail();		
 				e.setSubject(n.title);
 				e.setRecipient(catalog.company.vendor.email);			
-				e.setSender(App.config.get("default_email"),"Cagette.net");		
+				e.setSender(App.current.getTheme().email.senderEmail,"Cagette.net");		
 				var html = app.processTemplate("plugin/pro/mail/catalogImport.mtt", {catalog:catalog,group:group,user:app.user,message:f.getValueOf("message")});		
 				e.setHtmlBody(html);
 				App.sendMail(e);	

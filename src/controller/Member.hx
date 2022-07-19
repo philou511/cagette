@@ -159,7 +159,7 @@ class Member extends Controller
 				//warn the user that his email has been updated
 				if (form.getValueOf("email") != member.email) {
 					var m = new sugoi.mail.Mail();
-					m.setSender(App.config.get("default_email"), App.current.getTheme().name);
+					m.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);
 					m.addRecipient(member.email);
 					m.addRecipient(member.email2);
 					m.setSubject("Changement de courriel sur votre compte "+App.current.getTheme().name);
@@ -168,7 +168,7 @@ class Member extends Controller
 				}
 				if (form.getValueOf("email2") != member.email2 && member.email2!=null) {
 					var m = new sugoi.mail.Mail();
-					m.setSender(App.config.get("default_email"), App.current.getTheme().name);
+					m.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);
 					m.addRecipient(member.email2);
 					m.setSubject("Changement de courriel sur votre compte "+App.current.getTheme().name);
 					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:app.user.getName() + "vient de modifier votre courriel dans votre compte "+App.current.getTheme().name+". <br/> Votre courriel est maintenant : "+form.getValueOf("email2")  } ) );
