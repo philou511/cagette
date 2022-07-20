@@ -21,7 +21,7 @@ class CagettePro extends sys.db.Object
 	@hideInForms public var network:SBool;	//enable network management features
 	@hideInForms public var captiveGroups:SBool;	//the groups are a captive network
 	@hideInForms public var networkGroupIds:SNull<SString<512>>; //network groups, ints separated by comas
-	@hideInForms public var cdate:SNull<SDateTime>; //date when vendor became Cagette Pro
+	@hideInForms public var cdate:SNull<SDateTime>; //date when vendor became cpro
 	@hideInForms public var offer:SEnum<CagetteProOffer>;
 	
 	public function new(){
@@ -252,7 +252,7 @@ class CagettePro extends sys.db.Object
 			"desc" 		=> t._("Description"),			
 			"linkText" 	=> /*t._("Website Label")*/"Nom du site Web",			
 			"linkUrl" 	=> /*t._("Website URL")*/"URL du site web",			
-			"freeCpro" 	=> "Accès gratuit à Cagette Pro (stagiaire formation)",		
+			"freeCpro" 	=> "Accès gratuit au compte producteur (stagiaire formation)",		
 		];
 	}
 }

@@ -100,9 +100,7 @@
 		
 
 		Sur Cagette depuis le ::sDate(vendor.cdate)::<br/>
-		::if(cpro!=null)::Cagette Pro depuis le ::sDate(cpro.cdate)::::end::<br/>
-
-		<!--Lien pour mettre à jour le compte : <a href="::editLink::">::editLink::</a>-->
+		::if(cpro!=null)::Compte producteur depuis le ::sDate(cpro.cdate)::::end::<br/>
 	</div>
 
 	<div class="col-md-6">
@@ -130,17 +128,12 @@
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 						::if(cpro!=null)::
-						<li><a href="/p/pro/admin/delete/::vendor.id::/disable">Désactiver Cagette Pro ( redevient invité, possibilité de ré-ouvrir plus tard )</a></li>
-						<li><a href="/p/pro/admin/delete/::vendor.id::/deleteCpro">Supprimer Cagette Pro ( redevient invité )</a></li>
+						<li><a href="/p/pro/admin/delete/::vendor.id::/disable">Désactiver compte producteur ( redevient invité, possibilité de ré-ouvrir plus tard )</a></li>
+						<li><a href="/p/pro/admin/delete/::vendor.id::/deleteCpro">Supprimer compte producteur ( redevient invité )</a></li>
 						::else::
-						<li><a href="/p/pro/admin/createCpro/::vendor.id::">passer en Cagette Pro</a></li>
+						<li><a href="/p/pro/admin/createCpro/::vendor.id::">passer en compte producteur</a></li>
 						::end::
-						<li><a href="/p/pro/admin/delete/::vendor.id::/delete" >Supprimer complètement le producteur</a></li>	
-						
-						<!--::if(vendor.isTest==false)::
-			<a href="/p/pro/admin/cproTest/::vendor.id::" class="btn btn-default btn-sm">passer en Cagette Pro Test</a>
-			::end::---->
-						
+						<li><a href="/p/pro/admin/delete/::vendor.id::/delete" >Supprimer complètement le producteur</a></li>												
 						<li><a href="/p/pro/admin/dedupInfo/::vendor.email::" >Déduplication par email</a></li>
 						<li><a href="/p/pro/admin/findduplicatesbyname/::vendor.name::" >Recherche par nom</a></li>
 						<li><a href="/p/pro/admin/findduplicatesbyzip/::vendor.zipCode::" >Recherche par code postal</a></li>
@@ -237,7 +230,7 @@
 			
 			<tr class="::cl::"> 
 				<td>::if(isCproCatalog(c)):: 
-				Cagette PRO
+				Catalogue relié
 				::else::
 				Catalogue invité					
 				::end::</td>
@@ -251,33 +244,29 @@
 				</td>
 				<td>::c.name::</td>
 				<td>du ::sDate(c.startDate):: au ::sDate(c.endDate)::</td>
-				<td>
-					<!--
-					::if(cpro!=null && !isCproCatalog(c))::
-					<a href="/p/pro/admin/contractToCatalog/::c.id::/::cpro.id::" class="btn btn-danger btn-xs">Copier dans Cagette Pro</a>
-					::end::
-					-->
-				</td>
+				
 			</tr>
 		::end::
 		</table>
 </p>
 
-<p>
-	<h4>Formations suivies</h4>
-	<table class="table table-bordered">
-		::foreach c courses::		
-		<tr>
-			<td>::c._course.ref::</td>
-			<td>
-				<a href="/p/hosted/course/view/::c._course.id::">::c._course.name::</a>
-			</td>
-			<td>
-				Du ::sDate(c._course.date):: au ::sDate(c._course.end)::
-			</td> 
-		</tr>
-		::end::
-	</table>
-</p>
+::if settings.noCourse!=true::
+	<p>
+		<h4>Formations suivies</h4>
+		<table class="table table-bordered">
+			::foreach c courses::		
+			<tr>
+				<td>::c._course.ref::</td>
+				<td>
+					<a href="/p/hosted/course/view/::c._course.id::">::c._course.name::</a>
+				</td>
+				<td>
+					Du ::sDate(c._course.date):: au ::sDate(c._course.end)::
+				</td> 
+			</tr>
+			::end::
+		</table>
+	</p>
+::end::
 
 ::end::

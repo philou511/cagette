@@ -215,7 +215,7 @@ class VendorService{
 			}
 			
 			if(res.message!=null){
-				throw new Error("Erreur avec le numéro SIRET ("+res.message+"). Si votre numéro SIRET est correct mais non reconnu, contactez nous sur support@cagette.net");
+				throw new Error("Erreur avec le numéro SIRET ("+res.message+"). Si votre numéro SIRET est correct mais non reconnu, contactez nous sur "+App.current.getTheme().supportEmail);
 			}else if(res.etablissement.statut_diffusion=="N"){
 				throw new Error("Ce numéro SIRET est non diffusible, vous devez saisir les infos légales manuellement");
 			}else{

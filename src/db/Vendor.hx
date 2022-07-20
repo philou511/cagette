@@ -110,7 +110,7 @@ class Vendor extends Object
 			var noCagette2Groups = cpro.getGroups().filter(v->!v.hasCagette2());
 			if ( noCagette2Groups.length>0 ){
 				var name = noCagette2Groups.map(v -> v.name).join(", ");
-				throw sugoi.ControllerAction.ControllerAction.ErrorAction("/user/choose",'Le producteur "${this.name}" a l\'option Cagette2 activée et ne peut pas fonctionner avec des groupes qui n\'ont pas activé cette option ($name). Contactez nous sur <b>support@cagette.net</b> pour régler le problème.');
+				throw sugoi.ControllerAction.ControllerAction.ErrorAction("/user/choose",'Le producteur "${this.name}" a l\'option Cagette2 activée et ne peut pas fonctionner avec des groupes qui n\'ont pas activé cette option ($name). Contactez nous sur <b>'+App.current.getTheme().supportEmail+'</b> pour régler le problème.');
 			}
 			
 		} 

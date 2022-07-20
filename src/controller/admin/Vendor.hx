@@ -1,8 +1,8 @@
 package controller.admin;
 import haxe.Json;
-import sugoi.apis.linux.Curl;
-import service.BridgeService;
 import pro.db.VendorStats;
+import service.BridgeService;
+import sugoi.apis.linux.Curl;
 
 /**
  * Vendor admin
@@ -37,7 +37,6 @@ class Vendor extends controller.Controller
 			{label: "Invité", value: VTInvited.string()},
 			{label: "Invité dans un compte producteur", value: VTInvitedPro.string()},
 			{label: "Formule Membre (formé)", value: VTCpro.string()},
-			{label: "Cagette Pro test", value: VTCproTest.string()},
 			{label: "Compte pédagogique", value: VTStudent.string()},
 			{label: "Formule Découverte", value: VTDiscovery.string()},
 			{label: "Formule Pro (abo annuel)", value: VTCproSubscriberYearly.string()},
@@ -236,11 +235,6 @@ class Vendor extends controller.Controller
 			return false;
 		};
 
-		view.editLink = "https://app.cagette.net/vendorNoAuthEdit/"
-			+ v.id
-			+ "/"
-			+ haxe.crypto.Md5.encode(App.config.KEY + "_updateWithoutAuth_" + v.id);
-		
 		var res = sys.db.Manager.cnx.request('select * from TmpVendor where vendorId = ${v.id}').results();
 		var tmpVendor = res.first();
 		view.tmpVendor = tmpVendor;

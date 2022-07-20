@@ -4,6 +4,7 @@
 	<meta charset="utf-8" />
 	<title>Bon de commande</title>
 	<link href="/css/print.css" rel="stylesheet"/>
+	$$favicons()
 </head>
 <body>
 	<table class="table table-bordered table-hover"  style="width:100%;">

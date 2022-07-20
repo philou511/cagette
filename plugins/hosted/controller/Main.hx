@@ -1,12 +1,12 @@
 package hosted.controller;
-import hosted.db.GroupStats;
-import service.BridgeService;
-import pro.db.VendorStats;
-import tools.Timeframe;
-import hosted.HostedPlugIn;
-import sugoi.form.elements.StringInput;
-import db.Operation;
 import Common;
+import db.Operation;
+import hosted.HostedPlugIn;
+import hosted.db.GroupStats;
+import pro.db.VendorStats;
+import service.BridgeService;
+import sugoi.form.elements.StringInput;
+import tools.Timeframe;
 
 /**
  * Main controller of HOSTED plugin
@@ -277,7 +277,9 @@ class Main extends controller.Controller
 
 	@admin
 	function doCourse(d:haxe.web.Dispatch){
-		d.dispatch(new hosted.controller.Course());
+		if (App.current.getSettings().noCourse!=true) {
+			d.dispatch(new hosted.controller.Course());
+		}
 	}
 
 	@admin

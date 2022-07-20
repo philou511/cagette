@@ -42,6 +42,7 @@ class App {
     public var userId : Int;
     public var userName : String;
     public var userEmail : String;
+    public var theme : Theme;
     
 
 	function new(?lang="fr",?currency="&euro;") {

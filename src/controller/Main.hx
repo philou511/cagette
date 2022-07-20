@@ -50,6 +50,8 @@ class Main extends Controller {
 			throw Redirect("/user/choose");
 		} else if (app.user == null && (group == null || group.regOption != db.Group.RegOption.Open)) {
 			throw Redirect("/user/login");
+		}else if(group.disabled!=null){
+			throw Redirect("/group/disabled");
 		}
 
 		group.checkIsolate();
@@ -352,17 +354,17 @@ class Main extends Controller {
 
 	// CGU
 	public function doCgu() {
-		throw Redirect("https://www.cagette.net/wp-content/uploads/2020/11/cgu-.pdf");
+		throw Redirect(App.current.getTheme().terms.termsOfServiceLink);
 	}
 
 	// CGV
 	public function doCgv() {
-		throw Redirect("https://www.cagette.net/wp-content/uploads/2020/11/cgv.pdf");
+		throw Redirect(App.current.getTheme().terms.termsOfSaleLink);
 	}
 
 	// CGU MGP
 	public function doMgp() {
-		throw Redirect("https://www.cagette.net/wp-content/uploads/2019/03/psp_mangopay_fr.pdf");
+		throw Redirect("https://www.mangopay.com/terms/MANGOPAY_Terms-FR.pdf");
 	}
 
 	// charte
