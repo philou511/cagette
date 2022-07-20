@@ -321,6 +321,7 @@ class Vendor extends Object
 
 	/**NAF**/
 	function getActivity():{id:String,name:String}{
+		if (activityCode==null) return null;
 		var naf = activityCode.split(".").join("");
 		return service.VendorService.getActivityCodes().find(p -> Std.string(p.id) == naf);
 	}
