@@ -60,16 +60,23 @@ class VendorStats extends sys.db.Object
 
 			var address = vendor.getAddress();
 			
-			var res = service.Mapbox.geocode(address);
+			try{
+				var res = service.Mapbox.geocode(address);
 	
-			if(res!=null){
-				if(res.geometry.coordinates[0]!=null){					
-					vendor.lat = res.geometry.coordinates[1];
-					vendor.lng = res.geometry.coordinates[0];
+				if(res!=null){
+					if(res.geometry.coordinates[0]!=null){					
+						vendor.lat = res.geometry.coordinates[1];
+						vendor.lng = res.geometry.coordinates[0];
+						vendor.update();
+					}
+				}else{
+					vendor.lat = 0;
+					vendor.lng = 0;
 					vendor.update();
 				}
+			}catch(e:Dynamic){
+				App.current.logError("Unable to geocode vendor #"+vendor.id+" : "+Std.string(e));
 			}
-			
 		}
 
 		var vs = getOrCreate(vendor);
