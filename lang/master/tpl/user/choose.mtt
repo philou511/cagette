@@ -1,8 +1,6 @@
 ::use 'design.mtt'::
 
-	
-<!--<div class="col-md-8 col-md-offset-2" ::cond isCovid==true::>-->
-	::if(cagettePros!=null && cagettePros.length>0)::
+	::if(cagettePros!=null && cagettePros.length>0 && theme.id=="cagette")::
 	<div class="col-md-12" >
 		<div class="alert alert-warning" style="background-color: white;">
 			
@@ -20,21 +18,12 @@
 					</p>				
 					<p><b>Pour prendre en main l’outil c’est par ici !</b><br/>
 						C’est l’espace où vous trouverez tous les tutoriels 
-						pour vous lancer sur Cagette.net. 
+						pour vous lancer sur ::theme.name::. 
 					</p>	
 				</div>
 				
 				<div class="col-md-6 text-center">
-					<!--<img src="/img/question.png" />-->
 					<p>											
-						<!--<b>Visio d'aide aux Producteurs :</b><br/>
-						<a href="https://us02web.zoom.us/meeting/register/tZAkfu-oqTgvGdBOeJj3JGssxcH9HiFXdu5R" target="_blank" title="">1er lundi du mois à 18h</a><br/>
-						<a href="https://us02web.zoom.us/meeting/register/tZEuf-6vqzwpGtTYCjqRtCfGyaqxSLl5gzvq" target="_blank" >3e lundi du mois à 18h</a><br/>
-
-						<b>Webinaire thématiques :</b><br/>
-						<a href="https://us02web.zoom.us/meeting/register/tZcrdOqtpjkpGdcVX_-TGDtl4iVpWzepGyr4" target="_blank" data-toggle="tooltip" title="tous les 2e lundi du mois à 18h">Bonnes pratiques</a><br/>
-						<a href="https://us02web.zoom.us/webinar/register/WN_ljYtX1oATOOy22wu33fmzQ" target="_blank" data-toggle="tooltip" title="Dernier lundi du mois à 18h"> Fonctionnalité</a><br/>
-						-->
 						::raw getVariable("homeVendorMessage")::
 					</p>
 				</div>
@@ -43,7 +32,7 @@
 			
 		</div>
 	</div>
-	::elseif(isGroupAdmin)::
+	::elseif(isGroupAdmin && theme.id=="cagette")::
 	<div class="col-md-12" >
 		<div class="alert alert-warning" style="background-color: white;">
 			
@@ -63,19 +52,12 @@
 					<p>
 						<b>Pour prendre en main l’outil c’est par ici !</b><br/>
 						C’est l’espace où vous trouverez tous les tutoriels<br/> 
-						pour vous lancer sur Cagette.net.
+						pour vous lancer sur ::theme.name::.
 					</p>
-					
 				</div>
 				
 				<div class="col-md-6 text-center">
-					<!--<img src="/img/question.png" />-->
 					<p>
-						<!--<a href="https://us02web.zoom.us/meeting/register/tZEuf-6vqzwpGtTYCjqRtCfGyaqxSLl5gzvq" target="_blank" data-toggle="tooltip" title="Tous les 3e lundi du mois à 18h">Visio d'aide aux Coordinateurs</a><br/>
-						<b>Webinaire thématiques :</b><br/>
-						<a href="https://us02web.zoom.us/meeting/register/tZcrdOqtpjkpGdcVX_-TGDtl4iVpWzepGyr4" target="_blank" data-toggle="tooltip" title="Tous les 2e lundi du mois à 18h">Bonnes pratiques</a><br/>
-						<a href="https://us02web.zoom.us/webinar/register/WN_ljYtX1oATOOy22wu33fmzQ" target="_blank" data-toggle="tooltip" title="Tous les derniers lundi du mois à 18h"> Fonctionnalité</a><br/>
-						-->
 						::raw getVariable("homeGroupAdminMessage")::
 					</p>				
 				</div>
@@ -117,7 +99,7 @@
 	
 	<div class="col-md-12" ::cond cagettePros!=null || tmpVendors.length>0:: >
 		<div class="row">
-		<!-- cagette pro -->
+		<!-- cpro -->
 		::foreach cp cagettePros::
 			::set v = cp._vendor::
 			<div class="col-md-4">
@@ -144,7 +126,7 @@
 				<h4>::tmp.farmName::</h4>
 				<p class="disabled">
 					<i class="icon icon-clock"></i>
-					Demande d'ouverture de compte producteur en attente de validation par l'équipe Cagette.net
+					Demande d'ouverture de compte producteur en attente de validation par l'équipe ::theme.name::
 				</p>
 			</a>
 		</div>
@@ -155,7 +137,7 @@
 	</div>
 	
 	<div class="col-md-12" >
-		<p>Vous êtes membre des <b>groupes Cagette</b> suivants :</p>
+		<p>Vous êtes membre des <b>groupes ::theme.name::</b> suivants :</p>
 	</div>
 
 	<!-- groups -->
@@ -190,12 +172,13 @@
 		::if session.lang!="de"::
 			<a class="btn btn-default btn-lg" href="/group/map">
 				<i class="icon icon-search"></i> ::_("Find other groups near me")::
-			</a>	
+			</a>
 		::end::
-		<a class="btn btn-default btn-lg" href="/group/create/">
-			<i class="icon icon-plus"></i> Créer un groupe
-		</a>	
-		
+		::if settings.onlyVendorsCanCreateGroup==null || settings.onlyVendorsCanCreateGroup==false || (settings.onlyVendorsCanCreateGroup==true && cagettePros!=null && cagettePros.length>0)::
+			<a class="btn btn-default btn-lg" href="/group/create/">
+				<i class="icon icon-plus"></i> Créer un groupe
+			</a>
+		::end::
 	</div>
 
 		

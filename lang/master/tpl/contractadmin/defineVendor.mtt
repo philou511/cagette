@@ -62,7 +62,7 @@
 							
 							::else::
 								<!-- NOT compte producteur -->
-								::if shopMode::
+								::if shopMode && settings.noVendorSignup!=true::
 									<!--<a href="/contract/insert/::v.id::" class="btn btn-default btn-sm">
 										<i class="icon icon-plus"></i> Nouveau catalogue
 									</a>-->
@@ -95,12 +95,12 @@
 				<div class="col-md-12">
 					$$empty(::_("We could not find any vendor matching your search")::)
 				</div>
-				::if user.getGroup().hasShopMode():: 
-				<div class="col-md-12" style="margin-bottom:16px; text-align: center;">
-					<a href="/contract/inviteVendor" class="btn btn-primary btn-lg">
-						<i class="icon icon-mail"></i> Inviter un nouveau producteur
-					</a>
-				</div>
+				::if user.getGroup().hasShopMode() && settings.noVendorSignup!=true:: 
+					<div class="col-md-12" style="margin-bottom:16px; text-align: center;">
+						<a href="/contract/inviteVendor" class="btn btn-primary btn-lg">
+							<i class="icon icon-mail"></i> Inviter un nouveau producteur
+						</a>
+					</div>
 				::end::
 				<div class="col-md-12">
 					$$back()
@@ -113,32 +113,34 @@
 	</div>
 </div>
 
-	::if !user.getGroup().hasShopMode():: 
-		<div class="col-md-12">
-			<div class="article text-center">
-				<p>
-					::_("if you have not found your vendor, enter a new record")::
-				</p>
-				<a href="/contract/insertVendor/::name::" class="btn btn-default btn-lg">
-				<i class="icon icon-plus"></i> ::_("Key-in a new vendor")::</a>
+	::if settings.noVendorSignup!=true::
+		::if !user.getGroup().hasShopMode():: 
+			<div class="col-md-12">
+				<div class="article text-center">
+					<p>
+						::_("if you have not found your vendor, enter a new record")::
+					</p>
+					<a href="/contract/insertVendor/::name::" class="btn btn-default btn-lg">
+					<i class="icon icon-plus"></i> ::_("Key-in a new vendor")::</a>
+				</div>
 			</div>
-		</div>
-	::end::
+		::end::
 
-	::if user.getGroup().hasShopMode() && vendors.length>0::
-		<div class="col-md-12">
-			<div class="article text-center">
-				<p>
-					Si vous ne trouvez pas votre producteur dans la base de données,<br/>
-					vous pouvez l'inviter à s'inscrire sur la plateforme :<br/>
-				</p>
-				<p>
-					<a href="/contract/inviteVendor" class="btn btn-primary btn-lg">
-						<i class="icon icon-mail"></i> Inviter un nouveau producteur
-					</a>
-				</p>
+		::if user.getGroup().hasShopMode() && vendors.length>0::
+			<div class="col-md-12">
+				<div class="article text-center">
+					<p>
+						Si vous ne trouvez pas votre producteur dans la base de données,<br/>
+						vous pouvez l'inviter à s'inscrire sur la plateforme :<br/>
+					</p>
+					<p>
+						<a href="/contract/inviteVendor" class="btn btn-primary btn-lg">
+							<i class="icon icon-mail"></i> Inviter un nouveau producteur
+						</a>
+					</p>
+				</div>
 			</div>
-		</div>
+		::end::
 	::end::
 
 ::end::

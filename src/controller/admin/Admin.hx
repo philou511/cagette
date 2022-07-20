@@ -1,5 +1,6 @@
 package controller.admin;
-import sys.FileSystem;
+import haxe.Json;
+import sugoi.form.elements.TextArea;
 import Common;
 import db.BufferedJsonMail;
 import db.Catalog;
@@ -12,6 +13,7 @@ import pro.db.VendorStats;
 import service.GraphService;
 import sugoi.Web;
 import sugoi.db.Variable;
+import sys.FileSystem;
 import tools.ObjectListTool;
 import tools.Timeframe;
 
@@ -30,7 +32,43 @@ class Admin extends Controller {
 	@tpl("admin/default.mtt")
 	function doDefault() {
 		view.now = Date.now();
-		view.ip = Web.getClientIP();		
+		view.ip = Web.getClientIP();
+		
+		if(app.params.get("reloadSettings")=="1"){
+			app.setSettings();
+			app.setTheme();
+			view.theme = app.getTheme();
+			view.settings = app.getSettings();
+			throw Ok('/admin',"Settings and theme reloaded");
+		}
+	}
+
+	@tpl("form.mtt")
+	function doTheme(){
+
+		var f = new sugoi.form.Form("theme");
+
+		f.addElement(new sugoi.form.elements.TextArea("theme","theme",Json.stringify(app.getTheme()),true,null,"style='height:800px;'"));
+		f.addElement(new sugoi.form.elements.Html("html","<a href='https://www.jsonlint.com/' target='_blank'>jsonlint.com</a>"));
+
+		if(f.isValid()){
+
+			var json:Theme = null;
+			try{
+				json = Json.parse(f.getValueOf("theme"));
+				Variable.set("whiteLabel",Json.stringify(json));
+			}catch(e:Dynamic){
+				throw Error('/admin/theme',"Erreur : "+Std.string(e));
+			}
+
+			throw Ok("/admin/","Thème mis à jour");
+		}
+
+
+		view.form = f;
+		view.title = "Modifier le thème";
+
+
 	}
 
 	@tpl('admin/basket.mtt')
@@ -561,4 +599,7 @@ class Admin extends Controller {
 		}
 
 	}
+
+	@tpl('admin/settings.mtt')
+	function doSettings(){}
 }

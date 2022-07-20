@@ -19,7 +19,7 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 		initi18n();
 		
 		//suscribe to events
-		App.current.eventDispatcher.add(onEvent);
+		App.eventDispatcher.add(onEvent);
 	}
 	
 	public function initi18n(){
@@ -36,10 +36,7 @@ class MangopayPlugin extends PlugIn implements IPlugIn{
 			case Nav(nav,name,id) :				
 				switch(name) {
 					case "company":
-						//Mangopay-marketplace for cagette pro
-						//nav.push({id: "mangopay-vendor-wallet", name: "Paiements", link: "/p/pro/transaction/mangopay/vendorWallet"});
-						//nav.push({id: "mangopay-vendor-kyc", name: "Justificatifs Mangopay", link: "/p/pro/transaction/mangopay/vendorKyc"});	
-
+						
 					case "groupAdmin":
 						//Mangopay-ec for groups
 						var groupConf = MangopayPlugin.getGroupConfig(App.current.user.getGroup());

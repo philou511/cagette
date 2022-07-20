@@ -4,7 +4,7 @@ import tink.core.Error;
 import Common;
 
 /**
- * Datafood API (cagette Pro)
+ * Datafood API 
  */
 class DFC extends controller.Controller
 {

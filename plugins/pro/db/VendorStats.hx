@@ -6,8 +6,8 @@ enum VendorType {
 	VTCpro; 			// 0 Offre Pro formé
 	VTFree; 			// 1 Gratuit
 	VTInvited; 			// 2 Invité
-	VTInvitedPro;   	// 3 Invité Cagette Pro
-	VTCproTest; 		// 4 Cagette Pro test (COVID19 ou en attente de formation)
+	VTInvitedPro;   	// 3 Invité sur cpro
+	VTCproTest; 		// 4 CPro test (COVID19 ou en attente de formation) @deprecated
 	VTStudent; 			// 5 compte pro pédagogique
 	VTDiscovery; 		// 6 Offre Découverte
 	VTCproSubscriberMontlhy; 	// 7 Offre Pro abonné mensuel

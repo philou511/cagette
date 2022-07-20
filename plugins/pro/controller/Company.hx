@@ -115,7 +115,7 @@ class Company extends controller.Controller
 			
 			throw Ok("/p/pro/company/users", "Nouvel utilisateur ajouté");
 		}
-		view.title = "Ajouter un nouvel utilisateur à mon compte Cagette Pro";
+		view.title = "Ajouter un nouvel utilisateur à mon compte producteur";
 		view.form = f;
 	}
 
@@ -158,7 +158,7 @@ class Company extends controller.Controller
 			
 			throw Ok("/p/pro/company/users", "Utilisateur mis à jour");
 		}
-		view.title = "Gérer un utilisateur de mon compte Cagette Pro";
+		view.title = "Gérer un utilisateur de mon compte producteur";
 		view.form = f;
 	}
 	
@@ -376,7 +376,7 @@ class Company extends controller.Controller
 		f.addElement(new sugoi.form.elements.Checkbox("directory","Référencer ma page sur les annuaires partenaires de Cagette.net",vendor.directory));
 		f.getElement("directory").description = "Etre référencé sur <a href='https://www.118712.fr' target='_blank'>118712.fr</a> pour augmenter votre visibilité sur le web.";
 		f.addElement(new sugoi.form.elements.TextArea("longDesc","Description longue de votre exploitation",vendor.longDesc));
-		f.addElement(new sugoi.form.elements.TextArea("offCagette","En dehors de Cagette.net, où peut on trouver vos produits ?",vendor.offCagette));
+		f.addElement(new sugoi.form.elements.TextArea("offCagette","En dehors de "+App.current.getTheme().name+", où peut on trouver vos produits ?",vendor.offCagette));
 
 		view.images = company.vendor.getImages();
 		view.farmImagesNum = [0,1,2,3];

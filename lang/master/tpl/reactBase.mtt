@@ -7,9 +7,11 @@
 			::if pageTitle!=null::
 				::pageTitle::
 			::else::
-				::NAME::
+				::theme.name::
 			::end::
 		</title>
+
+	    $$favicons()
 
 		<!-- Leaflet CSS -->
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
@@ -17,7 +19,11 @@
 		crossorigin=""/>
 		
 		<!-- Cagette CSS -->
-		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
+		::if(DEBUG)::
+			<link rel="stylesheet" type="text/css" href="/theme/::theme.id::/css/::getVariable('css')::/style.css" />
+		::else::
+			<link rel="stylesheet" type="text/css" href="/theme/::theme.id::/css/::getVariable('css')::/style.min.css" />
+		::end::
 
 
 		<!-- Cagette very own icon font -->

@@ -2,6 +2,7 @@ package controller;
 import payment.Cash;
 import Common;
 import db.Group;
+import payment.Cash;
 import service.BridgeService;
 import service.DistributionService;
 import service.OrderService;
@@ -109,8 +110,15 @@ class Group extends controller.Controller
 	 */
 	@tpl("form.mtt")
 	function doCreate() {
-		
-		view.title = t._("Create a new Cagette Group");
+		var cagettePros = service.VendorService.getCagetteProFromUser(App.current.user);
+		if (!(App.current.getSettings().onlyVendorsCanCreateGroup==null
+			 || App.current.getSettings().onlyVendorsCanCreateGroup==false 
+			 || (App.current.getSettings().onlyVendorsCanCreateGroup==true && cagettePros!=null && cagettePros.length>0))
+			 ) {
+			throw Redirect("/");
+		}
+
+		view.title = "Créer un nouveau groupe " + App.current.getTheme().name;
 
 		var p = new db.Place();
 		var f = form.CagetteForm.fromSpod(p);
@@ -118,20 +126,22 @@ class Group extends controller.Controller
 		f.addElement(new StringInput("groupName", t._("Name of your group"), "", true),1);
 		
 		//group type
-		var data = [
-			{
-				label:"Mode marché",
-				value:"2",
-				desc : "Drive de producteurs sans engagement.<br/>Configuration par défaut : Groupe ouvert, n'importe qui peut s'inscrire et commander <a data-toggle='tooltip' title='En savoir plus' href='https://wiki.cagette.net/admin:admin_boutique#mode_marche' target='_blank'><i class='icon icon-info'></i></a>"
-			},
-			{ 
-				label:"Mode AMAP",
-				value:"0",
-				desc : "Gérer des contrats AMAP classiques ou variables.<br/>Configuration par défaut : Groupe fermé avec liste d'attente et gestion des adhésions. <a data-toggle='tooltip' title='En savoir plus' href='https://wiki.cagette.net/admin:admin_boutique#mode_amap' target='_blank'><i class='icon icon-info'></i></a>"
-			}
-		];	
-		var gt = new sugoi.form.elements.RadioGroup("type", t._("Group type"), data ,"2", Std.string( db.Catalog.TYPE_VARORDER ), true, true, true);
-		f.addElement(gt,2);
+		if (App.current.getSettings().noCsa != true) {
+			var data = [
+				{
+					label:"Mode marché",
+					value:"2",
+					desc : "Drive de producteurs sans engagement.<br/>Configuration par défaut : Groupe ouvert, n'importe qui peut s'inscrire et commander <a data-toggle='tooltip' title='En savoir plus' href='https://wiki.cagette.net/admin:admin_boutique#mode_marche' target='_blank'><i class='icon icon-info'></i></a>"
+				},
+				{ 
+					label:"Mode AMAP",
+					value:"0",
+					desc : "Gérer des contrats AMAP classiques ou variables.<br/>Configuration par défaut : Groupe fermé avec liste d'attente et gestion des adhésions. <a data-toggle='tooltip' title='En savoir plus' href='https://wiki.cagette.net/admin:admin_boutique#mode_amap' target='_blank'><i class='icon icon-info'></i></a>"
+				}
+			];	
+			var gt = new sugoi.form.elements.RadioGroup("type", t._("Group type"), data ,"2", Std.string( db.Catalog.TYPE_VARORDER ), true, true, true);
+			f.addElement(gt,2);
+		}
 
 		f.getElement("name").label = "Nom du lieu";
 		f.removeElementByName("lat");
@@ -147,7 +157,12 @@ class Group extends controller.Controller
 			g.name = f.getValueOf("groupName");
 			g.contact = user;
 			
-			var type:GroupType = Type.createEnumIndex(GroupType, Std.parseInt(f.getValueOf("type")) );
+			var type:GroupType;
+			if (App.current.getSettings().noCsa == true) {
+				type = GroupType.ProducerDrive;
+			}else {
+				type = Type.createEnumIndex(GroupType, Std.parseInt(f.getValueOf("type")) );
+			}
 			
 			switch(type){
 			case null : 
@@ -266,5 +281,10 @@ class Group extends controller.Controller
 		view.lat = args.lat;
 		view.lng = args.lng;
 		view.address = args.address;		
+	}
+
+	@tpl("group/disabled.mtt")
+	public function doDisabled(){
+		view.group = App.current.getCurrentGroup();
 	}
 }
