@@ -22,7 +22,7 @@
     "cross-env": "^5.1.1",
     "envify": "^4.1.0",
     "npm-run-all": "^4.1.2",
-    "terser": "^4.4.0",
+    "terser": "^4.8.1",
     "uglifyify": "^5.0.2"
   },
   "scripts": {
