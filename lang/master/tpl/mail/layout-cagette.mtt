@@ -53,7 +53,7 @@
 		</div>
 
 		<div id="email-footer">
-			::raw theme.brandedEmailLayoutFooter::
+			::raw theme.email.brandedEmailLayoutFooter::
 		</div>
 	</body>
 
