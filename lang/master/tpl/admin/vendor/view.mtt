@@ -213,6 +213,9 @@
 		</tr>
 		::end::
 	</table>
+	::if(cpro!=null)::
+	<a href="/admin/vendor/editLegalRepresentative/::cpro.id::" class="btn btn-default btn-xs" style="margin-bottom: 8px; margin-top: -8px;">Changer de Représentant légal</a>
+	::end::
 </p>
 ::end::
 
