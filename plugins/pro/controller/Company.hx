@@ -1,6 +1,7 @@
 package pro.controller;
 import mangopay.Mangopay;
 import pro.db.PVendorCompany;
+import service.BridgeService;
 import service.VendorService;
 import sugoi.form.elements.FloatInput;
 import sugoi.form.elements.Html;
@@ -94,14 +95,22 @@ class Company extends controller.Controller
 			v.company = company;
 			v.user = u;
 			v.salesRepresentative = f.getValueOf("salesRepresentative");
-
+			
 			if(v.salesRepresentative){
+				// Sync the new sales representative to HS as Marketing and associated it with vendor's Company
+				BridgeService.syncUserToHubspot(u, company.vendor);
+				
 				// If there is another SalesRepresentative (and we should always have one)
 				// set it to false
 				var existingSalesRepresentative = pro.db.PUserCompany.manager.select($company==company && $salesRepresentative);
 				if(existingSalesRepresentative!=null) {
 					existingSalesRepresentative.salesRepresentative = false;
 					existingSalesRepresentative.update();
+					if (!existingSalesRepresentative.legalRepresentative) {
+						// Set it as non-marketing and delete association
+						BridgeService.triggerWorkflow(BridgeService.HUBSPOT_WORKFLOWS_ID.setContactAsNonMarketing, existingSalesRepresentative.user.email);
+						BridgeService.deleteHubspotAssociationContactToCompany(existingSalesRepresentative.user, company.vendor);
+					}
 				}
 
 				// Set the vendor.email to the SalesRepresentative email
@@ -134,12 +143,20 @@ class Company extends controller.Controller
 			uc.salesRepresentative = f.getValueOf("salesRepresentative");
 
 			if(uc.salesRepresentative){
+				// Sync the new sales representative to HS as Marketing and associated it with vendor's Company
+				BridgeService.syncUserToHubspot(user, company.vendor);
+
 				// If there is another SalesRepresentative (and we should always have one)
 				// set it to false
 				var existingSalesRepresentative = pro.db.PUserCompany.manager.select($company==company && $salesRepresentative && $user!=user);
 				if(existingSalesRepresentative!=null) {
 					existingSalesRepresentative.salesRepresentative = false;
 					existingSalesRepresentative.update();
+					if (!existingSalesRepresentative.legalRepresentative) {
+						// Set it as non-marketing and delete association
+						BridgeService.triggerWorkflow(BridgeService.HUBSPOT_WORKFLOWS_ID.setContactAsNonMarketing, existingSalesRepresentative.user.email);
+						BridgeService.deleteHubspotAssociationContactToCompany(existingSalesRepresentative.user, company.vendor);
+					}
 				}
 
 				// Set the vendor.email to the SalesRepresentative email

@@ -289,5 +289,48 @@ class Vendor extends controller.Controller
 		view.form = form;
 	}
 	
-	
+	@tpl('form.mtt')
+	function doEditLegalRepresentative(company:pro.db.CagettePro) {
+		var f = new sugoi.form.Form("user");
+		f.addElement( new sugoi.form.elements.StringInput("email","Email",null,true));
+		
+		if (f.isValid()){
+			var uc = new pro.db.PUserCompany();
+			var u = service.UserService.get(f.getValueOf("email"));
+			if(u==null){
+				throw Error('/admin/vendor/view/${company.vendor.id}','Il n\'y a aucun compte avec l\'email "${f.getValueOf("email")}". Cette personne doit s\'inscrire avant que vous puissiez lui donner accès au compte producteur.');
+			}
+
+			uc.company = company;
+			uc.user = u;
+			uc.legalRepresentative = true;
+			
+			// Sync the new legal representative to HS as Marketing and associated it with vendor's Company
+			BridgeService.syncUserToHubspot(u, company.vendor);
+			
+			// If there is another legalRepresentative (and we should always have one) set it to false
+			var existingLegalRepresentative = pro.db.PUserCompany.manager.select($company==company && $legalRepresentative && $user!=u);
+			if(existingLegalRepresentative!=null) {
+				existingLegalRepresentative.legalRepresentative = false;
+				existingLegalRepresentative.update();
+				if (!existingLegalRepresentative.salesRepresentative) {
+					// Set it as non-marketing and delete association
+					BridgeService.triggerWorkflow(BridgeService.HUBSPOT_WORKFLOWS_ID.setContactAsNonMarketing, existingLegalRepresentative.user.email);
+					BridgeService.deleteHubspotAssociationContactToCompany(existingLegalRepresentative.user, company.vendor);
+				}
+			}
+
+			var isAlreadyUc = pro.db.PUserCompany.manager.select( $company==company && $user==u, true );
+			if (isAlreadyUc!=null){
+				isAlreadyUc.legalRepresentative = true;
+				isAlreadyUc.update();
+			}else{
+				uc.insert();
+			}
+			
+			throw Ok('/admin/vendor/view/${company.vendor.id}', "Représentant légal modifié");
+		}
+		view.title = 'Nouveau Représentant légal du compte producteur ${company.vendor.name}';
+		view.form = f;
+	}
 }

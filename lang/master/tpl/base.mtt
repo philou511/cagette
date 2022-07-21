@@ -118,7 +118,7 @@
                     bloc3: "::theme.bloc3::",
                     bloc4: "::theme.bloc4::"
                 },
-                brandedEmailLayoutFooter: "::theme.brandedEmailLayoutFooter::"
+                brandedEmailLayoutFooter: "::theme.email.brandedEmailLayoutFooter::"
             };
         })
 
