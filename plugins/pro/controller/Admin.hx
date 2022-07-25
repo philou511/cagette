@@ -1722,13 +1722,14 @@ class Admin extends controller.Controller {
 			print("====  100 Groupes a effacer");
 			for(g in groupsToDelete){
 				print("delete "+g.name);
-				//g.delete();
+				g.delete();
 			}
 
 			for( u in db.User.manager.unsafeObjects("SELECT * FROM User order by RAND() limit 1000",true)){
 
 				//ne pas effacer ceux qui sont dans un groupe VRAC
 				if( db.UserGroup.manager.count($userId in gids) > 0 ){
+					print(""+u.toString()+" is VRAC member");
 					continue;
 				}
 
@@ -1736,11 +1737,12 @@ class Admin extends controller.Controller {
 				var mds = db.MultiDistrib.manager.search($groupId in gids,false);
 				var mdIds = mds.map(x -> x.id);
 				if( db.Basket.manager.count($multiDistribId in mdIds) > 0 ){
+					print(""+u.toString()+" has VRAC baskets");
 					continue;
 				}
 
 				print("delete "+u.toString());
-				//u.delete();
+				u.delete();
 			}
 		}
 		
