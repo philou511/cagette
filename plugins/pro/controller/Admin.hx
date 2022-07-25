@@ -1708,6 +1708,15 @@ class Admin extends controller.Controller {
 
 		//RUN THIS ON VRAC
 		if(themeId=="vrac"){
+
+			for(cpro in cpros){
+				print(cpro.vendor.name);
+				for( g in cpro.getGroups()){
+					print("- "+g.name);
+					groups.push(g);
+				}
+			}
+
 			var gids:Array<Int> = groups.map(g -> g.id);
 			var groupsToDelete = db.Group.manager.unsafeObjects('select * from `Group` where id not in (${gids.join(",")}) LIMIT 100',true);
 			print("====  100 Groupes a effacer");
