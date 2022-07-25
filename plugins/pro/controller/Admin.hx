@@ -1728,7 +1728,7 @@ class Admin extends controller.Controller {
 			for( u in db.User.manager.unsafeObjects("SELECT * FROM User order by RAND() limit 1000",true)){
 
 				//ne pas effacer ceux qui sont dans un groupe VRAC
-				if( db.UserGroup.manager.count($userId in gids,false) > 0 ){
+				if( db.UserGroup.manager.count($userId in gids) > 0 ){
 					continue;
 				}
 
