@@ -1649,7 +1649,7 @@ class Admin extends controller.Controller {
 
 	function doVrac(){
 
-		/*var themeId = App.current.getTheme().id;
+		var themeId = App.current.getTheme().id;
 
 		var vendorIds = [
 			12640, //Bordeaux
@@ -1684,13 +1684,23 @@ class Admin extends controller.Controller {
 
 					
 					//RUN THIS ON CAGETTE.NET
-					// g.lock();
-					// g.disabled = XXX;
-					// g.extUrl = "https://epicerie.vrac-asso.org/group/"+g.id;
-					// g.update();
+					g.lock();
+					g.disabled = Std.string(db.Group.GroupDisabledReason.MOVED);
+					g.extUrl = "https://epicerie.vrac-asso.org/group/"+g.id;
+					g.update();
 
-					//TODO : remove future distribs that have no orders !!
-
+					//remove future distribs that have no orders !!
+					var mds = MultiDistrib.getFromTimeRange(g,Date.now(),DateTools.delta(Date.now(),1000*60*60*24*30.5*12*1000));
+					for(md in mds){
+						var orders = md.getOrders();
+						if(orders.length==0){
+							md.lock();
+							print("delete "+md.toString());
+							md.delete();
+						}else{
+							print(" "+md.toString()+" has orders !!");
+						}
+					}
 					
 				}
 			}
@@ -1702,10 +1712,28 @@ class Admin extends controller.Controller {
 			var groupsToDelete = db.Group.manager.unsafeObjects('select * from `Group` where id not in (${gids.join(",")}) LIMIT 100',true);
 			print("====  100 Groupes a effacer");
 			for(g in groupsToDelete){
-				print(g.name);
+				print("delete "+g.name);
 				//g.delete();
 			}
-		}*/
+
+			for( u in db.User.manager.unsafeObjects("SELECT * FROM db.User order by RAND() limit 1000",true)){
+
+				//ne pas effacer ceux qui sont dans un groupe VRAC
+				if( db.UserGroup.manager.select($userId in gids,false)!=null ){
+					continue;
+				}
+
+				//ne pas effacer ceux qui ont des commandes VRAC
+				var mds = db.MultiDistrib.manager.search($groupId in gids,false);
+				var mdIds = mds.map(x -> x.id);
+				if( db.Basket.manager.select($multiDistribId in mdIds)!=null ){
+					continue;
+				}
+
+				print("delete "+u.toString());
+				//u.delete();
+			}
+		}
 		
 
 

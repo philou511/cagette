@@ -64,11 +64,8 @@ class Admin extends Controller {
 			throw Ok("/admin/","Thème mis à jour");
 		}
 
-
 		view.form = f;
 		view.title = "Modifier le thème";
-
-
 	}
 
 	@tpl('admin/basket.mtt')
