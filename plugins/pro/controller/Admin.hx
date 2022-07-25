@@ -1718,14 +1718,14 @@ class Admin extends controller.Controller {
 			}
 
 			var gids:Array<Int> = groups.map(g -> g.id);
-			var groupsToDelete = db.Group.manager.unsafeObjects('select * from `Group` where id not in (${gids.join(",")}) LIMIT 100',true);
-			print("====  100 Groupes a effacer");
+			var groupsToDelete = db.Group.manager.unsafeObjects('select * from `Group` where id not in (${gids.join(",")}) LIMIT 1000',true);
+			print("====  1000 Groupes a effacer");
 			for(g in groupsToDelete){
 				print("delete "+g.name);
 				g.delete();
 			}
 
-			for( u in db.User.manager.unsafeObjects("SELECT * FROM User order by RAND() limit 1000",true)){
+			for( u in db.User.manager.unsafeObjects("SELECT * FROM User order by RAND() limit 5000",true)){
 
 				//ne pas effacer ceux qui sont dans un groupe VRAC
 				if( db.UserGroup.manager.count($userId==u.id && $groupId in gids) > 0 ){
