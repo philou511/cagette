@@ -1728,7 +1728,7 @@ class Admin extends controller.Controller {
 			for( u in db.User.manager.unsafeObjects("SELECT * FROM User order by RAND() limit 1000",true)){
 
 				//ne pas effacer ceux qui sont dans un groupe VRAC
-				if( db.UserGroup.manager.count($userId in gids) > 0 ){
+				if( db.UserGroup.manager.count($userId==u.id && $groupId in gids) > 0 ){
 					print(""+u.toString()+" is VRAC member");
 					continue;
 				}
@@ -1736,7 +1736,7 @@ class Admin extends controller.Controller {
 				//ne pas effacer ceux qui ont des commandes VRAC
 				var mds = db.MultiDistrib.manager.search($groupId in gids,false);
 				var mdIds = mds.map(x -> x.id);
-				if( db.Basket.manager.count($multiDistribId in mdIds) > 0 ){
+				if( db.Basket.manager.count($userId==u.id && $multiDistribId in mdIds) > 0 ){
 					print(""+u.toString()+" has VRAC baskets");
 					continue;
 				}
