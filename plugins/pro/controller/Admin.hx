@@ -1725,25 +1725,31 @@ class Admin extends controller.Controller {
 				g.delete();
 			}
 
-			for( u in db.User.manager.unsafeObjects("SELECT * FROM User order by RAND() limit 5000",true)){
+			if(app.params.get("users")!=null){
 
-				//ne pas effacer ceux qui sont dans un groupe VRAC
-				if( db.UserGroup.manager.count($userId==u.id && $groupId in gids) > 0 ){
-					print(""+u.toString()+" is VRAC member");
-					continue;
+				var limit = app.params.get("users").parseInt();
+
+				for( u in db.User.manager.unsafeObjects("SELECT * FROM User order by RAND() limit "+limit,true)){
+
+					//ne pas effacer ceux qui sont dans un groupe VRAC
+					if( db.UserGroup.manager.count($userId==u.id && $groupId in gids) > 0 ){
+						print(""+u.toString()+" is VRAC member");
+						continue;
+					}
+	
+					//ne pas effacer ceux qui ont des commandes VRAC
+					var mds = db.MultiDistrib.manager.search($groupId in gids,false);
+					var mdIds = mds.map(x -> x.id);
+					if( db.Basket.manager.count($userId==u.id && $multiDistribId in mdIds) > 0 ){
+						print(""+u.toString()+" has VRAC baskets");
+						continue;
+					}
+	
+					print("delete "+u.toString());
+					u.delete();
 				}
-
-				//ne pas effacer ceux qui ont des commandes VRAC
-				var mds = db.MultiDistrib.manager.search($groupId in gids,false);
-				var mdIds = mds.map(x -> x.id);
-				if( db.Basket.manager.count($userId==u.id && $multiDistribId in mdIds) > 0 ){
-					print(""+u.toString()+" has VRAC baskets");
-					continue;
-				}
-
-				print("delete "+u.toString());
-				u.delete();
 			}
+			
 		}
 		
 
