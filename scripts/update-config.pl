@@ -36,7 +36,8 @@ $config->set_att(
     cagette_bridge_api => $cagette_bridge_api,
     host               => $ENV{NEKO_HOST_PUBLIC},
     key                => $ENV{PW_HASH_KEY},
-    debug              => "0"
+    debug              => "0",
+    MAPBOX_TOKEN       => $ENV{MAPBOX_TOKEN},
 );
 
 $twig->print_to_file( $ARGV[1] ); # output the twig
