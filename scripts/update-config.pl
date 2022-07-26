@@ -37,7 +37,7 @@ $config->set_att(
     host               => $ENV{NEKO_HOST_PUBLIC},
     key                => $ENV{PW_HASH_KEY},
     debug              => "0",
-    MAPBOX_TOKEN       => $ENV{MAPBOX_TOKEN},
+    mapbox_server_token => $ENV{MAPBOX_TOKEN},
 );
 
 $twig->print_to_file( $ARGV[1] ); # output the twig
