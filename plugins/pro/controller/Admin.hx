@@ -1708,31 +1708,48 @@ class Admin extends controller.Controller {
 
 		//RUN THIS ON VRAC
 		if(themeId=="vrac"){
+
+			for(cpro in cpros){
+				print(cpro.vendor.name);
+				for( g in cpro.getGroups()){
+					print("- "+g.name);
+					groups.push(g);
+				}
+			}
+
 			var gids:Array<Int> = groups.map(g -> g.id);
-			var groupsToDelete = db.Group.manager.unsafeObjects('select * from `Group` where id not in (${gids.join(",")}) LIMIT 100',true);
-			print("====  100 Groupes a effacer");
+			var groupsToDelete = db.Group.manager.unsafeObjects('select * from `Group` where id not in (${gids.join(",")}) LIMIT 1000',true);
+			print("====  1000 Groupes a effacer");
 			for(g in groupsToDelete){
 				print("delete "+g.name);
-				//g.delete();
+				g.delete();
 			}
 
-			for( u in db.User.manager.unsafeObjects("SELECT * FROM db.User order by RAND() limit 1000",true)){
+			if(app.params.get("users")!=null){
 
-				//ne pas effacer ceux qui sont dans un groupe VRAC
-				if( db.UserGroup.manager.select($userId in gids,false)!=null ){
-					continue;
+				var limit = app.params.get("users").parseInt();
+
+				for( u in db.User.manager.unsafeObjects("SELECT * FROM User order by RAND() limit "+limit,true)){
+
+					//ne pas effacer ceux qui sont dans un groupe VRAC
+					if( db.UserGroup.manager.count($userId==u.id && $groupId in gids) > 0 ){
+						print(""+u.toString()+" is VRAC member");
+						continue;
+					}
+	
+					//ne pas effacer ceux qui ont des commandes VRAC
+					var mds = db.MultiDistrib.manager.search($groupId in gids,false);
+					var mdIds = mds.map(x -> x.id);
+					if( db.Basket.manager.count($userId==u.id && $multiDistribId in mdIds) > 0 ){
+						print(""+u.toString()+" has VRAC baskets");
+						continue;
+					}
+	
+					print("delete "+u.toString());
+					u.delete();
 				}
-
-				//ne pas effacer ceux qui ont des commandes VRAC
-				var mds = db.MultiDistrib.manager.search($groupId in gids,false);
-				var mdIds = mds.map(x -> x.id);
-				if( db.Basket.manager.select($multiDistribId in mdIds)!=null ){
-					continue;
-				}
-
-				print("delete "+u.toString());
-				//u.delete();
 			}
+			
 		}
 		
 

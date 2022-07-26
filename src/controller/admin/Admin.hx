@@ -599,4 +599,11 @@ class Admin extends Controller {
 
 	@tpl('admin/settings.mtt')
 	function doSettings(){}
+
+
+
+	@tpl('admin/superadmins.mtt')
+	function doSuperadmins(){
+		view.superadmins = db.User.manager.search($rights.has(Admin),false);
+	}
 }
