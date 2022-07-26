@@ -35,7 +35,8 @@ $config->set_att(
     cagette_api        => $cagette_api,
     cagette_bridge_api => $cagette_bridge_api,
     host               => $ENV{NEKO_HOST_PUBLIC},
-	key                => $ENV{PW_HASH_KEY},
+    key                => $ENV{PW_HASH_KEY},
+    debug              => "0"
 );
 
 $twig->print_to_file( $ARGV[1] ); # output the twig
