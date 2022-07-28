@@ -1,7 +1,7 @@
 package controller;
-import payment.Cash;
 import Common;
 import db.Group;
+import payment.Cash;
 import payment.Cash;
 import service.BridgeService;
 import service.DistributionService;
@@ -285,6 +285,8 @@ class Group extends controller.Controller
 
 	@tpl("group/disabled.mtt")
 	public function doDisabled(){
-		view.group = App.current.getCurrentGroup();
+		var group = App.current.getCurrentGroup();
+		if (group == null) throw Redirect("/");
+		view.group = group;
 	}
 }
