@@ -76,6 +76,15 @@
 			</script>
 		::end::
 
+		 <script type="text/javascript">
+
+			_Cagette.theme = {
+				name: "::theme.name::",
+				supportEmail: "::theme.supportEmail::"
+			}
+			
+		</script>
+
 		::foreach script getNeoModuleScripts()::
 			<script src="::script::"></script>
 		::end::
