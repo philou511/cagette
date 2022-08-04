@@ -1646,4 +1646,113 @@ class Admin extends controller.Controller {
 			}
 		}
 	}
+
+	function doVrac(){
+
+		var themeId = App.current.getTheme().id;
+
+		var vendorIds = [
+			12640, //Bordeaux
+			13715, //Lyon
+			14000, //Strasbourg
+			14001, //Toulouse
+			14002, //Paris
+			21640, //rennes
+			22409, //nantes
+			23371, //marseille
+			24068, //st etienne
+			24225, //haut de france
+			24226, //montpellier
+			24482, //bruxelles
+			24697, //lyon 2
+			//drome reliée à Lyon
+			//finistere
+		];
+
+		var vendors = db.Vendor.manager.search($id in vendorIds);
+		var print = controller.Cron.print;
+		var cpros = vendors.map( v -> CagettePro.getFromVendor(v));
+		var groups = [];
+		print("==== CPRO");
+		if(themeId=="cagette"){
+			for(cpro in cpros){
+				print(cpro.vendor.name);
+
+				for( g in cpro.getGroups()){
+					print("- "+g.name);
+					groups.push(g);
+
+					
+					//RUN THIS ON CAGETTE.NET
+					g.lock();
+					g.disabled = Std.string(db.Group.GroupDisabledReason.MOVED);
+					g.extUrl = "https://epicerie.vrac-asso.org/group/"+g.id;
+					g.update();
+
+					//remove future distribs that have no orders !!
+					var mds = MultiDistrib.getFromTimeRange(g,Date.now(),DateTools.delta(Date.now(),1000*60*60*24*30.5*12*1000));
+					for(md in mds){
+						var orders = md.getOrders();
+						if(orders.length==0){
+							md.lock();
+							print("delete "+md.toString());
+							md.delete();
+						}else{
+							print(" "+md.toString()+" has orders !!");
+						}
+					}
+					
+				}
+			}
+		}
+
+		//RUN THIS ON VRAC
+		if(themeId=="vrac"){
+
+			for(cpro in cpros){
+				print(cpro.vendor.name);
+				for( g in cpro.getGroups()){
+					print("- "+g.name);
+					groups.push(g);
+				}
+			}
+
+			var gids:Array<Int> = groups.map(g -> g.id);
+			var groupsToDelete = db.Group.manager.unsafeObjects('select * from `Group` where id not in (${gids.join(",")}) LIMIT 1000',true);
+			print("====  1000 Groupes a effacer");
+			for(g in groupsToDelete){
+				print("delete "+g.name);
+				g.delete();
+			}
+
+			if(app.params.get("users")!=null){
+
+				var limit = app.params.get("users").parseInt();
+
+				for( u in db.User.manager.unsafeObjects("SELECT * FROM User order by RAND() limit "+limit,true)){
+
+					//ne pas effacer ceux qui sont dans un groupe VRAC
+					if( db.UserGroup.manager.count($userId==u.id && $groupId in gids) > 0 ){
+						print(""+u.toString()+" is VRAC member");
+						continue;
+					}
+	
+					//ne pas effacer ceux qui ont des commandes VRAC
+					var mds = db.MultiDistrib.manager.search($groupId in gids,false);
+					var mdIds = mds.map(x -> x.id);
+					if( db.Basket.manager.count($userId==u.id && $multiDistribId in mdIds) > 0 ){
+						print(""+u.toString()+" has VRAC baskets");
+						continue;
+					}
+	
+					print("delete "+u.toString());
+					u.delete();
+				}
+			}
+			
+		}
+		
+
+
+	}
 }

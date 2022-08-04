@@ -1,5 +1,6 @@
 package service;
 
+import db.Vendor;
 import haxe.Json;
 import sugoi.apis.linux.Curl;
 
@@ -52,6 +53,24 @@ class BridgeService {
 	}
 
 	/**
+		List of HS workflows to be used in the triggerWorflow function
+	**/
+	public static var HUBSPOT_WORKFLOWS_ID = {
+		vendorCertifiedAndOnboarding: 29858317,
+		vendorFirstSaleDone: 29858959,
+		discoveryTurnoverLimitReached: 29858927,
+		turnoverLimitReached: 30100220,
+		vendorSignedUp: 29858832,
+		vendorLimitReachedUnlock: 29861865,
+		firstGroupCreated: 29805116,
+		vendorSubscribed: 31422026,
+		subscriptionCanceledAtPeriodEnd: 31746160,
+		yearlySubscriptionRenewedInOneMonth: 31746177,
+		setContactAsNonMarketing: 34278655,
+		setContactAsMarketing: 34278796,
+	  }
+
+	/**
 		Trigger workflow in HS
 	**/
 	public static function triggerWorkflow(workflowId: Int, contactEmail: String) {		
@@ -85,15 +104,20 @@ class BridgeService {
 
 	}
 
-	public static function syncVendorToHubspot(vendor:db.Vendor) {       
-        // if(App.config.DEBUG) return;
-        var key = haxe.crypto.Md5.encode(App.config.KEY + vendor.id);
-        var req = haxe.Http.requestUrl(App.config.get("cagette_bridge_api")+"/crm/hubspot/"+vendor.id+"/"+key);     		  
-    }  
+	public static function syncVendorToHubspot(vendor:db.Vendor) {
+		var key = haxe.crypto.Md5.encode(App.config.KEY + vendor.id);
+		var req = haxe.Http.requestUrl(App.config.get("cagette_bridge_api")+"/crm/hubspot/"+vendor.id+"/"+key);
+	}
 
-	public static function syncUserToHubspot(user:db.User) {       
+	public static function syncUserToHubspot(user:db.User, ?vendor: db.Vendor) {
 		var curl = new sugoi.apis.linux.Curl();
-		return curl.call("GET", '${App.config.get("cagette_bridge_api")}/crm/syncUser/${user.id}', getHeaders());
-		  
-    }  
+		var url = '${App.config.get("cagette_bridge_api")}/crm/syncUser/${user.id}';
+		if (vendor!=null) url += '/${vendor.id}';
+		return curl.call("GET", url, getHeaders());
+	}
+
+	public static function deleteHubspotAssociationContactToCompany(user:db.User, vendor: db.Vendor) {
+		var curl = new sugoi.apis.linux.Curl();
+		return curl.call("GET", '${App.config.get("cagette_bridge_api")}/crm/deleteAssociation/${user.id}/${vendor.id}', getHeaders());
+	}
 }

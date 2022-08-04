@@ -11,7 +11,7 @@ class Seo extends sugoi.BaseController
 	
 	public function doExport118712(){
 		var out = new Array<Array<String>>();
-		var headers = ["id","denomination","adresse","activité","URL","telephone","e-mail","description","logo"];
+		var headers = ["id","denomination","adresse","activité","URL","telephone","e-mail","description","logo","SIRET"];
 		var escape = sugoi.tools.Csv.escape;
 		for( cpro in pro.db.CagettePro.manager.search(true,false)){			
 			var vendor = cpro.vendor;
@@ -19,6 +19,7 @@ class Seo extends sugoi.BaseController
 			if(!vendor.directory) continue;
 			//not training accounts
 			if(cpro.offer==Training) continue;
+			if(vendor.disabled!=null) continue;
 
 			out.push([
 				Std.string(vendor.id),
@@ -29,7 +30,8 @@ class Seo extends sugoi.BaseController
 				vendor.phone,
 				vendor.email,
 				escape(vendor.desc),
-				"https://app.cagette.net"+view.file(vendor.getImageId())
+				"https://app.cagette.net"+view.file(vendor.getImageId()),
+				vendor.companyNumber
 			]);
 
 		}

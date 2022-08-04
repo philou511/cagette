@@ -148,9 +148,9 @@ class VendorService{
 			form.addElement(new sugoi.form.elements.StringInput("companyNumber","Numéro SIRET (14 chiffres) ou numéro RNA pour les associations.",vendor.companyNumber,true));
 			form.addElement(new sugoi.form.elements.StringInput("vatNumber","Numéro de TVA (si assujeti)",vendor.vatNumber,false));
 			form.addElement(new sugoi.form.elements.IntInput("companyCapital","Capital social en € (sauf pour associations et entreprises individuelles)",vendor.companyCapital,false));
-			
+			var activityCode = vendor.activityCode==null ? null : vendor.activityCode.split(".").join("");
 			var data = service.VendorService.getActivityCodes().map(x -> {label:x.id+" - "+x.name,value:x.id});
-			form.addElement(new sugoi.form.elements.StringSelect('activityCode',"Code NAF",data,vendor.activityCode.split(".").join(""),false));
+			form.addElement(new sugoi.form.elements.StringSelect('activityCode',"Code NAF",data,activityCode,false));
 
 			var data = getLegalStatuses().map(x -> {label:x.id+" - "+x.name,value:x.id});
 			form.addElement(new sugoi.form.elements.IntSelect("legalStatus","Statut juridique",data,vendor.legalStatus));

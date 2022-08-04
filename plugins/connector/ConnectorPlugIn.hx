@@ -260,7 +260,7 @@ class ConnectorPlugIn extends PlugIn implements IPlugIn{
 					form.removeElementByName("endDate");
 					form.removeElementByName("name");
 					form.removeElementByName("vendorId");					
-					form.removeElementByName("description");
+					// form.removeElementByName("description"); //desc can be edited in group.
 
 					var text = "Ce catalogue est géré par un producteur depuis son compte producteur, vous n'avez donc accès qu'à un nombre restreint de paramètres.";
 					form.addElement(new sugoi.form.elements.Html("info","<div class='alert alert-info'>"+text+"</div>"),0);

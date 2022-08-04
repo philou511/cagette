@@ -64,11 +64,8 @@ class Admin extends Controller {
 			throw Ok("/admin/","Thème mis à jour");
 		}
 
-
 		view.form = f;
 		view.title = "Modifier le thème";
-
-
 	}
 
 	@tpl('admin/basket.mtt')
@@ -602,4 +599,11 @@ class Admin extends Controller {
 
 	@tpl('admin/settings.mtt')
 	function doSettings(){}
+
+
+
+	@tpl('admin/superadmins.mtt')
+	function doSuperadmins(){
+		view.superadmins = db.User.manager.search($rights.has(Admin),false);
+	}
 }

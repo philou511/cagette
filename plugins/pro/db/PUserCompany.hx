@@ -10,7 +10,8 @@ class PUserCompany extends Object
 {
 	@:relation(companyId) public var company : pro.db.CagettePro;
 	@:relation(userId) public var user : db.User;
-	public var legalRepresentative:SBool;
+    @hideInForms public var legalRepresentative:SBool;
+	public var salesRepresentative:SBool;
 	// public var disabled:SBool;
 
 	override public function new(){
