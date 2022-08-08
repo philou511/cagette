@@ -754,9 +754,9 @@ class Admin extends controller.Controller {
 	}
 
 	/**
-	 * Create a cpro account
+	 * Create a cagette pro account from a vendor
 	 */
-	/*function doCreateCpro(vendor:db.Vendor) {
+	function doCreateCpro(vendor:db.Vendor) {
 		if (pro.db.CagettePro.getFromVendor(vendor) != null)
 			throw Error("/admin/vendor/view/" + vendor.id, vendor.name + " a deja un compte producteur");
 
@@ -770,20 +770,21 @@ class Admin extends controller.Controller {
 		vendor.update();
 
 		// user
-		var user = service.UserService.getOrCreate("", "", vendor.email);
+		var user = service.UserService.get(vendor.email);
 
 		// access
-		var uc = new pro.db.PUserCompany();
-		uc.company = cpro;
-		uc.user = user;
-		uc.insert();
+		if(user!=null){
+			var uc = new pro.db.PUserCompany();
+			uc.company = cpro;
+			uc.user = user;
+			uc.insert();
+		}
+		
 
 		VendorStats.updateStats(vendor);
 
 		throw Ok("/admin/vendor/view/" + vendor.id, "Compte Cagette Pro créé");
-	}*/
-
-
+	}
 
 	@tpl("form.mtt")
 	public function doNewVendor() {
