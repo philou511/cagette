@@ -127,14 +127,18 @@ class Distributions extends Controller {
 					AuthorId: mangopayUser.mangopayUserId,
 					InitialTransactionId: payment.getPaymentData().remoteOpId				
 				};				
-				refund = Mangopay.createPayInRefund(refund);				
+				var createdRefund = Mangopay.createPayInRefund(refund);
+				App.current.logError(Json.stringify(createdRefund));
 				totalRefunded += amountToRefund;
 
 				//create one operation for each refund
 				var op  = new db.Operation();
 				op.type = db.Operation.OperationType.Payment;
-				op.setPaymentData({type:MangopayECPayment.TYPE,remoteOpId: refund.Id.string()});
-				op.name = 'Remboursement (${refund.Id})';
+				op.setPaymentData({
+					type:MangopayECPayment.TYPE,
+					remoteOpId: createdRefund.Id
+				});
+				op.name = 'Remboursement (${createdRefund.Id})';
 				op.group = basket.getGroup();
 				op.user = basket.user;
 				op.relation = basket.getOrderOperation();
@@ -145,9 +149,9 @@ class Distributions extends Controller {
 			}
 
 			//prepare operations for JSON serialization
-			var refundOps = refundOps.map(op -> {id:op.id,data:op.getData()});
+			var refundOps2:Array<{id:Int}> = refundOps.map(op -> {id:op.id});
 
-			json({refunds:refundOps});
+			json({refunds:refundOps2});
 
 		}else{
 			throw new tink.core.Error("Basket #"+basket.id+" is not a mangopay paid basket.");
