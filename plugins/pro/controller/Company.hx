@@ -176,9 +176,7 @@ class Company extends controller.Controller
 				vendor.update();
 			}else{
 				// Prevent deleting the SalesRepresentative
-				if(pro.db.PUserCompany.manager.count($company==company && $legalRepresentative && $user!=user)>0) {
-					throw Error("/p/pro/company/users", "Vous devez avoir un contact commercial pour votre compte Producteur.");
-				}
+				throw Error("/p/pro/company/users", "Vous devez avoir un contact commercial pour votre compte Producteur.");
 			}
 
 			uc.update();
