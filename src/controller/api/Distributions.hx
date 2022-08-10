@@ -141,7 +141,7 @@ class Distributions extends Controller {
 				op.name = 'Remboursement (${createdRefund.Id})';
 				op.group = basket.getGroup();
 				op.user = basket.user;
-				op.relation = basket.getOrderOperation();
+				op.relation = basket.getOrderOperation(false);
 				op.amount = 0 - Math.abs(amountToRefund);						
 				op.date = Date.now();
 				op.insert();
