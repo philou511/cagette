@@ -1,0 +1,53 @@
+::use 'admin/design.mtt'::
+	<div class="article">
+		
+		<h3>Chercher un compte existant pour "::cpro._vendor.name::"</h3>
+
+        <p>
+            Il semble qu'il y aie déja des comptes producteurs similaires.<br/>
+            Sélectionnez celui qui deviendra le compte producteur définitif :
+        </p>
+        
+        <form action="">
+		<table class="table table-bordered">
+            <tr>
+                <th></th>
+                <th>id</th>
+                <th>Nom</th>
+                <th>email</th>
+                <th>Type</th>
+                <th>actif</th>
+                <th>bloqué</th>
+                <th>C.A total</th>
+            </tr>
+            ::foreach v vendors::
+            ::set vs = getVS(v)::
+            ::set cpro = getCpro(v)::
+			<tr>
+                <td><input type="radio" name="vendor" value="::v.id::"/></td>
+                <td>::v.id::</td>
+                <td>
+                    <a href="/admin/vendor/view/::v.id::" target="_blank">::v.name::</a>
+                </td>
+                <td>::v.email::</td>
+                <td>$$vendorType(::vs.type::)</td>
+                <td>$$bool(::vs.active::)</td>
+                <td>
+                    ::if(v.isDisabled())::
+                        ::v.getDisabledReason()::
+                    ::else::
+                        non
+                    ::end::
+                </td>
+                <td>
+                    ::formatNum(vs.turnoverTotal):: €
+                </td>
+            </tr>
+            ::end::
+            
+        </table>
+
+        <input type="submit" value="Ok" class="btn btn-primary"/>
+        </form>
+	</div>
+::end::

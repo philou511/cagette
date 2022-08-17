@@ -2,6 +2,7 @@ package controller;
 import db.UserGroup;
 import haxe.Json;
 import neko.Web;
+import sugoi.db.Session;
 
 /**
  * REST JSON API
@@ -19,40 +20,9 @@ class Api extends Controller
 		var json : Dynamic = {
 			version:App.VERSION.toString(),
 			debug:App.config.DEBUG,			
-			email:App.config.get("webmaster_email"),
-			groups:[]
-			
 		};
-		
-		for ( g in db.Group.manager.all()){
-			
-			//a strange way to exclude "test" accounts
-			if ( UserGroup.manager.count($groupId == g.id) > 20){
-				
-				var place = g.getMainPlace();
-				
-				var d = {
-					name:g.name,
-					cagetteNetwork:g.flags.has(db.Group.GroupFlags.CagetteNetwork),
-					id:g.id,
-					url:"http://" + Web.getHostName() + "/group/" + g.id,
-					membersNum : g.getMembersNum(),
-					contracts: Lambda.array(Lambda.map(g.getActiveContracts(false), function(c) return c.name)),
-					place : {name:place.name, address1:place.address1,address2:place.address2,zipCode:place.zipCode,city:place.city }
-				};
-				json.groups.push(d);	
-			}
-			
-		}
-		
 		Sys.print( Json.stringify(json) );
-		
 	}
-	
-	/*public function doError(){
-		sugoi.Web.setReturnCode(403);
-	}*/
-	
 	
 	#if plugins
 	//cagette-pro
@@ -65,13 +35,21 @@ class Api extends Controller
 		d.dispatch(new controller.api.Order());
 	}	
 
-	public function doDistributions(d:haxe.web.Dispatch, distrib: db.MultiDistrib) {
-		d.dispatch(new controller.api.Distributions(distrib));
+	public function doDistributions(d:haxe.web.Dispatch) {
+		d.dispatch(new controller.api.Distributions());
 	}	
 
 	public function doPlaces(d:haxe.web.Dispatch, place: db.Place) {
 		d.dispatch(new controller.api.Places(place));
-	}	
+	}
+
+	public function doCatalog(d:haxe.web.Dispatch) {
+		d.dispatch(new controller.api.Catalog());
+	}
+	
+	public function doSubscription(d:haxe.web.Dispatch) {
+		d.dispatch(new controller.api.Subscription());
+	}
 
 	/**
 	 * Get distribution planning for this group
@@ -97,7 +75,6 @@ class Api extends Controller
 		}
 		
 		Sys.print(Json.stringify(out));
-		
 	}
 	
 	public function doUser(d:haxe.web.Dispatch){
@@ -106,6 +83,23 @@ class Api extends Controller
 	
 	public function doProduct(d:haxe.web.Dispatch){
 		d.dispatch(new controller.api.Product());
+	}
+
+	/**
+		create session with no user for dev purpose
+	**/
+	public function doCreateSid(){
+
+		if(!App.config.DEBUG) throw "only works if config.DEBUG=true";
+
+		var session = Session.init([]);
+
+		json({
+			sid : session.sid,
+		});
+
+
+
 	}
 	
 }

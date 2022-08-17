@@ -3,16 +3,23 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" xml:lang="::LANG::" lang="::LANG::" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Cagette PRO</title>
+		<title>Compte producteur</title>
+
+		$$favicons()
 
 		<!-- Cagette CSS -->
-		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
+		::if(DEBUG)::
+			<link rel="stylesheet" type="text/css" href="/theme/::theme.id::/css/::getVariable('css')::/style.css" />
+		::else::
+			<link rel="stylesheet" type="text/css" href="/theme/::theme.id::/css/::getVariable('css')::/style.min.css" />
+		::end::
 
 		<!-- Cagette very own icon font -->
 		<link rel="stylesheet" href="/font/icons.css?v=::getVariable('css')::" />
 			
 		<!-- BOOTSTRAP 	-->
-		<link rel="stylesheet" href="/css/::getVariable('css')::/bootstrap.min.css" />
+		<link rel="stylesheet" href="/theme/::theme.id::/css/::getVariable('css')::/bootstrap.min.css" />
+
 				
 		<!-- polyfill for IE11 : Object.assign() doesnt exists in IE11 , error in libs.prod.js -->
 		<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
@@ -57,16 +64,25 @@
 		
 		$$matomo()
 		  
-		<script type="text/javascript"> 
-			//Tooltips & popovers
-			/*
-			document.addEventListener("DOMContentLoaded", function(event) {			  
-				//tutorials
-				::if tuto!=null::		
-				_Cagette.getTuto("::tuto.name::",::tuto.step::);
-				::end::			  
-			})
-			*/
+		::set matomoUrl = getMatomoUrl()::
+		::if(matomoUrl!="")::
+			<script type="text/javascript"> 
+				//track Matomo events from the backend
+				var events = JSON.parse('::raw getMatomoEvents()::');
+				for(ev of events){
+					console.info("track Matomo event",ev);
+					_paq.push(['trackEvent', ev.category, ev.action, ev.name, ev.value]);
+				}
+			</script>
+		::end::
+
+		 <script type="text/javascript">
+
+			_Cagette.theme = {
+				name: "::theme.name::",
+				supportEmail: "::theme.supportEmail::"
+			}
+			
 		</script>
 
 		::foreach script getNeoModuleScripts()::

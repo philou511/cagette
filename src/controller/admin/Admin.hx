@@ -1,6 +1,6 @@
 package controller.admin;
-import tools.ObjectListTool;
-import mangopay.db.MangopayGroupPayOut;
+import haxe.Json;
+import sugoi.form.elements.TextArea;
 import Common;
 import db.BufferedJsonMail;
 import db.Catalog;
@@ -8,10 +8,13 @@ import db.MultiDistrib;
 import db.TxpProduct;
 import haxe.web.Dispatch;
 import hosted.db.GroupStats;
+import mangopay.db.MangopayGroupPayOut;
 import pro.db.VendorStats;
 import service.GraphService;
 import sugoi.Web;
 import sugoi.db.Variable;
+import sys.FileSystem;
+import tools.ObjectListTool;
 import tools.Timeframe;
 
 class Admin extends Controller {
@@ -29,7 +32,40 @@ class Admin extends Controller {
 	@tpl("admin/default.mtt")
 	function doDefault() {
 		view.now = Date.now();
-		view.ip = Web.getClientIP();		
+		view.ip = Web.getClientIP();
+		
+		if(app.params.get("reloadSettings")=="1"){
+			app.setSettings();
+			app.setTheme();
+			view.theme = app.getTheme();
+			view.settings = app.getSettings();
+			throw Ok('/admin',"Settings and theme reloaded");
+		}
+	}
+
+	@tpl("form.mtt")
+	function doTheme(){
+
+		var f = new sugoi.form.Form("theme");
+
+		f.addElement(new sugoi.form.elements.TextArea("theme","theme",Json.stringify(app.getTheme()),true,null,"style='height:800px;'"));
+		f.addElement(new sugoi.form.elements.Html("html","<a href='https://www.jsonlint.com/' target='_blank'>jsonlint.com</a>"));
+
+		if(f.isValid()){
+
+			var json:Theme = null;
+			try{
+				json = Json.parse(f.getValueOf("theme"));
+				Variable.set("whiteLabel",Json.stringify(json));
+			}catch(e:Dynamic){
+				throw Error('/admin/theme',"Erreur : "+Std.string(e));
+			}
+
+			throw Ok("/admin/","Thème mis à jour");
+		}
+
+		view.form = f;
+		view.title = "Modifier le thème";
 	}
 
 	@tpl('admin/basket.mtt')
@@ -61,42 +97,10 @@ class Admin extends Controller {
 		view.browser = new sugoi.tools.ResultsBrowser(count, 10, browse);
 		view.num = count;
 	}
-
-	/*@tpl("form.mtt")
-	function doSmtp() {
-		var f = new sugoi.form.Form("emails");
-		var data = [{label: "SMTP", value: "smtp"}, {label: "Mandrill API", value: "mandrill"},];
-
-		var mailer = sugoi.db.Variable.get("mailer") == null ? "smtp" : sugoi.db.Variable.get("mailer");
-		var host = sugoi.db.Variable.get("smtp_host") == null ? App.config.get("smtp_host") : sugoi.db.Variable.get("smtp_host");
-		var port = sugoi.db.Variable.get("smtp_port") == null ? App.config.get("smtp_port") : sugoi.db.Variable.get("smtp_port");
-		var user = sugoi.db.Variable.get("smtp_user") == null ? App.config.get("smtp_user") : sugoi.db.Variable.get("smtp_user");
-		var pass = sugoi.db.Variable.get("smtp_pass") == null ? App.config.get("smtp_pass") : sugoi.db.Variable.get("smtp_pass");
-
-		f.addElement(new sugoi.form.elements.StringSelect("mailer", "Mailer", data, mailer));
-		f.addElement(new sugoi.form.elements.StringInput("smtp_host", "host", host));
-		f.addElement(new sugoi.form.elements.StringInput("smtp_port", "port", port));
-		f.addElement(new sugoi.form.elements.StringInput("smtp_user", "user", user));
-		f.addElement(new sugoi.form.elements.StringInput("smtp_pass", "pass", pass));
-
-		if (f.isValid()) {
-			for (k in ["mailer", "smtp_host", "smtp_port", "smtp_user", "smtp_pass"]) {
-				sugoi.db.Variable.set(k, f.getValueOf(k));
-			}
-			throw Ok("/admin/emails", t._("Configuration updated"));
-		}
-
-		view.title = t._("Email service configuration");
-		view.form = f;
-	}*/
 	
 	function doVendor(d:haxe.web.Dispatch) {
 		d.dispatch(new controller.admin.Vendor());
 	}
-
-	// function doPlugins(d:Dispatch) {
-	// 	d.dispatch(new controller.admin.Plugins());
-	// }
 
 	/**
 		export taxo as CSV
@@ -278,7 +282,7 @@ class Admin extends Controller {
 		}
 	}
 
-	function doVendorNum(){
+	/*function doVendorNum(){
 		//nbre de vendor actifs dans des groupes qui ont eu des payout mangopay en octobre
 		var vendorsNum = 0;
 		var payoutNum = 0;
@@ -301,27 +305,12 @@ class Admin extends Controller {
 		vendors = ObjectListTool.deduplicate(vendors);
 		Sys.print('${vendors.length} vendors actifs');
 
-	}
+	}*/
 
-	function doLastCproTest() {
-		// cagette pro test par date de creation du cpro
-		/*var vendors = db.Vendor.manager.unsafeObjects("SELECT v.*,cpro.cdate as cprocdate FROM CagettePro cpro, Vendor v WHERE v.id=cpro.vendorId and isTest=1 order by cpro.cdate DESC",
-			false);
-		Sys.print("<h2>Derniers Cagette Pro test</h2>");
-		Sys.print('<p>${vendors.length} producteurs</p>');
-		Sys.print('<table class="table"><tr><th>Producteur</th><th>Bloqué</th><th>Inscription</th></tr>');
-		for (v in vendors) {
-			var cpro = pro.db.CagettePro.getFromVendor(v);
-			var blocked = cpro.getUserCompany().exists(uc -> uc.disabled);
 
-			Sys.print('<tr><td><a href="/admin/vendor/view/${v.id}" target="_blank">${v.id} - ${v.name}</a></td>');
-			Sys.print('<td>${blocked?"OUI":"NON"}</a></td>');
-			Sys.print('<td>${untyped v.cprocdate}</a></td>');
-			Sys.print("</tr>");
-		}
-		Sys.print('</table>');*/
-	}
-
+	/**
+		Stats sur les groupes actifs
+	**/
 	function doGroupStats() {
 		/*Caractérisation des groupes ( condition : les groupes actifs) :, 
 			mode du groupe, 
@@ -404,30 +393,217 @@ class Admin extends Controller {
 		view.form = f;
 	}
 
+	@tpl("admin/group/default.mtt")
 	function doGroups() {
-		for (g in db.Group.manager.all(true)) {
-			g.update();
-			Sys.println(g.name + "<br/>");
+
+		var groups = [];
+		var total = 0;
+		var totalActive = 0;
+		var defaultType = "all";
+
+		// form
+		var f = new sugoi.form.Form("groups");
+		f.method = GET;
+		f.addElement(new sugoi.form.elements.StringInput("groupName", "Nom du groupe"));
+		var data = [
+			{label: "Tous", value: "all"},
+			{label: "Mode marché", value: "shopMode"},
+			{label: "Mode AMAP", value: "CSAMode"},
+			
+		];
+		f.addElement(new sugoi.form.elements.StringSelect("type", "Type de groupe", data, defaultType, true, ""));
+		f.addElement(new sugoi.form.elements.StringInput("zipCodes", "Saisir des numéros de département séparés par des virgules ou laisser vide."));
+		f.addElement(new sugoi.form.elements.StringSelect("country", "Pays", db.Place.getCountries(), "FR", true, ""));
+		var data = [
+			{label: "Actifs", value: "active"},
+			{label: "Inactifs", value: "inactive"},
+			{label: "Tous", value: "all"}
+		];
+		f.addElement(new sugoi.form.elements.StringSelect("active", "Actifs ou pas", data, "active", true, ""));
+		var data = [
+			{label: "Tableau", value: "table"},
+			{label: "CSV", value: "csv"}
+		];
+		f.addElement(new sugoi.form.elements.StringSelect("output", "Sortie", data, "table", true, ""));
+
+		var sql_select = "SELECT g.*,gs.active,gs.membersNum,gs.contractNum,p.name as pname, p.address1,p.address2,p.zipCode,p.country,p.city";
+		var sql_where_or = [];
+		var sql_where_and = [];
+		var sql_end = "ORDER BY g.id ASC";
+		var sql_from = ["`Group` g LEFT JOIN  GroupStats gs ON g.id=gs.groupId LEFT JOIN Place p ON g.placeId=p.id"];
+
+		if (f.isValid()) {
+			// filter by zip codes
+			var zipCodes:Array<Int> = f.getValueOf("zipCodes") != null ? f.getValueOf("zipCodes").split(",").map(Std.parseInt) : [];
+			if (zipCodes.length > 0) {
+				for (zipCode in zipCodes) {
+					var min = zipCode * 1000;
+					var max = zipCode * 1000 + 999;
+					sql_where_or.push('(p.zipCode>=$min and p.zipCode<=$max)');
+				}
+			}
+
+			// active
+			switch (f.getValueOf("active")) {
+				case "active":
+					sql_where_and.push("active=1");
+				case "inactive":
+					sql_where_and.push("active=0");
+				default:
+			}
+
+			// type
+			if (f.getValueOf("type") != "all") {				
+				var type = f.getValueOf("type");
+				switch(type){
+					case "marketMode","shopMode" : sql_where_and.push("g.flags&2 != 0");
+					case "CSAMode" : sql_where_and.push("g.flags&2 = 0");
+					default : throw "unknown type";
+				}
+			}
+
+			// country
+			sql_where_and.push('p.country="${f.getValueOf("country")}"');
+
+			//group name
+			if(f.getValueOf("groupName")!=null){
+				sql_where_and.push('g.name like "%${f.getValueOf("groupName")}%"');
+			}
+
+		} else {
+			// default settings
+			sql_where_and.push('active=1');
+			// sql_where_and.push('type=${Type.enumIndex(defaultType)}');
+			sql_where_and.push('p.country="FR"');
+		}
+
+		// QUERY
+		if (sql_where_and.length == 0)
+			sql_where_and.push("true");
+		if (sql_where_or.length == 0)
+			sql_where_or.push("true");
+		var sql = '$sql_select FROM ${sql_from.join(", ")} WHERE (${sql_where_or.join(" OR ")}) AND ${sql_where_and.join(" AND ")} $sql_end';
+		for (g in db.Group.manager.unsafeObjects(sql, false)) {
+			groups.push(g);
+		}
+
+		view.form = f;
+
+		for (g in groups) {
+			if (untyped g.active) totalActive++;
+			total++;
+		}
+
+		// TOTALS
+		total = groups.length;
+		view.total = total;
+		view.groups = groups;
+		view.totalActive = totalActive;
+
+		switch (f.getValueOf("output")) {
+			case "table":
+
+			case "csv":
+				var headers = [
+					"id", "name","mode","placeName", "address1", "address2", "zipCode", "city", "active", "url",
+					"contactName","contactEmail","contactPhone","membersNum","contractNum"
+				];
+				var data = [];
+				for (g in groups) {
+					var active:Bool = untyped g.active;
+					var contact = g.contact;
+					data.push({
+						id: g.id,
+						name: g.name,
+						mode : g.hasShopMode() ? "Marché" : "AMAP",
+						placeName : untyped g.pname,
+						address1 : untyped g.address1,
+						address2 : untyped g.address2,
+						zipCode : untyped g.zipCode,
+						city : untyped g.city,
+						active: switch (active) {
+							case true: "OUI";
+							case false: "NON";
+						},
+						url:"https://app.cagette.net/group/"+g.id,
+						contactName : contact!=null ? contact.getName() : "",
+						contactEmail: contact!=null ? contact.email : "",
+						contactPhone: contact!=null ? contact.phone : "",
+						membersNum : untyped g.membersNum,
+						contractNum : untyped g.contractNum			
+					});
+				}
+
+				sugoi.tools.Csv.printCsvDataFromObjects(data, headers, "groupes");
 		}
 	}
+	
+	@tpl('admin/news.mtt')
+	function doNews() {}
 
-	/*function doTerraLibra(){
-		var v = db.Vendor.manager.get(12535,false);
-		var catalogs = v.getActiveContracts();
-		var groups = catalogs.map(c -> c.group);
-		for( g in groups){
-			Sys.println("<h2>"+g.name+"</h2>");
-			Sys.println("<table border='1'>");
-			for( ve in g.getVendors()) {
+	function doTestMails(?args:{tpl:String}){
 
-				var vs = VendorStats.getOrCreate(ve);
-				Sys.println('<tr> <td>${ve.id}</td> <td>${ve.name}</td> <td>${vs.type}</td> <td>${vs.shopTurnover12months}€</td></tr>');
+		//list existing mail templates
+		var dirs = [
+			Web.getCwd()+"/../lang/master/tpl/mail/",
+			Web.getCwd()+"/../lang/master/tpl/plugin/pro/who/mail/",
+			Web.getCwd()+"/../lang/master/tpl/plugin/pro/mail/"
+		];
+		var tpls = [];
 
-			}
-			Sys.println("</table>");
+		for( dir in dirs){
+			var files = FileSystem.readDirectory(dir);
+			for(file in files) tpls.push(dir+file);	
 		}
-	}*/
 
-	@tpl('admin/process.mtt')
-	function doProcess() {}
+		Sys.print("<ul>");
+		for(tpl in tpls){
+			var i = tpl.indexOf("/lang/master/tpl/") + "/lang/master/tpl/".length;
+			tpl = tpl.substr(i);
+			Sys.print('<li><a href="/admin/testMails?tpl=$tpl">$tpl</a></li>');
+		} 
+		Sys.print("</ul>");
+		
+		var group = db.Group.manager.select(true,false);
+		var user = db.User.manager.select(true,false);
+		var d = db.Distribution.manager.select(true,false);
+		var contract = d.catalog;
+		var catalog = d.catalog;
+
+
+		if(args!=null && args.tpl!=null){
+			var res = App.current.processTemplate(args.tpl, {
+				group:group,
+				user:user,
+				d:d,
+				catalog:catalog,
+				contract:contract,
+				text:"Lorem Ipsum"
+			} );
+			Sys.print(res);
+		}
+
+	}
+
+	public function doUpdate(){
+
+		for(g in db.Group.manager.search(true,false)){
+
+			var gs = hosted.db.GroupStats.getOrCreate(g.id,true);
+			gs.updateStats();
+			Sys.print(g.name+" #"+g.id+" <br/>");
+
+		}
+
+	}
+
+	@tpl('admin/settings.mtt')
+	function doSettings(){}
+
+
+
+	@tpl('admin/superadmins.mtt')
+	function doSuperadmins(){
+		view.superadmins = db.User.manager.search($rights.has(Admin),false);
+	}
 }

@@ -1,4 +1,4 @@
-:: use 'mail/design.mtt'::
+:: use 'mail/layout-group.mtt'::
 
 <p>
 	Bonjour, vous êtes le coordinateur du contrat <b>::d._catalog.name::</b>.<br/>
@@ -9,8 +9,8 @@
 </p>
 <p>
 	La commande vient de se fermer, c'est donc le moment d'ajuster les quantités.<br/>
-	<a href="http://::HOST::/p/who/::d._catalog.id::"><b>Cliquez ici pour ajuster la commande</b></a> 
-	( vous devez être connecté à votre groupe sur Cagette.net )
+	<a href="http://::HOST::/p/who/::d._catalog.id::" rel="notrack"><b>Cliquez ici pour ajuster la commande</b></a> 
+	( vous devez être connecté à votre groupe sur ::theme.name:: )
 </p>
 <hr/>
 <p>

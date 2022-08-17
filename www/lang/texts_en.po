@@ -832,10 +832,6 @@ msgstr ""
 msgid "Phone"
 msgstr ""
 
-#: src/controller/Group.hx:4511
-msgid "You already subscribed to Cagette.net, please log in on this page"
-msgstr ""
-
 #: src/controller/Group.hx:4799
 msgid "Your subscription has been taken into account"
 msgstr ""
@@ -1062,26 +1058,6 @@ msgstr ""
 
 #: src/controller/Member.hx:11834
 msgid "These accounts can't be merged because the second account has orders"
-msgstr ""
-
-#: src/controller/Member.hx:12318 src/controller/User.hx:3190
-#: src/db/User.hx:15036 lang/master/tpl/design.mtt:4456
-#: lang/master/tpl/mail/design.mtt:298
-msgid "Cagette.net"
-msgstr ""
-
-#: src/controller/Member.hx:12394
-msgid "Change your e-mail in your account Cagette.net"
-msgstr ""
-
-#: src/controller/Member.hx:12539 src/controller/Member.hx:13076
-msgid ""
-" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is "
-"now:"
-msgstr ""
-
-#: src/controller/Member.hx:12933
-msgid "Change the e-mail of your account Cagette.net"
 msgstr ""
 
 #: src/controller/Member.hx:13279
@@ -1865,10 +1841,6 @@ msgstr ""
 
 #: src/db/User.hx:14839
 msgid "Invitation"
-msgstr ""
-
-#: src/db/User.hx:14902
-msgid "Invitation Cagette.net"
 msgstr ""
 
 #: src/db/User.hx:16062 src/db/Vendor.hx:1213
@@ -3176,12 +3148,6 @@ msgstr ""
 msgid "FOLLOW US"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:7077
-msgid ""
-"Cagette.net is made by <a href='https://www.alilo.fr' target='_blank'><img "
-"src='/img/alilo-trans-black.png' /></a>"
-msgstr ""
-
 #: lang/master/tpl/distribution/list.mtt:297
 msgid "Delivery on ::dow:: ::dom:: ::month::, at ::hour::"
 msgstr ""
@@ -3335,25 +3301,6 @@ msgstr ""
 
 #: lang/master/tpl/group/view.mtt:3910
 msgid "Non-complete extract of available products:"
-msgstr ""
-
-#: lang/master/tpl/group/view.mtt:4697
-msgid "http://www.cagette.net"
-msgstr ""
-
-#: lang/master/tpl/group/view.mtt:4730
-msgid "Cagette.net, the free software of food direct-selling"
-msgstr ""
-
-#: lang/master/tpl/home.mtt:244
-msgid "Welcome to Cagette.net !"
-msgstr ""
-
-#: lang/master/tpl/home.mtt:300
-msgid ""
-"Congratulations, you just created a new group !<br/>As an example, we "
-"created a fake farmer and fake products.<br/>It will show you how things "
-"work together in Cagette.net.<br/>Of course, you'll be able to delete them."
 msgstr ""
 
 #: lang/master/tpl/home.mtt:564
@@ -3547,11 +3494,6 @@ msgstr ""
 
 #: lang/master/tpl/mail/invitation.mtt:337
 msgid "As a member of <b>::groupName::</b>"
-msgstr ""
-
-#: lang/master/tpl/mail/invitation.mtt:420
-#: lang/master/tpl/mail/invitation.mtt:500
-msgid "you have been pre-registered on Cagette.net"
 msgstr ""
 
 #: lang/master/tpl/mail/invitation.mtt:591
@@ -3754,12 +3696,6 @@ msgstr ""
 msgid ""
 "Congratulations ! You just imported <b>::numImported::</b> users in your "
 "group."
-msgstr ""
-
-#: lang/master/tpl/member/import.mtt:2943
-msgid ""
-"You may now consider <a href='/member/?select=newusers'>inviting them</a> to "
-"log into Cagette.net"
 msgstr ""
 
 #: lang/master/tpl/member/import.mtt:3076
@@ -4365,14 +4301,6 @@ msgstr ""
 msgid "Guided tour for the coordinator"
 msgstr ""
 
-#: common/Common.hx:6369
-msgid ""
-"<p>In order to better discover Cagette.net, we propose to do a guided tour "
-"of the user interface of the software. <br/> You will then have a global "
-"overview on the different tools that are available to you.</p><p>You will be "
-"able to stop and start again this tutorial whenever you want.</p>"
-msgstr ""
-
 #: common/Common.hx:6781
 msgid ""
 "This part of the navigation bar is visible by all members.</br>It allows to "
@@ -4388,14 +4316,6 @@ msgid ""
 "This part is <b>for coordinators only.</b>Here you will be able to manage "
 "the register of members, orders,  products, etc.<br/><p>Now click on the "
 "<b>Members</b> section</p>"
-msgstr ""
-
-#: common/Common.hx:7614
-msgid ""
-"The purpose of this section is to administrate the list of your members.<br/"
-">Every time that you register a new membrer, an account will be created for "
-"him/her. Now the member can join you at Cagette.net and order or consult the "
-"planning of the deliveries.<p>Now click on a <b>member</b> in the list</p>"
 msgstr ""
 
 #: common/Common.hx:8049

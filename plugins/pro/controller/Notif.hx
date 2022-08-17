@@ -1,5 +1,8 @@
 package pro.controller;
 
+import pro.db.PNotif.CatalogImportContent;
+import pro.db.PNotif.NotifType;
+
 
 class Notif extends controller.Controller
 {
@@ -29,7 +32,9 @@ class Notif extends controller.Controller
 	public function doView(n:pro.db.PNotif){
 		view.category = "home";
 		view.notif = n;
-		view.notifContent = n.getContent();
+		var content = n.getContent();
+		view.notifContent = content;
+
 		view.getCatalog = function(cid){
 			return pro.db.PCatalog.manager.get(cid, false);
 		}

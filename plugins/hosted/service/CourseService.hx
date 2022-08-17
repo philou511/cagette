@@ -7,15 +7,14 @@ import service.BridgeService;
 
 class CourseService {
 
-    public static function createCproDef(trainingCpro:pro.db.CagettePro , ?defVendor:db.Vendor) {
+    public static function attachDiscoveryAccountToCourse(trainingCpro:pro.db.CagettePro,defVendor:db.Vendor, course:hosted.db.Course) {
 
-        if(trainingCpro.offer!=Training) throw "ce Cagette Pro n'est pas un Cagette Pro pédagogique !";
+        if(trainingCpro.offer!=Training) throw "ce compte producteur n'est pas un compte pédagogique !";
         
-        var props = ["name","email","image","phone","address1","address2",
-		"zipCode","city","desc","linkText","linkUrl","vatRates"];
-		var v = trainingCpro.vendor;
+        // var props = ["name","email","image","phone","address1","address2","zipCode","city","desc","linkText","linkUrl","vatRates"];
+		// var v = trainingCpro.vendor;
         
-        if(defVendor==null){
+        /*if(defVendor==null){
             //copy vendor
             defVendor = new db.Vendor();
             for( p in props){
@@ -23,47 +22,35 @@ class CourseService {
             }
             defVendor.name = StringTools.replace(defVendor.name,"(formation)","");//remove "(formation)"
             defVendor.insert();
-        } else {
-            if (defVendor.getCpro()!=null && defVendor.getCpro().offer==Pro) {
-                // Cancel running subscription
-                BridgeService.call('/subscriptions/cancel/${defVendor.id}');
-            }
-        }
+        } else {*/
+           
+        //}
 
         var defCpro = CagettePro.getFromVendor(defVendor);
         if(defCpro!=null) {
             defCpro.lock();
-            if(defCpro.offer==Training) throw "Le compte pro sélectionné est aussi un compte pédagogique";
+            if(defCpro.offer==Training) throw "Le compte sélectionné est aussi un compte pédagogique";
         }
-		if(defCpro==null){
+		/*if(defCpro==null){
             defCpro = new pro.db.CagettePro();
             defCpro.vendor = defVendor;
-        }		
-        defCpro.offer = Member;
-        if(defCpro.id==null) defCpro.insert() else defCpro.update();
-
-        defVendor.lock();
-        defVendor.isTest = false;
-        defVendor.update();
+        }*/		
+      
+      /*  if(defCpro.id==null) defCpro.insert() else defCpro.update();
 
         if(v.name.indexOf("(formation)")<0){
             v.lock();
             v.name  = v.name +" (formation)";
             v.update();
-        }
+        }*/
         
-        //refresh stats
-        VendorStats.updateStats(defVendor);
-
 		//cpro access
 		var cc = hosted.db.CompanyCourse.find(trainingCpro);
         if( !defCpro.getUsers().exists( u -> u.id==cc.user.id )){
             pro.db.PUserCompany.make(cc.user,defCpro);
         }
-        
-		//add company to course		
-		hosted.db.CompanyCourse.make(defCpro, cc.course, cc.user,null,null,null,null);	
-       
+
+        hosted.db.CompanyCourse.make(defCpro, course, cc.user,null,null,null,null);
     }
     
 }

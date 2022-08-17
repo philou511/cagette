@@ -1,11 +1,12 @@
 package hosted.controller;
-import service.BridgeService;
-import pro.db.VendorStats;
-import tools.Timeframe;
-import hosted.HostedPlugIn;
-import sugoi.form.elements.StringInput;
-import db.Operation;
 import Common;
+import db.Operation;
+import hosted.HostedPlugIn;
+import hosted.db.GroupStats;
+import pro.db.VendorStats;
+import service.BridgeService;
+import sugoi.form.elements.StringInput;
+import tools.Timeframe;
 
 /**
  * Main controller of HOSTED plugin
@@ -50,6 +51,9 @@ class Main extends controller.Controller
 		}
 
 		view.vendors = group.getActiveVendors();
+		var gs = GroupStats.getOrCreate(group.id,true);
+		gs.updateStats();
+		view.groupStats = gs; 
 		view.getVendorStats = function(v:db.Vendor){
 			return VendorStats.getOrCreate(v);
 		}
@@ -123,6 +127,17 @@ class Main extends controller.Controller
 		}
 		throw Ok("/p/hosted/group/"+g.id, "Notifications désactivées pour tous les membres de ce groupe");
 	}
+
+	function doEnableNotifs(g:db.Group){
+		for ( m in g.getMembers()){
+			m.lock();
+			m.flags.set(db.User.UserFlags.HasEmailNotif24h);
+			// m.flags.unset(db.User.UserFlags.HasEmailNotif4h);
+			m.flags.set(db.User.UserFlags.HasEmailNotifOuverture);
+			m.update();
+		}
+		throw Ok("/p/hosted/group/"+g.id, "Notifications activées pour tous les membres de ce groupe");
+	}
 	
 	public function doCacheDebug(){
 		Sys.println("<h2>pending carts</h2>");
@@ -150,31 +165,12 @@ class Main extends controller.Controller
 	@tpl("transaction/view.mtt")
 	public function doOperation(op:db.Operation){
 		view.op = op ;
-		
-		
-		/* SERVICE BROKEN
-		var lw = pro.payment.LWCPayment.getConnector(op.group);
-		
-		if (op.data.remoteOpId != null) {
-			//update status if needed
-			var td = lw.getMoneyInTransDetails(op.data.remoteOpId);
-			//if (td.HPAY[0].STATUS == "3" && op.pending){
-			//	op.lock();
-			//	op.pending = false;
-			//	op.update();
-			//}
-			
-			view.infos = td;	
-		}
-		*/
-		
 	}
 	
 	@admin public function doAddMe(g:db.Group){
 		
 		var ua = app.user.makeMemberOf(g);
 		throw Ok("/user/choose?group="+g.id, "Vous faites maintenant partie de " + ua.group.name);
-		
 	}
 	
 	@admin public function doDeleteGroup(a:db.Group) {
@@ -187,36 +183,8 @@ class Main extends controller.Controller
 	}
 	
 	
-	/**
-	 * CRM page
-	 */
-	@admin @tpl("plugin/pro/hosted/default.mtt")
-	public function doDefault() {
-		
-		var groups = db.Group.manager.unsafeObjects("select g.name, g.groupType, gs.* from `Group` g,GroupStats gs where g.id=gs.groupId ", false);		
-		view.groups = groups;
-		var hosted = hosted.db.GroupStats.manager.search($active == true);
-		var acp = 0;
-
-		//compteurs
-		view.active = hosted.length;
-		var members = 0;
-		for ( h in hosted) {
-			if( h.active ) {
-				members += h.membersNum;
-				if(h.cproContractNum>0) acp++;
-			}
-		}
-		view.members = members;
-		view.activeCpro = acp;
-		
-	}
-	
-	
-	
 	@admin
-	function doGeocode(group:db.Group){
-		
+	function doGeocode(group:db.Group){		
 		/*var coords = hosted.HostedPlugIn.geocodeGroup(group);		
 		throw Ok("/p/hosted/group/"+group.id,"Geocoding OK "+coords);*/
 	}
@@ -225,10 +193,8 @@ class Main extends controller.Controller
 	function doRefresh(group:db.Group){
 		
 		var h = hosted.db.GroupStats.getOrCreate(group.id, true);
-		var o = h.updateVisible();
-		
-		var str = "ACTIF : " + o.active+", VISIBLE : " + o.visible+" ( CagetteNetwork : " + o.cagetteNetwork + ", distributions : " + o.distributions + ", geoloc : " + o.geoloc + ", MembersNum : " + o.members+" )";
-		
+		var o = h.updateStats();		
+		var str = "ACTIF : " + o.active+", VISIBLE : " + o.visible+" ( CagetteNetwork : " + o.cagetteNetwork + ", distributions : " + o.distributions + ", geoloc : " + o.geoloc + ", MembersNum : " + o.members+" )";		
 		throw Ok("/p/hosted/group/"+group.id,"Visible sur la carte : "+str);
 	}
 	
@@ -251,8 +217,6 @@ class Main extends controller.Controller
 		var mds = db.MultiDistrib.getFromTimeRange(g,timeframe.from,timeframe.to);
 		view.mds = mds;
 		view.timeframe = timeframe;
-		
-
 	}
 
 	/**
@@ -312,123 +276,15 @@ class Main extends controller.Controller
 	}
 
 	@admin
-	public function doAmap(){
-
-		for( g in db.Group.manager.all(false)){
-
-			if( !g.flags.has(ShopMode) && g.flags.has(HasPayments) ){
-
-				var h = hosted.db.GroupStats.getOrCreate(g.id,true);
-				h.updateVisible();
-				if(h.active){
-					Sys.print(g.id+" "+g.name+" <br>");
-				}
-			}
-		}
-	}
-
-	@admin
-	public function doMigrate(){
-		
-		//fix corto spremuta
-		/*var d = db.Distribution.manager.get(108192);
-		for ( order in db.UserOrder.manager.search($distribution == d, true) ){
-			var p = order.product;
-			var p2 = db.Product.manager.select($catalogId == 5839 && $ref == p.ref);
-			Sys.print(p.name+" ==> " + p2.name+"<br/>");
-			order.product = p2;
-			order.update();
-		}
-		*/
-		
-		/*Sys.println("C'est parti....");
-		for ( conf in who.db.WConfig.manager.all()){
-			if (conf.contract2 == null) continue;
-			
-			if ( conf.contract1.amap.id != conf.contract2.amap.id){
-				Sys.println("pwoblem ! "+conf.contract1.amap.name+"<br/>");
-			}
-		}
-		
-		
-		//CLEAN TERRA LIBRA PRODUCTS
-		/*var comp = pro.db.Company.manager.get(6,false);
-		
-		for ( prod in comp.getProducts()){
-			
-			
-			//delete inactive products
-			if (!prod.active) {
-				Sys.println("Delete "+prod.name+"<br/>");
-				prod.lock();
-				prod.delete();				
-			}			
-		}
-		
-		for ( cata in comp.getCatalogs()){
-			for ( rc in connector.db.RemoteCatalog.getFromCatalog(cata)) {
-				var c = rc.getRelatedContract();
-				Sys.println("<b>CONTRACT "+c.name+"</b><br/>");
-				for ( p in c.getProducts(false)){
-					if (!p.active){
-						Sys.println("Delete "+p.name+"<br/>");
-						p.lock();
-						p.delete();
-						
-					}
-				}
-			}
-		}*/
-		
-		
-		/*for ( a in db.Group.manager.all(true)){
-			
-			var h = hosted.db.GroupStats.getOrCreate(a.id, true);
-			h.updateVisible();
-			h.update();
-			
-			//hasPayments == ancien isAmap
-			if ( a.flags.has(db.Group.AmapFlags.HasPayments)){
-				//mets en amap
-				a.groupType = db.Group.GroupType.Amap;
-				//unset le flag qui a changé de rôle
-				a.flags.unset(db.Group.AmapFlags.HasPayments);
-			}
-			
-			if ( a.name.indexOf("AMAP") > -1 ){
-				a.groupType = db.Group.GroupType.Amap;
-			}
-			
-			if ( a.name.indexOf("Drive") > -1 ){
-				a.groupType = db.Group.GroupType.ProducerDrive;
-			}
-			
-			//si ancien flag paiement, on met le nouveau
-			if (a.flags.has(db.Group.AmapFlags.HasPaymentsOld)){
-				
-				a.flags.unset(db.Group.AmapFlags.HasPaymentsOld);
-				a.flags.set(db.Group.AmapFlags.HasPayments);
-			}
-			
-			a.update();
-			Sys.println('${a.name} : ${a.groupType}<br>');
-			
-		}*/
-	}
-
-	
-	
-
-	@admin
 	function doCourse(d:haxe.web.Dispatch){
-		d.dispatch(new hosted.controller.Course());
+		if (App.current.getSettings().noCourse!=true) {
+			d.dispatch(new hosted.controller.Course());
+		}
 	}
 
 	@admin
 	function doSeo(d:haxe.web.Dispatch){
 		d.dispatch(new hosted.controller.Seo());
 	}
-
-
 	
 }

@@ -7,19 +7,25 @@
     <meta charset="utf-8" />
     <title>
         ::if pageTitle!=null::
-        ::pageTitle::
+            ::pageTitle::
         ::else::
-        ::NAME::
+            ::theme.name::
         ::end::
     </title>
 
+    $$favicons()
+
     <!-- Cagette CSS -->
-    <link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css" />
+    ::if(DEBUG)::
+        <link rel="stylesheet" type="text/css" href="/theme/::theme.id::/css/::getVariable('css')::/style.css" />
+    ::else::
+        <link rel="stylesheet" type="text/css" href="/theme/::theme.id::/css/::getVariable('css')::/style.min.css" />
+    ::end::
 
     <!-- BOOTSTRAP -->
     ::if noBootstrap::
     ::else::
-    <link rel="stylesheet" href="/css/::getVariable('css')::/bootstrap.min.css" />
+        <link rel="stylesheet" href="/theme/::theme.id::/css/::getVariable('css')::/bootstrap.min.css" />
     ::end::
 
     <!-- Cagette very own icon font -->
@@ -85,33 +91,21 @@
 
     <script type="text/javascript">
 
+        _Cagette.theme = {
+            name: "::theme.name::",
+            supportEmail: "::theme.supportEmail::"
+        }
+        
         document.addEventListener("DOMContentLoaded", function (event) {
             //init vars in js App
             _Cagette.lang = "::session.lang::";
-				:: if (user != null)::
-                _Cagette.userId = :: user.id:: ;
+            :: if (user != null)::
+            _Cagette.userId = :: user.id:: ;
             _Cagette.userName = "::user.getName()::";
             _Cagette.userEmail = "::user.email::";
-				:: end::
-
-				//tutorials
-				:: if tuto != null::
-                _Cagette.getTuto("::tuto.name::",:: tuto.step:: );			
-				:: end::
-
+            :: end::
             _Cagette.antiDoubleClick();
         })
-
-			//tracking 24x7
-        /*var rumMOKey='1d36c37d438ba069db210c73cb74308d';
-        (function(){
-            if(window.performance && window.performance.timing && window.performance.navigation) {
-                var site24x7_rum_beacon=document.createElement('script');
-                site24x7_rum_beacon.async=true;
-                site24x7_rum_beacon.setAttribute('src','//static.site24x7rum.com/beacon/site24x7rum-min.js?appKey='+rumMOKey);
-                document.getElementsByTagName('head')[0].appendChild(site24x7_rum_beacon);
-            }
-        })(window)*/
 
     </script>
 

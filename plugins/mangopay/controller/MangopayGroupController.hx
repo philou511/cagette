@@ -49,10 +49,8 @@ class MangopayGroupController extends controller.Controller
 		view.timeframe = timeframe;
 		var mds = MultiDistrib.getFromTimeRange(group,timeframe.from,timeframe.to);
 		view.multidistribs = mds;
-		view.getMangopayGroupPayout = function(md:MultiDistrib){
-			return MangopayGroupPayOut.get(md);
-		} 
-
+		view.getMangopayGroupPayout = (md:MultiDistrib)-> MangopayGroupPayOut.get(md);
+		view.getMultidistribNetTurnover = MangopayPlugin.getMultidistribNetTurnover;
 		view.getMangopayECTotal = MangopayPlugin.getMultidistribNetTurnover; 
 
         var pageUrl = "/p/pro/transaction/mangopay/group/wallet";
@@ -240,7 +238,7 @@ class MangopayGroupController extends controller.Controller
 			//trace("Look for mp payin "+id +" : <br/>");			
 			for ( op in db.Operation.manager.search( $group==group && $type==OperationType.Payment,false ))
 			{				
-				if(op.getPaymentType()==pro.payment.MangopayECPayment.TYPE || op.getPaymentType()==pro.payment.MangopayMPPayment.TYPE){
+				if(op.getPaymentType()==pro.payment.MangopayECPayment.TYPE /*|| op.getPaymentType()==pro.payment.MangopayMPPayment.TYPE*/){
 					var i : PaymentInfos = op.getPaymentData();
 					//trace(i.remoteOpId);
 					if (Std.string(i.remoteOpId) == id){

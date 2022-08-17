@@ -1,8 +1,8 @@
 package db;
+import Common;
 import sugoi.form.ListData;
 import sys.db.Object;
 import sys.db.Types;
-import Common;
 
 /**
  * Distrib
@@ -104,30 +104,22 @@ class Distribution extends Object
 	}
 
 	/**
-		Has user Orders ?
-		This includes secondary user.
-	**/
-	@:skip var pids : Array<Int>;
+		Has user Orders in this distrib ?
+	**/	
 	public function hasUserOrders(user:db.User):Bool{
-		if ( this.catalog.type == db.Catalog.TYPE_CONSTORDERS){			
-			return db.UserOrder.manager.search($distribution == this  && ($user==user || $user2==user),{limit:1}, false).length > 0; 
-		}else{
-			return db.UserOrder.manager.search($distribution == this  && $user==user,{limit:1}, false).length > 0; 
-		}
+		return db.UserOrder.manager.select($distribution == this  && ($user==user || $user2==user), false) != null; 		
 	}
 
 	/**
 		Get user orders
 		This includes secondary user.
 	**/
-	public function getUserOrders(user:db.User):List<db.UserOrder>{
-
-		if( user == null || user.id == null ) throw new tink.core.Error( "Un membre doit être fourni." );
-
+	public function getUserOrders(user:db.User):Array<db.UserOrder>{
+		if( user == null || user.id == null ) throw new tink.core.Error( "user is null" );
 		if ( this.catalog.type == db.Catalog.TYPE_CONSTORDERS){
-		 	return db.UserOrder.manager.search($distribution == this  && ($user==user || $user2==user) , false); 
+		 	return db.UserOrder.manager.search($distribution == this  && ($user==user || $user2==user) , false).array(); 
 		}else{
-			return db.UserOrder.manager.search($distribution == this  && $user==user, false); 
+			return db.UserOrder.manager.search($distribution == this  && $user==user, false).array(); 
 		}
 	}
 	
@@ -244,40 +236,17 @@ class Distribution extends Object
 	}
 
 	public function getInfos():DistributionInfos{
-		var out = {
+		return {
 			id:id,
 			groupId		: place.group.id,
 			groupName 	: place.group.name,
 			vendorId				: this.catalog.vendor.id,
-			distributionStartDate	: date==null ? multiDistrib.distribStartDate.getTime() : date.getTime(),
-			distributionEndDate		: end==null ? multiDistrib.distribEndDate.getTime() : end.getTime(),
-			orderStartDate			: null,
-			orderEndDate			: null,
+			distributionStartDate	: date==null ? multiDistrib.distribStartDate : date,
+			distributionEndDate		: end==null ? multiDistrib.distribEndDate : end,
+			orderStartDate			: orderStartDate==null ? multiDistrib.orderStartDate : orderStartDate,
+			orderEndDate			: orderEndDate==null ? multiDistrib.orderEndDate : orderEndDate,
 			place 					: multiDistrib.place.getInfos()
 		};
-
-		out.orderStartDate = if(orderStartDate==null){
-			if(multiDistrib.orderStartDate==null){
-				null;
-			}else{
-				multiDistrib.orderStartDate.getTime();
-			}
-		}else{ 
-			orderStartDate.getTime(); 
-		};
-
-		out.orderEndDate = if(orderEndDate==null){
-			if(multiDistrib.orderEndDate==null){
-				null;
-			}else{
-				multiDistrib.orderEndDate.getTime();
-			}
-		}else{ 
-			orderEndDate.getTime(); 
-		};
-
-		return out;
-
 	}
 
 	/**

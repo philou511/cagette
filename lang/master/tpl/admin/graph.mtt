@@ -18,9 +18,7 @@
 			<script type="text/javascript" src="/js/rgraph/RGraph.bar.js" ></script>
 			<canvas id="graph" width="900" height="150">[No canvas support]</canvas>
 			<script>
-				window.onload = function ()
-				{
-
+				window.onload = function ()	{
 					var datas = [];
 					var labels = [];
 					::foreach d data::
@@ -47,11 +45,27 @@
 		<p>
 			
 			<table class="table table-bordered table-striped">
+				::set weekTotal = 0::
+
 				::foreach d data::
-				<tr>
+
+				::if(d.date.getDay()==1)::
+					::set weekTotal = d.value::
+				::else::
+					::set weekTotal = weekTotal + d.value::
+				::end::
+				<tr>					
 					<td>::hDate(d.date)::</td>
 					<td>::d.value::</td>
 				</tr>
+
+				::if(d.date.getDay()==0)::
+				<tr>
+					<th class="text-right">Semaine</th>
+					<td>::weekTotal::</td>
+				</tr>
+				::end::
+
 				::end::
 			</table>
 

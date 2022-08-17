@@ -7,9 +7,11 @@
 			::if pageTitle!=null::
 				::pageTitle::
 			::else::
-				::NAME::
+				::theme.name::
 			::end::
 		</title>
+
+	    $$favicons()
 
 		<!-- Leaflet CSS -->
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
@@ -17,7 +19,11 @@
 		crossorigin=""/>
 		
 		<!-- Cagette CSS -->
-		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
+		::if(DEBUG)::
+			<link rel="stylesheet" type="text/css" href="/theme/::theme.id::/css/::getVariable('css')::/style.css" />
+		::else::
+			<link rel="stylesheet" type="text/css" href="/theme/::theme.id::/css/::getVariable('css')::/style.min.css" />
+		::end::
 
 
 		<!-- Cagette very own icon font -->
@@ -79,31 +85,20 @@
 
 		<script type="text/javascript">
 		
+			_Cagette.theme = {
+				footer: {
+					bloc1: `::raw theme.footer.bloc1::`,
+					bloc2: `::raw theme.footer.bloc2::`,
+					bloc3: `::raw theme.footer.bloc3::`,
+					bloc4: `::raw theme.footer.bloc4::`
+				}
+			}
 			
 			document.addEventListener("DOMContentLoaded", function(event) {
-			  
 				//init lang in js App
 				_Cagette.LANG = "::session.lang::";
-				
-				//tutorials
-				//::if tuto!=null::				
-				//_Cagette.getTuto("::tuto.name::",::tuto.step::);			
-				//::end::
-
 				_Cagette.antiDoubleClick();
-			  
 			})
-
-			//tracking 24x7
-			/*var rumMOKey='1d36c37d438ba069db210c73cb74308d';
-			(function(){
-				if(window.performance && window.performance.timing && window.performance.navigation) {
-					var site24x7_rum_beacon=document.createElement('script');
-					site24x7_rum_beacon.async=true;
-					site24x7_rum_beacon.setAttribute('src','//static.site24x7rum.com/beacon/site24x7rum-min.js?appKey='+rumMOKey);
-					document.getElementsByTagName('head')[0].appendChild(site24x7_rum_beacon);
-				}
-			})(window)*/
 
 		</script>
 

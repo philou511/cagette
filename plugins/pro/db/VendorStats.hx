@@ -1,15 +1,17 @@
 package pro.db;
 import sys.db.Types;
+import service.BridgeService;
 
 enum VendorType {
 	VTCpro; 			// 0 Offre Pro formé
 	VTFree; 			// 1 Gratuit
 	VTInvited; 			// 2 Invité
-	VTInvitedPro;   	// 3 Invité Cagette Pro
-	VTCproTest; 		// 4 Cagette Pro test (COVID19 ou en attente de formation)
+	VTInvitedPro;   	// 3 Invité sur cpro
+	VTCproTest; 		// 4 CPro test (COVID19 ou en attente de formation) @deprecated
 	VTStudent; 			// 5 compte pro pédagogique
 	VTDiscovery; 		// 6 Offre Découverte
-	VTCproSubscriber; 	// 7 Offre Pro abonné
+	VTCproSubscriberMontlhy; 	// 7 Offre Pro abonné mensuel
+	VTCproSubscriberYearly; 	// 8 Offre Pro abonné annuel
 }
 
 /**
@@ -52,23 +54,53 @@ class VendorStats extends sys.db.Object
 	**/
 	public static function updateStats(vendor:db.Vendor){
 
-		var vs = getOrCreate(vendor);
+		//Find lat/lnt if not set
+		if(vendor.lat==null && !vendor.isDisabled()){
+			vendor.lock();
 
+			var address = vendor.getAddress();
+			
+			try{
+				var res = service.Mapbox.geocode(address);
+	
+				if(res!=null){
+					if(res.geometry.coordinates[0]!=null){					
+						vendor.lat = res.geometry.coordinates[1];
+						vendor.lng = res.geometry.coordinates[0];
+						vendor.update();
+					}
+				}else{
+					vendor.lat = 0;
+					vendor.lng = 0;
+					vendor.update();
+				}
+			}catch(e:Dynamic){
+				App.current.logError("Unable to geocode vendor #"+vendor.id+" : "+Std.string(e));
+			}
+		}
+
+		var vs = getOrCreate(vendor);
 		var cpro = pro.db.CagettePro.getFromVendor(vendor);
 
 		//type
 		if(cpro!=null){
 
-			if(vendor.isTest){
-				vs.type = VTCproTest;
-			}else if(cpro.offer == Training){				
+			//if(vendor.isTest){
+			//	vs.type = VTCproTest;
+			if(cpro.offer == Training){				
 				vs.type = VTStudent;
 			}else if(cpro.offer==Discovery){
 				vs.type = VTDiscovery;
 			}else if(cpro.offer==Member){
 				vs.type = VTCpro;
 			}else if(cpro.offer==Pro){
-				vs.type = VTCproSubscriber;
+				// Get subscription plan
+				var result:Dynamic = BridgeService.call('/subscriptions/plan/${vendor.stripeCustomerId}');
+				if (result!=null && result.plan=='year'){
+					vs.type = VTCproSubscriberYearly;
+				} else {
+					vs.type = VTCproSubscriberMontlhy;
+				}
 			}
 			
 		}else{
@@ -88,18 +120,6 @@ class VendorStats extends sys.db.Object
 			}
 		}
 
-		//active
-		/*var isActive = false;
-		else{
-			//should have open distribs
-			for( c in vendor.getActiveContracts() ){				
-				if ( c!=null && c.getDistribs(true).length > 0 ){
-					isActive=true;
-					break;
-				}			
-			}
-		}*/
-		
 		var now = Date.now();
 		vs.ldate = now;
 		

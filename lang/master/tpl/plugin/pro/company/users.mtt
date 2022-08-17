@@ -4,7 +4,7 @@
 		<h3>Utilisateurs</h3>		
 		
 		<p>
-			Gérez ici les utilisateurs qui ont le droit de se connecter à votre compte Cagette Pro.
+			Gérez ici les utilisateurs qui ont le droit de se connecter à votre compte Producteur.
 		</p>
 		
 		<table class="table table-striped">
@@ -12,15 +12,20 @@
 			<tr>
 				<td>::v._user.getName()::</td>
 				<td>::v._user.email::</td>
-				<td>					
+				<td>
 					::if(v.legalRepresentative)::
 						Repr. légal
 					::end::
 				</td>
 				<td>
+					::if(v.salesRepresentative)::
+						Contact commercial
+					::end::
+				</td>
+				<td>
 					<div class="btn-group">
 						$$edit(Mod.,/p/pro/company/editUser/::v._user.id::)
-						$$delete(Suppr.,/p/pro/company/deleteUser/::v._user.id::?token=::token::)
+						::if(!v.legalRepresentative && !v.salesRepresentative)::$$delete(Suppr.,/p/pro/company/deleteUser/::v._user.id::?token=::token::)::end::
 					</div>
 					
 				</td>

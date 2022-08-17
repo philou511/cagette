@@ -3,19 +3,29 @@ import sys.db.Object;
 import sys.db.Types;
 import Common;
 
+
+@:enum
+abstract BasketStatus(String) {
+  var OPEN = "OPEN";
+  var CONFIRMED = "CONFIRMED";
+  var VALIDATED = "VALIDATED";
+}
+
 /**
  * Basket : represents the orders of a user for specific multidistrib
  */
-@:index(ref)
+// @:index(ref)
 class Basket extends Object
 {
 	public var id : SId;
-	public var ref : SNull<SString<256>>; 	//basket unique ref, used also by tmpBasket
+	// public var ref : SNull<SString<256>>; 	//basket unique ref, used also by tmpBasket
 	public var cdate : SDateTime; 			//date when the order has been placed
 	public var num : SInt;		 			//Basket number for distribution
-	public var total : SNull<SFloat>;		//orders total price for stats, !!! this is not reliable, dont use this for payments !!!
+	public var total : SFloat;				//orders total price for stats, !!! this is not reliable, dont use this for payments !!!
+	public var status : SString<32>; 		//Mysql enum  OPEN , CONFIRMED , VALIDATED
+	public var data : SText; //TmpBasketData; 
 
-	@:relation(userId) public var user : db.User;
+	@:relation(userId) public var user : SNull<db.User>;
 	@:relation(multiDistribId) public var multiDistrib : db.MultiDistrib;
 
 	public static var CACHE = new Map<String,db.Basket>();
@@ -65,13 +75,14 @@ class Basket extends Object
 	public static function getOrCreate(user, distrib:db.MultiDistrib){
 		var b = get(user, distrib, true);
 			
-		if (b == null){
+		if (b == null || b.status == Std.string(OPEN)){
 			//compute basket number
 			b = new Basket();
 			var max : Int = sys.db.Manager.cnx.request("select max(num) from Basket where multiDistribId="+distrib.id).getIntResult(0);
 			b.num = max + 1;
 			b.multiDistrib = distrib;
 			b.user = user;
+			b.status = Std.string(BasketStatus.CONFIRMED);
 			b.insert();
 		}		
 		return b;		
@@ -100,6 +111,13 @@ class Basket extends Object
 			}
 			return out;
 		}		
+	}
+
+	/**
+		get basket's orders for this distribution (one vendor)
+	**/
+	public function getDistributionOrders(d:db.Distribution):Array<db.UserOrder>{
+		return db.UserOrder.manager.search($basket == this && $distribution==d, false).array();
 	}
 	
 	/**
@@ -195,6 +213,44 @@ class Basket extends Object
 		var max : Int = sys.db.Manager.cnx.request("select max(num) from Basket where multiDistribId="+this.multiDistrib.id).getIntResult(0);
 		this.num = max + 1;
 		this.update();
+	}
+
+	public function getData():TmpBasketData{
+		try{
+			return haxe.Json.parse(data);
+		}catch(e:Dynamic){
+			return {products:[]};
+		}
+		
+	}
+
+	public function setData(tmpBasketData: TmpBasketData){
+		data = haxe.Json.stringify(tmpBasketData);
+	}
+
+	/**
+		Get total amount to pay for this TMP basket
+	**/
+	public function getTmpTotal():Float{
+		var total = 0.0;
+		var data = this.getData();
+		for( o in data.products){
+			var p = db.Product.manager.get(o.productId,false);
+			if(p==null) continue;
+			total += o.quantity * p.getPrice();
+		}
+		return total;
+	}
+
+	public function getTmpOrders(){
+		var out = new Array<{product:db.Product,quantity:Float}>();
+		var data = this.getData();
+		for( o in data.products){
+			var p = db.Product.manager.get(o.productId,false);
+			if(p==null) continue;
+			out.push({product:p , quantity : o.quantity});
+		}
+		return out;
 	}
 	
 }

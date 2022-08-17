@@ -1,5 +1,8 @@
 package pro.controller;
 
+import payment.Check;
+import service.PaymentService;
+import controller.Cron;
 import service.DistributionService;
 import db.User;
 import haxe.DynamicAccess;
@@ -280,7 +283,7 @@ class Admin extends controller.Controller {
 	/**
 	 * Massive import of groups from CSV
 	 */
-	@admin @tpl('plugin/pro/admin/import.mtt')
+	/*@admin @tpl('plugin/pro/admin/import.mtt')
 	function doImportGroup(?args:{confirm:Bool}) {
 		var csv = new sugoi.tools.Csv();
 		var step = 1;
@@ -307,10 +310,6 @@ class Admin extends controller.Controller {
 		if (args != null && args.confirm) {
 			var i:Iterable<Dynamic> = cast app.session.data.csvImportedData;
 			for (p in i) {
-				/*mettre seb et françois en adhérent
-					mettre le producteur en membre dans le groupe et lui donner accès à son contrat
-				 */
-
 				// group
 				var group = new db.Group();
 				group.name = p[0];
@@ -397,6 +396,22 @@ class Admin extends controller.Controller {
 		}
 
 		view.csv = csv;
+	}*/
+
+	@admin
+	function doUserOrderFix(){
+		/**
+			2022-05-25
+			need to assign basketId to UserOrders... there is still userOrder without basketId
+		**/
+		for( order in db.UserOrder.manager.search($basket==null,{limit:1000},true)){
+
+			order.basket = db.Basket.getOrCreate(order.user, order.distribution.multiDistrib);	
+			order.update();
+			Sys.println('order ${order.id} fixed<br>');
+		}
+		var count = db.UserOrder.manager.count($basket==null);
+		Sys.println('Still ${count} userOrder without basket<br>');
 	}
 
 	@admin
@@ -616,92 +631,19 @@ class Admin extends controller.Controller {
 		}
 	}
 
-	/**
-		find groups with test cpros
-	**/
-	function doFindGroupsWithTestCpros() {
-		/*var out = new Map<Int,{
-			id:Int,
-			groupName:String,
-
-
-		}>();*/
-
-		var groups = [];
-		for (vs in VendorStats.manager.search($type == VTCproTest, false)) {
-			var v = vs.vendor;
-			var cpro = CagettePro.getFromVendor(v);
-
-			for (c in cpro.getClients())
-				groups.push(c);
-		}
-
-		groups = ObjectListTool.deduplicate(groups);
-
-		var data = new Array<{
-			id:Int,
-			name:String,
-			groupLeader:String,
-			email:String,
-			invitedVendors:Int,
-			proVendors:Int,
-			testProVendors:Int
-		}>();
-
-		for (g in groups) {
-			var invitedVendors = 0;
-			var proVendors = 0;
-			var testCproVendors = 0;
-			for (c in g.getActiveContracts()) {
-				var rc = RemoteCatalog.getFromContract(c);
-
-				if (rc == null) {
-					invitedVendors++;
-				} else {
-					// var cpro = rc.getCatalog().company;
-					if (c.vendor.isTest) {
-						testCproVendors++;
-					} else {
-						proVendors++;
-					}
-				}
-			}
-
-			data.push({
-				id: g.id,
-				name: g.name,
-				groupLeader: g.contact != null ? g.contact.getName() : "",
-				email: g.contact != null ? g.contact.email : "",
-				invitedVendors: invitedVendors,
-				proVendors: proVendors,
-				testProVendors: testCproVendors
-			});
-		}
-
-		sugoi.tools.Csv.printCsvDataFromObjects(data, [
-			"id",
-			"name",
-			"groupLeader",
-			"email",
-			"invitedVendors",
-			"proVendors",
-			"testProVendors"
-		], "Groupes avec Cpro Test");
-	}
-
 	@admin
 	function doMigrateOperations() {
 		// 2020-07-31 : refacto payment ops
 		/*var from = Date.fromString(app.params.get("from"));
-			var to = Date.fromString(app.params.get("to"));
+		var to = Date.fromString(app.params.get("to"));
 
-			for( op in db.Operation.manager.search($date >= from && $date < to && $data2 ==null ,true)){
+			for( op in db.Operation.manager.search($date >= from && $date < to && $data2 == null ,true)){
 				try{
 
 					switch(op.type){
 						case VOrder:
 							var data :VOrderInfos = op.data;
-							var basket = db.Basket.manager.get(data.basketId);
+							var basket = data==null ? null : db.Basket.manager.get(data.basketId);
 							// on peut migrer une op si le basket n'existe plus, pas la peine d'essayer de fixer un autre problème.
 							
 							if(basket!=null){
@@ -709,32 +651,42 @@ class Admin extends controller.Controller {
 								op.setData({basketId:basket.id});
 								Sys.print('Op ${op.id} OK<br/>');
 							}else{
-								op.setData({basketId:null});
-								Sys.print('Warning "basket null" avec op <a href="http://localhost/db/Operation/edit/${op.id}">#${op.id}</a><br>');
-							}
-							try{
 
-								op.update();
-							}catch(e:Error){}
-							
+								//sometimes op.basket is null in data, but populated in op.basket
+								if(op.basket!=null){
+									op.setData({basketId:op.basket.id});
+								}else{
+									op.setData({basketId:null});
+									Sys.print('Warning "basket null" avec op <a href="/db/db.Operation/edit/${op.id}">#${op.id}</a><br>');
+								}								
+								
+							}
 						
-						case COrder :
+						//case COrder :
 							//delete this, it it exists its shit
-							op.delete();	
+							// op.delete();	
+						case SubscriptionTotal:
+
+							//no need to migrate
 
 						case Payment :
 							var data :PaymentInfos = op.data;
 							op.setData({type:data.type,remoteOpId:data.remoteOpId});
-							op.update();
+
 						case Membership :
 							var data :MembershipInfos = op.data;
-							op.setData({year:data.year});
-							op.update();
+							op.setData({year:data.year});							
+					}
+
+					try{
+						op.unsafeUpdate();
+					}catch(e:Error){
+						Sys.print("Error : "+e.message);
 					}
 
 				}catch(e:Dynamic){
 
-					Sys.print('Erreur "$e" avec op <a href="http://localhost/db/Operation/edit/${op.id}">#${op.id}</a><br>');
+					Sys.print('Erreur "$e" avec op <a href="/db/db.Operation/edit/${op.id}">#${op.id}</a><br>');
 
 				}
 				
@@ -802,11 +754,11 @@ class Admin extends controller.Controller {
 	}
 
 	/**
-	 * Create a cagette pro account
+	 * Create a cagette pro account from a vendor
 	 */
 	function doCreateCpro(vendor:db.Vendor) {
 		if (pro.db.CagettePro.getFromVendor(vendor) != null)
-			throw Error("/admin/vendor/view/" + vendor.id, vendor.name + " a deja un cagette Pro");
+			throw Error("/admin/vendor/view/" + vendor.id, vendor.name + " a deja un compte producteur");
 
 		vendor.lock();
 
@@ -814,49 +766,24 @@ class Admin extends controller.Controller {
 		cpro.vendor = vendor;
 		cpro.insert();
 
-		vendor.isTest = false;
+		// vendor.isTest = false;
 		vendor.update();
 
 		// user
-		var user = service.UserService.getOrCreate("", "", vendor.email);
+		var user = service.UserService.get(vendor.email);
 
 		// access
-		var uc = new pro.db.PUserCompany();
-		uc.company = cpro;
-		uc.user = user;
-		uc.insert();
-
-		VendorStats.updateStats(vendor);
-
-		throw Ok("/admin/vendor/view/" + vendor.id, "Compte Cagette Pro créé");
-	}
-
-	function doCproTest(vendor:db.Vendor) {
-		vendor.lock();
-
-		var cpro = pro.db.CagettePro.getFromVendor(vendor);
-
-		if (cpro == null) {
-			cpro = new pro.db.CagettePro();
-			cpro.vendor = vendor;
-			cpro.insert();
-
-			// user
-			var user = service.UserService.getOrCreate("", "", vendor.email);
-
-			// access
+		if(user!=null){
 			var uc = new pro.db.PUserCompany();
 			uc.company = cpro;
 			uc.user = user;
 			uc.insert();
 		}
-
-		vendor.isTest = true;
-		vendor.update();
+		
 
 		VendorStats.updateStats(vendor);
 
-		throw Ok("/admin/vendor/view/" + vendor.id, "Compte passé en Cagette Pro Test");
+		throw Ok("/admin/vendor/view/" + vendor.id, "Compte Cagette Pro créé");
 	}
 
 	@tpl("form.mtt")
@@ -939,7 +866,7 @@ class Admin extends controller.Controller {
 	/**
 	 * Massive import of groups from CSV FOR CORTO/Givrés/VRAC
 	 */
-	@admin @tpl('plugin/pro/admin/import.mtt')
+	/*@admin @tpl('plugin/pro/admin/import.mtt')
 	function doImportGroupCustom(?args:{confirm:Bool}) {
 		var csv = new sugoi.tools.Csv();
 		csv.step = 1;
@@ -1025,15 +952,15 @@ class Admin extends controller.Controller {
 						pro.service.PCatalogService.linkCatalogToGroup(catTQ, group, group.contact.id);
 					}
 
-					/*var catalogId = Std.parseInt(p["catalog"]);
-						if ( catalogId == 0 || catalogId == null ) throw "catalog is null : " + p;
-						var catalog = pro.db.PCatalog.manager.get(catalogId);
-						contract = pro.service.PCatalogService.linkCatalogToGroup(catalog, group, contact.id).getContract();
+					// var catalogId = Std.parseInt(p["catalog"]);
+					// 	if ( catalogId == 0 || catalogId == null ) throw "catalog is null : " + p;
+					// 	var catalog = pro.db.PCatalog.manager.get(catalogId);
+					// 	contract = pro.service.PCatalogService.linkCatalogToGroup(catalog, group, contact.id).getContract();
 
-						if(catalog.company.image!=null){
-							group.image = catalog.company.image;
-							group.update();
-					}*/
+					// 	if(catalog.company.image!=null){
+					// 		group.image = catalog.company.image;
+					// 		group.update();
+					// }
 
 					// access to admins and vendor
 					// for ( a in admins){
@@ -1041,13 +968,13 @@ class Admin extends controller.Controller {
 					// 	u.makeMemberOf(group);
 					// }
 
-					/*for ( x in catalog.company.getUsers()){
-						var um = x.makeMemberOf(group);
-						um.giveRight(Right.Membership);
-						um.giveRight(Right.Messages);
-						um.giveRight(Right.GroupAdmin);
-						um.giveRight(Right.ContractAdmin());
-					}*/
+					// for ( x in catalog.company.getUsers()){
+					// 	var um = x.makeMemberOf(group);
+					// 	um.giveRight(Right.Membership);
+					// 	um.giveRight(Right.Messages);
+					// 	um.giveRight(Right.GroupAdmin);
+					// 	um.giveRight(Right.ContractAdmin());
+					// }
 
 					// place
 					place = new db.Place();
@@ -1069,12 +996,12 @@ class Admin extends controller.Controller {
 					// d.place = place;
 					// d.insert();
 
-					/*try{
-							group.contact.sendInvitation(group);
-						}catch(e:Dynamic){
-							trace(group.contact.name);
-							trace(e);
-					}*/
+					try{
+						// 	group.contact.sendInvitation(group);
+						// }catch(e:Dynamic){
+						// 	trace(group.contact.name);
+						// 	trace(e);
+					}
 				}
 			} // end for
 
@@ -1089,7 +1016,7 @@ class Admin extends controller.Controller {
 		}
 
 		view.csv = csv;
-	}
+	}*/
 
 	/**
 		Duplicate a group
@@ -1135,7 +1062,7 @@ class Admin extends controller.Controller {
 				for (cat in cpro.getCatalogs()) {
 					for (rc in connector.db.RemoteCatalog.getFromCatalog(cat)) {
 						if (rc.getContract() != null) {
-							throw Error("/admin/vendor/view/" + vendor.id, "Ce Cagette Pro a encore des catalogues reliés à des groupes");
+							throw Error("/admin/vendor/view/" + vendor.id, "Ce compte producteur a encore des catalogues reliés à des groupes");
 						}
 					}
 				}
@@ -1162,7 +1089,7 @@ class Admin extends controller.Controller {
 				for (cat in cpro.getCatalogs()) {
 					for (rc in connector.db.RemoteCatalog.getFromCatalog(cat)) {
 						if (rc.getContract() != null) {
-							throw Error("/admin/vendor/view/" + vendor.id, "Ce Cagette Pro a encore des catalogues reliés à des groupes");
+							throw Error("/admin/vendor/view/" + vendor.id, "Ce compte producteur a encore des catalogues reliés à des groupes");
 						}
 					}
 				}
@@ -1172,7 +1099,7 @@ class Admin extends controller.Controller {
 
 				VendorStats.updateStats(vendor);
 
-				throw Ok("/admin/vendor/view/" + vendor.id, "Cagette Pro désactivé");
+				throw Ok("/admin/vendor/view/" + vendor.id, "compte producteur désactivé");
 
 			case "delete":
 				if (vendor.getContracts().length > 0) {
@@ -1192,12 +1119,12 @@ class Admin extends controller.Controller {
 	@admin @tpl('form.mtt')
 	public function doContractToCatalog(?catalog:db.Catalog, ?cagettePro:pro.db.CagettePro) {
 		var f = new sugoi.form.Form("contract");
-		view.title = "Importer un catalogue groupe dans un cagette pro";
+		view.title = "Importer un catalogue groupe dans un compte producteur";
 		if (catalog != null && cagettePro != null) {
 			/*f.addElement(new sugoi.form.elements.IntInput("cid",catalog.name+" dans le groupe "+catalog.group.name,catalog.id,true));
 				f.addElement(new sugoi.form.elements.IntInput("companyId",cagettePro.vendor.name,cagettePro.id,true)); */
 
-			view.text = 'Voulez vous importer ce catalogue <b>${catalog.name}</b><br/> dans le Cagette Pro <b>${cagettePro.vendor.name}</b> ?';
+			view.text = 'Voulez vous importer ce catalogue <b>${catalog.name}</b><br/> dans le compte producteur <b>${cagettePro.vendor.name}</b> ?';
 
 			if (f.isValid()) {
 				for (p in catalog.getProducts(false)) {
@@ -1235,7 +1162,7 @@ class Admin extends controller.Controller {
 			}
 		} else {
 			f.addElement(new sugoi.form.elements.IntInput("cid", "ID du catalogue", null, true));
-			f.addElement(new sugoi.form.elements.IntInput("companyId", "ID du Cagette Pro", null, true));
+			f.addElement(new sugoi.form.elements.IntInput("companyId", "ID du Compte producteur", null, true));
 
 			if (f.isValid()) {
 				var cid = f.getElement("cid").getValue();
@@ -1244,7 +1171,7 @@ class Admin extends controller.Controller {
 				var contract = db.Catalog.manager.get(cid, false);
 
 				if (company == null)
-					throw "Ce compte Cagette Pro n'existe pas";
+					throw "Ce compte producteur n'existe pas";
 				if (contract == null)
 					throw "Ce contrat n'existe pas";
 
@@ -1262,7 +1189,7 @@ class Admin extends controller.Controller {
 	function doMoveCatalog() {
 		var f = new sugoi.form.Form("movecata");
 		f.addElement(new sugoi.form.elements.IntInput("catalogId", "ID du catalogue cpro à déplacer", null, true));
-		f.addElement(new sugoi.form.elements.IntInput("vid", "ID du producteur (qui doit avoir Cagette Pro) qui va recevoir le catalogue", null, true));
+		f.addElement(new sugoi.form.elements.IntInput("vid", "ID du producteur (qui doit avoir compte producteur) qui va recevoir le catalogue", null, true));
 
 		if (f.isValid()) {
 			var catalog = pro.db.PCatalog.manager.get(f.getValueOf("catalogId"));
@@ -1290,8 +1217,8 @@ class Admin extends controller.Controller {
 	@admin @tpl("form.mtt")
 	function doCopyProducts() {
 		var f = new sugoi.form.Form("movecata");
-		f.addElement(new sugoi.form.elements.IntInput("sourcevid", "ID du producteur Cagette Pro source", null, true));
-		f.addElement(new sugoi.form.elements.IntInput("desvid", "ID du producteur Cagette Pro destination", null, true));
+		f.addElement(new sugoi.form.elements.IntInput("sourcevid", "ID du producteur source", null, true));
+		f.addElement(new sugoi.form.elements.IntInput("desvid", "ID du producteur destination", null, true));
 
 		if (f.isValid()) {
 			var vendor = db.Vendor.manager.get(f.getValueOf("sourcevid"));
@@ -1326,95 +1253,7 @@ class Admin extends controller.Controller {
 		view.form = f;
 	}
 
-	/**
-		envoi du mail aux producteur pour qu'il remplissent leurs infos légales.
-	**/
-	function doSendLegalInfosMail() {
-		for (v in db.Vendor.manager.unsafeObjects("SELECT v.* FROM Vendor v, VendorStats vs where v.id=vs.vendorId and vs.active=1 and v.companyNumber is null and disabled is null",
-			false)) {
-			var vs = VendorStats.getOrCreate(v);
-
-			if (vs.type == VTStudent)
-				continue;
-			if (v.disabled != null)
-				continue;
-			if (v.email == null)
-				continue;
-
-			Sys.println('send to <a href="/admin/vendor/view/${v.id}">${v.name}</a><br/>');
-
-			var m = new sugoi.mail.Mail();
-			m.setSender(App.config.get("default_email"), "Cagette.net");
-			m.setRecipient(v.email);
-			m.setReplyTo("support@cagette.net", "Cagette.net");
-			m.setSubject("Important : mise en conformité des comptes producteurs sur Cagette.net");
-			var link = "http://app.cagette.net/vendorNoAuthEdit/"
-				+ v.id
-				+ "/"
-				+ haxe.crypto.Md5.encode(App.config.KEY + "_updateWithoutAuth_" + v.id);
-
-			m.setHtmlBody(app.processTemplate("plugin/pro/mail/vendorLegalInfos.mtt", {vendor: v, link: link, type: vs.type.getIndex()}));
-			App.sendMail(m);
-		}
-	}
-
-	/**
-		block "covid" cpro tests on 2020-10-01
-	**/
-	/*function doBlockCproTest(){
-		var data = sys.io.File.getContent(sugoi.Web.getCwd() + "../data/cpro_test_a_bloquer.csv");
-		var csv = new sugoi.tools.Csv();
-		csv.setHeaders(["email","id","firstname","lastname","company","city"]);
-
-		var print = function(str:String){
-			Sys.println(str + "<br />");
-		};
-
-		print("<html><body>");
-
-		for(l in csv.importDatasAsMap(data)){
-			var user = db.User.manager.get(Std.parseInt(l["id"]),false);
-
-			if(user==null){
-				print("!!! user is null "+Std.string(l));
-				continue;
-			} 
-			if(user.email!=l["email"]){
-				print("!!! mail is not the same :  "+user.email+" != "+l["email"]);
-				continue;
-			}
-			var companies = PUserCompany.getCompanies(user).array();
-			if(companies.length>1){
-				print("!!! user has many cpros  :  "+companies);
-				continue;
-			}
-			if(companies.length==0){
-				print("!!! user has no cpros");
-				continue;
-			}
-
-			var cpro = companies[0];
-			for( uc in cpro.getUserCompany()){
-				uc.lock();
-				uc.disabled = true;
-				uc.update();
-				print("OK "+uc.user.email+" has no more acces to "+cpro.vendor.name+ " #"+cpro.vendor.id);
-			}
-
-		}
-
-		print("</body></html>");
-	}*/
-
-	function doTest() {
-		var offset = app.params.get("offset");
-
-		Sys.print(Json.stringify({
-			status: "succes",
-			offset: offset,
-		}));
-	}
-
+	
 
 	/**
 		2021-07-05
@@ -1428,10 +1267,16 @@ class Admin extends controller.Controller {
 			both:0
 		};
 
-		for ( vs in VendorStats.manager.search($active==true,false)){
+		//prods formule Pro / Découverte ou Membre
+		for ( vs in VendorStats.manager.search($active==true && ($type==VTCpro || $type==VTDiscovery || $type==VTCproSubscriberMontlhy || $type==VTCproSubscriberYearly),false)){
 			var v = vs.vendor;
 
-			var groups = v.getActiveContracts().map( c -> c.group ).array();
+			var catalogs = v.getActiveContracts();
+			//keep only linked catalogs 
+			catalogs = catalogs.filter(c -> {
+				return RemoteCatalog.getFromContract(c)!=null;
+			});
+			var groups = catalogs.map( c -> c.group ).array();
 			groups = ObjectListTool.deduplicate(groups);
 
 			var groupTypes = {
@@ -1574,6 +1419,116 @@ class Admin extends controller.Controller {
 	@admin @tpl('plugin/pro/admin/certification.mtt')
 	function doCertification() { }
 
+	/**
+	- détecte les operations invalides ou orphelines	
+	- détecte les orders sans souscription et recréé les subs
+	**/
+	@admin
+	function doFixCsaOrders(group:db.Group,?args:{?fixUserOrder:db.UserOrder,?fixInvalidOps:Bool,?fixPendingPayments:Bool}){
+		
+		if(group.hasShopMode()) throw "Pour les AMAP only !";
+		var print = Cron.print;
+		print('<h1>#${group.id} ${group.name}</h1>');
+		print('<h1>Operations</h1>');
+
+		//invalid ops
+		if(args!=null && args.fixInvalidOps){
+			Operation.manager.delete($group==group && $type==VOrder);
+		}
+		var invalidOperations = Operation.manager.search($group==group && $type==VOrder);
+		Sys.print('Operations invalides (de type VOrder): <a href="/p/pro/admin/fixCsaOrders/${group.id}?fixInvalidOps=1">[fix]</a> <ul>');
+		for (o in invalidOperations) Sys.print('<li><a href="/db/Operation/edit/${o.id}">$o</a></li>');
+		Sys.print("</ul>");
+
+		//unlinked ops
+		var unlinkedOps = Operation.manager.search($group==group && $type==Payment && $subscription==null);
+		Sys.print("Operations orphelines (paiements non liés à une sub, non lié à une adhésion): <ul>");
+		for (o in unlinkedOps) {
+			if(o.relation!=null && o.relation.type==Membership) continue;
+			Sys.print('<li><a href="/db/Operation/edit/${o.id}">$o</a></li>');
+		}
+		Sys.print("</ul>");
+
+		//pending payments
+		if(args!=null && args.fixPendingPayments){
+			for( op in Operation.manager.search($group==group && $type==Payment && $pending==true, true) ){
+				op.pending = false;
+				op.update();
+			}
+			for(m in group.getMembers()){
+				service.PaymentService.updateUserBalance(m,group);
+			}
+		}
+		var pendingPayments = Operation.manager.search($group==group && $type==Payment && $pending==true,false);
+		Sys.print('Paiement non confirmés <a href="/p/pro/admin/fixCsaOrders/${group.id}?fixPendingPayments=1">[fix]</a> <ul>');
+		for (o in pendingPayments) {
+			Sys.print('<li><a href="/db/Operation/edit/${o.id}">$o</a></li>');
+		}
+		Sys.print("</ul>");
+
+
+		print('<h1>Commandes non rattachées à des souscriptions</h1>');
+
+		//run fix
+		var subToCreate = null;
+		if(args!=null && args.fixUserOrder!=null){
+
+			var sub = Subscription.manager.select($user == args.fixUserOrder.user && $catalog == args.fixUserOrder.product.catalog);
+			if(sub!=null){
+				throw args.fixUserOrder.user+" a dejà une sub #"+sub.id+" dans "+args.fixUserOrder.product.catalog;
+			}
+
+			var sub = new db.Subscription();
+			sub.user = args.fixUserOrder.user;
+			sub.catalog = args.fixUserOrder.product.catalog; 
+			sub.insert();
+
+			for( d in sub.catalog.getDistribs(false)){
+				var orders = db.UserOrder.manager.search($distribution == d  && $user==sub.user, true).array();
+				if(orders.length>0){
+					for(o in orders) {
+						o.subscription = sub; 
+						o.update();
+					}
+
+					//find dates
+					if( sub.startDate==null || d.date.getTime() < sub.startDate.getTime()){
+						sub.startDate = d.date;
+					}
+					if( sub.endDate==null || d.date.getTime() > sub.endDate.getTime()){
+						sub.endDate = d.date;
+					}
+				}
+			}
+
+			sub.update();			
+			print('<pre>Souscription créée pour ${sub.user} dans le contrat ${sub.catalog}</pre>');
+		}
+
+
+		//detect
+		for(c in group.getActiveContracts(true)){
+			print('<h2>#${c.id} ${c.name}</h2>');
+			for( d in c.getDistribs(false)){
+				print('<h3>#${d.id} ${Formatting.dDate(d.date)}</h3>');
+				var orders = db.UserOrder.manager.search($subscription==null && $distribution==d,false).array();
+
+				if(orders.length>0){
+					Sys.print("<ul>");
+					for (o in orders){
+						Sys.print('<li>$o');
+						Sys.print('<a href="/p/pro/admin/fixCsaOrders/${group.id}?fixUserOrder=${o.id}">[fix]</a>');
+						Sys.print('<a href="/db/UserOrder/edit/${o.id}">[edit]</a>');
+						Sys.print('</li>');
+					} 
+					Sys.print("</ul>");
+				}
+			}
+		}
+
+	}
+
+
 	@admin
 	function doFixCsaOps(group:db.Group){
 
@@ -1600,9 +1555,9 @@ class Admin extends controller.Controller {
 			}
 			
 			//remove ops of catalogs where payments are not activated
-			if(op.subscription!=null && !op.subscription.catalog.hasPayments){
-				op.delete();
-			}
+			// if(op.subscription!=null && !op.subscription.catalog.hasPayments){
+			// 	op.delete();
+			// }
 		}
 
 		//update balances
@@ -1611,25 +1566,194 @@ class Admin extends controller.Controller {
 		}
 	}
 
-
-	function doCleanCproTest(){
-
-		var vendors = db.Vendor.manager.search($isTest==true,false);
+	/**
+		gestion des paiements obligatoire dans les AMAP
+		2022-05
+	**/
+	function doMigrateCsaPayments20220530(){
 		var print = controller.Cron.print;
-		for ( v in vendors ){
+		for ( g in db.Group.manager.search(!$flags.has(ShopMode))){
+			print("<h2>"+g.name+"</h2>");
 
-			print('<a target="_blank" href="/admin/vendor/view/${v.id}">${v.name}</a>');
-			
-			var cpro = v.getCpro();
-			if(cpro==null){
-				print("No Cpro !!");
-			}else{
-				for( uc in pro.db.PUserCompany.getUsers(cpro)){
-					if(!uc.disabled){
-						print('${uc.user.getName()} is not disabled !');
+			//remove shopMode operations
+			for( op in Operation.manager.search($group==g,true)){
+				if(op.type==VOrder){
+					print('delete shopMode op #${op.id}');
+					op.delete();
+				}
+			}
+
+
+			for ( cat in g.getActiveContracts()){
+				if(untyped cat.hasPayments) continue;
+				print(cat.name);
+				for (sub in SubscriptionService.getCatalogSubscriptions(cat)){
+					print("----sub "+sub.id);
+					//create payements operation
+					var orderOp = SubscriptionService.createOrUpdateTotalOperation(sub);
+
+					if(untyped sub.isPaid){
+						if (db.Operation.manager.count( $subscription == sub && $type==Payment )>0 ) continue;
+
+						var op = PaymentService.makePaymentOperation(sub.user,g,Check.TYPE,Math.abs(orderOp.amount),"Paiement créé automatiquement car souscription marquée comme payée",orderOp);
+						op.subscription = sub;
+						op.date = orderOp.date;
+						op.pending = false;
+						op.update();
+						
+						print("create order op "+orderOp.amount);
+						print("create payment op "+op.amount);
 					}
+
+					
+				}
+			}
+
+			for( u in g.getMembers()){
+				service.PaymentService.updateUserBalance(u,g);
+			}
+		}
+	}
+
+
+	function doFix(){
+
+		//fill defaultOrder in constant order subs when empty
+		var now = Date.now();
+		var print = controller.Cron.print;
+		for( sub in Subscription.manager.search($startDate < now && $endDate > now,true)){
+			
+			if(sub.catalog.isConstantOrdersCatalog()){
+				
+				var dord = sub.getDefaultOrders();
+				
+				if(dord.length==0){
+					print(sub+" has null defaultOrders");
+
+					var newdo = service.SubscriptionService.getCSARecurrentOrders(sub,[]);
+		
+					var newdo2 : Array<CSAOrder> = newdo.map( order -> {
+						productId:order.product.id,
+						productPrice:order.productPrice,
+						quantity:order.productPrice,
+						userId2:null,
+						invertSharedOrder:null						
+					});
+					sub.defaultOrders = haxe.Json.stringify( newdo2 );
+					sub.update();
+				}
+
+
+			}
+		}
+	}
+
+	function doVrac(){
+
+		var themeId = App.current.getTheme().id;
+
+		var vendorIds = [
+			12640, //Bordeaux
+			13715, //Lyon
+			14000, //Strasbourg
+			14001, //Toulouse
+			14002, //Paris
+			21640, //rennes
+			22409, //nantes
+			23371, //marseille
+			24068, //st etienne
+			24225, //haut de france
+			24226, //montpellier
+			24482, //bruxelles
+			24697, //lyon 2
+			//drome reliée à Lyon
+			//finistere
+		];
+
+		var vendors = db.Vendor.manager.search($id in vendorIds);
+		var print = controller.Cron.print;
+		var cpros = vendors.map( v -> CagettePro.getFromVendor(v));
+		var groups = [];
+		print("==== CPRO");
+		if(themeId=="cagette"){
+			for(cpro in cpros){
+				print(cpro.vendor.name);
+
+				for( g in cpro.getGroups()){
+					print("- "+g.name);
+					groups.push(g);
+
+					
+					//RUN THIS ON CAGETTE.NET
+					g.lock();
+					g.disabled = Std.string(db.Group.GroupDisabledReason.MOVED);
+					g.extUrl = "https://epicerie.vrac-asso.org/group/"+g.id;
+					g.update();
+
+					//remove future distribs that have no orders !!
+					var mds = MultiDistrib.getFromTimeRange(g,Date.now(),DateTools.delta(Date.now(),1000*60*60*24*30.5*12*1000));
+					for(md in mds){
+						var orders = md.getOrders();
+						if(orders.length==0){
+							md.lock();
+							print("delete "+md.toString());
+							md.delete();
+						}else{
+							print(" "+md.toString()+" has orders !!");
+						}
+					}
+					
 				}
 			}
 		}
+
+		//RUN THIS ON VRAC
+		if(themeId=="vrac"){
+
+			for(cpro in cpros){
+				print(cpro.vendor.name);
+				for( g in cpro.getGroups()){
+					print("- "+g.name);
+					groups.push(g);
+				}
+			}
+
+			var gids:Array<Int> = groups.map(g -> g.id);
+			var groupsToDelete = db.Group.manager.unsafeObjects('select * from `Group` where id not in (${gids.join(",")}) LIMIT 1000',true);
+			print("====  1000 Groupes a effacer");
+			for(g in groupsToDelete){
+				print("delete "+g.name);
+				g.delete();
+			}
+
+			if(app.params.get("users")!=null){
+
+				var limit = app.params.get("users").parseInt();
+
+				for( u in db.User.manager.unsafeObjects("SELECT * FROM User order by RAND() limit "+limit,true)){
+
+					//ne pas effacer ceux qui sont dans un groupe VRAC
+					if( db.UserGroup.manager.count($userId==u.id && $groupId in gids) > 0 ){
+						print(""+u.toString()+" is VRAC member");
+						continue;
+					}
+	
+					//ne pas effacer ceux qui ont des commandes VRAC
+					var mds = db.MultiDistrib.manager.search($groupId in gids,false);
+					var mdIds = mds.map(x -> x.id);
+					if( db.Basket.manager.count($userId==u.id && $multiDistribId in mdIds) > 0 ){
+						print(""+u.toString()+" has VRAC baskets");
+						continue;
+					}
+	
+					print("delete "+u.toString());
+					u.delete();
+				}
+			}
+			
+		}
+		
+
+
 	}
 }

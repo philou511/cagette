@@ -1,18 +1,19 @@
 package controller;
-import service.OrderFlowService;
 import Common;
-import tools.ArrayTool;
+import db.Basket.BasketStatus;
+import service.OrderFlowService;
 import service.OrderService;
+import tools.ArrayTool;
 
 class Shop extends Controller
 {
 	
 	var distribs : List<db.Distribution>;
 	var contracts : List<db.Catalog>;
-	var tmpBasket : db.TmpBasket;
+	var tmpBasket : db.Basket;
 
 	@tpl('shop/default.mtt')
-	public function doDefault(md:db.MultiDistrib,?args:{continueShopping:Bool}) {
+	public function doDefault(md:db.MultiDistrib,?args:{continueShopping:Bool, basketId: Int}) {
 		
 		if( app.getCurrentGroup()==null || app.getCurrentGroup().id!=md.getGroup().id){
 			throw  Redirect("/group/"+md.getGroup().id);
@@ -25,6 +26,8 @@ class Shop extends Controller
 		view.category = 'shop';
 		view.md = md;
 		view.tmpBasketId = app.session.data.tmpBasketId;
+		view.basketId = args == null ? null : args.basketId;
+		view.user = app.user;
 
 		// service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
 
@@ -183,7 +186,9 @@ class Shop extends Controller
 		- got to next step in the flow
 	**/
 	@tpl('shop/needLogin.mtt')
-	public function doValidate(tmpBasket:db.TmpBasket){
+	public function doValidate(tmpBasket:db.Basket){
+
+		if(tmpBasket.status!=Std.string(BasketStatus.OPEN)) throw "Basket should be status=OPEN";
 		
 		tmpBasket.lock();
 		var md = tmpBasket.multiDistrib;
@@ -272,7 +277,7 @@ class Shop extends Controller
 	/**
 		final confirmation of the basket
 	**/
-	function doConfirm(tmpBasket:db.TmpBasket){
+	function doConfirm(tmpBasket:db.Basket){
 		if(tmpBasket!=null){
 			
 			if(tmpBasket.user==null){				
@@ -293,7 +298,7 @@ class Shop extends Controller
 		this page handles the login process
 	**/
 	@tpl('shop/needLogin.mtt')
-	function doLogin(tmpBasket:db.TmpBasket){
+	function doLogin(tmpBasket:db.Basket){
 
 		//Login is needed : display a loginbox
 		if (app.user == null) {
@@ -335,5 +340,24 @@ class Shop extends Controller
 	public function doCheckTmpBasketId() {
 		Sys.print( haxe.Json.stringify( { tmpBasketId: app.session.data.tmpBasketId } ) );		
 	}
+
+	/**
+	 * Product infos popup used in many places
+	*/
+	@tpl('shop/basket.mtt')
+	public function doBasket(basket:db.Basket) {
+		
+		var group = app.getCurrentGroup();
+		if(group==null){
+			throw Redirect("/");
+		}
+
+		if (!group.hasCagette2()) {
+			throw Redirect("/transaction/tmpBasket/"+basket.id);
+		}
+
+		view.group = app.getCurrentGroup();
+		view.basket = basket;
+	} 
 
 }

@@ -21,7 +21,8 @@
 
             neo.createNeoModule("shop", "shop", {
                 multiDistribId: ::md.id::,
-                tmpBasketId: ::tmpBasketId::
+                basketId: ::basketId::,
+                isAuth: ::user != null::
             });
 
         });

@@ -1,12 +1,13 @@
-import haxe.EnumTools.EnumValueTools;
+import Common;
 import db.Basket;
+import haxe.EnumTools.EnumValueTools;
+import haxe.Json;
+import haxe.Utf8;
 import sugoi.Web;
+import tools.ArrayTool;
+import tools.Matomo;
 
 using Std;
-
-import Common;
-import haxe.Utf8;
-import tools.ArrayTool;
 
 class View extends sugoi.BaseView {
 	var t:sugoi.i18n.GetText;
@@ -15,6 +16,9 @@ class View extends sugoi.BaseView {
 	var TYPE_VARORDER:Int;
 
 	var tuto:{name:String, step:Int};
+
+	var theme : Theme;
+	var settings : Settings;
 
 	public function new() {
 		super();
@@ -46,6 +50,9 @@ class View extends sugoi.BaseView {
 	override function init() {
 		super.init();
 
+		this.theme = App.current.getTheme();
+		this.settings = App.current.getSettings();
+		
 		// tuto widget display
 		/*var u = App.current.user;
 		if (u != null && u.tutoState != null) {
@@ -307,6 +314,14 @@ class View extends sugoi.BaseView {
 		return service.BridgeService.getNeoModuleScripts();
 	}
 
+	public function getMatomoUrl() {
+		return App.config.get("matomo_url", "");
+	}
+
+	public function getMatomoSiteId() {
+		return App.config.get("matomo_site_id", "");
+	}
+
 	/** 
 	 * Smart quantity (tm) : displays human readable quantity
 	 * 0.33 x Lemon 12kg => 2kg Lemon
@@ -331,5 +346,9 @@ class View extends sugoi.BaseView {
 
 	public function getSid():String {
 		return App.current.session.sid;
+	}
+
+	public function getMatomoEvents() {
+		return Json.stringify(Matomo.getEvents());
 	}
 }

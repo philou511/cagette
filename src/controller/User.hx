@@ -99,19 +99,42 @@ class User extends Controller
 		#end
 
 		view.isGroupAdmin = app.user.getUserGroups().find(ug -> return ug.isGroupManager()) != null;
-		view.cagetteProTest = cagettePros.find(cp -> cp.vendor.isTest)!=null;
-		view.memberVendor = cagettePros.find(cp -> cp.vendor.isTest==false && cp.offer==Member)!=null;
+		//view.cagetteProTest = cagettePros.find(cp -> cp.vendor.isTest)!=null;
+		view.memberVendor = cagettePros.find(cp -> cp.offer==Member)!=null;
 
 	}
 	
 	function doLogout() {
 		service.BridgeService.logout(App.current.user);
-		Web.setHeader("Set-Cookie", "Authentication=; HttpOnly; Path=/; Max-Age=0");
-		Web.setHeader("Set-Cookie", "Refresh=; HttpOnly; Path=/; Max-Age=0");
-		Web.setHeader("Set-Cookie", "Auth_sid=; HttpOnly; Path=/; Max-Age=0");
+		var domain = App.config.HOST;
+		if (domain.lastIndexOf('app.',0) == 0) {
+			domain = domain.split('app.').join("");
+		}
+		Web.setHeader("Set-Cookie", 'Refresh=; HttpOnly; Path=/; Max-Age=0; Domain=$domain');
 
 		App.current.session.delete();
 
+		// Haxe allows neither to set multiple "set-cookie" headers (https://github.com/HaxeFoundation/haxe/issues/3550)
+		// nor to set multiple cookies in one set-cookie header (https://www.rfc-editor.org/rfc/rfc2109#section-4.2.2)
+		// Hence we can workaround this by redirecting 3 times : one redirect for each cookie we want to delete
+		throw Redirect('/user/logoutDeleteAuthenticationCookie');
+	}
+
+	function doLogoutDeleteAuthenticationCookie() {
+		var domain = App.config.HOST;
+		if (domain.lastIndexOf('app.',0) == 0) {
+			domain = domain.split('app.').join("");
+		}
+		Web.setHeader("Set-Cookie", 'Authentication=; HttpOnly; Path=/; Max-Age=0; Domain=$domain');
+		throw Redirect('/user/logoutDeleteAuthSidCookie');
+	}
+
+	function doLogoutDeleteAuthSidCookie() {
+		var domain = App.config.HOST;
+		if (domain.lastIndexOf('app.',0) == 0) {
+			domain = domain.split('app.').join("");
+		}
+		Web.setHeader("Set-Cookie", 'Auth_sid=; HttpOnly; Path=/; Max-Age=0; Domain=$domain');
 		throw Redirect('/');
 	}
 	
@@ -164,9 +187,9 @@ class User extends Controller
 			sugoi.db.Cache.set(token, user.id, 60 * 60 * 24 * 30);
 			
 			var m = new sugoi.mail.Mail();
-			m.setSender(App.config.get("default_email"), t._("Cagette.net"));					
+			m.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);					
 			m.setRecipient(email, user.getName());					
-			m.setSubject( "["+App.config.NAME+"] : "+t._("Password change"));
+			m.setSubject( "["+App.current.getTheme().name+"] : "+t._("Password change"));
 			m.setHtmlBody( app.processTemplate('mail/forgottenPassword.mtt', { user:user, link:'http://' + App.config.HOST + '/user/forgottenPassword/'+token+"/"+user.id }) );
 			App.sendMail(m);	
 		}
@@ -194,18 +217,19 @@ class User extends Controller
 				user.setPass(pass);
 				user.update();
 
+				sugoi.db.Cache.destroy(key);
+
 				var m = new sugoi.mail.Mail();
-				m.setSender(App.config.get("default_email"), t._("Cagette.net"));					
+				m.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);					
 				m.setRecipient(user.email, user.getName());					
 				if(user.email2!=null) m.setRecipient(user.email2, user.getName());					
-				m.setSubject( "["+App.config.NAME+"] : "+t._("New password confirmed"));
+				m.setSubject( "["+App.current.getTheme().name+"] : "+t._("New password confirmed"));
 				var emails = [user.email];
 				if(user.email2!=null) emails.push(user.email2);
 				var params = {
 					user:user,
 					emails:emails.join(", "),
-					password:pass,
-					NAME:App.config.NAME
+					password:pass
 				}
 				m.setHtmlBody( app.processTemplate('mail/newPasswordConfirmed.mtt', params) );
 				App.sendMail(m);	
@@ -234,59 +258,6 @@ class User extends Controller
 	//}
 	
 	
-	@logged
-	@tpl("form.mtt")
-	function doDefinePassword(?key:String, ?u:db.User){
-		
-		if (app.user.isFullyRegistred()) throw Error("/", t._("You already have a password"));
-
-		var form = new Form("definepass");
-		var pass1 = new StringInput("pass1", t._("Your new password"));
-		var pass2 = new StringInput("pass2", t._("Again your new password"));
-		pass1.password = true;
-		pass2.password = true;
-		form.addElement(pass1);
-		form.addElement(pass2);
-		
-		if (form.isValid()) {
-			
-			if ( form.getValueOf("pass1") == form.getValueOf("pass2")) {
-				
-				app.user.lock();
-				app.user.setPass(form.getValueOf("pass1"));
-				app.user.update();
-				throw Ok('/', t._("Congratulations, your account is now protected by a password."));
-				
-			}else {
-				form.addError( t._("You must key-in two times the same password"));
-			}
-		}
-		view.form = form;
-		view.title = t._("Create a password for your account");
-	}
-	
-	/**
-	 * landing page when coming from an invitation
-	 * @param	k
-	 */
-	public function doValidate(k:String ) {
-		
-		var uid = Std.parseInt(sugoi.db.Cache.get("validation" + k));
-		if (uid == null || uid==0) throw Error('/user/login', t._("Your invitation is invalid or expired ($k)"));
-		var user = db.User.manager.get(uid, true);
-		
-		var groups = user.getGroups();
-		if(groups.length>0)	app.session.data.amapId = groups[0].id;
-		
-		sugoi.db.Cache.destroy("validation" + k);
-
-		// Create change password token
-		var token = haxe.crypto.Md5.encode("chp"+Std.random(1000000000));
-		sugoi.db.Cache.set(token, user.id, 60 * 60 * 24 * 30);
-	
-		throw Ok('http://' + App.config.HOST + '/user/forgottenPassword/'+token+'/'+user.id+'/true', t._("Congratulations ::userName::, your account is validated!", {userName:user.getName()}) + " Définissez un mot de passe puis connectez-vous pour finaliser votre inscription.");
-	}
-
 	/**
 		The user just registred or logged in, and want to be a member of this group
 	**/
@@ -311,8 +282,9 @@ class User extends Controller
 			var text = t._("A new member joined the group without ordering : <br/><strong>::newMember::</strong><br/> <a href='::url::'>See contact details</a>",{newMember:app.user.getCoupleName(),url:url});
 			App.quickMail(
 				group.contact.email,
-				group.name +" - "+ t._("New member") + " : " + app.user.getCoupleName(),
-				app.processTemplate("mail/message.mtt", { text:text } ) 
+				t._("New member") + " : " + app.user.getCoupleName(),
+				text,
+				group
 			);	
 		}
 
@@ -373,7 +345,7 @@ class User extends Controller
 			throw Redirect('/');
 		}
 		
-		view.title = "Mise à jour des conditions générales d'utilisation de Cagette.net"+' ( v. $tosVersion )';
+		view.title = "Mise à jour des conditions générales d'utilisation de "+ App.current.getTheme().name +' ( v. $tosVersion )';
 		view.form = form;
 	}
 	

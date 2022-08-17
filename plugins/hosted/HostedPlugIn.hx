@@ -1,8 +1,9 @@
 package hosted;
-import sugoi.tools.TransactionWrappedTask;
 import Common;
-import sugoi.plugin.*;
 import db.Group;
+import sugoi.plugin.*;
+import sugoi.tools.TransactionWrappedTask;
+
 using tools.DateTool;
 
 class HostedPlugIn extends PlugIn implements IPlugIn{
@@ -12,7 +13,7 @@ class HostedPlugIn extends PlugIn implements IPlugIn{
 		name = "hosted";
 		file = sugoi.tools.Macros.getFilePath();
 		//suscribe to events
-		App.current.eventDispatcher.add(onEvent);
+		App.eventDispatcher.add(onEvent);
 		
 	}
 	
@@ -28,15 +29,18 @@ class HostedPlugIn extends PlugIn implements IPlugIn{
 					if (gid == null || gid == 0) return;					
 					if(db.Group.manager.get(gid,false) == null) return;
 					var h = hosted.db.GroupStats.getOrCreate(gid, true);
-					h.updateVisible();
+					h.updateStats();
+
+					
 				}
 
 			case Nav(nav,name,id) :
 				switch(name) {
 					case "admin":
 						nav.push({id:"hosted",name:"Utilisateurs", link:"/p/hosted/user",icon:"user"});
-						nav.push({id:"hosted",name:"Groupes", link:"/p/hosted",icon:"users"});
-						nav.push({id:"courses",name:"Formations", link:"/p/hosted/course",icon:"student"});
+						if (App.current.getSettings().noCourse!=true) {
+							nav.push({id:"courses",name:"Formations", link:"/p/hosted/course",icon:"student"});
+						}
 						nav.push({id:"ref",name:"Référencement", link:"/p/hosted/seo",icon:"cog"});
 				}
 			

@@ -1,7 +1,7 @@
 package pro.service;
 
 /**
- * Service for Cagette Pro distributions/deliveries
+ * Service for CPro distributions/deliveries
  * @author fbarbut
  */
 class PDistributionService
@@ -26,7 +26,7 @@ class PDistributionService
 			
 			var m = new sugoi.mail.Mail();
 			m.addRecipient(company.vendor.email , company.vendor.name);
-			m.setSender(App.config.get("default_email"),"Cagette.net");
+			m.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);
 			m.setSubject('[${d.catalog.group.name}] Livraison du ${App.current.view.dDate(d.date)} (${catalog.name})');
 		
 			var ordersObj = pro.service.ProReportService.getOrdersByProduct({distribution:d});
@@ -39,6 +39,7 @@ class PDistributionService
 				currency:App.current.view.currency,
 				dDate:Formatting.dDate,
 				hHour:Formatting.hHour,
+				group:d.catalog.group
 			} );
 			
 			m.setHtmlBody(html);

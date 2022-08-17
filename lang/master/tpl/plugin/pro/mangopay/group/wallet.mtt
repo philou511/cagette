@@ -4,7 +4,7 @@
 		<h3>Paiements Mangopay</h3>
 		
 		<p class="text-center">
-            SOLDE TOTAL ACTUEL : <br/>
+            Solde de votre compte Mangopay : <br/>
             <b>::formatNum(wallet.Balance.Amount/100):: ::wallet.Balance.Currency::</b>
         </p>
 
@@ -26,28 +26,22 @@
                     à ::md.getPlace()::
                 </td>
                 
-                ::if md.isConfirmed()::
-                
+                ::if md.isConfirmed()::              
                     ::set payout = getMangopayGroupPayout(md)::
-
                     ::if(payout!=null)::
-
                         <td>::payout.getAmount():: &euro;</td>
                         <td>
                             ::if(payout.hasSucceeded())::
                                 <i class="icon icon-check"></i> Virement effectué
-                            ::elseif(payout._cachedDatas.Status=="CREATED")::
-                            <i class="icon icon-clock"></i> Virement en attente
+                            ::elseif(payout.getData()!=null && payout.getData().Status=="CREATED")::
+                                <i class="icon icon-clock"></i> Virement en attente
                             ::else::
                                 Annulé                                 
                                 <a href="?token=::token::&md=::md.id::" class="btn btn-primary btn-sm">Retenter le virement</a>                                    
-                            ::end::
-                            
+                            ::end::                            
                             <a href="/p/pro/transaction/mangopay/group/payOut/::payout.payOutId::" class="btn btn-default btn-sm">Détail</a>
                         </td>
-
                     ::else::
-
                         ::set amount = getMangopayECTotal(md)::
                         <td>
                             ::formatNum(amount):: &euro;
@@ -57,21 +51,19 @@
                                 <a href="?token=::token::&md=::md.id::" class="btn btn-primary btn-sm">Demander un virement</a>    
                             ::end::
                         </td>
-                        
-
                     ::end::
 
                 ::else::                        
                     <td>
-                        -
+                        <span class="disabled">::formatNum(getMultidistribNetTurnover(md)):: &euro;</span>                        
                     </td>
                     <td>
                         <span class="disabled">Trop tôt, cette distribution n'est pas encore validée</span>
                     </td>
                 ::end::
-            <td>
-                <a href="/p/pro/transaction/mangopay/group/multiDistrib/::md.id::" class="btn btn-default btn-sm">Justificatif</a>
-            </td>
+                <td>
+                    <a href="/p/pro/transaction/mangopay/group/multiDistrib/::md.id::" class="btn btn-default btn-sm">Justificatif</a>
+                </td>
             </tr>
         ::end::
         </table>

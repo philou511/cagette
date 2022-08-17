@@ -67,7 +67,7 @@
 							::set contractTotal = 0::
 
 							<a class="btn btn-default btn-xs pull-right"
-						onclick="_Cagette.initOrderBox( ::m.userId::, ::distrib.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(m.userName)::','::currency()::', ::user.getGroup().hasPayments()::,'/contractAdmin/ordersByDate/::date::/::place.id::', ::user.getGroup().hasCagette2()::)">
+						onclick="_Cagette.initOrderBox( ::m.userId::, ::distrib.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(m.userName)::','::currency()::', ::user.getGroup().hasPayments()::,'/contractAdmin/ordersByDate/::date::/::place.id::', ::user.getGroup().hasCagette2()::, ::basket.id::)">
 							<i class="icon icon-edit"></i>
 								::_("Edit")::
 						</a>	

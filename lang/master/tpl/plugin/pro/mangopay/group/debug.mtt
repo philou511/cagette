@@ -48,18 +48,25 @@
                         ::set refunds = getRefunds(t.Id)::
 
                         ::if(refunds.length>0)::
-                        <div class="alert alert-success">
-                            Remboursement OK
-
+                        
                             ::foreach r refunds::
-                            ::r.CreditedFunds.Amount/100:: ::r.CreditedFunds.Currency::<br/>
+
+                                ::if(r.Status=="SUCCEEDED")::
+                                    ::set cl="success"::
+                                ::else::
+                                    ::set cl="danger"::
+                                ::end::
+
+                                <div class="alert alert-::cl::">
+                                    <a href="https://dashboard.mangopay.com/Refund/::r.Id::" target="_blank">Refund #::r.Id::</a> ::r.CreditedFunds.Amount/100:: ::r.CreditedFunds.Currency:: (::r.Status::)<br/>
+                                </div>
                             ::end::
                         
-                        </div>
+                        
                         ::else::
-                        <div class="alert alert-danger">A rembourser :
-                                <a href="https://dashboard.mangopay.com/PayIn/::t.Id::" target="_blank">opréation ::t.Id::</a>
-                        </div>
+                            <div class="alert alert-danger">A rembourser :
+                                    <a href="https://dashboard.mangopay.com/PayIn/::t.Id::" target="_blank">opération ::t.Id::</a>
+                            </div>
                         ::end::
 
 

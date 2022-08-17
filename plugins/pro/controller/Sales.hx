@@ -111,7 +111,7 @@ class Sales extends controller.Controller
 		
 		var contract = d.catalog;
 		
-		if(d.catalog.isConstantOrders()) throw Error('/', "Impossible de changer les dates d'ouverture de commande pour un contrat AMAP" );	
+		if(d.catalog.isConstantOrdersCatalog()) throw Error('/', "Impossible de changer les dates d'ouverture de commande pour un contrat AMAP classique" );	
 		
 		var form = CagetteForm.fromSpod(d);
 		form.removeElementByName("placeId");
@@ -132,13 +132,7 @@ class Sales extends controller.Controller
 				orderEndDate = form.getValueOf("orderEndDate");
 
 				//do not launch event, avoid notifs for now
-				d = DistributionService.editAttendance(
-					d,
-					d.multiDistrib,
-					orderStartDate,
-					orderEndDate,
-					false
-				);							
+				d = DistributionService.editAttendance(d,orderStartDate,orderEndDate,false);							
 
 			} catch(e:tink.core.Error){
 				throw Error('/p/pro/sales' , e.message);

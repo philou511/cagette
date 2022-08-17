@@ -18,6 +18,11 @@ class Validate extends controller.Controller
 	**/
 	@tpl('validate/user.mtt')
 	public function doDefault(){
+		if (multiDistrib.getGroup().hasCagette2()) {
+			var basket = db.Basket.get(user, multiDistrib);
+			throw Redirect('/distribution/ordersRecap/'+multiDistrib.id+'#/'+basket.id);
+		}
+
 		view.member = user;
 		var place = multiDistrib.getPlace();
 		var date = multiDistrib.getDate();
@@ -146,10 +151,25 @@ class Validate extends controller.Controller
 		var o = new db.Operation();
 		o.user = user;
 		o.date = Date.now();
+
+		var basketId = Std.parseInt(app.params.get("basketid"));
+		var basket = null;
+		if(basketId != null) {
+			basket = db.Basket.manager.get(basketId, false);			
+		}
+
+		if(basket != null && basket.isValidated()){
+			throw Error("/validate/" + multiDistrib.id + "/" + user.id, "Cette commande a déjà été validée, vous ne pouvez plus effectuer de remboursement.");
+		}
+
+		var paymentAmount = null;
+		if(basket != null){
+			paymentAmount =basket.getOrdersTotal() - basket.getTotalPaid();
+		}
 		
 		var f = new sugoi.form.Form("payment");
 		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label"), t._("Additional payment"), true));
-		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
+		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), paymentAmount > 0 ? paymentAmount : null, true));
 		f.addElement(new form.CagetteDatePicker("date", t._("Date"), Date.now(), NativeDatePickerType.date, true));
 		var paymentTypes = service.PaymentService.getPaymentTypes(PCManualEntry, app.user.getGroup());
 		var out = [];

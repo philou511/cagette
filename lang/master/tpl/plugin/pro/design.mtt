@@ -109,7 +109,7 @@
 			
 	::end::
 
-<!-- Breadcrumb -->
+<!-- Breadcrumb
 <div class="row">
 	<div class="col-md-12">
 		<ol class="breadcrumb">
@@ -119,18 +119,7 @@
 			::end::
 		</ol>
 	</div>
-</div>
-
-::if(company!=null && company.offer==0)::
-<div id="vendor-freemium-alert-container" style="margin-bottom:8px"></div>
-<script>
-	document.addEventListener("DOMContentLoaded", function (event) {
-		neo.createNeoModule("vendor-freemium-alert-container", "vendorFreemiumAlert", {
-			vendorId: ::vendor.id::,
-		});
-	});
-</script>
-::end::
+</div> -->
 
 <div class="row">
 	<div id="content" class="col-md-12">

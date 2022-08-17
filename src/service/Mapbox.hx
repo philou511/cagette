@@ -40,7 +40,10 @@ class Mapbox {
 			var rawResult = curl.call("GET", url);
 			if (rawResult != null && rawResult != ""){
         var res: Dynamic = haxe.Json.parse(rawResult);
-        return res.features.map(Mapbox.parseGeoFeture);
+        if(res==null || res.features==null){
+          throw new Error("Invalid res features : "+Std.string(res));    
+        }
+        return res.features.map(Mapbox.parseGeoFeature);
       }
       throw new Error("Error");
 		}catch (e: Dynamic){
@@ -48,7 +51,7 @@ class Mapbox {
 		}
   }
 
-  static private function parseGeoFeture(data: Dynamic): GeoPoint {
+  static private function parseGeoFeature(data: Dynamic): GeoPoint {
     return {
       place_type: data.place_type,
       geometry: data.geometry

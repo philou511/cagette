@@ -11,24 +11,19 @@
 			::set cpro = vendor.getCpro()::
 
 			::if(cpro!=null)::
-				::if(vendor.isTest==true)::
-				<!--cpro test-->
-				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Cagette Pro Test">
+				
+				::if cpro.offer==0::
+				<!-- offre découverte -->
+				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur limité à 1000€ de ventes par an">
 					<i class="icon icon-farmer"></i>
 				</div>
 				::else::
-					::if cpro.offer==0::
-					<!-- offre découverte -->
-					<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur limité à 1000€ de ventes par an">
-						<i class="icon icon-farmer"></i>
-					</div>
-					::else::
-					<!-- offre pro formé ou abonné -->
-					<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur avec ventes illimitées">
-						<i class="icon icon-farmer-pro"></i>
-					</div>
-					::end::
+				<!-- offre pro formé ou abonné -->
+				<div class="iconBadge farmer-pro" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur avec ventes illimitées">
+					<i class="icon icon-farmer-pro"></i>
+				</div>
 				::end::
+				
 			::else::
 				<!--invité-->
 				<div class="iconBadge farmer" style="margin: 6px;" data-toggle="tooltip" data-placement="right" title="Producteur limité à 1000€ de ventes par an">
@@ -61,7 +56,7 @@
 					<li><a href="/admin"><i class="icon icon-cog"></i> ::_("Admin")::</a></li>
 					<li><a href="/db"><i class="icon icon-cog"></i> ::_("Database")::</a></li>
 					::end::
-					<li><a href="/user/logout"><i class="icon icon-delete"></i> ::_("Log out")::</a></li>
+					<li><a href="/user/logout"><i class="icon icon-sign-out"></i> ::_("Log out")::</a></li>
 				</ul>
 				
 			</div>			
@@ -74,25 +69,44 @@
 
 		<!-- Help -->
 		<div class="dropdown pull-right text-right" id="helpMenu">
-					
-			<a  class="dropdown-toggle" type="button" id="dropdownMenuHelp" data-toggle="dropdown">
-				<i class="icon icon-info"></i> ::_("Aide")::
-			</a>
+			::if(theme.id=="cagette")::		
+				<a  class="dropdown-toggle" type="button" id="dropdownMenuHelp" data-toggle="dropdown">
+					<i class="icon icon-info"></i> ::_("Aide"):: 
+				</a>
 
-			<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuHelp">
-				<li>
-					<a href="http://wiki.cagette.net" target="_blank"><i class="icon icon-book"></i> Documentation</a> 
-				</li>
-				<li>
-					<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank"><i class="icon icon-facebook"></i> Groupe d'entraide Facebook</a> 
-				</li>
-				<li>
-					<a href="https://cagette.uservoice.com/" target="_blank"><i class="icon icon-question"></i> Support & suggestions</a> 
-				</li>
-				<li>
-					<a href="http://www.cagette.pro" target="_blank"><i class="icon icon-student"></i> Formations pour producteurs</a> 
-				</li>				
-			</ul>
+				<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuHelp">
+					<li>
+						<a href="http://wiki.cagette.net" target="_blank"><i class="icon icon-info"></i> Documentation</a> 
+					</li>
+					<li>
+						<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank"><i class="icon icon-facebook"></i> Groupe d'entraide Facebook</a> 
+					</li>
+					<li>
+						<a href="https://wiki.cagette.net/support" target="_blank"><i class="icon icon-question"></i> Contacter le support</a> 
+					</li>				
+					<li>
+						<a href="https://cagette.uservoice.com/" target="_blank"><i class="icon icon-list"></i> Faire une suggestion</a> 
+					</li>
+					<li>
+						<a href="http://www.cagette.pro" target="_blank"><i class="icon icon-student"></i> Formation pour producteurs</a> 
+					</li>
+				</ul>
+			::end::
+				
+			::if(theme.id=="vrac")::
+				::if (user!=null && user.isAmapManager())::
+				<a  class="dropdown-toggle" type="button" id="dropdownMenuHelp" data-toggle="dropdown">
+					<i class="icon icon-info"></i> ::_("Aide"):: 
+				</a>
+	
+				<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuHelp">
+					<li>
+						<a href="mailto:contact-france@vrac-asso.org" target="_blank"><i class="icon icon-question"></i> Contacter VRAC France</a> 
+					</li>
+				</ul>
+				::end::
+			::end::
+			
 		</div>
 
 		<!-- Home -->
@@ -113,7 +127,7 @@
 		::if b.next::<a href="::url::/?page=::b.next::">::_("Next")::</a>::else:: ::_("Next"):: ::end:: &gt;
 	</macro>
 	
-	<macro name="nullSafe(text)">::if text==null::::else::::text::::end::</macro>
+	<macro name="nullSafe(text)">::if text==null::	::else::::raw text::::end::</macro>
 	
 	<macro name="edit(text,url)">		
 		<a href="::url::" class="btn btn-default btn-sm">
@@ -145,7 +159,7 @@
 	
 	<macro name="bool(v)">
 		::if v==true::
-		<i class="icon icon-circle" style="color:#84bd55"></i>
+		<i class="icon icon-circle greenColor" ></i>
 		::else::
 		<i class="icon icon-circle-empty" style="color:#888"></i>
 		::end::
@@ -153,7 +167,7 @@
 
 	<macro name="bigBool(v)">
 		::if v==true::
-		<div class="iconBadge" style="background-color:#84bd55;margin: 6px;">
+		<div class="iconBadge greenBg" style="margin: 6px;">
 			<i class="icon icon-check"></i>
 		</div>
 		::else::
@@ -165,19 +179,19 @@
 	
 	<macro name="check(v)">
 		::if(v==true || v==1)::
-		<i class="icon icon-check" style="color:#84bd55"></i>
+		<i class="icon icon-check greenColor" ></i>
 		::else::
-		<i class="icon icon-alert" style="color:#a94442"></i>
+		<i class="icon icon-alert redColor"></i>
 		::end::
 	</macro>
 	
 	<macro name="balance(balance)">
 		::if balance<0:: 
-			::set color = "C00"::
+			::set color = "redColor"::
 		::else::
-			::set color = "0C0"::
+			::set color = "greenColor"::
 		::end::
-		<span style="color:#::color::;">
+		<span class="::color::">
 			::formatNum(balance)::&nbsp;::currency()::
 		</span>
 	</macro>
@@ -203,17 +217,146 @@
     
     <macro name="placeOsm(place,unique)">
         <i class="icon icon-map-marker"></i>		
-		<a onclick="neo.createNeoModule('::unique::', 'place-dialog', {placeId: ::place.id::})">::place::</a>
-		<br/>
-		<span class="address">
-			$$nullSafe(::place.address1::)
-			$$nullSafe(::place.address2::)
-			$$nullSafe(::place.zipCode::)
-			$$nullSafe(::place.city::)
-        </span>
+		<a onclick="neo.createNeoModule('::unique::', 'place-dialog', {placeId: ::place.id::})">::place::</a>		
+		
         <div style="width: 0px; height: 0px; overflow: hidden">
             <span id="::unique::"></span>	
         </div>
+	</macro>
+
+	<macro name="subscriptionBalance(sub)">
+        ::set balance = sub.getBalance()::
+		::if balance < 0::
+			::set color = "redBg"::
+		::else::
+			::set color = "greenBg"::
+		::end::
+		<a href="/history/subscriptionPayments/::sub.id::" style="color: ::color::;"><i class="icon icon-euro"></i> Solde : ::balance::€</a>
+	</macro>
+
+	<macro name="subscription(subscription,currentUser)">
+		::set catalog = subscription._catalog::
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					::if catalog.isVariableOrdersCatalog()::
+					<i class="icon icon-basket"></i>
+					::else::
+					<i class="icon icon-refresh"></i>
+					::end::
+
+					::catalog.name:: - <a href="::catalog._vendor.getLink()::" target="_blank">
+						::catalog._vendor.name::
+					</a>
+				</h3>
+			</div>
+			<div class="panel-body">
+
+				::if subscription._user2 != null::
+					<p>
+						<a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
+						<br/> ( alterné avec <a href="/member/view/::subscription._user2.id::" target="_blank">::subscription._user2.getName()::</a> )
+					</p>
+				::end::
+				
+				<div class="col-md-6">
+					<div class="panel panel-default subPanel">
+						<div class="panel-heading">Engagement</div>
+						<div class="panel-body">
+							::set orderName = subscriptionService.getSubscriptionConstraints(subscription)::
+							::if orderName == null::
+								Pas de contraintes								
+							::else::
+								::raw orderName::
+							::end::
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="panel panel-default subPanel">
+						<div class="panel-heading">Période d'engagement</div>
+						<div class="panel-body">
+							du ::dDate(subscription.startDate)::<br/>
+							au ::dDate(subscription.endDate)::
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="panel panel-default subPanel">
+						<div class="panel-heading">Jours d'absence</div>
+						<div class="panel-body">
+							::set absences = subscription.getAbsentDistribs()::
+							::if absences.length>0::							
+								::foreach d absences::
+									::dDate(d.date)::<br/>
+								::end::							
+							::else::
+							<span class="disabled">Pas d'absences</span>
+							::end::
+
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="panel panel-default subPanel">
+						<div class="panel-heading">Distributions</div>
+						<div class="panel-body">
+							::subscriptionService.getSubscriptionDistribsNb(subscription, null, false):: sur la période d'engagement
+							::if absences.length > 0::
+								<br/>avec ::absences.length:: jour(s) d'absence
+								<br/>soit ::subscriptionService.getSubscriptionDistribsNb(subscription, null, true):: distributions effectives.
+							::end::
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="panel panel-default subPanel">
+						<div class="panel-heading">Total commandé</div>
+						<div class="panel-body">
+							::subscription.getTotalPrice()::&nbsp;::currency()::
+							<a href="/history/subscriptionOrders/::subscription.id::" class="btn btn-default btn-xs">
+								Commandes
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="panel panel-default subPanel">
+						<div class="panel-heading">Solde</div>
+						::set balance = subscription.getPaymentsTotal() - subscription.getTotalPrice()::
+						::if balance < 0::
+							::set color = "redColor"::
+						::else::
+							::set color = "greenColor"::
+						::end::
+						<div class="panel-body" >
+							<span style="::color::">::formatNum(balance)::&nbsp;::currency()::</span>
+							<a href="/history/subscriptionPayments/::subscription.id::" class="btn btn-default btn-xs">
+								Paiements
+							</a>							
+						</div>
+					</div>
+				</div>	
+				
+				::if(subscription.userId==currentUser.id)::
+				<div class="col-md-12">
+					<div class="text-center">
+						<a href="/subscriptions/contract/::subscription.catalogId::" class="btn btn-default">
+							<i class="icon icon-edit"></i> Modifier ma souscription
+						</a>
+					</div>
+				</div>	
+				::end::
+
+			</div>
+			
+		</div>
 	</macro>
 	
 	<macro name="today(dow,d,m,y,h,place)">
@@ -268,69 +411,69 @@
 	
 	
 	<macro name="operation(t)">
-	::set x = t.getTypeIndex()::
-	<!--::if x==2:: ::set class="text-right":: ::end:: -->
-	<td class="::class::">
-		::if x==0::
-		<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::_("Order")::
-		::elseif x==1::
-		<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::raw _("CSA&nbsp;contract")::
-		::elseif x==2::
-		<!--<span style="margin-left:48px;">::_("Payment"):: ::_(t.getPaymentType())::</span>-->
-		<i class="icon icon-euro" aria-hidden="true"></i> ::t.getPaymentTypeName()::
-		::else::						
-		<i class="icon icon-user" aria-hidden="true"></i> Adhésion
-		::end::
-	</td>
-	
-	<td>
-		::if t.pending==true::			
-			<i class="fa fa-circle-thin" style="color:#CCC;" aria-hidden="true"></i>			
-		::else::		
-			<i class="fa fa-check" aria-hidden="true"></i>
-		::end::
-	</td>
-	<td style="font-size:1em;">
-		
-		::t.name::<br/>
-
-		::if x==2 && t.pending==true::		
-			::if(t.getPaymentType()=="check")::
-				<span style="color:red;">::_("Check to be given at the collection of products")::</span>
-			::elseif(t.getPaymentType()=="cash")::
-				<span style="color:red;">::_("Cash to be given at the collection of products")::</span>
-			::elseif(t.getPaymentType()=="transfer")::
-				<span style="color:red;">::_("This transfer must be validated by a coordinator")::</span>		
-			::elseif(t.getPaymentType()=="onthespot")::
-				<span style="color:red;">::_("You need to pay on the spot at the collection of products")::</span>
+		::set x = t.getTypeIndex()::
+		<!--::if x==2:: ::set class="text-right":: ::end:: -->
+		<td class="::class::">
+			::if x==0::
+			<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::_("Order")::
+			::elseif x==1::
+			<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::raw _("CSA&nbsp;contract")::
+			::elseif x==2::
+			<!--<span style="margin-left:48px;">::_("Payment"):: ::_(t.getPaymentType())::</span>-->
+			<i class="icon icon-euro" aria-hidden="true"></i> ::t.getPaymentTypeName()::
+			::else::						
+			<i class="icon icon-user" aria-hidden="true"></i> Adhésion
 			::end::
+		</td>
+		
+		<td>
+			::if t.pending==true::			
+				<i class="fa fa-circle-thin" style="color:#CCC;" aria-hidden="true"></i>			
+			::else::		
+				<i class="fa fa-check" aria-hidden="true"></i>
+			::end::
+		</td>
+		<td style="font-size:1em;">
 			
-		::else::
-			<span style="font-size:0.90em;color:#AAA;">::sDate(t.date)::</span>
-		::end::
+			::t.name::<br/>
 
-		::set sub = t._subscription:: 
-		::if(sub!=null)::
-			<br/><a href="/contractAdmin/subscriptions/payments/::sub.id::">Souscription ::sub._catalog.name::</a>
-		::end::
-	</td>
-	<td class="text-right">
-		::if(t.amount<0)::
-			-
-		::end::
-	</td>
-	<td>
-		::if(t.amount<0)::
-			::formatNum(0-t.amount)::&nbsp;::currency()::
-		::else::
-			::formatNum(t.amount)::&nbsp;::currency()::
-		::end::
-	</td>
-	::set class=""::
-	</macro>
+			::if x==2 && t.pending==true::		
+				::if(t.getPaymentType()=="check")::
+					<span style="color:red;">::_("Check to be given at the collection of products")::</span>
+				::elseif(t.getPaymentType()=="cash")::
+					<span style="color:red;">::_("Cash to be given at the collection of products")::</span>
+				::elseif(t.getPaymentType()=="transfer")::
+					<span style="color:red;">::_("This transfer must be validated by a coordinator")::</span>		
+				::elseif(t.getPaymentType()=="onthespot")::
+					<span style="color:red;">::_("You need to pay on the spot at the collection of products")::</span>
+				::end::
+				
+			::else::
+				<span style="font-size:0.90em;color:#AAA;">::sDate(t.date)::</span>
+			::end::
 
-	<macro name="back()">	
-	<a href="#" onclick="window.history.back();" class="btn btn-default btn-sm"><i class="icon icon-chevron-left"></i> ::_("Back")::</a>
+			::set sub = t._subscription:: 
+			::if(sub!=null)::
+				<br/><a href="/contractAdmin/subscriptions/payments/::sub.id::">Souscription ::sub._catalog.name::</a>
+			::end::
+		</td>
+		<td class="text-right">
+			::if(t.amount<0)::
+				-
+			::end::
+		</td>
+		<td>
+			::if(t.amount<0)::
+				::formatNum(0-t.amount)::&nbsp;::currency()::
+			::else::
+				::formatNum(t.amount)::&nbsp;::currency()::
+			::end::
+		</td>
+		::set class=""::
+		</macro>
+
+		<macro name="back()">	
+		<a href="#" onclick="window.history.back();" class="btn btn-default btn-sm"><i class="icon icon-chevron-left"></i> ::_("Back")::</a>
 	</macro>
 
 	<macro name="empty(txt)">	
@@ -459,105 +602,51 @@
 		</div>
 	</macro>
 
-	<macro name="footer()">	
+	<macro name="footer()">
+		::if(theme!=null && theme.footer!=null)::
 		<div class="row">
 			<div class="col-md-12">
 				<div id="footer" >
-				
 						<div class="col-md-3" >
-							<a href="http://www.cagette.net" target="_blank">
-								<img src="/img/logo.png" alt="::_("Cagette.net")::"/>
-							</a>  
+							::if(theme.footer.bloc1!=null):: ::raw theme.footer.bloc1:: ::end::
 						</div>
 						<div class="col-md-3" >
-							<ul>
-								<li>								
-									<a href="https://www.cagette.net/comment-ca-marche/" target="_blank">Comment ça marche ?</a> 
-								</li>
-								<li> 
-									<a href="/charte/" target="_blank">Charte producteurs</a> 
-								</li>
-								<li> 
-									<a href="https://wiki.cagette.net" target="_blank">::_("Documentation")::</a> 
-								</li>
-								<li>
-									<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank">::_("Facebook group")::</a> 
-								</li>
-								<li>
-									<a href="http://www.cagette.net/producteurs" target="_blank">Information producteurs</a> 
-								</li>												
-								<li>
-									<a href="/cgu" target="_blank">Conditions générales d'utilisation</a> 
-								</li>
-								<li>
-									<a href="/cgv" target="_blank">Conditions générales de vente</a> 
-								</li>	
-								<li>
-									<a href="/mgp" target="_blank">C.G.U Mangopay</a> 
-								</li>
-							</ul>						
+							::if(theme.footer.bloc2!=null):: ::raw theme.footer.bloc2:: ::end::
 						</div>
 						<div class="col-md-3" >
-							SOUTENEZ-NOUS
-							<ul>
-								<li>
-									<a href="http://www.lilo.org/fr/cagette-net/?utm_source=cagette-net" target="_blank">Notre page sur Lilo.org</a>
-								</li>
-							</ul>
-							<!-- PAYPAL !-->
-							<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" style="margin-top:12px;">
-								<input type="hidden" name="cmd" value="_s-xclick"/>
-								<input type="hidden" name="hosted_button_id" value="S9KT7FQS7P622"/>
-								<input type="image" src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal, le réflexe sécurité pour payer en ligne"/>
-								<img alt="" border="0" src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="1"/>
-							</form>
+							::if(theme.footer.bloc3!=null):: ::raw theme.footer.bloc3:: ::end::
 						</div>
 						<div class="col-md-3" >
-							::_("FOLLOW US")::
-							<ul class="cagsocialmedia">
-								<li class="cagfb">
-									<a title="Facebook" href="https://www.facebook.com/cagette" target="_blank"> <i class="icon icon-facebook"></i></a>	
-								</li>
-								<li class="cagtwitter">
-									<a title="Twitter" href="https://twitter.com/Cagettenet" target="_blank"> <i class="icon icon-twitter"></i></a> 
-								</li>
-								<li class="cagyoutube">
-									<a title="Youtube" href="https://www.youtube.com/channel/UC3cvGxAUrbN9oSZmr1oZEaw" target="_blank"> <i class="icon icon-youtube"></i></a> 						
-								</li>
-								<li style="background-color:#333;">
-									<a title="Github" href="https://github.com/bablukid/cagette" target="_blank"> <i class="icon icon-github"></i></a> 						
-								</li>
-							</ul>
-		
-							<br/>
-							Cagette.net est réalisé <br/>
-							par la <a href='https://www.alilo.fr' target='_blank'>SCOP Alilo</a>
+							::if(theme.footer.bloc4!=null):: ::raw theme.footer.bloc4:: ::end::
 						</div>
-					
 				</div>
 			</div>
 		</div>
-		<!--<div class="row" id="subfooter">
-			<span>version ::VERSION::-::getPlatform()::</span>
-		</div>-->
+		::end::
+		<div class="row">
+			<div id="subfooter"></div>
+		</div>
 	</macro>
 
 	<macro name="matomo()">
-		
-		<script type="text/javascript">
-		var _paq = window._paq = window._paq || [];
-		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-		_paq.push(['trackPageView']);
-		_paq.push(['enableLinkTracking']);
-		(function() {
-			var u="https://matomo-alilo.osc-fr1.scalingo.io/";
-			_paq.push(['setTrackerUrl', u+'piwik.php']);
-			_paq.push(['setSiteId', "2"]);
-			var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-			g.type='text/javascript'; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-		})();
-		</script>
-
+		::set matomoUrl = getMatomoUrl()::
+		::set matomoSiteId = getMatomoSiteId()::
+		::if(matomoUrl!="" && matomoSiteId!="")::
+			<script type="text/javascript">
+			var _paq = window._paq = window._paq || [];
+			/* tracker methods like "setCustomDimension" should be called before "trackPageView" */		
+			_paq.push(['trackPageView']);
+			_paq.push(['enableLinkTracking']);
+			::if(user!=null):: _paq.push(['setUserId', '::user.id::']); ::end::
+			(function() {
+				var u="https://cagette.matomo.cloud/";
+				_paq.push(['setTrackerUrl', u+'matomo.php']);
+				_paq.push(['setSiteId', '1']);
+				var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+				g.async=true; g.src='//cdn.matomo.cloud/cagette.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+			})();
+			</script>
+		::end::
 	</macro>
 
 	<macro name="vendorType(s)">		
@@ -568,15 +657,15 @@
 		::elseif(s==2)::
 			Invité
 		::elseif(s==3)::
-			Invité sur un Cagette Pro
-		::elseif(s==4)::
-			Cagette Pro test 
+			Invité sur un compte producteur
 		::elseif(s==5)::
 			Compte pédagogique
 		::elseif(s==6)::
 			Formule Découverte
 		::elseif(s==7)::
-			Formule Pro
+			Formule Pro (abo mensuel)
+		::elseif(s==8)::
+			Formule Pro (abo annuel)	
 		::end::
 	</macro>
     
@@ -658,8 +747,7 @@
             contentContainer.classList.add("browser-detection-content-root");
             var content = document.createElement("p");
             content.classList.add("browser-detection-content");
-            content.textContent =
-            "Votre navigateur Internet est trop ancien pour afficher Cagette.net. \n Cela peut entraîner des problèmes d'affichage. \n Nous vous conseillons fortement de télécharger un navigateur plus récent, comme Firefox ou Brave.";
+            content.textContent = "Votre navigateur Internet est trop ancien pour afficher ce site. \n Cela peut entraîner des problèmes d'affichage. \n Nous vous conseillons fortement de télécharger un navigateur plus récent, comme Firefox ou Brave.";
             contentContainer.append(content);
             box.append(contentContainer);
 
@@ -711,5 +799,12 @@
         }
         </script>
     </macro>
+
+	<macro name="favicons()">
+		<link rel="apple-touch-icon" sizes="180x180" href="/theme/::theme.id::/apple-touch-icon.png"/>
+		<link rel="icon" type="image/png" sizes="32x32" href="/theme/::theme.id::/favicon-32x32.png"/>
+		<link rel="icon" type="image/png" sizes="16x16" href="/theme/::theme.id::/favicon-16x16.png"/>
+		<link rel="icon" type="image/x-icon" href="/theme/::theme.id::/favicon.ico"/>
+	</macro>
 	
 </macros>

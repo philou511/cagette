@@ -15,7 +15,7 @@ class MangopayLegalUser extends sys.db.Object
     public var legalStatus : SNull<SString<32>>; 	//enum abstract mangopay.Types.LegalStatus
 	
     @:relation(legalReprId) public var legalRepresentative : db.User;
-	public var bankAccountId:SNull<SInt>;
+	public var bankAccountId:SNull<SString<64>>;
     
 	//fees
 	public var fixedFeeAmount : SFloat; 				//fixed fee, in euros

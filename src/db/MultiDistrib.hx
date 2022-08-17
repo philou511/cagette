@@ -5,6 +5,7 @@ import Common;
 using tools.ObjectListTool;
 using Lambda;
 import haxe.Json;
+import db.Basket.BasketStatus;
 
 typedef Slot = {
 	id:Int,
@@ -75,7 +76,10 @@ class MultiDistrib extends Object
 		});
 
 		//trigger event
-		for(md in multidistribs) App.current.event(GetMultiDistrib(md));
+		for(md in multidistribs) {
+			md.useCache = true;
+			App.current.event(GetMultiDistrib(md));
+		}
 
 		return multidistribs;
 	}
@@ -311,8 +315,8 @@ class MultiDistrib extends Object
 	@:skip public var useCache:Bool;
 	public function getDistributions(?type:Int){
 		
-		if(distributionsCache==null || useCache!=true){
-			distributionsCache = Lambda.array( db.Distribution.manager.search($multiDistrib==this,false) );
+		if(distributionsCache==null || !useCache){
+			distributionsCache = db.Distribution.manager.search($multiDistrib==this,false).array();
 		}
 
 		if(type==null){
@@ -472,15 +476,21 @@ class MultiDistrib extends Object
 	}
 
 	public function getGroup(){
-		return place.group;
+		return group;
 	}
 
+	/**
+		get non open baskets
+	**/
 	public function getBaskets():Array<db.Basket>{
-		return db.Basket.manager.search($multiDistrib==this,false).array();
+		return db.Basket.manager.search($multiDistrib==this && $status!=Std.string(BasketStatus.OPEN),false).array();
 	}
 
-	public function getTmpBaskets():Array<db.TmpBasket>{
-		return db.TmpBasket.manager.search($multiDistrib==this,false).array();
+	/**
+		get open baskets
+	**/
+	public function getTmpBaskets():Array<db.Basket>{
+		return db.Basket.manager.search($multiDistrib==this && $status==Std.string(BasketStatus.OPEN),false).array();
 	}
 
 	public function getUserBasket(user:db.User){
@@ -491,8 +501,11 @@ class MultiDistrib extends Object
 		return null;
 	}
 
-	public function getUserTmpBasket(user:db.User):db.TmpBasket{
-		return db.TmpBasket.manager.select($multiDistrib==this && $user==user,false);
+	/**
+		get user open basket
+	**/
+	public function getUserTmpBasket(user:db.User):db.Basket{
+		return db.Basket.manager.select($multiDistrib==this && $user==user && $status==Std.string(BasketStatus.OPEN),false);
 	}
 
 	/**
@@ -510,40 +523,45 @@ class MultiDistrib extends Object
 
 
 	public function getVolunteerRoles() {
+		var roleIds = [];
+		roleIds = getVolunteerRoleIds();
+		if(roleIds.length==0) return [];
+		var volunteerRoles = db.VolunteerRole.manager.search($id in roleIds,false).array();
 
-		var volunteerRoles: Array<db.VolunteerRole> = [];
-		if (this.volunteerRolesIds != null) {
-
-			var multidistribRoleIds = getVolunteerRoleIds();
-			volunteerRoles = new Array<db.VolunteerRole>();
-			for ( roleId in multidistribRoleIds ) {
-				var volunteerRole = db.VolunteerRole.manager.get(roleId);
-				if ( volunteerRole != null ) {
-					volunteerRoles.push( volunteerRole );
-				}
+		/*for ( roleId in  ) {
+			var volunteerRole = db.VolunteerRole.manager.get(roleId,false);
+			if ( volunteerRole != null ) {
+				volunteerRoles.push( volunteerRole );
 			}
+		}*/
 
-			volunteerRoles.sort(function(b, a) { 
-				var a_str = (a.catalog == null ? "null" : Std.string(a.catalog.id)) + a.name.toLowerCase();
-				var b_str = (b.catalog == null ? "null" : Std.string(b.catalog.id)) + b.name.toLowerCase();
-				return  a_str < b_str ? 1 : -1;
-			});
-		}
+		volunteerRoles.sort(function(b, a) { 
+			var a_str = (a.catalog == null ? "null" : Std.string(a.catalog.id)) + a.name.toLowerCase();
+			var b_str = (b.catalog == null ? "null" : Std.string(b.catalog.id)) + b.name.toLowerCase();
+			return  a_str < b_str ? 1 : -1;
+		});
+
 		
 		return volunteerRoles;
 	}
 
+	
 	public function getVolunteerRoleIds():Array<Int>{
 		if(volunteerRolesIds==null) return [];
 		var rolesIds = volunteerRolesIds.split(",").map(Std.parseInt);
 		rolesIds = tools.ArrayTool.deduplicate(rolesIds);
+		rolesIds = rolesIds.filter( rid -> rid!=null);
 		return rolesIds;
 	}
 
+	@:skip private var volunteersCache:Array<db.Volunteer>;
+	
 	public function getVolunteers() {
-		return Lambda.array(db.Volunteer.manager.search($multiDistrib == this, false));
+		if(!useCache || volunteersCache==null){
+			volunteersCache = db.Volunteer.manager.search($multiDistrib == this, false).array();
+		}
+		return volunteersCache;
 	}
-
 
 	public function hasVacantVolunteerRoles() {
 

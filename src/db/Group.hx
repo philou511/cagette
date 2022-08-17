@@ -41,6 +41,12 @@ enum GroupType{
 }
 
 
+@:enum
+abstract GroupDisabledReason(String) {
+  var BLOCKED_BY_ADMIN = "BLOCKED_BY_ADMIN";
+  var MOVED = "MOVED";
+}
+
 /**
  * Group
  */
@@ -97,6 +103,8 @@ class Group extends Object
 	@hideInForms public var daysBeforeDutyPeriodsOpen: SInt;
 	@hideInForms public var alertMailContent: SText;
 	
+	@hideInForms public var disabled : SNull<SString<32>>; //Mysql enum GroupDisabledReason
+
 	public function new() 
 	{
 		super();
@@ -113,7 +121,7 @@ class Group extends Object
 		
 		//duty periods props
 		daysBeforeDutyPeriodsOpen = 60;
-		volunteersMailContent = "<b>Rappel : Vous êtes inscrit(e) à la permanence du [DATE_DISTRIBUTION],</b><br/>
+		volunteersMailContent = "<b>Rappel : Vous êtes inscrit·e à la permanence du [DATE_DISTRIBUTION],</b><br/>
 		Lieu de distribution : [LIEU_DISTRIBUTION]<br/>
 		<br/>
 		Voici la liste des bénévoles inscrits :<br/>
@@ -134,14 +142,14 @@ class Group extends Object
 	**/
 	public function checkIsolate(){
 	
-		if(this.betaFlags.has(BetaFlags.Cagette2)){
+		/*if(this.betaFlags.has(BetaFlags.Cagette2)){
 			var noCagette2Vendors = getVendors().filter(v->!v.betaFlags.has(db.Vendor.VendorBetaFlags.Cagette2));
 			if ( noCagette2Vendors.length>0 ){
 				var name = noCagette2Vendors.map(v -> v.name).join(", ");
-				throw sugoi.ControllerAction.ControllerAction.ErrorAction("/user/choose",'Le groupe "${this.name}" a l\'option Cagette2 activée et ne peut pas fonctionner avec des producteurs qui n\'ont pas activé cette option ($name). Contactez nous sur <b>support@cagette.net</b> pour régler le problème.');
+				throw sugoi.ControllerAction.ControllerAction.ErrorAction("/user/choose",'Le groupe "${this.name}" a l\'option Cagette2 activée et ne peut pas fonctionner avec des producteurs qui n\'ont pas activé cette option ($name). Contactez nous sur <b>'+App.current.getTheme().supportEmail+'</b> pour régler le problème.');
 			}
 			
-		} 
+		}*/
 	}
 
 	public function hasCagette2(){
@@ -195,6 +203,7 @@ class Group extends Object
 	}
 	
 	public function hasShopMode() {
+		if(flags==null) return true;
 		return flags.has(ShopMode);
 	}
 	
@@ -370,7 +379,6 @@ class Group extends Object
 		}else {
 			return { from : renewalDate , to : renewalDate.setYear(renewalDate.getFullYear()+1)};
 		}
-
 	}
 	
 	/**
@@ -389,7 +397,7 @@ class Group extends Object
 		
 		if (txtHome == null){
 			var t = sugoi.i18n.Locale.texts;
-			txtHome = t._("Welcome in the group of ::name::!\n You can look at the delivery planning or make a new order.",{name:this.name});
+			txtHome = "Bienvenue sur le groupe " + this.name + " !\n Vous pouvez consulter votre planning de distribution ou faire une nouvelle commande.";
 		}
 		
 		App.current.event(NewGroup(this,App.current.user));

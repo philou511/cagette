@@ -14,6 +14,9 @@ class Course extends sugoi.BaseController
 	**/
 	@tpl("plugin/pro/hosted/course/default.mtt")
 	function doDefault(){
+if (App.current.getSettings().noCourse==true) {
+			throw Redirect("/");
+		}
 
 		var now :DateTime = Date.now();				
 		var from = now.snap(Month(Down)).add(Day(-1)).snap(Month(Down)).getDate();			
@@ -46,28 +49,27 @@ class Course extends sugoi.BaseController
 		View a course
 	**/
 	@tpl("plugin/pro/hosted/course/view.mtt")
-	public function doView(cid:Int){
+	public function doView(course:hosted.db.Course){
 		
-		var course = hosted.db.Course.manager.get(cid,false);
 		view.course = course;
 
 		var total = 0;
 		var actives = 0;
 		
-		for( cc in course.getCompanies()){
+		/*for( cc in course.getCompanies()){
 			var c = cc.company;
 			if(c==null) continue;
 			if(c.offer==Training) continue;
 			total++;
 
-			var vs = VendorStats.getOrCreate(cc.company.vendor);
+			// var vs = VendorStats.getOrCreate(cc.company.vendor);
 
-			if(vs.active){
-				actives++;
-				Reflect.setProperty(c,"active",vs.active);
-			} 
-		}
-		view.activeRate = total>0 ? actives/total*100 : 0;
+			// if(vs.active){
+			// 	actives++;
+			// 	Reflect.setProperty(c,"active",vs.active);
+			// } 
+		}*/
+		// view.activeRate = total>0 ? actives/total*100 : 0;
 
 		//emails
 		var emails = new Map<String,String>();
@@ -218,7 +220,7 @@ class Course extends sugoi.BaseController
 	}
 
 	/**
-	 *  Créé des comptes cagette pro + génere des mots de passe pour Cagette et Moodle
+	 *  Créé des comptes cpro + génere des mots de passe pour Cagette et Moodle
 	 */
 	@admin @tpl('form.mtt')
 	public function doIdentifiers(course:hosted.db.Course){
@@ -345,7 +347,7 @@ class Course extends sugoi.BaseController
 		if(companyCourse.moodleUser==null) throw Error("/p/hosted/course/view/"+course.id,"Erreur : impossible d'envoyer le mail car le mot de passe Moodle n'a pas été sauvegardé");
 
 		var m = new sugoi.mail.Mail();
-		m.setSender(App.config.get("default_email"), "Cagette.net");
+		m.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);
 		m.setRecipient(companyCourse.user.email);
 		m.setReplyTo("deborah@alilo.fr", "Deborag REYT");							
 		m.setSubject("Formation Cagette - La formation commence maintenant" );		
@@ -388,10 +390,10 @@ class Course extends sugoi.BaseController
 	 */
 	function doDisable(company:pro.db.CagettePro){
 
-		if(company.offer!=Training) throw "ce Cagette Pro n'est pas un Cagette Pro pédagogique !";
+		if(company.offer!=Training) throw "ce compte producteur n'est pas un compte pédagogique !";
 		var cc = hosted.db.CompanyCourse.manager.select($company==company);
 
-		//remove access to this cagette pro
+		//remove access to this cpro
 		var users = [];
 		for( uc in pro.db.PUserCompany.getUsers(company)){
 			uc.lock();
@@ -405,12 +407,17 @@ class Course extends sugoi.BaseController
 		v.disabled = DisabledReason.Banned;
 		v.update();
 
-		//remove access to groups linked to this cagette pro + remove future distribs
+		//remove access to groups linked to this cpro + remove future distribs
 		for( cat in company.getCatalogs()){
-			for( rc in connector.db.RemoteCatalog.getFromCatalog(cat)){
+			for( rc in connector.db.RemoteCatalog.getFromCatalog(cat,true)){
+
 				//remove membership
-				var group = rc.getContract().group;
-				if(group==null) continue;
+				var contract = rc.getContract();
+				if(contract==null){
+					rc.delete();
+					continue;
+				}
+				var group = contract.group;				
 				for( u in users){
 					var ua = db.UserGroup.get(u,group,true);
 					if(ua!=null) ua.delete();
@@ -420,9 +427,8 @@ class Course extends sugoi.BaseController
 				group.regOption = db.Group.RegOption.Closed;
 				group.update();
 
-				//delete distribs wich happen 24h after end of course
-				var c = rc.getContract();
-				for (d in c.getDistribs(true)){
+				//delete distribs wich happen 24h after end of course				
+				for (d in contract.getDistribs(true)){
 					if(d.date.getTime() > cc.course.end.getTime() + (1000*60*60*24) ){
 						try{
 							service.DistributionService.cancelParticipation(d);
@@ -441,15 +447,15 @@ class Course extends sugoi.BaseController
 
 
 	/**
-		Create definitive cpro account
+		link discovery account to course
 	**/
-	@admin @tpl("plugin/pro/hosted/course/cproDef.mtt")
-	function doCproDef(cpro:pro.db.CagettePro){
+	@admin @tpl("plugin/pro/hosted/course/linkDiscovery.mtt")
+	function doLinkDiscovery(trainingCpro:pro.db.CagettePro,course:hosted.db.Course){
 
-		view.cpro = cpro;
+		view.cpro = trainingCpro;
 
 		//try to detect doubles
-		var vendors = db.Vendor.manager.search($email==cpro.vendor.email && $id!=cpro.vendor.id);
+		var vendors = db.Vendor.manager.search($email==trainingCpro.vendor.email && $id!=trainingCpro.vendor.id);
 		view.getVS = function (vendor) return VendorStats.getOrCreate(vendor);
 		view.getCpro = function(vendor) return CagettePro.getFromVendor(vendor);
 		
@@ -460,34 +466,52 @@ class Course extends sugoi.BaseController
 			if(app.params.get("vendor")!=null){
 				var vendor = db.Vendor.manager.get(app.params.get('vendor').parseInt(),false);
 
-				hosted.service.CourseService.createCproDef(cpro,vendor);
+				hosted.service.CourseService.attachDiscoveryAccountToCourse(trainingCpro,vendor,course);
 
-				//final message
-				var cc = hosted.db.CompanyCourse.manager.select($company==cpro);
-				if( cc!=null && cc.course!=null){
-					throw Ok("/p/hosted/course/view/"+cc.course.id,"Comptes définitifs créés pour : "+cpro.vendor.name);
-				} else{
-					throw Ok("/p/hosted/course/");
-				}
+				throw Ok("/p/hosted/course/view/"+course.id,"Compte rattaché à la formation");
+				
 			}
 
 		}else{
 
-			hosted.service.CourseService.createCproDef(cpro);
+			/*hosted.service.CourseService.attachDiscoveryAccountToCourse(cpro,null,course);
 
 			//final message
 			var cc = hosted.db.CompanyCourse.manager.select($company==cpro);
 			if( cc!=null && cc.course!=null){
-				throw Ok("/p/hosted/course/view/"+cc.course.id,"Comptes définitifs créés pour : "+cpro.vendor.name);
+				throw Ok("/p/hosted/course/view/"+cc.course.id,"Compte définitif créé pour : "+cpro.vendor.name);
 			} else{
 				throw Ok("/p/hosted/course/");
-			}
+			}*/
+
+			throw Error("/p/hosted/course/view/"+course.id,"Impossible de trouver un compte producteur Découverte ou Pro avec le même email !
+			Le producteur doit obligatoirement ouvrir un compte découverte pour faire la formation");
 		}
 		
 		
 	}
 	
 
+	/**
+		switch to Member offer
+	**/
+	@admin 
+	function doCproDef(cpro:pro.db.CagettePro,course:hosted.db.Course){
+
+		var vendor = cpro.vendor;
+		cpro.lock();
+		cpro.offer = Member;
+		cpro.update();
+
+		// Cancel running subscription
+		service.BridgeService.call('/subscriptions/cancel/${vendor.id}');
+
+		//refresh stats
+        VendorStats.updateStats(vendor);
+
+		throw Ok("/p/hosted/course/view/"+course.id,"Compte passé en formule Membre");
+
+	}
 
 	
 	

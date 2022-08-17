@@ -1,15 +1,17 @@
 package controller;
-import sys.db.Mysql;
+import Common;
 import db.Catalog;
-import service.GraphService;
+import db.MultiDistrib;
 import haxe.CallStack;
 import haxe.display.Display.CompletionModeKind;
-import db.MultiDistrib;
-import sugoi.tools.TransactionWrappedTask;
-import sugoi.db.Cache;
+import hosted.db.GroupStats;
+import service.GraphService;
 import sugoi.Web;
+import sugoi.db.Cache;
 import sugoi.mail.Mail;
-import Common;
+import sugoi.tools.TransactionWrappedTask;
+import sys.db.Mysql;
+
 using Lambda;
 using tools.DateTool;
 
@@ -80,7 +82,7 @@ class Cron extends Controller
 				if ( volunteers.length != 0 ) {
 					task.log(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 					var mail = new Mail();
-					mail.setSender(App.config.get("default_email"),"Cagette.net");
+					mail.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);
 					var volunteersList = "<ul>";
 					for ( volunteer in  volunteers ) {
 						
@@ -92,7 +94,7 @@ class Cron extends Controller
 					}
 					volunteersList += "</ul>";
 					
-					mail.setSubject( "["+multidistrib.group.name+"] "+ t._("Instructions for the volunteers of the ::date:: distribution",{date : view.hDate(multidistrib.distribStartDate)}) );
+					mail.setSubject( t._("Instructions for the volunteers of the ::date:: distribution",{date : view.hDate(multidistrib.distribStartDate)}) );
 					
 					//Let's replace all the tokens
 					var ddate = t._("::date:: from ::startHour:: to ::endHour::",{date:view.dDate(multidistrib.distribStartDate),startHour:view.hHour(multidistrib.distribStartDate),endHour:view.hHour(multidistrib.distribEndDate)});
@@ -100,7 +102,7 @@ class Cron extends Controller
 					emailBody = StringTools.replace( emailBody, "[LIEU_DISTRIBUTION]", multidistrib.place.name ); 
 					emailBody = StringTools.replace( emailBody, "[LISTE_BENEVOLES]", volunteersList ); 
 					mail.setHtmlBody( app.processTemplate("mail/message.mtt", { text: emailBody, group: multidistrib.group  } ) );
-					App.sendMail(mail);
+					App.sendMail(mail, multidistrib.group);
 				}
 			}			
 		});
@@ -125,7 +127,7 @@ class Cron extends Controller
 			for (multidistrib  in vacantVolunteerRolesMultidistribs) {
 				task.log(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 				var mail = new Mail();
-				mail.setSender(App.config.get("default_email"),"Cagette.net");
+				mail.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);
 				for ( member in multidistrib.group.getMembers() ) {
 					mail.addRecipient( member.email, member.getName() );
 					if ( member.email2 != null ) {
@@ -135,70 +137,18 @@ class Cron extends Controller
 
 				//vacant roles
 				var vacantVolunteerRolesList = "<ul>"+Lambda.map( multidistrib.getVacantVolunteerRoles(),function (r) return "<li>"+r.name+"</li>").join("\n")+"</ul>";
-				mail.setSubject( t._("[::group::] We need more volunteers for ::date:: distribution",{group : multidistrib.group.name, date : view.hDate(multidistrib.distribStartDate)}) );
+				mail.setSubject("Besoin de volontaires pour la distribution du " + view.hDate(multidistrib.distribStartDate));
 				
 				//Let's replace all the tokens
-				var ddate = t._("::date:: from ::startHour:: to ::endHour::",{date:view.dDate(multidistrib.distribStartDate),startHour:view.hHour(multidistrib.distribStartDate),endHour:view.hHour(multidistrib.distribEndDate)});
+				var ddate = view.dDate(multidistrib.distribStartDate) + " de " + view.hHour(multidistrib.distribStartDate) + " à " + view.hHour(multidistrib.distribEndDate);
 				var emailBody = StringTools.replace( multidistrib.group.alertMailContent, "[DATE_DISTRIBUTION]", ddate );
 				emailBody = StringTools.replace( emailBody, "[LIEU_DISTRIBUTION]", multidistrib.place.name ); 
 				emailBody = StringTools.replace( emailBody, "[ROLES_MANQUANTS]", vacantVolunteerRolesList ); 										
 				mail.setHtmlBody( app.processTemplate("mail/message.mtt", { text: emailBody, group: multidistrib.getGroup()  } ) );
 
-				App.sendMail(mail);
-			}			
+				App.sendMail(mail, multidistrib.getGroup());
+			}
 		});
-		task.execute(!App.config.DEBUG);
-
-		//Send warnings about subscriptions that are not validated yet and for which there is a distribution that starts in the right time range.
-		//  /!\ subscription validation is needed only with catalog with payments
-		var task = new TransactionWrappedTask( "Subscriptions to validate alert emails");
-		task.setTask(function() {
-			
-			var fromNow = now.setHourMinute( now.getHours(), 0 );
-			var toNow = now.setHourMinute( now.getHours() + 1, 0);
-			var subscriptionsToValidate = db.Subscription.manager.unsafeObjects(
-				'SELECT DISTINCT Subscription.* 
-				FROM Subscription INNER JOIN Catalog
-				ON Subscription.catalogId = Catalog.id
-				INNER JOIN Distribution
-				ON Distribution.catalogId = Catalog.id
-				WHERE Subscription.isPaid = false 
-				AND Catalog.type = ${db.Catalog.TYPE_CONSTORDERS}
-				AND Catalog.hasPayments = 0 
-				AND Distribution.date >= DATE_ADD(\'${fromNow}\', INTERVAL 3 DAY)
-				AND Distribution.date < DATE_ADD(\'${toNow}\', INTERVAL 3 DAY);',false).array();
-			
-			var subscriptionsToValidateByCatalog = new Map<db.Catalog, Array<db.Subscription>>();
-			for ( subscription in subscriptionsToValidate ) {
-				if ( subscriptionsToValidateByCatalog[ subscription.catalog ] == null ) {
-					subscriptionsToValidateByCatalog[ subscription.catalog ] = [];
-				}
-				subscriptionsToValidateByCatalog[ subscription.catalog ].push( subscription );
-			}
-
-			//List of subscriptions grouped by catalog
-			for ( catalog in subscriptionsToValidateByCatalog.keys() ) {
-
-				task.log( catalog.name );
-
-				var message : String = 'Bonjour, <br /><br />
-				Attention, les souscriptions suivantes n\'ont pas été validées, alors qu\'une distribution approche.
-				Vous devez au plus vite valider ou effacer ces souscriptions et vous assurer qu\'elles correspondent
-				bien au contrat signé, et aux produits que l\'adhérent a commandés.';
-
-				message += '<h3> Catalogue : ' + catalog.name + '</h3> <ul>';
-				subscriptionsToValidateByCatalog[ catalog ].sort( function(b, a) {
-	
-					return  a.user.getName() < b.user.getName() ? 1 : -1;
-				} );
-				for ( subscription in subscriptionsToValidateByCatalog[ catalog ] ) {
-					message += '<li>' + subscription.user.getName() + '</li>';
-				}
-				message += '</ul>';
-				App.quickMail( catalog.contact.email, catalog.name + ' : Il y a des souscriptions à valider', message, catalog.group );
-			}
-			
-		});		
 		task.execute(!App.config.DEBUG);
 
 		//Distribution time notifications
@@ -206,7 +156,6 @@ class Cron extends Controller
 		task.setTask(function(){
 			distribNotif(task,this.now,4,db.User.UserFlags.HasEmailNotif4h); //4h before
 			distribNotif(task,this.now,24,db.User.UserFlags.HasEmailNotif24h); //24h before
-			
 		});
 		task.execute(!App.config.DEBUG);
 
@@ -222,7 +171,7 @@ class Cron extends Controller
 		task.setTask(distribValidationNotif.bind(task));
 		task.execute(!App.config.DEBUG);
 
-		var task = new TransactionWrappedTask( 'Default automated orders for CSA variable contracts with compulsory ordering' );
+		var task = new TransactionWrappedTask( 'Default automated orders for CSA variable contracts' );
 		task.setTask( function() {
 
 			var range = tools.DateTool.getLastHourRange( now );
@@ -231,63 +180,57 @@ class Cron extends Controller
 			'SELECT Distribution.* 
 			FROM Distribution INNER JOIN Catalog
 			ON Distribution.catalogId = Catalog.id
-			WHERE Catalog.requiresOrdering = 1
+			WHERE Catalog.distribMinOrdersTotal > 0
 			AND Distribution.orderEndDate >= \'${range.from}\'
 			AND Distribution.orderEndDate < \'${range.to}\';', false );
 				
 			for ( distrib in distributionsToCheckForMissingOrders ) {
+				var distribSubscriptions = db.Subscription.manager.search( $catalog == distrib.catalog && $startDate <= distrib.date && $endDate >= distrib.date, false );
 
-				if ( distrib.catalog.requiresOrdering ) {
+				for ( subscription in distribSubscriptions ) {
 
-					var distribSubscriptions = db.Subscription.manager.search( $catalog == distrib.catalog && $startDate <= distrib.date && $endDate >= distrib.date, false );
+					if ( subscription.getAbsentDistribIds().find( id -> id == distrib.id ) == null ) {
+					
+						var distribSubscriptionOrders = db.UserOrder.manager.search( $subscription == subscription && $distribution == distrib );
+						if ( distribSubscriptionOrders.length == 0 ) {
 
-					for ( subscription in distribSubscriptions ) {
+							// if ( service.SubscriptionService.areAutomatedOrdersValid( subscription, distrib ) ) {
 
-						if ( subscription.getAbsentDistribIds().find( id -> id == distrib.id ) == null ) {
-						
-							var distribSubscriptionOrders = db.UserOrder.manager.search( $subscription == subscription && $distribution == distrib );
-							if ( distribSubscriptionOrders.length == 0 ) {
+								var defaultOrders = subscription.getDefaultOrders();
 
-								// if ( service.SubscriptionService.areAutomatedOrdersValid( subscription, distrib ) ) {
+								var automatedOrders = [];
+								for ( order in defaultOrders ) {
 
-									var defaultOrders = subscription.getDefaultOrders();
-
-									var automatedOrders = [];
-									for ( order in defaultOrders ) {
-
-										var product = db.Product.manager.get( order.productId, false );
-										if ( product != null && order.quantity != null && order.quantity != 0 ) {
-											automatedOrders.push( service.OrderService.make( subscription.user, order.quantity, product, distrib.id, null, subscription ) );	
-										}
+									var product = db.Product.manager.get( order.productId, false );
+									if ( product != null && order.quantity != null && order.quantity != 0 ) {
+										automatedOrders.push( service.OrderService.make( subscription.user, order.quantity, product, distrib.id, null, subscription ) );	
 									}
+								}
 
-									if( automatedOrders.length != 0 ) {
+								if( automatedOrders.length != 0 ) {
 
-										var message = 'Bonjour ${subscription.user.firstName},<br /><br />
-										A défaut de commande de votre part, votre commande par défaut a été appliquée automatiquement 
-										à la distribution du ${view.hDate( distrib.date )} du contrat "${subscription.catalog.name}".
-										<br /><br />
-										Votre commande par défaut : <br /><br />${subscription.getDefaultOrdersToString()}
-										<br /><br />
-										La commande à chaque distribution est obligatoire dans le contrat "${subscription.catalog.name}". 
-										Vous pouvez modifier votre commande par défaut en accédant à votre souscription à ce contrat depuis la page "commandes" sur Cagette.net';
+									var message = 'Bonjour ${subscription.user.firstName},<br /><br />
+									A défaut de commande de votre part, votre commande par défaut a été appliquée automatiquement 
+									à la distribution du ${view.hDate( distrib.date )} du contrat "${subscription.catalog.name}".
+									<br /><br />
+									Votre commande par défaut : <br /><br />${subscription.getDefaultOrdersToString()}
+									<br /><br />
+									La commande à chaque distribution est obligatoire dans le contrat "${subscription.catalog.name}". 
+									Vous pouvez modifier votre commande par défaut en accédant à votre souscription à ce contrat depuis la page "commandes" sur Cagette.net';
 
+									//fail silently
+									try{} catch(e:Dynamic){
 										App.quickMail( subscription.user.email, distrib.catalog.name + ' : Commande par défaut', message, distrib.catalog.group );
 									}
-								
-									//Create order operation only
-									if ( distrib.catalog.group.hasPayments() ) {
-										service.SubscriptionService.createOrUpdateTotalOperation( subscription );
-									}
-								// }
-							}
-
+								}
+							
+								//Create order operation only
+								service.SubscriptionService.createOrUpdateTotalOperation( subscription );
 						}
+
 					}
-				
 				}
 			}
-		
 		});
 		task.execute(!App.config.DEBUG);
 
@@ -351,15 +294,15 @@ class Cron extends Controller
 			var errors = sugoi.db.Error.manager.search( $date < yest24h && $date > yest0h  );		
 			if (errors.length > 0) {
 				var report = new StringBuf();
-				report.add("<h1>" + App.config.NAME + " : ERRORS</h1>");
+				report.add("<h1>" + App.current.getTheme().name + " : ERRORS</h1>");
 				for (e in errors) {
 					report.add("<div><pre>"+e.error + " at URL " + e.url + " ( user : " + (e.user!=null?e.user.toString():"none") + ", IP : " + e.ip + ")</pre></div><hr/>");
 				}
 				
 				var m = new Mail();
-				m.setSender(App.config.get("default_email"),"Cagette.net");
+				m.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);
 				m.addRecipient(App.config.get("webmaster_email"));
-				m.setSubject(App.config.NAME+" Errors");
+				m.setSubject(App.current.getTheme().name+" Errors");
 				m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:report.toString() } ) );
 				App.sendMail(m);
 			}
@@ -408,9 +351,27 @@ class Cron extends Controller
 			for( k in GraphService.getAllGraphKeys()){
 				GraphService.getDay(k,yesterday);
 			}
-
 		});
 		task.execute();
+
+
+		var task = new TransactionWrappedTask( "Refresh group Stats");
+		task.setTask(function() {			
+			//split groups in 7 segments so the update is made every week
+			var maxId = sys.db.Manager.cnx.request("select max(id) from `Group`").getIntResult(0);
+			var dayOfWeek = Date.now().getDay();
+			var segmentLength = Math.ceil(maxId/7);
+			task.log('maxId : $maxId, dayOfWeek : $dayOfWeek, segmentLength : $segmentLength');
+
+			var groups = db.Group.manager.search($id >=(dayOfWeek*segmentLength) && $id<((dayOfWeek+1)*segmentLength) );
+
+			for(g in groups){
+				var gs = GroupStats.getOrCreate(g.id);
+				gs.updateStats();
+				task.log("update "+g.id+" - "+g.name);
+			}
+		});
+		task.execute(!App.config.DEBUG);
 
 		
 	
@@ -539,11 +500,11 @@ class Cron extends Controller
 				
 					try{
 						var m = new Mail();
-						m.setSender(App.config.get("default_email"), "Cagette.net");
+						m.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);
 						if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
 						m.addRecipient(u.user.email, u.user.getName());
 						if (u.user.email2 != null) m.addRecipient(u.user.email2);
-						m.setSubject( group.name+" : "+t._("Distribution on ::date::",{date:app.view.hDate(u.distrib.distribStartDate)})  );
+						m.setSubject( t._("Distribution on ::date::",{date:app.view.hDate(u.distrib.distribStartDate)})  );
 						
 						//time slots
 						var status = null;
@@ -552,7 +513,7 @@ class Cron extends Controller
 						};
 
 						m.setHtmlBody( app.processTemplate("mail/orderNotif.mtt", { text:text,group:group,multiDistrib:u.distrib,user:u.user,hHour:Formatting.hHour,timeSlotService:timeSlotService } ) );
-						App.sendMail(m , u.distrib.group);	
+						App.sendMail(m, group);	
 
 						if(App.config.DEBUG){
 							//task.log("distrib is "+u.distrib);
@@ -625,11 +586,11 @@ class Cron extends Controller
 											
 						try{
 							var m = new Mail();
-							m.setSender(App.config.get("default_email"), "Cagette.net");
+							m.setSender(App.current.getTheme().email.senderEmail, App.current.getTheme().name);
 							if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
 							m.addRecipient(user.email, user.getName());
 							if (user.email2 != null) m.addRecipient(user.email2);
-							m.setSubject( group.name+" : "+t._("Distribution on ::date::",{date:app.view.hDate(md.distribStartDate)})  );
+							m.setSubject( t._("Distribution on ::date::",{date:app.view.hDate(md.distribStartDate)})  );
 							
 							m.setHtmlBody( app.processTemplate("mail/orderNotif.mtt", { 
 								text:text,
@@ -686,12 +647,12 @@ class Cron extends Controller
 		}
 		var view = App.current.view;
 		for ( d in distribs ){
-			var subj = t._("[::group::] Validation of the ::date:: distribution",{group : d.getGroup().name , date : view.hDate(d.distribStartDate)});
+			var subj = "Validation de la distribution du " + view.hDate(d.distribStartDate);
 			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.id;
 			var html = t._("<p>Your distribution just finished, don't forget to <b>validate</b> it</p>");
 			html += explain;
-			html += t._("<p><a href='::distriburl::'>Click here to validate the distribution</a> (You must be connected to your group Cagette)", {distriburl:url});
-			App.quickMail(d.getGroup().contact.email, subj, html);
+			html += "<p><a href='" + url + "'>Cliquez ici pour valider la distribution</a> (vous devez être connecté·e à votre groupe " + App.current.getTheme().name + ")</p>";
+			App.quickMail(d.getGroup().contact.email, subj, html, d.getGroup());
 		}
 		
 		/*
@@ -712,13 +673,16 @@ class Cron extends Controller
 		
 		for ( d in distribs ){
 		
-			var subj = t._("[::group::] Validation of the ::date:: distribution",{group : d.getGroup().name , date : view.hDate(d.distribStartDate)});
+			var subj = "Validation de la distribution du " + view.hDate(d.distribStartDate);
 			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.id;		
 			var html = t._("<p>Reminder: you have a delivery to validate.</p>");
 			html += explain;
-			html += t._("<p><a href='::distriburl::'>Click here to validate the delivery</a> (You must be connected to your Cagette group)", {distriburl:url});
+			html += "<p><a href='" + url + "'>Cliquez ici pour valider la distribution</a> (vous devez être connecté·e à votre groupe " + App.current.getTheme().name + ")</p>";
 			
-			App.quickMail(d.getGroup().contact.email, subj, html);
+			if(d.getGroup().contact!=null){
+				App.quickMail(d.getGroup().contact.email, subj, html, d.getGroup());
+			}
+			
 		}
 		
 		
@@ -758,7 +722,7 @@ class Cron extends Controller
 	/**
 	 *  Email product report when orders close				
 	 **/  
-	function sendOrdersByProductWhenOrdersClose(){
+	/*function sendOrdersByProductWhenOrdersClose(){
 	
 		var range = tools.DateTool.getLastHourRange();
 		// Sys.println("Time is "+Date.now()+"<br/>");
@@ -767,7 +731,7 @@ class Cron extends Controller
 		for ( d in db.Distribution.manager.search($orderEndDate >= range.from && $orderEndDate < range.to, false)){
 			service.OrderService.sendOrdersByProductReport(d);
 		}
-	}
+	}*/
 	
 	public static function print(text:Dynamic){
 		var text = Std.string(text);

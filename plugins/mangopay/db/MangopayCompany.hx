@@ -3,7 +3,7 @@ import sys.db.Types;
 import mangopay.Mangopay;
 
 /**
-	Stores the MangoPay User id for a Cagette Pro Account
+	Stores the MangoPay User id for a cpro Account
 **/
 @:id(companyId)
 class MangopayCompany extends sys.db.Object

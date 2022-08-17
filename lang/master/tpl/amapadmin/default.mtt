@@ -38,14 +38,19 @@
 			</p>
 
 			
-			<p>
-				
+			<p>				
 				::if(visibleOnMap)::
-				<div class="alert alert-success">$$check(true) Votre groupe est visible sur la carte.</div>
+				<div class="alert alert-success">
+					$$check(true) Votre groupe est visible sur la carte.
+					<br/><a href="https://wiki.cagette.net/admin:admin_carte" target="_blank">Documentation</a>
+				</div>
 				::else::
-				<div class="alert alert-danger">$$check(false) Votre groupe n'est pas visible sur la carte, pour les raisons suivantes : ::visibleOnMapText::</div>
+				<div class="alert alert-danger">
+					$$check(false) Votre groupe n'est pas visible sur la carte, pour les raisons suivantes : ::visibleOnMapText::
+					<br/><a href="https://wiki.cagette.net/admin:admin_carte" target="_blank">Documentation</a>
+				</div>
 				::end::
-				
+								
 			</p>
 			
 			

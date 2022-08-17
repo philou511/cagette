@@ -3,18 +3,14 @@ import Common;
 import datetime.DateTime;
 import db.Group.GroupFlags;
 import db.UserGroup;
-import haxe.Http;
 import neko.Web;
-import payment.MoneyPot;
 import sugoi.form.Form;
 import sugoi.form.elements.FloatInput;
 import sugoi.form.elements.Input.InputType;
 import sugoi.form.elements.IntInput;
 import sugoi.form.elements.IntSelect;
 import sugoi.form.elements.StringInput;
-
 using tools.DateTool;
-
 
 class AmapAdmin extends Controller
 {
@@ -31,18 +27,15 @@ class AmapAdmin extends Controller
 			nav.push({id:"payments",link:"/amapadmin/payments",name: t._("Means of payment"),icon:"payment-type" });
 		}	
 
-		// if(!app.user.getGroup().hasTaxonomy()){
-		// 	nav.push({id:"categories",link:"/amapadmin/categories",name: t._("Customized categories"),icon:"tag" });
-		// }
-
 		var e = Nav(nav,"groupAdmin");
 		app.event(e);
 		view.nav = e.getParameters()[0];
 	}
 	
-	@tpl("form.mtt")
+	@tpl("amapadmin/form.mtt")
 	function doMembership(){
 		
+		addBc('membership',"Adhésions","amapadmin/membership");
 		var form = new sugoi.form.Form("membership");
 		var group = app.user.getGroup();
 
@@ -76,6 +69,7 @@ class AmapAdmin extends Controller
 
 	@tpl("amapadmin/default.mtt")
 	function doDefault() {
+
 		var group = app.user.getGroup();
 		view.membersNum = UserGroup.manager.count($group == group);
 		view.contractsNum = group.getActiveContracts().length;
@@ -83,7 +77,7 @@ class AmapAdmin extends Controller
 		//visible on map
 		#if plugins
 		var h = hosted.db.GroupStats.getOrCreate(group.id, true);
-		var o = h.updateVisible();
+		var o = h.updateStats();
 		
 		var str = "";
 		if(!o.cagetteNetwork){
@@ -105,24 +99,18 @@ class AmapAdmin extends Controller
 		#else
 		view.visibleOnMap = true;
 		#end
-
-		
-		
-
-		
 	}
 	
 	@tpl("amapadmin/rights.mtt")
 	public function doRights() {
-		
 		view.users = app.user.getGroup().getGroupAdmins();
-		view.nav.push( 'rights' );
+		addBc('rights','Droits d\'administration','/amapadmin/rights');
 	}
 	
 	
-	@tpl("form.mtt")
+	@tpl("amapadmin/form.mtt")
 	public function doEditRight(?u:db.User) {
-		
+		addBc('rights','Droits d\'administration','/amapadmin/rights');
 		var form = new sugoi.form.Form("editRight");
 		
 		if (u == null) {
@@ -203,6 +191,7 @@ class AmapAdmin extends Controller
 			}			
 			
 			ua.update();
+			
 			if (ua.getRights().length == 0) {
 				throw Ok("/amapadmin/rights", t._("Rights removed"));
 			}else {
@@ -221,8 +210,9 @@ class AmapAdmin extends Controller
 		
 	}
 	
-	@tpl('form.mtt')
+	@tpl('amapadmin/form.mtt')
 	public function doVatRates() {
+		addBc('vatrates','Taux de TVA','/amapadmin/vatRates');
 		
 		var f = new sugoi.form.Form("vat");
 		var a = app.user.getGroup();
@@ -262,26 +252,23 @@ class AmapAdmin extends Controller
 		view.title = t._("Edit VAT rates");
 		view.form = f;
 	}
-	
-	// function doCategories(d:haxe.web.Dispatch) {
-	// 	d.dispatch(new controller.amapadmin.Categories());
-	// }
 
 	function doVolunteers(d:haxe.web.Dispatch) {
+		addBc('volunteers',"Permanences","amapadmin/volunteers");
 		d.dispatch(new controller.amapadmin.Volunteers());
 	}
 
 	function doDocuments( dispatch : haxe.web.Dispatch ) {
-
+		addBc('documents',"Documents","amapadmin/documents");
 		dispatch.dispatch( new controller.Documents() );
 	}
 
 	/**
 	 * Set up group currency. Default is EURO
 	 */
-	@tpl("form.mtt")
+	@tpl("amapadmin/form.mtt")
 	function doCurrency(){
-		
+		addBc("currency","Monnaie","/amapadmin/currency");
 		view.title = t._("Currency used by your group.");
 		
 		var f = new sugoi.form.Form("curr");
@@ -334,7 +321,7 @@ class AmapAdmin extends Controller
 
 			group.lock();
 			var paymentTypes:Array<String> = f.getValueOf("paymentTypes");
-			if(paymentTypes.has(MoneyPot.TYPE) && paymentTypes.length>1) {
+			if(paymentTypes.has(payment.MoneyPot.TYPE) && paymentTypes.length>1) {
 				throw Error(sugoi.Web.getURI(),"Le paiement Cagnotte ne peut pas être utilisé en même temps que d'autres moyens de paiements.");
 			}
 			
@@ -354,10 +341,11 @@ class AmapAdmin extends Controller
 
 
 
-	@tpl("form.mtt")
+	@tpl("amapadmin/form.mtt")
 	function doStats(){
+		addBc("stats","Statistiques","amapadmin/stats");
+
 		var form = new sugoi.form.Form("stats");
-			
 
 		var now = DateTime.now();	
 		// last month timeframe
@@ -388,5 +376,5 @@ class AmapAdmin extends Controller
 		view.form = form;
 		view.title = "Statistiques";
 	}
-	
+
 }

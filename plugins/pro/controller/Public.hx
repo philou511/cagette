@@ -22,13 +22,12 @@ class Public extends controller.Controller
 		}else{
 			view.container = "container"; //boostrap 3 fluid layout
 		}	
-		
 	}
 	
 	@tpl("plugin/pro/catalog/askImport.mtt")
 	public function doAskImport(catalog:pro.db.PCatalog){
 		
-		if(app.user==null) throw Error("/user/login?__redirect=/p/pro/public/askImport/"+catalog.id,"Vous devez être connecté à Cagette.net pour faire cette action");
+		if(app.user==null) throw Error("/user/login?__redirect=/p/pro/public/askImport/"+catalog.id,"Vous devez être connecté à " + App.current.getTheme().name + " pour faire cette action");
 
 		var isVendor = isCproVendor(catalog.company);
 		view.title = isVendor ? 'Relier un catalogue' : 'Demande de liaison de catalogue';
@@ -42,10 +41,10 @@ class Public extends controller.Controller
 			}
 		}
 		var id = app.user.getGroup()==null ? null : app.user.getGroup().id;
-		f.addElement( new sugoi.form.elements.IntSelect("group","Groupe Cagette qui accueillera le catalogue", datas, id , true) );
+		f.addElement( new sugoi.form.elements.IntSelect("group","Groupe " + App.current.getTheme().name + " qui accueillera le catalogue", datas, id , true) );
 		f.addElement( new sugoi.form.elements.Checkbox("csa","Ce catalogue sera un contrat AMAP classique",false));
 		if(!isVendor){
-			f.addElement( new sugoi.form.elements.TextArea("message","Message au producteur","Bonjour, \nJe souhaiterais proposer vos produits aux membres de mon groupe Cagette...",false,null,"rows='10'") );
+			f.addElement( new sugoi.form.elements.TextArea("message","Message au producteur","Bonjour, \nJe souhaiterais proposer vos produits aux membres de mon groupe " + App.current.getTheme().name + "...",false,null,"rows='10'") );
 		}
 		
 		view.form = f;
@@ -104,29 +103,21 @@ class Public extends controller.Controller
 				var e = new sugoi.mail.Mail();		
 				e.setSubject(n.title);
 				e.setRecipient(catalog.company.vendor.email);			
-				e.setSender(App.config.get("default_email"),"Cagette Pro");		
+				e.setSender(App.current.getTheme().email.senderEmail,"Cagette.net");		
 				var html = app.processTemplate("plugin/pro/mail/catalogImport.mtt", {catalog:catalog,group:group,user:app.user,message:f.getValueOf("message")});		
 				e.setHtmlBody(html);
 				App.sendMail(e);	
 				
 				throw Ok("/contractAdmin", "Votre demande a été envoyée au producteur. Vous serez prévenu par email de sa décision.");
 			}
-			
-
-			
-
 		}
 	}
 
 	function isCproVendor(company:pro.db.CagettePro):Bool{
-
 		for( u in company.getUsers()){
 			if(u.id == app.user.id) return true;
 		}
-		
 		return false;
-		
-
 	}
 
 	@tpl('plugin/pro/public/vendor.mtt')
@@ -141,19 +132,19 @@ class Public extends controller.Controller
 				return;
 			}
 		}
-		if(Web.getClientHeader('user-agent').toLowerCase().indexOf("python")>-1){
+
+		if(Web.getClientHeader('user-agent')==null || Web.getClientHeader('user-agent').toLowerCase().indexOf("python")>-1){
 			App.current.setTemplate(null);
 			return;
 		}
 
 		vendorPage(vendor);
-
 	}
 
 	public static function vendorPage(vendor:db.Vendor){
 		App.current.setTemplate("plugin/pro/public/vendor.mtt");
 		App.current.view.vendor = vendor.getInfos();
-		App.current.view.pageTitle = vendor.name +" - Cagette.net";
+		App.current.view.pageTitle = vendor.name + " - " + App.current.getTheme().name;
 		var cpro = pro.db.CagettePro.getFromVendor(vendor);
 		if(cpro!=null && cpro.demoCatalog!=null){
 

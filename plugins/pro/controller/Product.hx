@@ -1,4 +1,6 @@
 package pro.controller;
+import tools.Matomo;
+import haxe.macro.Tools.TMacroStringTools;
 import Common.Unit;
 import pro.service.PProductService;
 import form.CagetteForm;
@@ -31,10 +33,14 @@ class Product extends controller.Controller
 		var products = company.getProducts();
 		view.products = products;
 		
-		
 		var duplicateRefs = pro.db.POffer.getRefDuplicates(company);
 		if(duplicateRefs.length>0){
 			App.current.session.addMessage("Attention, plusieurs offres ont la même référence : <b>"+duplicateRefs.join(" ")+"</b>. Modifiez vos produits pour que chaque référence soit unique.",true);
+		}
+
+		var notCategorizedProducts = products.filter(p -> p.txpProduct==null);
+		if(notCategorizedProducts.length>0){
+			App.current.session.addMessage("Attention, les produits suivants n'ont pas de catégorie et risquent de mal s'afficher dans les boutiques : <b>"+notCategorizedProducts.map(p->p.name).join(", ")+"</b>.",true);
 		}
 		
 		view.unlinkedCatalogs = service.VendorService.getUnlinkedCatalogs(company);
@@ -80,6 +86,10 @@ class Product extends controller.Controller
 				throw Error(baseUrl, "Cette référence est déjà utilisée dans votre catalogue");
 			}
 			
+			if (d.txpProduct==null){
+				throw Error("/p/pro/product/edit/"+d.id, "Ce produit doit être catégorisé");
+			}
+			
 			//if offers are in catalogs, update the lastUpdate field of the catalog (for synch purpose)
 			var offersId = Lambda.map(d.getOffers(false), function(o) return o.id);
 			var coffers = pro.db.PCatalogOffer.manager.search($offerId in offersId, false);
@@ -112,8 +122,17 @@ class Product extends controller.Controller
 			if (pro.db.PProduct.refExists(company, p.ref)){
 				throw Error(baseUrl, "cette référence est déjà utilisée dans un autre produit");
 			}
+
+			if (p.txpProduct==null){
+				throw Error("/p/pro/product/insert/", "Ce produit doit être catégorisé");
+			}
 			
 			p.insert();
+
+			if(company.offer==Discovery && pro.db.PProduct.manager.count($company==this.company)==1){
+				service.BridgeService.matomoEvent(app.user.id,"Producteurs","Premier produit créé");
+			}
+
 			throw Ok(baseUrl,'Le produit a été enregistrée');
 		}
 		

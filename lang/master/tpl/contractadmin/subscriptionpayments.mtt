@@ -12,11 +12,11 @@
 				::set balance = subscription.getBalance()::
 					::set background = ""::
 				::if balance < 0::
-					::set background = "background-color: #d9534f;"::
+					::set background = "redBg"::
 				::else::
-					::set background = "background-color: #84bd55;"::
+					::set background = "greenBg"::
 				::end::
-				<td style="vertical-align: middle;padding: 10px 0;color: white;font-weight:bold;::background::">
+				<td style="vertical-align: middle;padding: 10px 0;color: white;font-weight:bold;" class="::background::">
 					::formatNum(balance)::&nbsp;::currency()::
 				</td>
 				::if balance > 0::
@@ -97,11 +97,8 @@
 		
 		</table>
 		
-		$$insert(Saisir un paiement,/subscriptions/insertPayment/::subscription.id::)
+		$$insert(Saisir un paiement,/contractAdmin/subscriptions/insertPayment/::subscription.id::)
 		
 </div>
-
-
-
 
 ::end::

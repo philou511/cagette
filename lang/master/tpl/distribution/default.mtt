@@ -1,20 +1,5 @@
 ::use 'design.mtt'::
 
-<!--
-::if(noSiret.length>0)::
-	<div class="alert alert-danger"><i class="icon icon-alert"></i> Attention, les producteurs <b>
-		::foreach v noSiret::
-		<a href="/vendor/edit/::v.id::">::v.name::</a>, 
-		::end::
-	</b> n'ont pas défini leurs informations légales obligatoires. 
-	<br/><b>Cliquez sur leur nom pour mettre à jour leur fiche</b> sinon ils seront bloqués à partir du 16 Novembre 2020.
-	<br/>( Plus d'explications dans <a href="http://r.sib.cagette.net/mk/mr/3ec6isWJSaecmldXKXB6lxfdyAyunnfxt2-PnkMb3ILG5Z4tOOp9aC69DiRV3OT6pspWN96jlWMRgmPteVSqQVJ-_zqr40kua1nR" target="_blank">notre email du 22 Octobre</a> envoyé à tous les coordinateurs de groupes. )
-	<br/> Contactez-nous sur support@cagette.net si vous avez des questions.
-	</div>
-::end::
--->
-
-
 <h2 style="margin:12px">::_("Distributions")::</h2>
 <div class="row" style="margin-bottom:24px;">
 
@@ -98,6 +83,12 @@
 		::set ordersEndDate = d.getOrdersEndDate(false)::
 		::set vdistribs = d.getDistributions(1)::
 		::set cdistribs = d.getDistributions(0)::
+		::set hasCagette2 = d.getGroup().hasCagette2()::
+		::set cagette2OrdersRecapUrl = "/distribution/ordersRecap/"+d.id::
+		::set validateUrl = "/distribution/validate/"+d.id::
+		::if hasCagette2::
+			::set validateUrl = cagette2OrdersRecapUrl::
+		::end::
 
 		<div class="header orders row">
 
@@ -147,7 +138,7 @@
 
 				::if(d.getDate().toString().substr(0,10)=="2021-03-10" || d.getDate().toString().substr(0,10)=="2021-03-11")::
 				::if(d.getTotalIncome()>0)::
-				<a href="/distribution/validate/::d.id::" class="btn btn-danger">
+				<a href="::validateUrl::" class="btn btn-danger">
 					<i class="icon icon-delete"></i> Annuler la distribution
 				</a>
 				::end::
@@ -189,7 +180,7 @@
 							<div class="number"><i class="icon icon-basket"></i></div>
 							<div class="status">::_("Orders closed")::</div>
 							::if(d.getGroup().hasPayments() && isToday(d.getDate()))::
-							<a href="/distribution/validate/::d.id::" class="btn btn-primary">
+							<a href="::validateUrl::" class="btn btn-primary">
 								<i class="icon icon-check"></i> Valider cette distribution
 							</a>
 							::end::
@@ -200,7 +191,7 @@
 							<br />
 						</span>
 						::if(d.getGroup().hasPayments() && d.getGroup().hasShopMode())::
-						<a href="/distribution/validate/::d.id::" class="btn btn-primary">
+						<a href="::validateUrl::" class="btn btn-primary">
 							<i class="icon icon-check"></i> Valider cette distribution
 						</a>
 						::end::
@@ -209,7 +200,7 @@
 						<span style="color:#AAA;">
 							<div class="number"><i class="icon icon-basket"></i></div>
 							<div class="status">
-								<a href="/distribution/validate/::d.id::">Distribution validée</a>
+								<a href="::validateUrl::">Distribution validée</a>
 							</div>
 
 							::if user.isAdmin()::
@@ -291,15 +282,22 @@
 							pour un total de <b>::formatNum(d.getTotalIncome()):: ::currency()::</b>
 						</div>
 						<div class="actions">
-							<a href="/contractAdmin/ordersByDate/::d.getDate().toString().substr(0,10)::/::d._place.id::"
-								class="btn btn-default btn-sm">
+							::set ordersUrl = "/contractAdmin/ordersByDate/"+d.getDate().toString().substr(0,10)+"/"+d._place.id::
+							::if hasCagette2::
+								::set ordersUrl = cagette2OrdersRecapUrl::
+							::end::
+							<a href="::ordersUrl::" class="btn btn-default btn-sm">
 								<i class="icon icon-basket"></i> ::_("Orders")::
 							</a>
 
 							::if(status=="open" && d.getGroup().hasShopMode())::
-							<a href="/contractAdmin/tmpBaskets/::d.id::" class="btn btn-default btn-sm">
-								Commandes en cours
-							</a>
+								::set openBasketsUrl = "/contractAdmin/tmpBaskets/"+d.id::
+								::if hasCagette2::
+									::set openBasketsUrl = cagette2OrdersRecapUrl::
+								::end::
+								<a href="::openBasketsUrl::" class="btn btn-default btn-sm">
+									Commandes en cours
+								</a>
 							::end::
 
 

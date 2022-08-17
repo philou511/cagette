@@ -1,0 +1,13 @@
+::use 'design.mtt'::
+
+<div id="recap-neo-container" style="margin-right: 16px; margin-left: 16px; margin-bottom: 16px;"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+       neo.createNeoModule("recap-neo-container", "distributionsOrdersRecap", {
+            multiDistribId: ::multiDistribId::
+        });
+    });
+</script>
+
+::end::

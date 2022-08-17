@@ -1,5 +1,6 @@
 package service;
 
+import db.Basket.BasketStatus;
 import db.Catalog;
 import haxe.Json;
 import db.Operation;
@@ -121,7 +122,7 @@ class PaymentService {
 		op.basket = basket;
 		op.user = user;
 		op.group = group;
-		op.pending = true;
+		op.pending = false;
 
 		op.insert();
 		updateUserBalance(op.user, op.group);
@@ -330,7 +331,7 @@ class PaymentService {
 				paymentTypesInAdmin.remove(moneyPot);
 				#if plugins
 				//cannot make a mgp payment manually !!
-				var mgp = paymentTypesInAdmin.find( x -> x.type == pro.payment.MangopayMPPayment.TYPE || x.type == pro.payment.MangopayECPayment.TYPE );
+				var mgp = paymentTypesInAdmin.find( x -> x.type == pro.payment.MangopayECPayment.TYPE );
 				paymentTypesInAdmin.remove(mgp);
 				#end
 				out = paymentTypesInAdmin;
@@ -422,6 +423,10 @@ class PaymentService {
 			order.update();
 		}
 
+		basket.lock();
+		basket.status = Std.string(BasketStatus.VALIDATED);
+		basket.update();
+
 		// validate order operation and payments
 		var operation = basket.getOrderOperation(false);
 		if (operation != null) {
@@ -488,8 +493,7 @@ class PaymentService {
 	public static function updateUserBalance(user:db.User, group:db.Group) {
 		var ua = db.UserGroup.getOrCreate(user, group);
 		//do not count pending payments
-		var b = sys.db.Manager.cnx.request('SELECT SUM(amount) FROM Operation WHERE userId=${user.id} and groupId=${group.id} and !(type=2 and pending=1)')
-			.getFloatResult(0);
+		var b = sys.db.Manager.cnx.request('SELECT SUM(amount) FROM Operation WHERE userId=${user.id} and groupId=${group.id} and !(type=2 and pending=1)').getFloatResult(0);
 		b = Math.round(b * 100) / 100;
 		ua.balance = b;
 		ua.update();

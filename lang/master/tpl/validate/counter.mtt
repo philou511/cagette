@@ -78,14 +78,13 @@
                             </tr>
                             <tr>
                                 <th>Frais</th>
-                                <td>::(sales.mpFixedFees.ttc - sales.mpVariableFees.ttc)::</td>
+                                <td>::(sales.mpFixedFees.ttc + sales.mpVariableFees.ttc)::</td>
                             </tr>
                             <tr>
                                 <th>Net</th>
-                                <td>::formatNum(sales.mpTurnover.ttc+(sales.mpFixedFees.ttc - sales.mpVariableFees.ttc)):: &euro;</td>
+                                <td>::formatNum(sales.mpTurnover.ttc - (sales.mpFixedFees.ttc + sales.mpVariableFees.ttc)):: &euro;</td>
                             </tr>
-                        </table>
-                                                
+                        </table>                                                
                     </td>
                 </tr>
 

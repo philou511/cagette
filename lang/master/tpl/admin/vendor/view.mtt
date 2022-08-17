@@ -45,6 +45,7 @@
 			$$nullSafe(::vendor.address1::)<br/>
 			$$nullSafe(::vendor.address2::)<br/>
 			::vendor.zipCode:: ::vendor.city::<br/>
+			::vendor.country::<br/>
 			::if(vendor.lat!=null)::
 			<a href="https://www.google.fr/maps/search/+::vendor.lat::,+::vendor.lng::" target="_blank" class="btn btn-default btn-xs">Localiser</a>
 			::end::
@@ -70,8 +71,7 @@
 			$$publicVendorIcon(::vendor::)	<b>$$vendorType(::enumIndex(stats._type)::)</b>
 			::if(cpro!=null)::
 				(# <a href="/db/pro.db.CagettePro/edit/::cpro.id::" target="_blank">::cpro.id::</a>)			
-				<br/>
-				::if(cpro.offer==3)::<i class="icon icon-student" style="color:#336600"></i> Compte pédagogique<br/> ::end::
+				<br/>				
 			::end::
 		</p>
 		
@@ -100,9 +100,7 @@
 		
 
 		Sur Cagette depuis le ::sDate(vendor.cdate)::<br/>
-		::if(cpro!=null)::Cagette Pro depuis le ::sDate(cpro.cdate)::::end::<br/>
-
-		<!--Lien pour mettre à jour le compte : <a href="::editLink::">::editLink::</a>-->
+		::if(cpro!=null)::Compte producteur depuis le ::sDate(cpro.cdate)::::end::<br/>
 	</div>
 
 	<div class="col-md-6">
@@ -130,17 +128,12 @@
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 						::if(cpro!=null)::
-						<li><a href="/p/pro/admin/delete/::vendor.id::/disable">Désactiver Cagette Pro ( redevient invité, possibilité de ré-ouvrir plus tard )</a></li>
-						<li><a href="/p/pro/admin/delete/::vendor.id::/deleteCpro">Supprimer Cagette Pro ( redevient invité )</a></li>
+						<li><a href="/p/pro/admin/delete/::vendor.id::/disable">Désactiver compte producteur ( redevient invité, possibilité de ré-ouvrir plus tard )</a></li>
+						<li><a href="/p/pro/admin/delete/::vendor.id::/deleteCpro">Supprimer compte producteur ( redevient invité )</a></li>
 						::else::
-						<li><a href="/p/pro/admin/createCpro/::vendor.id::">passer en Cagette Pro</a></li>
+						<li><a href="/p/pro/admin/createCpro/::vendor.id::">passer en compte producteur</a></li>
 						::end::
-						<li><a href="/p/pro/admin/delete/::vendor.id::/delete" >Supprimer complètement le producteur</a></li>	
-						
-						<!--::if(vendor.isTest==false)::
-			<a href="/p/pro/admin/cproTest/::vendor.id::" class="btn btn-default btn-sm">passer en Cagette Pro Test</a>
-			::end::---->
-						
+						<li><a href="/p/pro/admin/delete/::vendor.id::/delete" >Supprimer complètement le producteur</a></li>												
 						<li><a href="/p/pro/admin/dedupInfo/::vendor.email::" >Déduplication par email</a></li>
 						<li><a href="/p/pro/admin/findduplicatesbyname/::vendor.name::" >Recherche par nom</a></li>
 						<li><a href="/p/pro/admin/findduplicatesbyzip/::vendor.zipCode::" >Recherche par code postal</a></li>
@@ -152,6 +145,28 @@
 		</p>
 
 	</div>
+
+	<div class="col-md-12">
+		::if(vendor.disabled!=null)::
+			<div class="alert alert-danger">
+				<i class="icon icon-alert"></i> Compte bloqué : ::vendor.getDisabledReason():: 
+				<a href="/admin/vendor/ban/::vendor.id::?unban=1" class="btn btn-default btn-xs">Débloquer</a>			
+			</div>
+		::else::
+			<div class="dropdown">
+				<button class="btn btn-default  btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					<i class="icon icon-delete"></i> Bloquer
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+					<li><a href="/admin/vendor/ban/::vendor.id::?reason=0">Informations légales incomplètes</a></li>
+					<li><a href="/admin/vendor/ban/::vendor.id::?reason=1">Producteur incompatible avec la charte producteur de Cagette.net</a></li>
+					<li><a href="/admin/vendor/ban/::vendor.id::?reason=2">Producteur bloqué par les administrateurs</a></li>
+					<!--<li><a href="/admin/vendor/ban/::vendor.id::?reason=3">Ce producteur a atteint sa limite de chiffre d'affaires annuel</a></li>-->			
+				</ul>
+			</div>
+		::end::
+		</div>
 </div>
 
 <div class="row" style="margin-bottom: 24px;">
@@ -171,29 +186,7 @@
 	</div>
 </div>
 
-<div class="row">
-	<div class="col-md-12">
-	::if(vendor.disabled!=null)::
-		<div class="alert alert-danger">
-			<i class="icon icon-alert"></i> Compte bloqué : ::vendor.getDisabledReason():: 
-			<a href="/admin/vendor/ban/::vendor.id::?unban=1" class="btn btn-default btn-xs">Débloquer</a>			
-		</div>
-	::else::
-		<div class="dropdown">
-			<button class="btn btn-default  btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-				<i class="icon icon-delete"></i> Bloquer
-				<span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-				<li><a href="/admin/vendor/ban/::vendor.id::?reason=0">Informations légales incomplètes</a></li>
-				<li><a href="/admin/vendor/ban/::vendor.id::?reason=1">Producteur incompatible avec la charte producteur de Cagette.net</a></li>
-				<li><a href="/admin/vendor/ban/::vendor.id::?reason=2">Producteur bloqué par les administrateurs</a></li>
-				<!--<li><a href="/admin/vendor/ban/::vendor.id::?reason=3">Ce producteur a atteint sa limite de chiffre d'affaires annuel</a></li>-->			
-			</ul>
-		</div>
-	::end::
-	</div>
-</div>
+
 
 ::if(cpro!=null)::
 <p>
@@ -206,23 +199,23 @@
 			</td>
 			<td>::uc._user.email::</td>
 			<td>
-				::if(uc.disabled)::
-				<p class="alert alert-danger">Accès coupé (cagette pro test non inscrit en formation)</p>
-				::end::
 				::if(uc.legalRepresentative)::
 				Représentant légal.
 				::end::
-			</td>
-			<td>
-				::if(uc.disabled)::
-				<a href="?enableAccess=::uc.userId::" class="btn btn-danger btn-sm">Réouvrir l'accès</a>
-				::else::
-				<a href="?disableAccess=::uc.userId::" class="btn btn-default btn-sm">Bloquer l'accès</a>
+				::if(uc.legalRepresentative && uc.salesRepresentative)::
+				<br/>
+				::end::
+				::if(uc.salesRepresentative)::
+				Contact commercial
 				::end::
 			</td>
+			
 		</tr>
 		::end::
 	</table>
+	::if(cpro!=null)::
+	<a href="/admin/vendor/editLegalRepresentative/::cpro.id::" class="btn btn-default btn-xs" style="margin-bottom: 8px; margin-top: -8px;">Changer de Représentant légal</a>
+	::end::
 </p>
 ::end::
 
@@ -246,7 +239,7 @@
 			
 			<tr class="::cl::"> 
 				<td>::if(isCproCatalog(c)):: 
-				Cagette PRO
+				Catalogue relié
 				::else::
 				Catalogue invité					
 				::end::</td>
@@ -260,33 +253,29 @@
 				</td>
 				<td>::c.name::</td>
 				<td>du ::sDate(c.startDate):: au ::sDate(c.endDate)::</td>
-				<td>
-					<!--
-					::if(cpro!=null && !isCproCatalog(c))::
-					<a href="/p/pro/admin/contractToCatalog/::c.id::/::cpro.id::" class="btn btn-danger btn-xs">Copier dans Cagette Pro</a>
-					::end::
-					-->
-				</td>
+				
 			</tr>
 		::end::
 		</table>
 </p>
 
-<p>
-	<h4>Formations suivies</h4>
-	<table class="table table-bordered">
-		::foreach c courses::		
-		<tr>
-			<td>::c._course.ref::</td>
-			<td>
-				<a href="/p/hosted/course/view/::c._course.id::">::c._course.name::</a>
-			</td>
-			<td>
-				Du ::sDate(c._course.date):: au ::sDate(c._course.end)::
-			</td> 
-		</tr>
-		::end::
-	</table>
-</p>
+::if settings.noCourse!=true::
+	<p>
+		<h4>Formations suivies</h4>
+		<table class="table table-bordered">
+			::foreach c courses::		
+			<tr>
+				<td>::c._course.ref::</td>
+				<td>
+					<a href="/p/hosted/course/view/::c._course.id::">::c._course.name::</a>
+				</td>
+				<td>
+					Du ::sDate(c._course.date):: au ::sDate(c._course.end)::
+				</td> 
+			</tr>
+			::end::
+		</table>
+	</p>
+::end::
 
 ::end::

@@ -21,14 +21,36 @@
 		</p>
 
 		<a href="/member/loginas/::member.id::" class="btn btn-default btn-xs">Connexion sur son compte</a>
+
+		<br />
+
+		<script>
+			function onDeleteAccountClick() {
+				let text = "Es-tu sûr de vouloir supprimer définitivement ce compte ? On ne pourra jamais récupérer ces données.";
+				if (confirm(text) == true) {
+					window.location.href = "/p/hosted/user/delete/::member.id::"
+				}
+			}
+		</script>
+
+		<button onclick="onDeleteAccountClick()" class="btn btn-danger btn-xs" style="margin-top: 16px;">Supprimer définitivement ce compte</button>
 		
 		<h3>Membre de :</h3>
 		<p>
 			<table class="table table-bordered table-condensed">
-				::foreach g member.getGroups()::
+				<tr>
+					<th class="col-md-4">Groupe</th>
+					<th class="col-md-8">Droits</th>
+				</tr>
+				::foreach ug member.getUserGroups()::
 				<tr>
 					<td>
-						<a href="/p/hosted/userGroup/::member.id::/::g.id::">::g.name::</a>
+						<a href="/p/hosted/userGroup/::member.id::/::ug.groupId::">::ug._group.name::</a>
+					</td>
+					<td>
+						::foreach r ug.getRights()::
+							::ug.getJsonRightName(r):: - 
+						::end::
 					</td>
 				</tr>
 				::end::
@@ -47,10 +69,6 @@
 					</tr>
 				::end::
 			</table>
-		</p>
-
-		<p>
-			<a href="?token=::token::&delete=1" $$confirm() class="btn btn-danger">DANGEREUX : Effacer ce compte, remplacer ses commandes par Monsieur X.</a>
 		</p>
 		
 	</div>

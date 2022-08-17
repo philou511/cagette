@@ -96,10 +96,10 @@ typedef DistributionInfos = {
 	vendorId:Int,
 	groupId:Int,
 	groupName:String,
-	distributionStartDate:Float,
-	distributionEndDate:Float,
-	orderStartDate:Float,
-	orderEndDate:Float,
+	distributionStartDate:Date,
+	distributionEndDate:Date,
+	orderStartDate:Date,
+	orderEndDate:Date,
 	place:PlaceInfos,
 }
 enum Unit{
@@ -156,6 +156,7 @@ typedef UserOrder = {
 	?productQt:Float,
 	?productUnit:Unit,
 	?productHasVariablePrice:Bool,
+	
 
 	//new way
 	?product:ProductInfo,
@@ -307,3 +308,32 @@ typedef SocialShareData = {
 	var twitterType: String;
 	var twitterUsername: String;
 } 
+
+typedef Theme = {
+	var id:String; // theme's id
+	var name:String; // readable name
+	var url:String; // company's website
+	var supportEmail:String; // email address of the support	
+	var ?footer:{
+		?bloc1:String, // first footer bloc in html
+		?bloc2:String, // second footer bloc in html
+		?bloc3:String, // third footer bloc in html
+		?bloc4:String, // last footer bloc in html
+	};
+	var email : {
+		senderEmail:String,
+		brandedEmailLayoutFooter:String // footer of the branded email layout in html
+	};
+	var terms : {
+		var termsOfServiceLink:String; // Terms of service (CGU)
+		var termsOfSaleLink:String;
+		var platformTermsLink:String;
+	};
+}
+
+typedef Settings = {
+	var ?noVendorSignup: Bool;
+	var ?noCsa: Bool;
+	var ?onlyVendorsCanCreateGroup: Bool;
+	var ?noCourse: Bool;
+}

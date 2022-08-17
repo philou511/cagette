@@ -3,18 +3,17 @@ package service;
 import haxe.Json;
 import tink.core.Error;
 import db.Basket;
-import db.TmpBasket;
 
 enum Place {
-	SubmitOrder(tmpBasket:db.TmpBasket); // the user submits an order
-	UserLogsIn(tmpBasket:db.TmpBasket); // the user should log in
-	TimeSlotSelection(tmpBasket:db.TmpBasket); // the user should select a time slot
-	PaymentTypeSelection(tmpBasket:db.TmpBasket); // the user shoud select a payment type
+	SubmitOrder(tmpBasket:db.Basket); // the user submits an order
+	UserLogsIn(tmpBasket:db.Basket); // the user should log in
+	TimeSlotSelection(tmpBasket:db.Basket); // the user should select a time slot
+	PaymentTypeSelection(tmpBasket:db.Basket); // the user shoud select a payment type
 	Payment;
 	PaymentConfirmation;
 	PaymentError;
 	PaymentCancel;
-	ConfirmOrder(tmpBasket:db.TmpBasket);
+	ConfirmOrder(tmpBasket:db.Basket);
 }
 
 

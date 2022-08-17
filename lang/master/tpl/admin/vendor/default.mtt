@@ -13,7 +13,7 @@
 			<span class="glyphicon glyphicon-plus"></span> Nouveau producteur
 		</a></li>
 		<li><a href="/p/pro/admin/importGroup">Import de groupes</a></li>
-		<li><a href="/p/pro/admin/contractToCatalog" >Contrat -&gt; Cagette Pro</a></li>
+		<li><a href="/p/pro/admin/contractToCatalog" >Contrat -&gt; Compte producteur</a></li>
 		<li><a href="/p/pro/admin/duplicate">Dupliquer un groupe</a></li>
 		<li><a href="/p/pro/admin/moveCatalog">Déplacer un catalogue</a></li>
 		<li><a href="/p/pro/admin/copyProducts">Copier base de référence</a></li>

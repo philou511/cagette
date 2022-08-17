@@ -129,7 +129,8 @@ typedef CardWebPayIn = {
 	Culture: String,
 	?TemplateURL: String,
 	?StatementDescriptor: String,
-	?RedirectURL: String
+	?RedirectURL: String,
+	Requested3DSVersion:String
 };
 
 typedef Transaction = {

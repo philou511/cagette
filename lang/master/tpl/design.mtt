@@ -16,10 +16,10 @@
 					<h1>::groupName::</h1>
 				::else::
 					<div style="margin-bottom:22px;" >
-							<a href="http://www.cagette.net" target="_blank">
-								<img src="/img/logo3.png" alt="::NAME::" />
+							<a href="::theme.url::" target="_blank">
+								<img src="/theme/::theme.id::/logo3.png" alt="logo ::theme.name::" style="height:87px;"/>
 							</a>
-					</div>		
+					</div>
 				::end::
 			</div>
 			
@@ -28,7 +28,7 @@
 			</div>				
 		</div>
 
-			::if user != null && noGroup!=true::
+			::if user != null && noGroup!=true && (getCurrentGroup()==null || (getCurrentGroup()!=null && getCurrentGroup().disabled==null))::
 
 			<nav class="navbar navbar-default" ::cond user.getGroup()!=null::>
 					<div class="navbar-header">
@@ -101,7 +101,7 @@
 			
 		::end::
 		
-		<!-- Breadcrumb -->
+		<!-- Breadcrumb 
 		<div class="row">
 			<div class="col-md-12">
 				<ol class="breadcrumb">
@@ -111,7 +111,7 @@
 					::end::
 				</ol>
 			</div>
-		</div>
+		</div>-->
 		
 		<!-- Notifications -->
 		<div class="row">
@@ -138,14 +138,6 @@
 		<div class="row">
 			::raw __content__::
 		</div>	
-		
-		<!--<div class="row footer-info">
-			<div class="col-md-12 alert-danger text-center" style="border-radius: 8px;margin:8px 0;padding:8px 0;">
-				<span class="glyphicon glyphicon-cog"></span>
-				<b>Attention</b> : Cagette.net sera en maintenance le <b>mercredi 6 Février de 23h à 2h</b>.				
-				
-			</div>
-		</div>-->
 	
 		$$footer()
 		
@@ -188,20 +180,20 @@
 			// Identify the user and pass traits
 			// To enable, replace sample data with actual user traits and uncomment the line
 			UserVoice.push(['identify', {
-			  email:      '::user.email::', // User’s email address
-			  name:       '::user.getName()::', // User’s real name
-			  created_at: ::(user.cdate.getTime()/1000)::, // Unix timestamp for the date the user signed up
-			  id:         ::user.id::, // Optional: Unique id of the user (if set, this should not change)
-			  type:       '::infos.type::', // Optional: segment your users by type
-			  //Si cagette pro : nom de la ferme, sinon nom du groupe
-			  account: {
-			    id:           ::infos.id::, // Optional: associate multiple users with a single account
-			    name:         '::infos.name::', // Account name
-			  //  created_at:   1364406966, // Unix timestamp for the date the account was created
-			  //  monthly_rate: 9.99, // Decimal; monthly rate of the account
-			  //  ltv:          1495.00, // Decimal; lifetime value of the account
-			  //  plan:         'Enhanced' // Plan name for the account
-			  }
+				email:      '::user.email::', 		// User’s email address
+				name:       '::user.getName()::',		// User’s real name
+				created_at: ::(user.cdate.getTime()/1000)::, // Unix timestamp for the date the user signed up
+				id:         ::user.id::, 				// Optional: Unique id of the user (if set, this should not change)
+				type:       '::infos.type::', 		// Optional: segment your users by type
+				//Si cpro : nom de la ferme, sinon nom du groupe
+				account: {
+					id:           ::infos.id::, // Optional: associate multiple users with a single account
+					name:         '::infos.name::', // Account name
+					//  created_at:   1364406966, // Unix timestamp for the date the account was created
+					//  monthly_rate: 9.99, // Decimal; monthly rate of the account
+					//  ltv:          1495.00, // Decimal; lifetime value of the account
+					//  plan:         'Enhanced' // Plan name for the account
+				}
 			}]);
 
 			// Add default trigger to the bottom-right corner of the window:
@@ -211,7 +203,7 @@
 			//UserVoice.push(['addTrigger', '#id', { mode: 'smartvote' }]);
 
 			// Autoprompt for Satisfaction and SmartVote (only displayed under certain conditions)
-			//UserVoice.push(['autoprompt', {}]);
+			UserVoice.push(['autoprompt', {}]);
 			</script>
 			::end::
 ::end::

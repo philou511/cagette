@@ -50,6 +50,8 @@ class Main extends Controller {
 			throw Redirect("/user/choose");
 		} else if (app.user == null && (group == null || group.regOption != db.Group.RegOption.Open)) {
 			throw Redirect("/user/login");
+		}else if(group.disabled!=null){
+			throw Redirect("/group/disabled");
 		}
 
 		group.checkIsolate();
@@ -125,6 +127,8 @@ class Main extends Controller {
 		}
 
 		view.visibleDocuments = group.getVisibleDocuments(isMemberOfGroup);
+
+		view.user = app.user;
 	}
 
 	// login and stuff
@@ -142,18 +146,21 @@ class Main extends Controller {
 	 */
 	function doApi(d:Dispatch) {
 		sugoi.Web.setHeader("Content-Type", "application/json");
+		sugoi.Web.setHeader("Access-Control-Allow-Credentials","true");
 		try {
 			d.dispatch(new controller.Api());
 		} catch (e:tink.core.Error) {
 			// manage tink Errors (service errors)
 			sugoi.Web.setReturnCode(e.code);
 			Sys.print(Json.stringify({error: {code: e.code, message: e.message, stack: e.exceptionStack}}));
+			app.rollback();
 		} catch (e:Dynamic) {
 			// manage other errors
 			sugoi.Web.setReturnCode(500);
 			var stack = haxe.CallStack.toString(haxe.CallStack.exceptionStack());
 			App.current.logError(e, stack);
 			Sys.print(Json.stringify({error: {code: 500, message: Std.string(e), stack: stack}}));
+			app.rollback();
 		}
 	}
 
@@ -262,23 +269,6 @@ class Main extends Controller {
 		d.dispatch(new controller.Shop());
 	}
 
-	@tpl('shop/default.mtt')
-	function doShop2(md:db.MultiDistrib, ?args:{continueShopping:Bool}) {
-		throw Redirect("/shop/" + md.id + "?continueShopping=" + (args != null ? args.continueShopping : false));
-
-		// if( app.getCurrentGroup()==null || app.getCurrentGroup().id!=md.getGroup().id){
-		// 	throw  Redirect("/group/"+md.getGroup().id);
-		// }
-		// if(args!=null){
-		// 	if(!args.continueShopping){
-		// 		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
-		// 	}
-		// }
-		// view.category = 'shop';
-		// view.md = md;
-		// view.tmpBasketId = app.session.data.tmpBasketId;
-	}
-
 	@logged
 	function doProduct(d:Dispatch) {
 		d.dispatch(new controller.Product());
@@ -349,17 +339,17 @@ class Main extends Controller {
 
 	// CGU
 	public function doCgu() {
-		throw Redirect("https://www.cagette.net/wp-content/uploads/2020/11/cgu-.pdf");
+		throw Redirect(App.current.getTheme().terms.termsOfServiceLink);
 	}
 
 	// CGV
 	public function doCgv() {
-		throw Redirect("https://www.cagette.net/wp-content/uploads/2020/11/cgv.pdf");
+		throw Redirect(App.current.getTheme().terms.termsOfSaleLink);
 	}
 
 	// CGU MGP
 	public function doMgp() {
-		throw Redirect("https://www.cagette.net/wp-content/uploads/2019/03/psp_mangopay_fr.pdf");
+		throw Redirect("https://www.mangopay.com/terms/MANGOPAY_Terms-FR.pdf");
 	}
 
 	// charte

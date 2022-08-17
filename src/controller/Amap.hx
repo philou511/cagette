@@ -17,10 +17,11 @@ class Amap extends Controller
 	
 	@tpl("amap/default.mtt")
 	function doDefault() {
-		var contracts = db.Catalog.getActiveContracts(app.user.getGroup(), true, false).array();
+		var group = app.user.getGroup();
+		var contracts = db.Catalog.getActiveContracts(group, true, false).array();
 		for ( c in contracts.copy()) {
 			if( c.endDate.getTime() < Date.now().getTime() ) contracts.remove(c);
-			if( c.vendor.isDisabled()) contracts.remove(c);
+			if( group.hasShopMode() && c.vendor.isDisabled()  ) contracts.remove(c);
 		}
 		view.contracts = contracts;
 		view.group = app.user.getGroup();

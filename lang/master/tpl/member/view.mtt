@@ -2,7 +2,7 @@
 ::use 'design.mtt'::
 
 <div class="col-md-4">
-	<h2>::_("Contact informations")::</h2>
+	<h3>::_("Contact informations")::</h3>
 	<div class="article">
 		
 		<div style="font-weight:bold;font-size:120%;">
@@ -12,55 +12,77 @@
 			& ::member.firstName2:: ::member.lastName2::
 		::end::
 		</div>
-		
-		$$nullSafe(::member.address1::)<br/>
-		$$nullSafe(::member.address2::)<br/>
-		$$nullSafe(::member.zipCode::) 
-		$$nullSafe(::member.city::)<br/>
-		<br/>
-		
-		::if member.phone!=null::
-			::_("Téléphone"):: : ::member.phone::<br/>
-		::end::
-
-		::if member.email!=null::
-			::_("E-mail"):: : <a href="mailto: ::member.email::">::member.email::</a><br/>
-		::end::
-		
-		::if member.email2!=null::
-			::_("E-mail"):: : <a href="mailto: ::member.email2::">::member.email2::</a><br/>
-		::end::
-		
-		<hr/>
-		<p style="font-size:11px;">
-			::_("Last login"):: : 
-			::if member.ldate!=null::
-				::member.ldate.toString():: 
-			::else:: 
-				<b>::_("This member never logged in")::</b>
+		<p>
+			$$nullSafe(::member.address1::)<br/>
+			$$nullSafe(::member.address2::)<br/>
+			$$nullSafe(::member.zipCode::) 
+			$$nullSafe(::member.city::)
+			<br/>
+			<br/>
+			
+			::if member.phone!=null::
+				::_("Téléphone"):: : ::member.phone::<br/>
 			::end::
-			<br/>
-			::_("Registred since"):: : 
-			::if member.cdate!=null:: 
-				::member.cdate.toString()::
-			::else:: 
-				??? 
-			::end::			
-			<br/>
-			::if member.pass==""::
-			<div class="alert alert-danger">::_("This member has not set a password"):: </div>
+
+			::if member.email!=null::
+				::_("E-mail"):: : <a href="mailto: ::member.email::">::member.email::</a><br/>
+			::end::
+			
+			::if member.email2!=null::
+				::_("E-mail"):: : <a href="mailto: ::member.email2::">::member.email2::</a><br/>
 			::end::
 		</p>
+		
+		
+		<div class="panel panel-default ">
+			<div class="panel-heading">Notifications</div>
+			
+			<table class="table" style="font-size:0.8em;">
+				::foreach n notifications::
+				<tr>
+					<td>
+						::if(n.active)::
+						<i class="icon icon-check" style="color:grey"></i>
+						::else::
+						<i class="icon icon-delete" style="color:grey"></i>
+						::end::
+
+					</td>
+					<td>::n.name::</td>
+				</tr>
+				::end::
+			</table>
+		</div>
+
+		<div class="panel panel-default ">
+			<div class="panel-heading">Activité</div>
+			
+			<div class="panel-body" style="font-size:0.8em;">
+				::_("Last login"):: : 
+				::if member.ldate!=null::
+					::dDate(member.ldate):: 
+				::else:: 
+					<b>::_("This member never logged in")::</b>
+				::end::
+				<br/>
+				::_("Registred since"):: : 
+				::if member.cdate!=null:: 
+					::dDate(member.cdate)::
+				::else:: 
+					??? 
+				::end::			
+				<br/>
+				::if member.pass==""::
+					<div class="alert alert-danger">::_("This member has not set a password"):: </div>
+				::end::
+			</div>
+		</div>
+
+	
 		<p>
-			$$edit(::_("Edit")::,/member/edit/::member.id::) 
+			<!--$$edit(::_("Edit")::,/member/edit/::member.id::) -->
 			$$delete(::_("Remove from group")::,/member/delete/::member.id::?token=::token::)
 			<a href="/member/movetowl/::member.id::" class="btn btn-default btn-sm">::_("Put on waiting list")::</a>
-			
-			::if !member.isFullyRegistred()::
-			<a href="/member/inviteMember/::member.id::?token=::token::" class="btn btn-default btn-sm">
-				<i class="icon icon-mail"></i>
-				::_("Send an invitation")::</a>
-			::end::
 		</p>
 
 		<p ::cond canLoginAs::>
@@ -69,52 +91,25 @@
 			</a>
 		</p>
 	</div>
-	
-	
-	::if user.getGroup().hasMembership::
-	<h2>Adhésion</h2>
-		::set hasValidMembership = userGroup.hasValidMembership()::
-		::if(hasValidMembership)::
-			::set css = "alert alert-success"::
-		::else::
-			::set css = "alert alert-danger"::
-		::end::
-
-		<div class="::css::">
-		$$check(::hasValidMembership::)
-		::if hasValidMembership::
-			::_("Membership up to date")::
-		::else::
-			 ::_("Membership to renew")::
-		::end::
-		::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user.getGroup().getPeriodName(null)::</b>
-		<br/>
-		
-		<a onclick="_Cagette.membershipBox(::member.id::,`::member.getName()::`,::userGroup._group.id::,'/member/view/::member.id::')" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
-
-	</div>
-	::end::
-
-	
 </div>
 
 ::set hasPayments = user.getGroup().hasPayments()::
 ::set hasShopMode = user.getGroup().hasShopMode()::
 
 <div class="col-md-8">
-	<h2>
+	<h3>
 		::if hasShopMode::
 			::_("Orders")::
 		::else::
-			Souscriptions
+			Contrats
 		::end::
-	</h2>
+	</h3>
 
-	<div class="article">
+	
 
 		<!-- VARYING ORDERS FOR SHOP MODE -->
 		::if hasShopMode && distribs.length > 0::
-		
+		<div class="article">
 			<h4><i class="icon icon-basket"></i>  Commandes variables</h4>
 
 			::foreach d distribs::
@@ -173,15 +168,13 @@
 					</table>
 				::end::
 			::end::
+		</div>
 		::end::
 
 		<!-- SUBSCRIPTIONS FOR CSA MODE -->
-		::if !hasShopMode && count( subscriptionsByCatalog ) > 0 ::
-
-			::foreach i loopList(0, 2)::
-
-				::set subscriptionsFound = false::
-
+		::if !hasShopMode ::
+			::foreach i loopList(0, 2)::	
+				<!--
 				<h4>
 					::if i == 0::
 						<br/>
@@ -191,131 +184,39 @@
 						<br/>
 						<i class="icon icon-refresh"></i> Contrats AMAP classiques
 					::end::
-				</h4>
+				</h4>-->
 
 				::foreach catalog subscriptionsByCatalog.keys()::
-
-					::if ( i == 0 && catalog.type == TYPE_VARORDER ) || ( i == 1 && catalog.type == TYPE_CONSTORDERS )::
-
+					::if ( i == 0 && catalog.isVariableOrdersCatalog() ) || ( i == 1 && catalog.isConstantOrdersCatalog() )::
 						::set subscriptionsFound = true::
-
-						<h5 style="margin-top:50px;margin-bottom:0px;">::catalog.name:: - <a href="::catalog._vendor.getLink()::" target="_blank">
-								::catalog._vendor.name::
-							</a>
-						</h5>
-						
-						<!--<div class="text-right" style="float:right;margin-bottom:10px;">
-							<a href="/member/orders/::member.id::/::catalog.id::" class="btn btn-default btn-sm">
-								<i class="icon icon-basket"></i> Détails commandes
-							</a>
-						</div>-->
 
 						::set subscriptions = subscriptionsByCatalog.get(catalog)::
 						::foreach subscription subscriptions::
-
-							<table class="table table-condensed table-bordered" style="margin-top:20px;margin-bottom:0px;">
-								<tr class="greyhead">
-									<th class="text-center col-md-3" ::cond i == 1 && subscription._user2 != null::>Membre</th>
-									<th class="text-center col-md-4">Engagement</th>
-									<th class="text-center col-md-2">Période d'engagement</th>
-									::if subscription.getAbsencesNb() != 0 ::
-										<th class="text-center col-md-1">Nombre max de distributions</th>
-										<th class="text-center col-md-1">Nombre d'absences</th>
-									::end::
-									<th class="text-center col-md-2">Nbre de distributions</th>
-									<th class="text-center col-md-1">Total commandé</th>
-									::if catalog.hasPayments::
-										<th class="text-center col-md-1">Solde</th>
-									::elseif i == 1::
-										<th class="text-center col-md-1">Payé</th>
-									::end::
-								</tr>
-								::set orderName = subscriptionService.getSubDescription(subscription)::
-								::if i == 1 && orderName == null::
-									::set class="danger text-danger"::
-								::else::
-									::set class=""::
-								::end::
-								<tr style="text-align: center;">
-									<td ::cond i == 1 && subscription._user2 != null::>
-										<i ::cond !subscription.paid():: class="icon icon-alert" style="color: #a94442;"></i>  
-										<a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
-										<br/> ( alterné avec <a href="/member/view/::subscription._user2.id::" target="_blank">::subscription._user2.getName()::</a> )
-									</td>
-									<td class="::class::" style="vertical-align: middle;">
-										::if orderName == null::
-											::if i == 0::
-												Pas de contraintes
-											::else::
-												Aucune commande
-											::end::
-										::else::
-											::raw orderName::
-										::end::
-									</td>
-									<td style="vertical-align: middle;">
-										du ::sDate(subscription.startDate)::<br/>
-										au ::sDate(subscription.endDate)::
-									</td>
-									::set absencesNb = subscription.getAbsencesNb()::
-									::if absencesNb != 0 ::
-										<td style="vertical-align: middle;">
-											::subscriptionService.getSubscriptionDistribsNb(subscription, null, false)::
-										</td>
-										<td style="vertical-align: middle;">
-											&nbsp;&nbsp;::absencesNb::
-											<a ::cond subscriptionService.canAbsencesBeEdited( catalog ):: href="/subscriptions/absences/::subscription.id::?returnUrl=/member/view/::member.id::" class="btn btn-default btn-sm" style="border-style: none;">
-												<i class="icon icon-edit"></i>
-											</a>
-										</td>
-									::end::
-									<td style="vertical-align: middle;">
-										::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
-									</td>
-									::set subscriptionTotal = subscription.getTotalPrice()::
-									::set balance = subscription.getPaymentsTotal() - subscriptionTotal::
-									<td style="vertical-align: middle;">
-										::formatNum(subscriptionTotal)::&nbsp;::currency()::
-									</td>
-									::if catalog.hasPayments::
-										::set balance = subscription.getPaymentsTotal() - subscription.getTotalPrice()::
-										::set background = ""::
-										::if balance < 0::
-											::set background = "background-color: #d9534f;"::
-										::else::
-										::set background = "background-color: #84bd55;"::
-										::end::
-										<td style="vertical-align: middle;color: white;font-weight:bold; ::background::">
-											::formatNum(balance)::&nbsp;::currency()::
-										</td>
-									::elseif i == 1::
-										<td style="vertical-align: middle;">
-											$$check(::subscription.paid()::)
-										</td>
-									::end::
-								</tr>
-							</table>
-							
+							$$subscription(::subscription::,::user::)					
 						::end::
 					::end::
 				::end::
-
-				::if !subscriptionsFound::
-					<div class="text-center" style="margin-top:40px;margin-bottom:40px;">Il n'y a pas de souscription.</div>
-				::end::
-
+				
 			::end::
+
+			::if count(subscriptionsByCatalog) == 0::
+			<div class="article">
+				<div class="text-center" style="margin-top:40px;margin-bottom:40px;">Aucune souscription à un contrat</div>
+			</div>				
+			::end::
+
+
 		::end::
-		<br/>
-	</div>
+		
 </div>
 
 
-<div  class="col-md-8">
-	<div ::cond (hasPayments && hasShopMode) || !hasShopMode:: class="article">
+<div class="col-md-4" ::cond (hasPayments && hasShopMode) || !hasShopMode::>
+	<h3>::_("Balance")::</h3>
+	<div  class="article">
 		
 		<span style="font-size:1.3em;">
-			::_("Balance"):: :
+			
 			::if userGroup.balance<0:: 
 			::set color = "C00"::
 			::else::
@@ -347,6 +248,29 @@
 		::end::
 		</ul>
 	</div>	
+</div>
+
+<div class="col-md-4" ::cond user.getGroup().hasMembership::>
+	<h3>Adhésion</h3>
+		::set hasValidMembership = userGroup.hasValidMembership()::
+		::if(hasValidMembership)::
+			::set css = "alert alert-success"::
+		::else::
+			::set css = "alert alert-danger"::
+		::end::
+
+		<div class="::css::">
+			$$check(::hasValidMembership::)
+			::if hasValidMembership::
+				::_("Membership up to date")::
+			::else::
+				::_("Membership to renew")::
+			::end::
+			::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user.getGroup().getPeriodName(null)::</b>
+			<br/>
+			
+			<a onclick="_Cagette.membershipBox(::member.id::,`::member.getName()::`,::userGroup._group.id::,'/member/view/::member.id::')" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
+		</div>
 </div>
 
 ::end::

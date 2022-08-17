@@ -12,7 +12,7 @@ class ConnectorPlugIn extends PlugIn implements IPlugIn{
 		file = sugoi.tools.Macros.getFilePath();
 		
 		//suscribe to events
-		App.current.eventDispatcher.add(onEvent);
+		App.eventDispatcher.add(onEvent);
 		
 		//add i18n strings
 		//var i18n = App.t.getStrings();
@@ -179,18 +179,18 @@ class ConnectorPlugIn extends PlugIn implements IPlugIn{
 			case DeleteDistrib(d):
 				var remoteCata = getRemoteCatalog(d.catalog.id);
 				if (remoteCata != null){
-					throw ErrorAction("/contractAdmin/distributions/" + d.catalog.id, "Impossible d'effacer cette distribution car ce catalogue est géré par le producteur via Cagette Pro.");
+					throw ErrorAction("/contractAdmin/distributions/" + d.catalog.id, "Impossible d'effacer cette distribution car ce catalogue est géré par le producteur depuis son compte producteur.");
 				}
 				
 			case PreEditProduct(p), EditProduct(p), DeleteProduct(p), NewProduct(p):
 				var remoteCata = getRemoteCatalog(p.catalog.id);
 				if (remoteCata != null){
-					throw ErrorAction("/contractAdmin/products/" + p.catalog.id, "Vous ne pouvez pas modifier ce produit car ce catalogue est géré par le producteur via Cagette Pro.");
+					throw ErrorAction("/contractAdmin/products/" + p.catalog.id, "Vous ne pouvez pas modifier ce produit car ce catalogue est géré par le producteur depuis son compte producteur.");
 				}
 			case PreNewProduct(c):
 				var remoteCata = getRemoteCatalog(c.id);
 				if (remoteCata != null){
-					throw ErrorAction("/contractAdmin/products/" + c.id, "Vous ne pouvez pas créer de produit car ce catalogue est géré par le producteur via Cagette Pro.");
+					throw ErrorAction("/contractAdmin/products/" + c.id, "Vous ne pouvez pas créer de produit car ce catalogue est géré par le producteur depuis son compte producteur.");
 				}
 				
 			case BatchEnableProducts(data) :
@@ -237,8 +237,6 @@ class ConnectorPlugIn extends PlugIn implements IPlugIn{
 					}
 					
 					
-					
-					//throw ErrorAction("/contractAdmin/products/" + c.id, "Vous ne pouvez pas activer ou désactiver de produits car ce catalogue est géré par le producteur via Cagette Pro.");
 				}
 				
 			case DeleteContract(contract) :
@@ -250,22 +248,21 @@ class ConnectorPlugIn extends PlugIn implements IPlugIn{
 
 			case DuplicateContract(contract) :
 				if ( getRemoteCatalog(contract.id,true) != null){
-					throw sugoi.ControllerAction.ErrorAction("/contractAdmin","C'est un catalogue Cagette Pro, il n'est pas possible de le dupliquer");
+					throw sugoi.ControllerAction.ErrorAction("/contractAdmin","C'est un catalogue relié à un compte producteur, il n'est pas possible de le dupliquer");
 				}
 
 			case EditContract(contract,form)	 :
 				
 				if ( getRemoteCatalog(contract.id,true) != null){
-					//throw sugoi.ControllerAction.ErrorAction("/contractAdmin","C'est un catalogue Cagette Pro, seul le producteur a le droit de le modifier");
 
 					//allow only to edit some options.
 					form.removeElementByName("startDate");
 					form.removeElementByName("endDate");
 					form.removeElementByName("name");
 					form.removeElementByName("vendorId");					
-					form.removeElementByName("description");
+					// form.removeElementByName("description"); //desc can be edited in group.
 
-					var text = "Ce catalogue est géré par un producteur équipé de <a href='http://www.cagette.pro'>Cagette Pro</a>, vous n'avez donc accès qu'à un nombre restreint de paramètres.";
+					var text = "Ce catalogue est géré par un producteur depuis son compte producteur, vous n'avez donc accès qu'à un nombre restreint de paramètres.";
 					form.addElement(new sugoi.form.elements.Html("info","<div class='alert alert-info'>"+text+"</div>"),0);
 				}
 					
