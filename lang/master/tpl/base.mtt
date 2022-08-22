@@ -92,6 +92,7 @@
     <script type="text/javascript">
 
         _Cagette.theme = {
+            id: "::theme.id::",
             name: "::theme.name::",
             supportEmail: "::theme.supportEmail::"
         }
