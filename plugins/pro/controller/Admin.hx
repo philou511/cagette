@@ -1648,7 +1648,7 @@ class Admin extends controller.Controller {
 		}
 	}
 
-	function doVrac(){
+	function doVrac(usersToDelete:Int){
 
 		var themeId = App.current.getTheme().id;
 
@@ -1726,11 +1726,9 @@ class Admin extends controller.Controller {
 				g.delete();
 			}
 
-			if(app.params.get("users")!=null){
+			if(usersToDelete>0){
 
-				var limit = app.params.get("users").parseInt();
-
-				for( u in db.User.manager.unsafeObjects("SELECT * FROM User order by RAND() limit "+limit,true)){
+				for( u in db.User.manager.unsafeObjects("SELECT * FROM User order by RAND() limit "+usersToDelete,true)){
 
 					//ne pas effacer ceux qui sont dans un groupe VRAC
 					if( db.UserGroup.manager.count($userId==u.id && $groupId in gids) > 0 ){

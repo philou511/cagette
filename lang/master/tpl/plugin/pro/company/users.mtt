@@ -19,7 +19,7 @@
 				</td>
 				<td>
 					::if(v.salesRepresentative)::
-						Contact commercial
+						Contact commercial (public)
 					::end::
 				</td>
 				<td>

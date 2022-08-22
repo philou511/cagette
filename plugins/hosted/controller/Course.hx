@@ -504,7 +504,11 @@ if (App.current.getSettings().noCourse==true) {
 		cpro.update();
 
 		// Cancel running subscription
-		service.BridgeService.call('/subscriptions/cancel/${vendor.id}');
+		try {
+			service.BridgeService.call('/subscriptions/cancel/${vendor.id}');
+		} catch (e: Dynamic) {
+			Sys.println(e);
+		}
 
 		//refresh stats
         VendorStats.updateStats(vendor);
