@@ -273,14 +273,9 @@ class Group extends controller.Controller
 
 		view.container = "container-fluid";
 		
-		//if no param is sent, focus on Paris
-		if (args == null || ((args.address == null || args.address == "") && args.lat == null && args.lng == null)){
-			args = {lat:48.855675, lng:2.3472365};
-		}
-		
 		view.lat = args.lat;
 		view.lng = args.lng;
-		view.address = args.address;		
+		view.address = args.address;
 	}
 
 	@tpl("group/disabled.mtt")
