@@ -21,6 +21,10 @@ class Group extends controller.Controller
 	 */
 	@tpl('group/view.mtt')
 	function doDefault( group : db.Group ) {
+
+		if(group.disabled!=null){
+			throw Redirect("/group/disabled/"+group.id);
+		}
 		
 		if ( group.regOption == db.Group.RegOption.Open ) {
 
@@ -279,8 +283,8 @@ class Group extends controller.Controller
 	}
 
 	@tpl("group/disabled.mtt")
-	public function doDisabled(){
-		var group = App.current.getCurrentGroup();
+	public function doDisabled(?group: db.Group){
+		var group = group != null ? group : App.current.getCurrentGroup();
 		if (group == null) throw Redirect("/");
 		view.group = group;
 	}
