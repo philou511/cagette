@@ -199,8 +199,8 @@ class Catalog extends controller.Controller
 		catalog.endDate = DateTools.delta(catalog.startDate, 1000.0 * 60 * 60 * 24 * 365 * 5);
 		
 		var f = CagetteForm.fromSpod(catalog);
-		var e : sugoi.form.elements.IntSelect = cast f.getElement("vendorId");
-		e.nullMessage = company.vendor.name;
+		// var e : sugoi.form.elements.IntSelect = cast f.getElement("vendorId");
+		// e.nullMessage = company.vendor.name;
 		f.getElement("contractName").value = "Commande "+company.vendor.name;
 
 		f.addElement(new sugoi.form.elements.StringSelect("visible","Visibilité",[{label:"Public",value:"public"},{label:"Privé",value:"private"}],(catalog.visible?"public":"private"),true ));
@@ -232,8 +232,8 @@ class Catalog extends controller.Controller
 		checkRights(catalog);
 		view.nav.push("edit");
 		var f = CagetteForm.fromSpod(catalog);
-		var e : sugoi.form.elements.IntSelect = cast f.getElement("vendorId");
-		e.nullMessage = company.vendor.name;
+		// var e : sugoi.form.elements.IntSelect = cast f.getElement("vendorId");
+		// e.nullMessage = company.vendor.name;
 		f.addElement(new sugoi.form.elements.StringSelect("visible","Visibilité",[{label:"Public",value:"public"},{label:"Privé",value:"private"}],(catalog.visible?"public":"private"),true ));
 
 		if(catalog.contractName==null){
