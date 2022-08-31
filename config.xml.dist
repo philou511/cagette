@@ -1,7 +1,7 @@
 <config
 	lang="fr"
-	langs="fr;de;en"
-	langnames="Français;Deutsch;English"
+	langs="fr"
+	langnames="Français"
 
 	host="localhost"
 	name = "Cagette.net"
