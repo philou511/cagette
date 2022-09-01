@@ -321,7 +321,7 @@ class App extends sugoi.BaseApp {
 		out.set("HidePhone", "Masquer le téléphone du responsable sur la page publique");
 		out.set("PhoneRequired", "Saisie du numéro de téléphone obligatoire");
 		out.set("AddressRequired", "Saisie de l'adresse obligatoire");
-		out.set("CagetteNetwork", "Lister ce groupe sur la carte Cagette.net et sur les annuaires partenaires");
+		out.set("CagetteNetwork", "Lister ce groupe sur la carte et sur les annuaires partenaires");
 		out.set("HasPayments", "Gestion des paiements");
 		out.set("Show3rdCategoryLevel", "Classer les produits de la boutique par catégorie de troisième niveau");	
 

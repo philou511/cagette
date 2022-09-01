@@ -86,6 +86,7 @@
 		<script type="text/javascript">
 		
 			_Cagette.theme = {
+				id: "::theme.id::",
 				footer: {
 					bloc1: `::raw theme.footer.bloc1::`,
 					bloc2: `::raw theme.footer.bloc2::`,
