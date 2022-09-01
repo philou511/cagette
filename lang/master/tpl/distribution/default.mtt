@@ -1,6 +1,13 @@
 ::use 'design.mtt'::
 
+::set hasCagette2 = getCurrentGroup().hasCagette2()::
+
 <h2 style="margin:12px">::_("Distributions")::</h2>
+
+::if hasCagette2::
+	<h3 style="margin-bottom: 16px;"><a href="/distribution/cagette2">➤ Nouvelle interface Cagette 2.0</a></h3>
+::end::
+
 <div class="row" style="margin-bottom:24px;">
 
 	<div class="col-md-6">
@@ -83,7 +90,6 @@
 		::set ordersEndDate = d.getOrdersEndDate(false)::
 		::set vdistribs = d.getDistributions(1)::
 		::set cdistribs = d.getDistributions(0)::
-		::set hasCagette2 = d.getGroup().hasCagette2()::
 		::set cagette2OrdersRecapUrl = "/distribution/ordersRecap/"+d.id::
 		::set validateUrl = "/distribution/validate/"+d.id::
 		::if hasCagette2::

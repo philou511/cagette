@@ -71,6 +71,13 @@ class Distribution extends Controller {
 		checkToken();
 	}
 
+	@tpl('distribution/default2.mtt')
+	function doCagette2() {
+		if (!app.getCurrentGroup().hasCagette2()){
+			throw Error('/', t._('Forbidden action'));
+		}
+	}
+
 	/**
 	 * Attendance sheet by user-product (single distrib)
 	 */
