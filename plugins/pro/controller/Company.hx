@@ -36,16 +36,26 @@ class Company extends controller.Controller
 	@tpl('plugin/pro/form.mtt')
 	function doEdit() {
 		view.nav.push("default");
+		var theme = App.current.getTheme();
 
 		// var form = VendorService.getForm(vendor, company.offer!=Training );
 		var form = new sugoi.form.Form("company");
+		form.addElement( new Html("html",vendor.name,"Nom"));
+		form.addElement( new Html("html",vendor.getAddress(),"Adresse"));
+		form.addElement( new Html("html","<div class='alert alert-warning'><p><i class='icon icon-info'></i> 
+		Si vous souhaitez changer le nom de votre entreprise, son adresse ou une information légale,   
+		contactez le support sur <a href='mailto:"+theme.supportEmail+"' target='_blank'>"+theme.supportEmail+"</a>
+		</p></div>",""));
 		form.addElement(new TextArea("desc","Description courte de votre ferme",vendor.desc));
 		form.addElement(new StringInput("linkText","Intitulé du lien<br/>(site web, page facebook...)",vendor.linkText));
 		form.addElement(new StringInput("linkUrl","URL du lien",vendor.linkUrl));
+		
+		form.addElement( new Html("html",vendor.email,"Email commercial (public)"));
 		form.addElement( new Html("html","<div class='alert alert-warning'><p><i class='icon icon-info'></i> 
-		Si vous souhaitez changer une autre information comme le nom de votre entreprise ou son adresse, 
-		contactez le support sur <a href='mailto:support@cagette.net' target='_blank'>support@cagette.net</a>
+		Pour changer le contact commercial de votre entreprise,   
+		définissez un utilisateur comme contact commercial sur <a href='/p/pro/company/users' target='_blank'>la page \"utilisateurs\"</a>
 		</p></div>",""));
+		
 		view.title = "Modifier les propriétés";
 
 		// if(company.offer!=Training){ 
@@ -166,9 +176,7 @@ class Company extends controller.Controller
 				vendor.update();
 			}else{
 				// Prevent deleting the SalesRepresentative
-				if(pro.db.PUserCompany.manager.count($company==company && $legalRepresentative && $user!=user)>0) {
-					throw Error("/p/pro/company/users", "Vous devez avoir un contact commercial pour votre compte Producteur.");
-				}
+				throw Error("/p/pro/company/users", "Vous devez avoir un contact commercial pour votre compte Producteur.");
 			}
 
 			uc.update();

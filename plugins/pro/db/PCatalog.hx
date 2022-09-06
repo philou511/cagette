@@ -14,8 +14,8 @@ class PCatalog extends Object
 	
 	public var startDate : SDateTime;			
 	public var endDate : SDateTime;			
-	//achat-revente uniquement
-	@:relation(vendorId) @formPopulate("populateVendor") public var vendor : SNull<db.Vendor>;
+
+	@hideInForms @:relation(vendorId) @formPopulate("populateVendor") public var vendor : SNull<db.Vendor>;
 
 	@hideInForms public var visible : SBool;
 	

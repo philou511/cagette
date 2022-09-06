@@ -2,7 +2,7 @@
 
 	$$browserDetection()
 
-	<div  id="map"></div>
+	<div id="map"></div>
 
 	<script>
 	document.addEventListener("DOMContentLoaded", function(event) {

@@ -447,7 +447,7 @@ class Distribution extends Controller {
 	/**
 		Insert a distribution
 	**/
-	@tpl("form.mtt")
+	/*@tpl("form.mtt")
 	public function doInsert(contract:db.Catalog) {
 		if (!app.user.isContractManager(contract))
 			throw Error('/', t._('Forbidden action'));
@@ -502,7 +502,7 @@ class Distribution extends Controller {
 
 		view.form = form;
 		view.title = t._("Create a distribution");
-	}
+	}*/
 
 	/**
 		Invite farmers to a single distrib

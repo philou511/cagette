@@ -81,7 +81,7 @@ class AmapAdmin extends Controller
 		
 		var str = "";
 		if(!o.cagetteNetwork){
-			str += "L'option 'Me lister dans l'annuaire des groupes Cagette.net' n'est pas cochée. ";
+			str += "L'option 'Lister ce groupe sur la carte' n'est pas cochée.";
 		}
 		if (!o.geoloc){
 			str += "Votre lieu de distribution n'a pas pu être géolocaliser, merci de compléter ou corriger son adresse. ";

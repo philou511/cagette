@@ -21,6 +21,10 @@ class Group extends controller.Controller
 	 */
 	@tpl('group/view.mtt')
 	function doDefault( group : db.Group ) {
+
+		if(group.disabled!=null){
+			throw Redirect("/group/disabled/"+group.id);
+		}
 		
 		if ( group.regOption == db.Group.RegOption.Open ) {
 
@@ -273,19 +277,14 @@ class Group extends controller.Controller
 
 		view.container = "container-fluid";
 		
-		//if no param is sent, focus on Paris
-		if (args == null || ((args.address == null || args.address == "") && args.lat == null && args.lng == null)){
-			args = {lat:48.855675, lng:2.3472365};
-		}
-		
 		view.lat = args.lat;
 		view.lng = args.lng;
-		view.address = args.address;		
+		view.address = args.address;
 	}
 
 	@tpl("group/disabled.mtt")
-	public function doDisabled(){
-		var group = App.current.getCurrentGroup();
+	public function doDisabled(?group: db.Group){
+		var group = group != null ? group : App.current.getCurrentGroup();
 		if (group == null) throw Redirect("/");
 		view.group = group;
 	}
