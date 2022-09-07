@@ -167,25 +167,21 @@ class PaymentService {
 	}
 	
 	
-	/**
-	 * when updating a (varying) order , we need to update the existing pending transaction
-	 */
-	public static function findVOrderOperation(distrib:db.MultiDistrib, user:db.User, ?onlyPending = true):db.Operation {
-		// throw 'find $dkey for user ${user.id} in group ${group.id} , onlyPending:$onlyPending';
-		if (distrib == null)
-			throw "Distrib is null";
-		if (user == null)
-			throw "User is null";
-		var basket = db.Basket.get(user, distrib);
-		if (basket == null)
-			return null; /*throw new Error('No basket found for user #'+user.id+', md #'+distrib.id );*/
+	// /**
+	//  * when updating a (varying) order , we need to update the existing pending transaction
+	//  */
+	// public static function findVOrderOperation(distrib:db.MultiDistrib, user:db.User, ?onlyPending = true):db.Operation {
+	// 	// throw 'find $dkey for user ${user.id} in group ${group.id} , onlyPending:$onlyPending';
+	// 	if (distrib == null)
+	// 		throw "Distrib is null";
+	// 	if (user == null)
+	// 		throw "User is null";
+	// 	var basket = db.Basket.get(user, distrib);
+	// 	if (basket == null)
+	// 		return null; /*throw new Error('No basket found for user #'+user.id+', md #'+distrib.id );*/
 
-		if (onlyPending) {
-			return db.Operation.manager.select($basket == basket && $type == VOrder && $pending == true, true);
-		} else {
-			return db.Operation.manager.select($basket == basket && $type == VOrder, true);
-		}
-	}
+		
+	// }
 
 	/**
 		Create/update the needed order operations and returns the related operations.
@@ -240,7 +236,7 @@ class PaymentService {
 			var allOrders = distrib.getUserOrders(user, db.Catalog.TYPE_VARORDER);
 
 			// existing transaction
-			var existing = findVOrderOperation(distrib, user, false);
+			var existing = basket.getOrderOperation(false);
 
 			var op;
 			if (existing != null) {

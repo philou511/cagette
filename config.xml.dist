@@ -1,11 +1,11 @@
 <config
 	lang="fr"
-	langs="fr;de;en"
-	langnames="Français;Deutsch;English"
+	langs="fr"
+	langnames="Français"
 
 	host="localhost"
 	name = "Cagette.net"
-	webmaster_email = "mon_email@mon_domaine.fr"
+	webmaster_email = "cto@alilo.fr"
 	
 	database="mysql://docker:docker@mysql/db"
 	sqllog="0"
@@ -18,4 +18,8 @@
 
 	cagette_api="http://localhost:3010"
 	cagette_bridge_api="http://nest:3010"
+
+	MANGOPAY_CLIENT_ID = "cagettenet"
+	MANGOPAY_API_KEY = "gAs7Jmo3WFcoRHEmGdTkNPUUxLowvKdZwgOMfhoXORK2fo9HTT"
+	MANGOPAY_BASE_URL = "https://api.sandbox.mangopay.com/v2.01"
 />

@@ -1,6 +1,7 @@
 package db;
 import sys.db.Object;
 import sys.db.Types;
+import db.Operation;
 import Common;
 
 
@@ -130,7 +131,7 @@ class Basket extends Object
 		if (op == null){
 			return [];
 		}else{			
-			return Lambda.array(op.getRelatedPayments());
+			return op.getRelatedPayments().array();
 		}
 	}
 
@@ -178,7 +179,13 @@ class Basket extends Object
 		/* var order = Lambda.find(getOrders(),function(o) return o.distribution!=null );
         if(order==null) return null;*/
 
-		return service.PaymentService.findVOrderOperation(this.multiDistrib,this.user, onlyPending );
+		// return service.PaymentService.findVOrderOperation(this.multiDistrib,this.user, onlyPending );
+
+		if (onlyPending) {
+			return db.Operation.manager.select($basket == this && $type == VOrder && $pending == true, true);
+		} else {
+			return db.Operation.manager.select($basket == this && $type == VOrder, true);
+		}
 	}
 	
 	public function isValidated() {

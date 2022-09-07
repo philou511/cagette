@@ -348,7 +348,7 @@ class OrderService
 					var orders = basket.getOrders();
 					//Check if it is the last order, if yes then delete the related operation
 					if( orders.length == 1 && orders[0].id==order.id ){
-						var operation = service.PaymentService.findVOrderOperation(basket.multiDistrib, user);
+						var operation = basket.getOrderOperation(false);
 						if(operation!=null) operation.delete();
 					}
 				}
