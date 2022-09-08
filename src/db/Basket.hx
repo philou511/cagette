@@ -71,21 +71,22 @@ class Basket extends Object
 	
 	/**
 	 * Get a Basket or create it if it doesn't exists.
-	 * Also link existing orders to this basket
 	 */
-	public static function getOrCreate(user, distrib:db.MultiDistrib){
-		var b = get(user, distrib, true);
+	public static function getOrCreate(user:db.User, multiDistrib:db.MultiDistrib){
+		var b = get(user, multiDistrib, true);
 			
 		if (b == null || b.status == Std.string(OPEN)){
 			//compute basket number
 			b = new Basket();
-			var max : Int = sys.db.Manager.cnx.request("select max(num) from Basket where multiDistribId="+distrib.id).getIntResult(0);
+			var max : Int = sys.db.Manager.cnx.request("select max(num) from Basket where multiDistribId="+multiDistrib.id).getIntResult(0);
+			if( max < 0 ) max = 0;
 			b.num = max + 1;
-			b.multiDistrib = distrib;
+			b.multiDistrib = multiDistrib;
 			b.user = user;
 			b.status = Std.string(BasketStatus.CONFIRMED);
 			b.insert();
-		}		
+		}
+
 		return b;		
 	}
 	
