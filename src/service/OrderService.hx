@@ -69,9 +69,9 @@ class OrderService
 			for ( i in 0...Math.round(quantity) ) {
 
 				if( shopMode ) {
-					newOrder = make( user, 1, product, distribId, paid, null, user2, invert );
+					newOrder = make( user, 1, product, distribId, paid, null, null , null, basket );
 				} else {
-					newOrder = make( user, 1, product, distribId, paid, subscription );
+					newOrder = make( user, 1, product, distribId, paid, subscription, user2, invert, basket);
 				}
 			}
 			return newOrder;
