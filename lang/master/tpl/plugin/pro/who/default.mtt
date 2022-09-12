@@ -80,7 +80,7 @@
 					&nbsp;::l.p1.getName()::
 				</td>
 				<td>
-					<i class="fa fa-arrow-right" aria-hidden="true"></i>
+					<i class="icon icon-chevron-right"></i>
 				</td>
 				<td class="::class2::">
 					::l.p2.getName()::

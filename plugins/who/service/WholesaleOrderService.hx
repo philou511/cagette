@@ -43,7 +43,7 @@ class WholesaleOrderService {
 	}
 	
 	/**
-	 * get links on the fly
+	 * get links between retail product and wholesale product
 	 * 
 	 * @param excludeIdenticalProducts	Exclude links between 2 same products
 	 */
@@ -129,9 +129,7 @@ class WholesaleOrderService {
 		var map = linksAsMap(getLinks(true));
 		var whoProduct = map.get(retailProduct.id);
 
-		return Lambda.array(db.UserOrder.manager.search($distribution==d && $product==whoProduct,false));
-
-		
+		return Lambda.array(db.UserOrder.manager.search($distribution==d && $product==whoProduct,false));	
 	}
 
 	/**
@@ -252,6 +250,44 @@ class WholesaleOrderService {
 
 	function sendMailToManager(d:db.Distribution){
 		service.OrderService.sendOrdersByProductReport(d);
+	}
+
+	/**
+		sometimes a product can be duplicated with the same reference.
+	**/
+	public function fixDuplicateRefs(){
+
+		var refMap = new Map<String,Array<db.Product>>();
+
+		for( p in contract.getProducts(false)){
+
+			if(refMap.get(p.ref)==null){
+				refMap.set(p.ref,[p]);
+			}else{
+				refMap.get(p.ref).push(p);
+			}
+
+		}
+
+		for( ref in refMap.keys()){
+			if(refMap.get(ref).length>1){
+
+				//trace("duplicate : "+refMap.get(ref));
+				var productToKeep = refMap.get(ref)[0];
+				var productToDelete = refMap.get(ref)[1];
+
+				for( o in db.UserOrder.manager.search($product==productToDelete,true) ){
+					o.product = productToKeep;
+					o.update();
+				}
+
+				productToDelete.delete();
+
+			}
+		}
+
+		sugoi.db.Cache.destroy("wholesale_links_contract"+contract.id);
+
 	}
 
 

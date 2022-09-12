@@ -39,10 +39,6 @@ class Admin extends controller.Controller {
 		view.nav = nav("admin");
 	}
 
-	
-
-	
-
 	/**
 		Deduplicate Vendors
 	**/
@@ -1749,8 +1745,11 @@ class Admin extends controller.Controller {
 			}
 			
 		}
-		
+	}
 
 
+	function doFixDuplicateRefs(catalog:db.Catalog){
+		var s = new who.service.WholesaleOrderService(catalog);
+		s.fixDuplicateRefs();
 	}
 }

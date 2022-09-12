@@ -9,8 +9,6 @@ import form.CagetteForm;
 class Main extends controller.Controller
 {
 
-	
-
 	public function new() 
 	{
 		super();		
@@ -31,7 +29,11 @@ class Main extends controller.Controller
 	@logged @tpl("plugin/pro/who/default.mtt")
 	public function doDefault(c:db.Catalog){
 		init(c);
+
 		var s = new who.service.WholesaleOrderService(c);
+		
+		//run the fix when displaying default page
+		s.fixDuplicateRefs();
 		
 		if(checkToken() && app.params.exists("toggle")){
 			if( connector.db.RemoteCatalog.getFromContract(c) ==null){
@@ -145,13 +147,13 @@ class Main extends controller.Controller
 		init(d.catalog);
 		
 		var s = new who.service.WholesaleOrderService(d.catalog); 
-		var products = s.getLinks(true);
+		var productLinks = s.getLinks(true);
 		var balancing = s.getBalancingSummary(d);
 
 		//check that the balancing is needed
 		var total = 0.0;
-		for(p in products){
-			total += s.totalOrder(p.p1,d);
+		for(pl in productLinks){
+			total += s.totalOrder(pl.p1,d);
 		}
 		if(total==0.0){
 			throw Ok("/contractAdmin/orders/"+d.catalog.id+"?d="+d.id,"Vous n'avez pas besoin d'ajuster les quantités : il n'y a aucune commande de produit au détail, ou la commande a déjà été ajustée.");
