@@ -13,8 +13,11 @@
 						<p>$$bool(false) ::errormessage::</p>					
 					</div>
 					
+					::if(getCurrentGroup().hasCagette2())::
+					<a href="/shop/basket/::tmpBasket.id::#/select-payment" class="btn btn-primary">Revenir à la page des paiements</a>
+					::else::
 					<a href="/transaction/pay/::tmpBasket.id::" class="btn btn-primary">Revenir à la page des paiements</a>
-					
+					::end::
 					
 				::elseif(status=="success")::
 				
