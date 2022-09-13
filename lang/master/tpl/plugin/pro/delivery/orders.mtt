@@ -53,93 +53,96 @@ td.userRow a{ color:white; }
 </style>
 
 	::foreach basket distribution._multiDistrib.getBaskets()::
-	::set total = 0::
-	<table class="table table-bordered table-hover table-condensed"  style="width:100%;">
-		
-		<tr class="darkhead">
-			<td colspan="7">
-				<div class="basketNumber" ::cond basket!=null:: >
-					<i class="fa fa-shopping-basket" aria-hidden="true"></i> N°::basket.num::
-				</div>
+		::set total = 0::
+		::set distribOrders = prepare(basket.getDistributionOrders(distribution))::
+		::if (distribOrders.length > 0 )::
+			<table class="table table-bordered table-hover table-condensed"  style="width:100%;">
 				
-				<a href="/member/view/::basket.userId::" target="_blank">::basket._user.getName()::</a> 						
-			</td>
-			<td>
-				::if(!catalog.isConstantOrdersCatalog())::
-				<a class="btn btn-default btn-xs"
-					onclick="_Cagette.initOrderBox(::basket.userId::,::multiDistribId::,::distribution._catalog.id::,::distribution._catalog.type::,'::escapeJS(hDate(distribution.date))::','::escapeJS(distribution._place.toString())::','::escapeJS(basket._user.getName())::','::user.getGroup().currency::', ::catalog._group.hasPayments()::, '/p/pro/delivery/orders/::distribution.id::', ::catalog._group.hasCagette2()::, ::catalog._group.id::, ::basket.id::)">
-					<i class="icon icon-edit"></i>
-					::_("Edit")::
-				</a>
-				::end::
-			</td>
-		</tr>
-		<tr>
-			<th class="col-md-1">::_("Prod. ID")::</th>
-			<th class="col-md-1">::_("Qty")::</th>						
-			<th class="col-md-4">::_("Product")::</th>
-			<th class="col-md-1"><a href="#" data-toggle="tooltip" data-placement="top" title="::_("Unit price including taxes")::">::_("U.P||price per unit")::</a></th>
-			<th class="col-md-1">Ss-total</th>
-			<th class="col-md-1">::_("Fees")::</th>
-			<th class="col-md-1">::_("Total")::</th>						
-			<th class="col-md-2"></th>
-		</tr>
-		
-		
-		::foreach o prepare(basket.getDistributionOrders(distribution))::
-			::if o.product.active==false::
-			::set class="danger"::
-			::else::
-			::set class="none"::
-			::end::
-			<tr class="::class::">
-				<td class="ref">
-					$$nullSafe(::o.product.ref::)							
-				</td>
-				<td>
-					::if(o.quantity==0 && o.canceled)::
-						<span style="color:#AAA">::_("Canceled")::</span>						
+				<tr class="darkhead">
+					<td colspan="7">
+						<div class="basketNumber" ::cond basket!=null:: >
+							<i class="fa fa-shopping-basket" aria-hidden="true"></i> N°::basket.num::
+						</div>
+						
+						<a href="/member/view/::basket.userId::" target="_blank">::basket._user.getName()::</a> 						
+					</td>
+					<td>
+						::if(!catalog.isConstantOrdersCatalog())::
+						<a class="btn btn-default btn-xs"
+							onclick="_Cagette.initOrderBox(::basket.userId::,::multiDistribId::,::distribution._catalog.id::,::distribution._catalog.type::,'::escapeJS(hDate(distribution.date))::','::escapeJS(distribution._place.toString())::','::escapeJS(basket._user.getName())::','::user.getGroup().currency::', ::catalog._group.hasPayments()::, '/p/pro/delivery/orders/::distribution.id::', ::catalog._group.hasCagette2()::, ::catalog._group.id::, ::basket.id::)">
+							<i class="icon icon-edit"></i>
+							::_("Edit")::
+						</a>
+						::end::
+					</td>
+				</tr>
+				<tr>
+					<th class="col-md-1">::_("Prod. ID")::</th>
+					<th class="col-md-1">::_("Qty")::</th>						
+					<th class="col-md-4">::_("Product")::</th>
+					<th class="col-md-1"><a href="#" data-toggle="tooltip" data-placement="top" title="::_("Unit price including taxes")::">::_("U.P||price per unit")::</a></th>
+					<th class="col-md-1">Ss-total</th>
+					<th class="col-md-1">::_("Fees")::</th>
+					<th class="col-md-1">::_("Total")::</th>						
+					<th class="col-md-2"></th>
+				</tr>
+				
+				
+				::foreach o distribOrders::
+					::if o.product.active==false::
+						::set class="danger"::
 					::else::
-						::raw o.smartQt::
+						::set class="none"::
 					::end::
-				</td>
-				<td>												
-					::o.productName::						
-					::if o.userName2!=null::
-						<span class="glyphicon glyphicon-refresh"></span> ::_("alternated with"):: ::o.userName2::
-					::end::
-				</td>
-				<td>
-					::formatNum(o.productPrice)::&nbsp;::currency()::
-				</td>
-				<td>
-					::formatNum(o.subTotal)::&nbsp;::currency()::
-				</td>
-				<td>
-					<!-- frais -->
-					::if o.percentageValue!=null::
-					<a href="#" data-toggle="tooltip" data-placement="top" title="::o.percentageName:: : ::o.percentageValue:: %">
-						::formatNum(o.fees)::&nbsp;::currency()::
-					</a>
-					::end::
-				</td>
-				<td>
-					<!-- total -->
-					::formatNum(o.total)::&nbsp;::currency()::
-					::set total = total + o.total::
-				</td>
-				<td>
-					
-				</td>
-			</tr>
+					<tr class="::class::">
+						<td class="ref">
+							$$nullSafe(::o.product.ref::)							
+						</td>
+						<td>
+							::if(o.quantity==0 && o.canceled)::
+								<span style="color:#AAA">::_("Canceled")::</span>						
+							::else::
+								::raw o.smartQt::
+							::end::
+						</td>
+						<td>												
+							::o.productName::						
+							::if o.userName2!=null::
+								<span class="glyphicon glyphicon-refresh"></span> ::_("alternated with"):: ::o.userName2::
+							::end::
+						</td>
+						<td>
+							::formatNum(o.productPrice)::&nbsp;::currency()::
+						</td>
+						<td>
+							::formatNum(o.subTotal)::&nbsp;::currency()::
+						</td>
+						<td>
+							<!-- frais -->
+							::if o.percentageValue!=null::
+							<a href="#" data-toggle="tooltip" data-placement="top" title="::o.percentageName:: : ::o.percentageValue:: %">
+								::formatNum(o.fees)::&nbsp;::currency()::
+							</a>
+							::end::
+						</td>
+						<td>
+							<!-- total -->
+							::formatNum(o.total)::&nbsp;::currency()::
+							::set total = total + o.total::
+						</td>
+						<td>
+							
+						</td>
+					</tr>
+				::end::
+				
+				<tr style="background:#DDD;">
+					<th colspan="6">::_("Total")::</th>
+					<th>::formatNum(total)::&nbsp;::currency()::</th>
+					<th></th>
+				</tr>
+			</table>
 		::end::
-		
-		<tr style="background:#DDD;">
-			<th colspan="6">::_("Total")::</th>
-			<th>::formatNum(total)::&nbsp;::currency()::</th>
-			<th></th>
-		</tr>
-	</table>
 	::end::
 
 ::end::
