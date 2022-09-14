@@ -2,7 +2,7 @@
 
 http://www.cagette.net
 
-Documentation : http://www.cagette.net/wiki
+Documentation : https://wiki.cagette.net
 
 FAQ for developers : https://wiki.cagette.net/devfaq
 
